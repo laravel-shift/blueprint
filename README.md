@@ -5,21 +5,19 @@ A new open-source tool being developed to provide rapidly generate multiple Lara
 
 **Example Syntax**
 ```yaml
-model: post
+Post:
   id
   title: string
   content: bigtext
   published_at: nullable timestamp
   timestamps
 
-
-
-controller: post
-  index
+PostController:
+  index:
     query: all posts
     render: post.index with posts
 
-  store
+  store:
     validate: title, content
     save: post
     send: ReviewNotifcation to post.author
