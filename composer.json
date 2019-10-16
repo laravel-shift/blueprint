@@ -1,0 +1,6 @@
+{
+    "require": {
+        "symfony/yaml": "^4.3",
+        "illuminate/support": "^5.8"
+    }
+}
