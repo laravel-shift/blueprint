@@ -5,25 +5,27 @@ A new open-source tool being developed to provide rapidly generate multiple Lara
 
 **Example Syntax**
 ```yaml
-Post:
-  id
-  title: string
-  content: bigtext
-  published_at: nullable timestamp
-  timestamps
+models:
+  Post:
+    id
+    title: string
+    content: bigtext
+    published_at: nullable timestamp
+    timestamps
 
-PostController:
-  index:
-    query: all posts
-    render: post.index with posts
+controllers:
+  PostController:
+    index:
+      query: all posts
+      render: post.index with posts
 
-  store:
-    validate: title, content
-    save: post
-    send: ReviewNotifcation to post.author
-    queue: SyncMedia
-    flash: post.title
-    redirect: post.index
+    store:
+      validate: title, content
+      save: post
+      send: ReviewNotifcation to post.author
+      queue: SyncMedia
+      flash: post.title
+      redirect: post.index
 ```
 
 **Generated Components**
