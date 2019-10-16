@@ -1,0 +1,7 @@
+models:
+  ModelOne:
+    column: datatype modifier
+
+  ModelTwo:
+    column: datatype
+    another_column: datatype modifier

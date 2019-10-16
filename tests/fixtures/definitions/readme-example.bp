@@ -1,0 +1,21 @@
+models:
+  Post:
+    id
+    title: string
+    content: bigtext
+    published_at: nullable timestamp
+    timestamps
+
+controllers:
+  Post:
+    index:
+      query: all posts
+      render: post.index with posts
+
+    store:
+      validate: title, content
+      save: post
+      send: ReviewNotifcation to post.author
+      queue: SyncMedia
+      flash: post.title
+      redirect: post.index

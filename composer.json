@@ -1,6 +1,27 @@
 {
+    "name": "laravel-shift/blueprint",
+    "type": "library",
+    "description": "An expressive, human readable code generation tool.",
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
+    "license": "MIT",
     "require": {
-        "symfony/yaml": "^4.3",
-        "illuminate/support": "^5.8"
+        "symfony/yaml": "^4.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.5",
+        "mockery/mockery": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Blueprint\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
     }
 }

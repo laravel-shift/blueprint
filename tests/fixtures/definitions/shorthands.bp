@@ -1,0 +1,4 @@
+models:
+  Name:
+    id
+    timestamps

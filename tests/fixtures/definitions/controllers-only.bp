@@ -1,0 +1,11 @@
+controllers:
+  UserController:
+    index:
+      action: detail
+    create:
+      action: additional detail
+
+  RoleController:
+    index:
+      action: detail
+      another_action: so much detail
