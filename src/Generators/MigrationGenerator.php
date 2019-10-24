@@ -59,7 +59,7 @@ class MigrationGenerator
             $definition .= '$table->timestamps();' . PHP_EOL;
         }
 
-        return $definition;
+        return trim($definition);
     }
 
     protected function getClassName(Model $model)

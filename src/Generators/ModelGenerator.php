@@ -36,20 +36,20 @@ class ModelGenerator
 
         $property = $this->fillableColumns($model->columns());
         if (!empty($property)) {
-            $properties .= str_replace('[]', $this->pretty_print_array($property, false), $this->propertyStub('fillable'));
+            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($property, false), $this->propertyStub('fillable'));
         }
 
         $property = $this->castableColumns($model->columns());
         if (!empty($property)) {
-            $properties .= str_replace('[]', $this->pretty_print_array($property), $this->propertyStub('casts'));
+            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($property), $this->propertyStub('casts'));
         }
 
         $property = $this->dateColumns($model->columns());
         if (!empty($property)) {
-            $properties .= str_replace('[]', $this->pretty_print_array($property, false), $this->propertyStub('dates'));
+            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($property, false), $this->propertyStub('dates'));
         }
 
-        return $properties;
+        return trim($properties);
     }
 
     protected function getPath(Model $model)
