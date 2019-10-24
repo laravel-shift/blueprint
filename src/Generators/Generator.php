@@ -13,5 +13,8 @@ class Generator
 
         $generator = new ModelGenerator();
         $generator->output($registry);
+
+        $generator = new FactoryGenerator();
+        $generator->output($registry);
     }
 }
