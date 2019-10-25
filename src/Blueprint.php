@@ -34,7 +34,7 @@ class Blueprint
     public function generate(array $tree)
     {
         foreach ($this->generators as $generator) {
-            $generator::generate($tree);
+            $generator->output($tree);
         }
     }
 

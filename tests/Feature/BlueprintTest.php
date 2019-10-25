@@ -173,7 +173,7 @@ class BlueprintTest extends TestCase
     {
         $generator = \Mockery::mock();
         $tree = ['branch' => ['code', 'attributes']];
-        $generator->expects('generate')
+        $generator->expects('output')
             ->with($tree);
 
         $this->subject->registerGenerator($generator);
