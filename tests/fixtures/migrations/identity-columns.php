@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class DummyClass extends Migration
+class CreateRelationshipsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class DummyClass extends Migration
      */
     public function up()
     {
-        Schema::create('DummyTable', function (Blueprint $table) {
-            // definition...
+        Schema::create('relationships', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedBigInteger('post_id');
+            $table->unsignedBigInteger('another');
         });
     }
 
@@ -25,6 +27,6 @@ class DummyClass extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('DummyTable');
+        Schema::dropIfExists('relationships');
     }
 }

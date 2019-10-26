@@ -4,18 +4,21 @@ namespace Blueprint\Generators;
 
 use Blueprint\Contracts\Generator;
 use Blueprint\Model;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 class MigrationGenerator implements Generator
 {
+    const INDENT = '            ';
+
     public function output(array $tree): void
     {
         // TODO: what if changing an existing model
-        $stub = file_get_contents('stubs/migration.stub');
+        $stub = File::get('stubs/migration.stub');
 
         /** @var \Blueprint\Model $model */
         foreach ($tree['models'] as $model) {
-            file_put_contents(
+            File::put(
                 $this->getPath($model),
                 $this->populateStub($stub, $model)
             );
@@ -37,16 +40,27 @@ class MigrationGenerator implements Generator
 
         /** @var \Blueprint\Column $column */
         foreach ($model->columns() as $column) {
-            $definition .= '$table->' . $column->dataType() . "('{$column->name()}'";
+            $dataType = $column->dataType();
+            if ($column->name() === 'id') {
+                $dataType = 'increments';
+            } elseif ($column->dataType() === 'id') {
+                $dataType = 'unsignedBigInteger';
+            }
+
+            $definition .= self::INDENT . '$table->' . $dataType . "('{$column->name()}'";
+
             if (!empty($column->attributes())) {
-                // TODO: what about set and enum?
-                $definition .= ', ' . implode(', ', $column->attributes());
+                $definition .= ', ';
+                if (in_array($column->dataType(), ['set', 'enum'])) {
+                    $definition .= json_encode($column->attributes());
+                } else {
+                    $definition .= implode(', ', $column->attributes());
+                }
             }
             $definition .= ')';
 
             foreach ($column->modifiers() as $modifier) {
                 if (is_array($modifier)) {
-                    // TODO: properly handle quoted values
                     $definition .= "->" . key($modifier) . "(" . current($modifier) . ")";
                 } else {
                     $definition .= '->' . $modifier . '()';
@@ -57,7 +71,7 @@ class MigrationGenerator implements Generator
         }
 
         if ($model->usesTimestamps()) {
-            $definition .= '$table->timestamps();' . PHP_EOL;
+            $definition .= self::INDENT . '$table->timestamps();' . PHP_EOL;
         }
 
         return trim($definition);
@@ -70,6 +84,6 @@ class MigrationGenerator implements Generator
 
     protected function getPath(Model $model)
     {
-        return 'build/' . date('Y_m_d_His') . '_create_' . $model->tableName() . '_table.php';
+        return 'build/' . \Carbon\Carbon::now()->format('Y_m_d_His') . '_create_' . $model->tableName() . '_table.php';
     }
 }

@@ -4,7 +4,6 @@ models:
     content: bigtext
     published_at: nullable timestamp
 
-
 controllers:
   Post:
     index:

@@ -5,17 +5,18 @@ namespace Blueprint\Generators;
 use Blueprint\Column;
 use Blueprint\Contracts\Generator;
 use Blueprint\Model;
+use Illuminate\Support\Facades\File;
 
 class ModelGenerator implements Generator
 {
     public function output(array $tree): void
     {
         // TODO: what if changing an existing model
-        $stub = file_get_contents('stubs/model/class.stub');
+        $stub = File::get('stubs/model/class.stub');
 
         /** @var \Blueprint\Model $model */
         foreach ($tree['models'] as $model) {
-            file_put_contents(
+            File::put(
                 $this->getPath($model),
                 $this->populateStub($stub, $model)
             );
@@ -113,13 +114,15 @@ class ModelGenerator implements Generator
     private function pretty_print_array(array $data, $assoc = true)
     {
         $output = var_export($data, true);
-        $output = preg_replace(['/^array\s\(/', "/\)$/"], ['[', ']'], $output);
+        $output = preg_replace('/^\s+/m', '        ', $output);
+        $output = preg_replace(['/^array\s\(/', "/\)$/"], ['[', '    ]'], $output);
 
         if (!$assoc) {
             $output = preg_replace('/^(\s+)[^=]+=>\s+/m', '$1', $output);
         }
 
-        return $output;
+
+        return trim($output);
     }
 
     private function propertyStub(string $stub)
@@ -127,7 +130,7 @@ class ModelGenerator implements Generator
         static $stubs = [];
 
         if (empty($stubs[$stub])) {
-            $stubs[$stub] = file_get_contents('stubs/model/'. $stub .'.stub');
+            $stubs[$stub] = File::get('stubs/model/' . $stub . '.stub');
         }
 
         return $stubs[$stub];

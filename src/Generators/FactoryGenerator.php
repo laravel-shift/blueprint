@@ -4,17 +4,20 @@ namespace Blueprint\Generators;
 
 use Blueprint\Contracts\Generator;
 use Blueprint\Model;
+use Illuminate\Support\Facades\File;
 
 class FactoryGenerator implements Generator
 {
+    const INDENT = '        ';
+
     public function output(array $tree): void
     {
         // TODO: what if changing an existing model
-        $stub = file_get_contents('stubs/factory.stub');
+        $stub = File::get('stubs/factory.stub');
 
         /** @var \Blueprint\Model $model */
         foreach ($tree['models'] as $model) {
-            file_put_contents(
+            File::put(
                 $this->getPath($model),
                 $this->populateStub($stub, $model)
             );
@@ -45,7 +48,7 @@ class FactoryGenerator implements Generator
                 continue;
             }
 
-            $definition .= "'{$column->name()}' => ";
+            $definition .= self::INDENT . "'{$column->name()}' => ";
             $faker = $this->fakerData($column->name()) ?? $this->fakerDataType($column->dataType());
             $definition .= '$faker->' . $faker;
             $definition .= ',' . PHP_EOL;
@@ -59,6 +62,7 @@ class FactoryGenerator implements Generator
         static $fakeableNames = [
             'city' => 'city',
             'company' => 'company',
+            'content' => 'paragraphs(3, true)',
             'country' => 'country',
             'description' => 'text',
             'email' => 'safeEmail',
@@ -96,6 +100,7 @@ class FactoryGenerator implements Generator
     protected function fakerDataType(string $type)
     {
         $fakeableTypes = [
+            'id' => 'randomDigitNotNull', // TODO: override with closure generator
             'string' => 'word',
             'text' => 'text',
             'date' => 'date()',

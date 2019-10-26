@@ -1,0 +1,5 @@
+models:
+  Relationship:
+    post_id: id
+    another: id
+    timestamps: false

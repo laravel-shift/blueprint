@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class DummyClass extends Migration
+class CreatePostsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,12 @@ class DummyClass extends Migration
      */
     public function up()
     {
-        Schema::create('DummyTable', function (Blueprint $table) {
-            // definition...
+        Schema::create('posts', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('title');
+            $table->string('content');
+            $table->timestamp('published_at')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -25,6 +29,6 @@ class DummyClass extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('DummyTable');
+        Schema::dropIfExists('posts');
     }
 }
