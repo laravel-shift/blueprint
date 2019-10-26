@@ -1,14 +1,12 @@
 <?php
 
-
 namespace Blueprint\Lexers;
 
-
 use Blueprint\Column;
-use Blueprint\Factories\ModelFactory;
+use Blueprint\Contracts\Lexer;
 use Blueprint\Model;
 
-class ModelLexer
+class ModelLexer implements Lexer
 {
     private static $dataTypes = [
         'bigIncrements',
@@ -83,7 +81,7 @@ class ModelLexer
         'always'
     ];
 
-    public function analyze(array $tokens)
+    public function analyze(array $tokens): array
     {
         $registry = [
             'models' => []

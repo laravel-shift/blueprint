@@ -2,12 +2,13 @@
 
 namespace Blueprint\Generators;
 
+use Blueprint\Contracts\Generator;
 use Blueprint\Model;
 use Illuminate\Support\Str;
 
-class MigrationGenerator
+class MigrationGenerator implements Generator
 {
-    public function output(array $tree)
+    public function output(array $tree): void
     {
         // TODO: what if changing an existing model
         $stub = file_get_contents('stubs/migration.stub');

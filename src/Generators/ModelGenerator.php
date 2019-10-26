@@ -3,11 +3,12 @@
 namespace Blueprint\Generators;
 
 use Blueprint\Column;
+use Blueprint\Contracts\Generator;
 use Blueprint\Model;
 
-class ModelGenerator
+class ModelGenerator implements Generator
 {
-    public function output(array $tree)
+    public function output(array $tree): void
     {
         // TODO: what if changing an existing model
         $stub = file_get_contents('stubs/model/class.stub');

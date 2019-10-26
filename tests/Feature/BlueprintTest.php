@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use Blueprint\Blueprint;
+use Blueprint\Contracts\Generator;
+use Blueprint\Contracts\Lexer;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Tests\TestCase;
 
@@ -151,7 +153,7 @@ class BlueprintTest extends TestCase
      */
     public function analyze_uses_register_lexers_to_analyze_tokens()
     {
-        $lexer = \Mockery::mock();
+        $lexer = \Mockery::mock(Lexer::class);
         $tokens = ['tokens' => ['are', 'here']];
         $lexer->expects('analyze')
             ->with($tokens)
@@ -171,7 +173,7 @@ class BlueprintTest extends TestCase
      */
     public function generate_uses_register_generators_to_generate_code()
     {
-        $generator = \Mockery::mock();
+        $generator = \Mockery::mock(Generator::class);
         $tree = ['branch' => ['code', 'attributes']];
         $generator->expects('output')
             ->with($tree);

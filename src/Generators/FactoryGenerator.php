@@ -2,11 +2,12 @@
 
 namespace Blueprint\Generators;
 
+use Blueprint\Contracts\Generator;
 use Blueprint\Model;
 
-class FactoryGenerator
+class FactoryGenerator implements Generator
 {
-    public function output(array $tree)
+    public function output(array $tree): void
     {
         // TODO: what if changing an existing model
         $stub = file_get_contents('stubs/factory.stub');

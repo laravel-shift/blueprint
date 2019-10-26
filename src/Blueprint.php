@@ -3,6 +3,8 @@
 namespace Blueprint;
 
 
+use Blueprint\Contracts\Generator;
+use Blueprint\Contracts\Lexer;
 use Symfony\Component\Yaml\Yaml;
 
 class Blueprint
@@ -38,12 +40,12 @@ class Blueprint
         }
     }
 
-    public function registerLexer($lexer)
+    public function registerLexer(Lexer $lexer)
     {
         $this->lexers[] = $lexer;
     }
 
-    public function registerGenerator($generator)
+    public function registerGenerator(Generator $generator)
     {
         $this->generators[] = $generator;
     }
