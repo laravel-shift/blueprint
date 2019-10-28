@@ -22,7 +22,7 @@ controllers:
     store:
       validate: title, content
       save: post
-      send: ReviewNotifcation to post.author
+      send: ReviewNotification to post.author
       queue: SyncMedia
       flash: post.title
       redirect: post.index
