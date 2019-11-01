@@ -130,7 +130,9 @@ class ModelLexer implements Lexer
 
         $tokens = explode(' ', $definition);
         foreach ($tokens as $token) {
-            [$value, $attributes] = explode(':', $token);
+            $parts = explode(':', $token);
+            $value = $parts[0];
+            $attributes = $parts[1] ?? null;
 
             if ($value === 'id') {
                 $data_type = 'id';

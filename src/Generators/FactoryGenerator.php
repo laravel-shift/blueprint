@@ -4,29 +4,43 @@ namespace Blueprint\Generators;
 
 use Blueprint\Contracts\Generator;
 use Blueprint\Model;
-use Illuminate\Support\Facades\File;
 
 class FactoryGenerator implements Generator
 {
     const INDENT = '        ';
 
-    public function output(array $tree): void
+    /** @var \Illuminate\Contracts\Filesystem\Filesystem */
+    private $files;
+
+    public function __construct($files)
     {
+        $this->files = $files;
+    }
+
+    public function output(array $tree): array
+    {
+        $output = [];
+
         // TODO: what if changing an existing model
-        $stub = File::get('stubs/factory.stub');
+        $stub = $this->files->get(STUBS_PATH . '/factory.stub');
 
         /** @var \Blueprint\Model $model */
         foreach ($tree['models'] as $model) {
-            File::put(
-                $this->getPath($model),
+            $path = $this->getPath($model);
+            $this->files->put(
+                $path,
                 $this->populateStub($stub, $model)
             );
+
+            $output['created'][] = $path;
         }
+
+        return $output;
     }
 
     protected function getPath(Model $model)
     {
-        return 'build/' . $model->name() . 'Factory.php';
+        return 'database/factories/' . $model->name() . 'Factory.php';
     }
 
     protected function populateStub(string $stub, Model $model)

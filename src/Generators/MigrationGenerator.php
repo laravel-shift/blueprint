@@ -4,25 +4,39 @@ namespace Blueprint\Generators;
 
 use Blueprint\Contracts\Generator;
 use Blueprint\Model;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 class MigrationGenerator implements Generator
 {
     const INDENT = '            ';
 
-    public function output(array $tree): void
+    /** @var \Illuminate\Contracts\Filesystem\Filesystem */
+    private $files;
+
+    public function __construct($files)
     {
+        $this->files = $files;
+    }
+
+    public function output(array $tree): array
+    {
+        $output = [];
+
         // TODO: what if changing an existing model
-        $stub = File::get('stubs/migration.stub');
+        $stub = $this->files->get(STUBS_PATH . '/migration.stub');
 
         /** @var \Blueprint\Model $model */
         foreach ($tree['models'] as $model) {
-            File::put(
-                $this->getPath($model),
+            $path = $this->getPath($model);
+            $this->files->put(
+                $path,
                 $this->populateStub($stub, $model)
             );
+
+            $output['created'][] = $path;
         }
+
+        return $output;
     }
 
     protected function populateStub(string $stub, Model $model)
@@ -84,6 +98,6 @@ class MigrationGenerator implements Generator
 
     protected function getPath(Model $model)
     {
-        return 'build/' . \Carbon\Carbon::now()->format('Y_m_d_His') . '_create_' . $model->tableName() . '_table.php';
+        return 'database/migrations/' . \Carbon\Carbon::now()->format('Y_m_d_His') . '_create_' . $model->tableName() . '_table.php';
     }
 }

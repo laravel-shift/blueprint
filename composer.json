@@ -9,6 +9,8 @@
     "license": "MIT",
     "require": {
         "symfony/yaml": "^4.3",
+        "illuminate/console": "^5.8",
+        "illuminate/filesystem": "^5.8",
         "illuminate/support": "^5.8"
     },
     "require-dev": {
@@ -23,6 +25,13 @@
     "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Blueprint\\BlueprintServiceProvider"
+            ]
         }
     }
 }
