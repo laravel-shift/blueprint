@@ -21,7 +21,6 @@ class FactoryGenerator implements Generator
     {
         $output = [];
 
-        // TODO: what if changing an existing model
         $stub = $this->files->get(STUBS_PATH . '/factory.stub');
 
         /** @var \Blueprint\Model $model */
@@ -114,7 +113,7 @@ class FactoryGenerator implements Generator
     protected function fakerDataType(string $type)
     {
         $fakeableTypes = [
-            'id' => 'randomDigitNotNull', // TODO: override with closure generator
+            'id' => 'randomDigitNotNull',
             'string' => 'word',
             'text' => 'text',
             'date' => 'date()',

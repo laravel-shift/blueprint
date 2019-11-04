@@ -77,7 +77,6 @@ class ModelGeneratorTest extends TestCase
     {
         return [
             ['definitions/readme-example.bp', 'app/Post.php', 'models/readme-example.php'],
-            // TODO: relationships
         ];
     }
 }

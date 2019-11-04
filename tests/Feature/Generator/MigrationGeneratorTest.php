@@ -73,7 +73,6 @@ class MigrationGeneratorTest extends TestCase
             ['definitions/readme-example.bp', 'database/migrations/timestamp_create_posts_table.php', 'migrations/readme-example.php'],
             ['definitions/model-identities.bp', 'database/migrations/timestamp_create_relationships_table.php', 'migrations/identity-columns.php'],
             ['definitions/model-modifiers.bp', 'database/migrations/timestamp_create_modifiers_table.php', 'migrations/modifiers.php'],
-            // TODO: optimizations like nullableTimestamp, unsignedInteger, etc
         ];
     }
 }

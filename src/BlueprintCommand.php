@@ -39,14 +39,13 @@ class BlueprintCommand extends Command
     /**
      * Execute the console command.
      *
-     * @param \App\DripEmailer $drip
      * @return mixed
      */
     public function handle()
     {
         $contents = $this->files->get($this->argument('draft'));
 
-        $blueprint = new Blueprint(); // TODO: resolve or make static for extensibility
+        $blueprint = new Blueprint();
 
         $blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
 

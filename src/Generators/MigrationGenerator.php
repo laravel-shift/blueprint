@@ -22,7 +22,6 @@ class MigrationGenerator implements Generator
     {
         $output = [];
 
-        // TODO: what if changing an existing model
         $stub = $this->files->get(STUBS_PATH . '/migration.stub');
 
         /** @var \Blueprint\Model $model */
