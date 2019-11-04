@@ -1,5 +1,7 @@
-# blueprint
-A new open-source tool being developed to provide rapidly generate multiple Laravel components using a expressive, human readable syntax.
+# Blueprint
+A new open-source tool to rapidly generate multiple Laravel components using an expressive, human readable syntax.
+
+Follow along with the development of Blueprint by [watching live streams](https://www.youtube.com/playlist?list=PLmwAMIdrAmK5q0c0JUqzW3u9tb0AqW95w) or [reviewing issues](https://github.com/laravel-shift/blueprint/issues).
 
 ---
 
@@ -7,11 +9,9 @@ A new open-source tool being developed to provide rapidly generate multiple Lara
 ```yaml
 models:
   Post:
-    id
-    title: string
+    title: string:400
     content: bigtext
     published_at: nullable timestamp
-    timestamps
 
 controllers:
   PostController:
@@ -22,7 +22,7 @@ controllers:
     store:
       validate: title, content
       save: post
-      send: ReviewNotifcation to post.author
+      send: ReviewNotification to post.author
       queue: SyncMedia
       flash: post.title
       redirect: post.index
@@ -37,4 +37,3 @@ controllers:
 - Mailable
 - Job
 - View (stub)
-
