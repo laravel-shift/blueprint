@@ -33,11 +33,15 @@ class Blueprint
         return $registry;
     }
 
-    public function generate(array $tree)
+    public function generate(array $tree): array
     {
+        $components = [];
+
         foreach ($this->generators as $generator) {
-            $generator->output($tree);
+            $components = array_merge_recursive($components, $generator->output($tree));
         }
+
+        return $components;
     }
 
     public function registerLexer(Lexer $lexer)

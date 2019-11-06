@@ -4,6 +4,7 @@ namespace Blueprint;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputArgument;
 
 class BlueprintCommand extends Command
@@ -55,7 +56,16 @@ class BlueprintCommand extends Command
 
         $tokens = $blueprint->parse($contents);
         $registry = $blueprint->analyze($tokens);
-        $blueprint->generate($registry);
+        $generated = $blueprint->generate($registry);
+
+        collect($generated)->each(function ($files, $action) {
+            $this->line(Str::studly($action) . ':', $this->outputStyle($action));
+            collect($files)->each(function ($file) {
+                $this->line('- ' . $file);
+            });
+
+            $this->line('');
+        });
     }
 
 
@@ -79,5 +89,16 @@ class BlueprintCommand extends Command
     protected function getOptions()
     {
         return [];
+    }
+
+    private function outputStyle($action)
+    {
+        if ($action === 'deleted') {
+            return 'error';
+        } elseif ($action === 'updated') {
+            return 'warning';
+        }
+
+        return 'info';
     }
 }

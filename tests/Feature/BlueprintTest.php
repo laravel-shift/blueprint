@@ -171,15 +171,34 @@ class BlueprintTest extends TestCase
     /**
      * @test
      */
-    public function generate_uses_register_generators_to_generate_code()
+    public function generate_uses_registered_generators_and_returns_generated_files()
     {
-        $generator = \Mockery::mock(Generator::class);
+        $generatorOne = \Mockery::mock(Generator::class);
         $tree = ['branch' => ['code', 'attributes']];
-        $generator->expects('output')
-            ->with($tree);
+        $generatorOne->expects('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['one/new.php'],
+                'updated' => ['one/existing.php'],
+                'deleted' => ['one/trashed.php']
+            ]);
 
-        $this->subject->registerGenerator($generator);
+        $generatorTwo = \Mockery::mock(Generator::class);
+        $generatorTwo->expects('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['two/new.php'],
+                'updated' => ['two/existing.php'],
+                'deleted' => ['two/trashed.php']
+            ]);
 
-        $this->subject->generate($tree);
+        $this->subject->registerGenerator($generatorOne);
+        $this->subject->registerGenerator($generatorTwo);
+
+        $this->assertEquals([
+            'created' => ['one/new.php', 'two/new.php'],
+            'updated' => ['one/existing.php', 'two/existing.php'],
+            'deleted' => ['one/trashed.php', 'two/trashed.php'],
+        ], $this->subject->generate($tree));
     }
 }
