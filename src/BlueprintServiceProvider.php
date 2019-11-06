@@ -15,7 +15,9 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
     public function boot()
     {
         // ...
-        define('STUBS_PATH', dirname(__DIR__) . '/stubs');
+        if (!defined('STUBS_PATH')) {
+            define('STUBS_PATH', dirname(__DIR__) . '/stubs');
+        }
     }
 
     /**
