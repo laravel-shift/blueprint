@@ -31,14 +31,16 @@ controllers:
 ```
 
 **Generated Components**
-- Migration
-- Model
-- Route
-- Controller
-- Form Request
-- Mailable
-- Job
-- View (stub)
+- [x] Migration
+- [x] Model
+- [x] Factory
+- [ ] Open a pull request
+- [ ] Route
+- [ ] Controller
+- [ ] Form Request
+- [ ] Mailable
+- [ ] Job
+- [ ] View (stub)
 
 
 ## Contributing
