@@ -57,7 +57,6 @@ controllers:
 - [x] Migration
 - [x] Model
 - [x] Factory
-- [ ] Open a pull request
 - [ ] Route
 - [ ] Controller
 - [ ] Form Request
