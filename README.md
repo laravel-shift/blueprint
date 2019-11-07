@@ -17,6 +17,7 @@ laravel new APP_NAME
 You can install this package via composer using this command:
 
 ```sh
+cd APP_NAME
 composer require --dev laravel-shift/blueprint
 ```
 
