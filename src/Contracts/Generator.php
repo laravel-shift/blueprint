@@ -2,11 +2,12 @@
 
 namespace Blueprint\Contracts;
 
-use Illuminate\Filesystem\Filesystem;
-
 interface Generator
 {
-    public function __construct(Filesystem $files);
+    /**
+     * @param \Illuminate\Contracts\Filesystem\Filesystem
+     */
+    public function __construct($files);
 
     public function output(array $tree): array;
 }
