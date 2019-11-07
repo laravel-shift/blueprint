@@ -37,27 +37,12 @@ models:
     title: string:400
     content: longtext
     published_at: nullable timestamp
-
-controllers:
-  PostController:
-    index:
-      query: all posts
-      render: post.index with posts
-
-    store:
-      validate: title, content
-      save: post
-      send: ReviewNotification to post.author
-      queue: SyncMedia
-      flash: post.title
-      redirect: post.index
 ```
 
 **Generated Components**
 - [x] Migration
 - [x] Model
 - [x] Factory
-- [ ] Open a pull request
 - [ ] Route
 - [ ] Controller
 - [ ] Form Request
