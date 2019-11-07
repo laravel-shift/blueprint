@@ -7,6 +7,13 @@ _**v0.1 Tagged**: A beta release of Blueprint is now available which supports ge
 
 
 ## Installation
+
+To use Blueprint, you need a Laravel app:
+
+```sh
+laravel new APP_NAME
+```
+
 You can install this package via composer using this command:
 
 ```sh
