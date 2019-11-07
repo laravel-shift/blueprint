@@ -168,6 +168,50 @@ class ModelLexerTest extends TestCase
         $this->assertEquals(['nullable'], $columns['title']->modifiers());
     }
 
+    /**
+     * @test
+     */
+    public function it_accepts_lowercase_keywords()
+    {
+        $tokens = [
+            'models' => [
+                'Model' => [
+                    'sequence' => 'unsignedbiginteger autoincrement',
+                    'content' => 'longtext',
+                    'saved_at' => 'timestamptz usecurrent'
+                ]
+            ],
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertIsArray($actual['models']);
+        $this->assertCount(1, $actual['models']);
+
+        $model = $actual['models']['Model'];
+        $this->assertEquals('Model', $model->name());
+        $this->assertTrue($model->usesTimestamps());
+
+        $columns = $model->columns();
+        $this->assertCount(4, $columns);
+        $this->assertEquals('id', $columns['id']->name());
+        $this->assertEquals('id', $columns['id']->dataType());
+        $this->assertEquals([], $columns['id']->attributes());
+        $this->assertEquals([], $columns['id']->modifiers());
+        $this->assertEquals('sequence', $columns['sequence']->name());
+        $this->assertEquals('unsignedBigInteger', $columns['sequence']->dataType());
+        $this->assertEquals([], $columns['sequence']->attributes());
+        $this->assertEquals(['autoIncrement'], $columns['sequence']->modifiers());
+        $this->assertEquals('content', $columns['content']->name());
+        $this->assertEquals('longText', $columns['content']->dataType());
+        $this->assertEquals([], $columns['content']->attributes());
+        $this->assertEquals([], $columns['content']->modifiers());
+        $this->assertEquals('saved_at', $columns['saved_at']->name());
+        $this->assertEquals('timestampTz', $columns['saved_at']->dataType());
+        $this->assertEquals([], $columns['saved_at']->attributes());
+        $this->assertEquals(['useCurrent'], $columns['saved_at']->modifiers());
+    }
+
 
     /**
      * @test

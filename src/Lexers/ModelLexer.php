@@ -9,76 +9,76 @@ use Blueprint\Model;
 class ModelLexer implements Lexer
 {
     private static $dataTypes = [
-        'bigIncrements',
-        'bigInteger',
-        'binary',
-        'boolean',
-        'char',
-        'date',
-        'dateTime',
-        'dateTimeTz',
-        'decimal',
-        'double',
-        'enum',
-        'float',
-        'geometry',
-        'geometryCollection',
-        'increments',
-        'integer',
-        'ipAddress',
-        'json',
-        'jsonb',
-        'lineString',
-        'longText',
-        'macAddress',
-        'mediumIncrements',
-        'mediumInteger',
-        'mediumText',
-        'morphs',
-        'uuidMorphs',
-        'multiLineString',
-        'multiPoint',
-        'multiPolygon',
-        'nullableMorphs',
-        'nullableUuidMorphs',
-        'nullableTimestamps',
-        'point',
-        'polygon',
-        'rememberToken',
-        'set',
-        'smallIncrements',
-        'smallInteger',
-        'softDeletes',
-        'softDeletesTz',
-        'string',
-        'text',
-        'time',
-        'timeTz',
-        'timestamp',
-        'timestampTz',
-        'timestamps',
-        'timestampsTz',
-        'tinyIncrements',
-        'tinyInteger',
-        'unsignedBigInteger',
-        'unsignedDecimal',
-        'unsignedInteger',
-        'unsignedMediumInteger',
-        'unsignedSmallInteger',
-        'unsignedTinyInteger',
-        'uuid',
-        'year'
+        'bigincrements' => 'bigIncrements',
+        'biginteger' => 'bigInteger',
+        'binary' => 'binary',
+        'boolean' => 'boolean',
+        'char' => 'char',
+        'date' => 'date',
+        'datetime' => 'dateTime',
+        'datetimetz' => 'dateTimeTz',
+        'decimal' => 'decimal',
+        'double' => 'double',
+        'enum' => 'enum',
+        'float' => 'float',
+        'geometry' => 'geometry',
+        'geometrycollection' => 'geometryCollection',
+        'increments' => 'increments',
+        'integer' => 'integer',
+        'ipaddress' => 'ipAddress',
+        'json' => 'json',
+        'jsonb' => 'jsonb',
+        'linestring' => 'lineString',
+        'longtext' => 'longText',
+        'macaddress' => 'macAddress',
+        'mediumincrements' => 'mediumIncrements',
+        'mediuminteger' => 'mediumInteger',
+        'mediumtext' => 'mediumText',
+        'morphs' => 'morphs',
+        'uuidmorphs' => 'uuidMorphs',
+        'multilinestring' => 'multiLineString',
+        'multipoint' => 'multiPoint',
+        'multipolygon' => 'multiPolygon',
+        'nullablemorphs' => 'nullableMorphs',
+        'nullableuuidmorphs' => 'nullableUuidMorphs',
+        'nullabletimestamps' => 'nullableTimestamps',
+        'point' => 'point',
+        'polygon' => 'polygon',
+        'remembertoken' => 'rememberToken',
+        'set' => 'set',
+        'smallincrements' => 'smallIncrements',
+        'smallinteger' => 'smallInteger',
+        'softdeletes' => 'softDeletes',
+        'softdeletestz' => 'softDeletesTz',
+        'string' => 'string',
+        'text' => 'text',
+        'time' => 'time',
+        'timetz' => 'timeTz',
+        'timestamp' => 'timestamp',
+        'timestamptz' => 'timestampTz',
+        'timestamps' => 'timestamps',
+        'timestampstz' => 'timestampsTz',
+        'tinyincrements' => 'tinyIncrements',
+        'tinyinteger' => 'tinyInteger',
+        'unsignedbiginteger' => 'unsignedBigInteger',
+        'unsigneddecimal' => 'unsignedDecimal',
+        'unsignedinteger' => 'unsignedInteger',
+        'unsignedmediuminteger' => 'unsignedMediumInteger',
+        'unsignedsmallinteger' => 'unsignedSmallInteger',
+        'unsignedtinyinteger' => 'unsignedTinyInteger',
+        'uuid' => 'uuid',
+        'year' => 'year',
     ];
 
     private static $modifiers = [
-        'autoIncrement',
-        'charset',
-        'collation',
-        'default',
-        'nullable',
-        'unsigned',
-        'useCurrent',
-        'always'
+        'autoincrement' => 'autoIncrement',
+        'charset' => 'charset',
+        'collation' => 'collation',
+        'default' => 'default',
+        'nullable' => 'nullable',
+        'unsigned' => 'unsigned',
+        'usecurrent' => 'useCurrent',
+        'always' => 'always',
     ];
 
     public function analyze(array $tokens): array
@@ -136,18 +136,18 @@ class ModelLexer implements Lexer
 
             if ($value === 'id') {
                 $data_type = 'id';
-            } elseif (in_array($value, self::$dataTypes)) {
-                $data_type = $value;
+            } elseif (isset(self::$dataTypes[strtolower($value)])) {
+                $data_type = self::$dataTypes[strtolower($value)];
                 if (!empty($attributes)) {
                     $attributes = explode(',', $attributes);
                 }
             }
 
-            if (in_array($value, self::$modifiers)) {
+            if (isset(self::$modifiers[strtolower($value)])) {
                 if (empty($attributes)) {
-                    $modifiers[] = $value;
+                    $modifiers[] = self::$modifiers[strtolower($value)];
                 } else {
-                    $modifiers[] = [$value => $attributes];
+                    $modifiers[] = [self::$modifiers[strtolower($value)] => $attributes];
                     $attributes = [];
                 }
             }
