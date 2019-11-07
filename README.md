@@ -5,7 +5,30 @@ Follow along with the development of Blueprint by [watching live streams](https:
 
 _**v0.1 Tagged**: A beta release of Blueprint is now available which supports generating components using `models` definitions._
 
+
+## Installation
+You can install this package via composer using this command:
+
+```sh
+composer require --dev laravel-shift/blueprint
+```
+
+The package will automatically register itself.
+
+
+## Usage
+Blueprint adds an artisan command.
+
+```sh
+php artisan blueprint:build [draft]
+
+```
+
+The `draft` file contains your definition of the components to generate. By default, the `blueprint:build` command automatically loads a `draft.yaml` file.
+
+
 ---
+
 
 **Example Syntax**
 ```yaml
