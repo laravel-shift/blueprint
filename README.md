@@ -35,7 +35,7 @@ The `draft` file contains your definition of the components to generate. By defa
 models:
   Post:
     title: string:400
-    content: bigtext
+    content: longtext
     published_at: nullable timestamp
 
 controllers:
