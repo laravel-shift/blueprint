@@ -32,7 +32,7 @@ php artisan blueprint:build [draft]
 
 ```
 
-The `draft` file contains your definition of the components to generate. By default, the `blueprint:build` command automatically loads a `draft.yaml` file.
+The `draft` file contains your definition of the components to generate. By default, the `blueprint:build` command tries to load a `draft.yaml` file.
 
 
 ---
