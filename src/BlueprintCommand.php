@@ -2,9 +2,9 @@
 
 namespace Blueprint;
 
+use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputArgument;
 
 class BlueprintCommand extends Command
@@ -27,7 +27,7 @@ class BlueprintCommand extends Command
     protected $files;
 
     /**
-     * @param Filesystem $files
+     * @param Filesystem                         $files
      * @param \Illuminate\Contracts\View\Factory $view
      */
     public function __construct(Filesystem $files)
@@ -42,17 +42,9 @@ class BlueprintCommand extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(Blueprint $blueprint)
     {
         $contents = $this->files->get($this->argument('draft'));
-
-        $blueprint = new Blueprint();
-
-        $blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
-
-        $blueprint->registerGenerator(new \Blueprint\Generators\MigrationGenerator($this->files));
-        $blueprint->registerGenerator(new \Blueprint\Generators\ModelGenerator($this->files));
-        $blueprint->registerGenerator(new \Blueprint\Generators\FactoryGenerator($this->files));
 
         $tokens = $blueprint->parse($contents);
         $registry = $blueprint->analyze($tokens);
@@ -67,7 +59,6 @@ class BlueprintCommand extends Command
             $this->line('');
         });
     }
-
 
     /**
      * Get the console command arguments.
@@ -93,9 +84,9 @@ class BlueprintCommand extends Command
 
     private function outputStyle($action)
     {
-        if ($action === 'deleted') {
+        if ('deleted' === $action) {
             return 'error';
-        } elseif ($action === 'updated') {
+        } elseif ('updated' === $action) {
             return 'warning';
         }
 
