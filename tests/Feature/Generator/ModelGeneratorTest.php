@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Generators;
 
+use Tests\TestCase;
 use Blueprint\Blueprint;
 use Blueprint\Generators\ModelGenerator;
-use Tests\TestCase;
 
 class ModelGeneratorTest extends TestCase
 {
@@ -15,7 +15,7 @@ class ModelGeneratorTest extends TestCase
     /** @var ModelGenerator */
     private $subject;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -71,7 +71,6 @@ class ModelGeneratorTest extends TestCase
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
-
 
     public function modelTreeDataProvider()
     {

@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Generators;
 
+use Tests\TestCase;
 use Blueprint\Blueprint;
 use Blueprint\Generators\FactoryGenerator;
-use Tests\TestCase;
 
 class FactoryGeneratorTest extends TestCase
 {
@@ -15,7 +15,7 @@ class FactoryGeneratorTest extends TestCase
     /** @var FactoryGenerator */
     private $subject;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -60,11 +60,10 @@ class FactoryGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
-
     public function modelTreeDataProvider()
     {
         return [
-            ['definitions/post.bp', 'database/factories/PostFactory.php', 'factories/post.php']
+            ['definitions/post.bp', 'database/factories/PostFactory.php', 'factories/post.php'],
         ];
     }
 }

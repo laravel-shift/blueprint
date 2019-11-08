@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Lexers;
 
-use Blueprint\Lexers\ModelLexer;
 use Tests\TestCase;
+use Blueprint\Lexers\ModelLexer;
 
 class ModelLexerTest extends TestCase
 {
@@ -12,7 +12,7 @@ class ModelLexerTest extends TestCase
      */
     private $subject;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -36,11 +36,11 @@ class ModelLexerTest extends TestCase
             'models' => [
                 'ModelOne' => [
                     'id' => 'id',
-                    'name' => 'string nullable'
+                    'name' => 'string nullable',
                 ],
                 'ModelTwo' => [
                     'count' => 'integer',
-                    'timestamps' => 'timestamps'
+                    'timestamps' => 'timestamps',
                 ],
             ],
         ];
@@ -85,8 +85,8 @@ class ModelLexerTest extends TestCase
         $tokens = [
             'models' => [
                 'Model' => [
-                    'title' => 'string nullable'
-                ]
+                    'title' => 'string nullable',
+                ],
             ],
         ];
 
@@ -120,7 +120,7 @@ class ModelLexerTest extends TestCase
             'models' => [
                 'Model' => [
                     'timestamps' => false,
-                ]
+                ],
             ],
         ];
 
@@ -142,8 +142,8 @@ class ModelLexerTest extends TestCase
         $tokens = [
             'models' => [
                 'Model' => [
-                    'title' => 'nullable'
-                ]
+                    'title' => 'nullable',
+                ],
             ],
         ];
 
@@ -178,8 +178,8 @@ class ModelLexerTest extends TestCase
                 'Model' => [
                     'sequence' => 'unsignedbiginteger autoincrement',
                     'content' => 'longtext',
-                    'saved_at' => 'timestamptz usecurrent'
-                ]
+                    'saved_at' => 'timestamptz usecurrent',
+                ],
             ],
         ];
 
@@ -212,7 +212,6 @@ class ModelLexerTest extends TestCase
         $this->assertEquals(['useCurrent'], $columns['saved_at']->modifiers());
     }
 
-
     /**
      * @test
      * @dataProvider dataTypeAttributesDataProvider
@@ -222,8 +221,8 @@ class ModelLexerTest extends TestCase
         $tokens = [
             'models' => [
                 'Model' => [
-                    'column' => $definition
-                ]
+                    'column' => $definition,
+                ],
             ],
         ];
 
@@ -256,8 +255,8 @@ class ModelLexerTest extends TestCase
         $tokens = [
             'models' => [
                 'Model' => [
-                    'column' => $definition . ' nullable'
-                ]
+                    'column' => $definition . ' nullable',
+                ],
             ],
         ];
 
@@ -300,7 +299,7 @@ class ModelLexerTest extends TestCase
         return [
             ['default:5', 'default', 5],
             ['default:0.00', 'default', 0.00],
-            ["default:string", 'default', 'string'],
+            ['default:string', 'default', 'string'],
             ["default:'empty'", 'default', "'empty'"],
             ['default:""', 'default', '""'],
             ['charset:utf8', 'charset', 'utf8'],

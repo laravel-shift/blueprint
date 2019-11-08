@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use Blueprint\Blueprint;
-use Blueprint\Contracts\Generator;
-use Blueprint\Contracts\Lexer;
-use Symfony\Component\Yaml\Exception\ParseException;
 use Tests\TestCase;
+use Blueprint\Blueprint;
+use Blueprint\Contracts\Lexer;
+use Blueprint\Contracts\Generator;
+use Symfony\Component\Yaml\Exception\ParseException;
 
 class BlueprintTest extends TestCase
 {
@@ -15,7 +15,7 @@ class BlueprintTest extends TestCase
      */
     private $subject;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -53,10 +53,10 @@ class BlueprintTest extends TestCase
             'controllers' => [
                 'UserController' => [
                     'index' => [
-                        'action' => 'detail'
+                        'action' => 'detail',
                     ],
                     'create' => [
-                        'action' => 'additional detail'
+                        'action' => 'additional detail',
                     ],
                 ],
                 'RoleController' => [
@@ -100,7 +100,7 @@ class BlueprintTest extends TestCase
                     'title' => 'string',
                     'content' => 'bigtext',
                     'published_at' => 'nullable timestamp',
-                    'timestamps' => 'timestamps'
+                    'timestamps' => 'timestamps',
                 ],
             ],
             'controllers' => [
@@ -141,11 +141,13 @@ class BlueprintTest extends TestCase
     {
         $tokens = [];
 
-        $this->assertEquals([
+        $this->assertEquals(
+            [
             'models' => [],
-            'controllers' => []
+            'controllers' => [],
         ],
-            $this->subject->analyze($tokens));
+            $this->subject->analyze($tokens)
+        );
     }
 
     /**
@@ -164,7 +166,7 @@ class BlueprintTest extends TestCase
         $this->assertEquals([
             'models' => [],
             'controllers' => [],
-            'mock' => 'lexer'
+            'mock' => 'lexer',
         ], $this->subject->analyze($tokens));
     }
 
@@ -180,7 +182,7 @@ class BlueprintTest extends TestCase
             ->andReturn([
                 'created' => ['one/new.php'],
                 'updated' => ['one/existing.php'],
-                'deleted' => ['one/trashed.php']
+                'deleted' => ['one/trashed.php'],
             ]);
 
         $generatorTwo = \Mockery::mock(Generator::class);
@@ -189,7 +191,7 @@ class BlueprintTest extends TestCase
             ->andReturn([
                 'created' => ['two/new.php'],
                 'updated' => ['two/existing.php'],
-                'deleted' => ['two/trashed.php']
+                'deleted' => ['two/trashed.php'],
             ]);
 
         $this->subject->registerGenerator($generatorOne);

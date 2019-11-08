@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Generators;
 
-use Blueprint\Blueprint;
-use Blueprint\Generators\MigrationGenerator;
 use Carbon\Carbon;
 use Tests\TestCase;
+use Blueprint\Blueprint;
+use Blueprint\Generators\MigrationGenerator;
 
 class MigrationGeneratorTest extends TestCase
 {
@@ -16,7 +16,7 @@ class MigrationGeneratorTest extends TestCase
     /** @var MigrationGenerator */
     private $subject;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -65,7 +65,6 @@ class MigrationGeneratorTest extends TestCase
 
         $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
     }
-
 
     public function modelTreeDataProvider()
     {
