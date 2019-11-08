@@ -2,15 +2,27 @@
 
 namespace Blueprint;
 
-
-use Blueprint\Contracts\Generator;
 use Blueprint\Contracts\Lexer;
 use Symfony\Component\Yaml\Yaml;
+use Blueprint\Contracts\Generator;
 
 class Blueprint
 {
     private $lexers = [];
     private $generators = [];
+
+    public function boot()
+    {
+        collect(config('blueprint.lexers'))->each(function ($lexer) {
+            $this->registerLexer(new $lexer());
+        });
+
+        collect(config('blueprint.generators'))->each(function ($generatorClass) {
+            $generator = resolve('blueprint.generators')[$generatorClass];
+
+            $this->registerGenerator($generator);
+        });
+    }
 
     public function parse($content)
     {
@@ -23,7 +35,7 @@ class Blueprint
     {
         $registry = [
             'models' => [],
-            'controllers' => []
+            'controllers' => [],
         ];
 
         foreach ($this->lexers as $lexer) {
