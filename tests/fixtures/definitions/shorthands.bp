@@ -1,4 +1,5 @@
 models:
   Name:
+    softDeletes
     id
     timestamps

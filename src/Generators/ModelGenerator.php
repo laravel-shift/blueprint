@@ -41,6 +41,7 @@ class ModelGenerator implements Generator
         $stub = str_replace('DummyNamespace', 'App', $stub);
         $stub = str_replace('DummyClass', $model->name(), $stub);
         $stub = str_replace('// properties...', $this->buildProperties($model), $stub);
+        $stub = $this->addTraits($model, $stub);
 
         return $stub;
     }
@@ -49,19 +50,21 @@ class ModelGenerator implements Generator
     {
         $properties = '';
 
-        $property = $this->fillableColumns($model->columns());
-        if (!empty($property)) {
-            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($property, false), $this->propertyStub('fillable'));
+        $columns = $this->fillableColumns($model->columns());
+        if (!empty($columns)) {
+            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->propertyStub('fillable'));
+        } else {
+            $properties .= $this->propertyStub('fillable');
         }
 
-        $property = $this->castableColumns($model->columns());
-        if (!empty($property)) {
-            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($property), $this->propertyStub('casts'));
+        $columns = $this->castableColumns($model->columns());
+        if (!empty($columns)) {
+            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns), $this->propertyStub('casts'));
         }
 
-        $property = $this->dateColumns($model->columns());
-        if (!empty($property)) {
-            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($property, false), $this->propertyStub('dates'));
+        $columns = $this->dateColumns($model->columns());
+        if (!empty($columns)) {
+            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->propertyStub('dates'));
         }
 
         return trim($properties);
@@ -147,5 +150,17 @@ class ModelGenerator implements Generator
         }
 
         return $stubs[$stub];
+    }
+
+    private function addTraits(Model $model, $stub)
+    {
+        if (!$model->usesSoftDeletes()) {
+            return $stub;
+        }
+
+        $stub = str_replace('use Illuminate\\Database\\Eloquent\\Model;', 'use Illuminate\\Database\\Eloquent\\Model;' . PHP_EOL . 'use Illuminate\\Database\\Eloquent\\SoftDeletes;', $stub);
+        $stub = str_replace('{', '{' . PHP_EOL . '    use SoftDeletes;' . PHP_EOL, $stub);
+
+        return $stub;
     }
 }

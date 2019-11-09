@@ -47,21 +47,25 @@ class ModelGeneratorTest extends TestCase
      */
     public function output_writes_migration_for_model_tree($definition, $path, $model)
     {
+        static $iteration = 0;
+
         $this->files->expects('get')
             ->with('stubs/model/class.stub')
             ->andReturn(file_get_contents('stubs/model/class.stub'));
 
-        $this->files->expects('get')
-            ->with('stubs/model/fillable.stub')
-            ->andReturn(file_get_contents('stubs/model/fillable.stub'));
+        if ($iteration === 0) {
+            $this->files->expects('get')
+                ->with('stubs/model/fillable.stub')
+                ->andReturn(file_get_contents('stubs/model/fillable.stub'));
 
-        $this->files->expects('get')
-            ->with('stubs/model/casts.stub')
-            ->andReturn(file_get_contents('stubs/model/casts.stub'));
+            $this->files->expects('get')
+                ->with('stubs/model/casts.stub')
+                ->andReturn(file_get_contents('stubs/model/casts.stub'));
 
-        $this->files->expects('get')
-            ->with('stubs/model/dates.stub')
-            ->andReturn(file_get_contents('stubs/model/dates.stub'));
+            $this->files->expects('get')
+                ->with('stubs/model/dates.stub')
+                ->andReturn(file_get_contents('stubs/model/dates.stub'));
+        }
 
         $this->files->expects('put')
             ->with($path, $this->fixture($model));
@@ -70,6 +74,7 @@ class ModelGeneratorTest extends TestCase
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+        ++$iteration;
     }
 
 
@@ -77,6 +82,7 @@ class ModelGeneratorTest extends TestCase
     {
         return [
             ['definitions/readme-example.bp', 'app/Post.php', 'models/readme-example.php'],
+            ['definitions/soft-deletes.bp', 'app/Comment.php', 'models/soft-deletes.php'],
         ];
     }
 }

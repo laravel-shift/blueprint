@@ -110,6 +110,11 @@ class ModelLexer implements Lexer
             unset($columns['timestamps']);
         }
 
+        if (isset($columns['softdeletes'])) {
+            $model->enableSoftDeletes();
+            unset($columns['softdeletes']);
+        }
+
         if (!isset($columns['id'])) {
             $column = $this->buildColumn('id', 'id');
             $model->addColumn($column);

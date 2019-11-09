@@ -53,6 +53,7 @@ class ModelLexerTest extends TestCase
         $model = $actual['models']['ModelOne'];
         $this->assertEquals('ModelOne', $model->name());
         $this->assertTrue($model->usesTimestamps());
+        $this->assertFalse($model->usesSoftDeletes());
 
         $columns = $model->columns();
         $this->assertCount(2, $columns);
@@ -66,6 +67,7 @@ class ModelLexerTest extends TestCase
         $model = $actual['models']['ModelTwo'];
         $this->assertEquals('ModelTwo', $model->name());
         $this->assertTrue($model->usesTimestamps());
+        $this->assertFalse($model->usesSoftDeletes());
 
         $columns = $model->columns();
         $this->assertCount(2, $columns);
@@ -98,6 +100,7 @@ class ModelLexerTest extends TestCase
         $model = $actual['models']['Model'];
         $this->assertEquals('Model', $model->name());
         $this->assertTrue($model->usesTimestamps());
+        $this->assertFalse($model->usesSoftDeletes());
 
         $columns = $model->columns();
         $this->assertCount(2, $columns);
@@ -132,6 +135,7 @@ class ModelLexerTest extends TestCase
         $model = $actual['models']['Model'];
         $this->assertEquals('Model', $model->name());
         $this->assertFalse($model->usesTimestamps());
+        $this->assertFalse($model->usesSoftDeletes());
     }
 
     /**
@@ -155,6 +159,7 @@ class ModelLexerTest extends TestCase
         $model = $actual['models']['Model'];
         $this->assertEquals('Model', $model->name());
         $this->assertTrue($model->usesTimestamps());
+        $this->assertFalse($model->usesSoftDeletes());
 
         $columns = $model->columns();
         $this->assertCount(2, $columns);
@@ -191,6 +196,7 @@ class ModelLexerTest extends TestCase
         $model = $actual['models']['Model'];
         $this->assertEquals('Model', $model->name());
         $this->assertTrue($model->usesTimestamps());
+        $this->assertFalse($model->usesSoftDeletes());
 
         $columns = $model->columns();
         $this->assertCount(4, $columns);
@@ -235,6 +241,7 @@ class ModelLexerTest extends TestCase
         $model = $actual['models']['Model'];
         $this->assertEquals('Model', $model->name());
         $this->assertTrue($model->usesTimestamps());
+        $this->assertFalse($model->usesSoftDeletes());
 
         $columns = $model->columns();
         $this->assertCount(2, $columns);
@@ -269,6 +276,7 @@ class ModelLexerTest extends TestCase
         $model = $actual['models']['Model'];
         $this->assertEquals('Model', $model->name());
         $this->assertTrue($model->usesTimestamps());
+        $this->assertFalse($model->usesSoftDeletes());
 
         $columns = $model->columns();
         $this->assertCount(2, $columns);
@@ -279,6 +287,36 @@ class ModelLexerTest extends TestCase
         $this->assertEquals('string', $columns['column']->dataType());
         $this->assertEquals([], $columns['column']->attributes());
         $this->assertEquals([[$modifier => $attributes], 'nullable'], $columns['column']->modifiers());
+    }
+
+    /**
+     * @test
+     */
+    public function it_enables_soft_deletes()
+    {
+        $tokens = [
+            'models' => [
+                'Model' => [
+                    'softdeletes' => 'softdeletes'
+                ]
+            ],
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertIsArray($actual['models']);
+        $this->assertCount(1, $actual['models']);
+
+        $model = $actual['models']['Model'];
+        $this->assertEquals('Model', $model->name());
+        $this->assertTrue($model->usesTimestamps());
+        $this->assertTrue($model->usesSoftDeletes());
+
+        $columns = $model->columns();
+        $this->assertCount(1, $columns);
+        $this->assertEquals('id', $columns['id']->name());
+        $this->assertEquals('id', $columns['id']->dataType());
+        $this->assertEquals([], $columns['id']->modifiers());
     }
 
     public function dataTypeAttributesDataProvider()

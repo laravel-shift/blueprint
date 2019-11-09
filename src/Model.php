@@ -8,6 +8,7 @@ class Model
 {
     private $name;
     private $timestamps = true;
+    private $softDeletes = false;
     private $columns = [];
 
     /**
@@ -51,5 +52,15 @@ class Model
     public function tableName()
     {
         return Str::snake(Str::pluralStudly($this->name));
+    }
+
+    public function usesSoftDeletes(): bool
+    {
+        return $this->softDeletes;
+    }
+
+    public function enableSoftDeletes()
+    {
+        $this->softDeletes = true;
     }
 }

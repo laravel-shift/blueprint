@@ -79,6 +79,7 @@ class BlueprintTest extends TestCase
         $this->assertEquals([
             'models' => [
                 'Name' => [
+                    'softdeletes' => 'softDeletes',
                     'id' => 'id',
                     'timestamps' => 'timestamps',
                 ],
