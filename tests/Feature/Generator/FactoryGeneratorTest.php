@@ -15,7 +15,7 @@ class FactoryGeneratorTest extends TestCase
     /** @var FactoryGenerator */
     private $subject;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -15,7 +15,7 @@ class ModelGeneratorTest extends TestCase
     /** @var ModelGenerator */
     private $subject;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

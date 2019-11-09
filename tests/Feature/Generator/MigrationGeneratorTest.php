@@ -16,7 +16,7 @@ class MigrationGeneratorTest extends TestCase
     /** @var MigrationGenerator */
     private $subject;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
