@@ -1,0 +1,9 @@
+    /**
+     * Create a new instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //
+    }

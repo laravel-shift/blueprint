@@ -2,11 +2,12 @@
 
 namespace Blueprint\Lexers;
 
+use Blueprint\Contracts\Lexer;
 use Blueprint\Controller;
 use Blueprint\Models\Statements\QueryStatement;
 use Blueprint\Models\Statements\RenderStatement;
 
-class ControllerLexer
+class ControllerLexer implements Lexer
 {
     /**
      * @var StatementLexer

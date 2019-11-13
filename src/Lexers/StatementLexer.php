@@ -5,8 +5,8 @@ namespace Blueprint\Lexers;
 
 use Blueprint\Contracts\Lexer;
 use Blueprint\Models\Statements\DispatchStatement;
-use Blueprint\Models\Statements\EventStatement;
-use Blueprint\Models\Statements\MailStatement;
+use Blueprint\Models\Statements\FireStatement;
+use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\QueryStatement;
 use Blueprint\Models\Statements\RenderStatement;
 use Blueprint\Models\Statements\ValidateStatement;
@@ -55,7 +55,7 @@ class StatementLexer implements Lexer
     {
         [$event, $data] = $this->parseWithStatement($statement);
 
-        return new EventStatement($event, $data);
+        return new FireStatement($event, $data);
     }
 
     private function analyzeDispatch(string $statement)
@@ -67,7 +67,7 @@ class StatementLexer implements Lexer
 
     private function parseWithStatement(string $statement)
     {
-        [$object, $with] = explode(' ', $statement, 2);
+        [$object, $with] = $this->extractTokens($statement, 2);
 
         $data = [];
 
@@ -80,23 +80,32 @@ class StatementLexer implements Lexer
 
     private function analyzeMail($statement)
     {
-        [$object, $to, $with] = explode(' ', $statement, 3);
+        $to = null;
 
-        if (!empty($to)) {
-            $to = substr($to, 3);
+        $found = preg_match('/\\s+to:(\\S+)/', $statement, $matches);
+        if ($found) {
+            $to = $matches[1];
+            $statement = str_replace($matches[0], '', $statement);
         }
+
+        [$object, $with] = $this->extractTokens($statement, 2);
 
         $data = [];
         if (!empty($with)) {
             $data = preg_split('/,([ \t]+)?/', substr($with, 5));
         }
 
-        return new MailStatement($object, $to, $data);
+        return new SendStatement($object, $to, $data);
     }
 
     private function analyzeValidate($statement)
     {
         return new ValidateStatement(preg_split('/,([ \t]+)?/', $statement));
+    }
+
+    private function extractTokens(string $statement, int $limit)
+    {
+        return array_pad(preg_split('/[ \t]+/', $statement, $limit), $limit, null);
     }
 
 

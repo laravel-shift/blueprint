@@ -1,0 +1,11 @@
+controllers:
+  User:
+    store:
+      dispatch: CreateUser with:user
+      redirect: user.show with:user.id
+
+  Role:
+    destroy:
+      dispatch: DeleteRole
+      delete: user
+      redirect: role.index
