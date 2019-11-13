@@ -3,6 +3,9 @@
 namespace Tests\Feature\Lexers;
 
 use Blueprint\Lexers\ControllerLexer;
+use Blueprint\Lexers\StatementLexer;
+use Blueprint\Models\Statements\QueryStatement;
+use Blueprint\Models\Statements\RenderStatement;
 use PHPUnit\Framework\TestCase;
 
 class ControllerLexerTest extends TestCase
@@ -12,11 +15,18 @@ class ControllerLexerTest extends TestCase
      */
     private $subject;
 
+    /**
+     * @var \Mockery\MockInterface
+     */
+    private $statementLexer;
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->subject = new ControllerLexer();
+        $this->statementLexer = \Mockery::mock(StatementLexer::class);
+
+        $this->subject = new ControllerLexer($this->statementLexer);
     }
 
     /**
@@ -41,17 +51,34 @@ class ControllerLexerTest extends TestCase
                     ],
                     'show' => [
                         'find' => 'id',
-                        'render' => 'post.show with post'
                     ]
                 ],
                 'CommentController' => [
                     'index' => [
-                        'query' => 'all comments',
-                        'render' => 'comment.index with comments'
+                        'redirect' => 'home'
                     ],
                 ]
             ]
         ];
+
+        $this->statementLexer->shouldReceive('analyze')
+            ->with([
+                'query' => 'all posts',
+                'render' => 'post.index with posts'
+            ])
+            ->andReturn(['index-statement-1', 'index-statement-2']);
+
+        $this->statementLexer->shouldReceive('analyze')
+            ->with([
+                'find' => 'id'
+            ])
+            ->andReturn(['show-statement-1']);
+
+        $this->statementLexer->shouldReceive('analyze')
+            ->with([
+                'redirect' => 'home'
+            ])
+            ->andReturn(['index-statement-1']);
 
         $actual = $this->subject->analyze($tokens);
 
@@ -63,18 +90,12 @@ class ControllerLexerTest extends TestCase
         $methods = $controller->methods();
         $this->assertCount(2, $methods);
 
-        $this->assertEquals('index', key($methods));
-        $this->assertEquals([
-            'query' => 'all posts',
-            'render' => 'post.index with posts'
-        ], current($methods));
+        $this->assertCount(2, $methods['index']);
+        $this->assertEquals('index-statement-1', $methods['index'][0]);
+        $this->assertEquals('index-statement-2', $methods['index'][1]);
 
-        next($methods);
-        $this->assertEquals('show', key($methods));
-        $this->assertEquals([
-            'find' => 'id',
-            'render' => 'post.show with post'
-        ], current($methods));
+        $this->assertCount(1, $methods['show']);
+        $this->assertEquals('show-statement-1', $methods['show'][0]);
 
         $controller = $actual['controllers']['CommentController'];
         $this->assertEquals('CommentController', $controller->name());
@@ -82,10 +103,7 @@ class ControllerLexerTest extends TestCase
         $methods = $controller->methods();
         $this->assertCount(1, $methods);
 
-        $this->assertEquals('index', key($methods));
-        $this->assertEquals([
-            'query' => 'all comments',
-            'render' => 'comment.index with comments'
-        ], current($methods));
+        $this->assertCount(1, $methods['index']);
+        $this->assertEquals('index-statement-1', $methods['index'][0]);
     }
 }
