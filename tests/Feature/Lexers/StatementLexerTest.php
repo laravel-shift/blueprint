@@ -7,6 +7,7 @@ use Blueprint\Models\Statements\DispatchStatement;
 use Blueprint\Models\Statements\EventStatement;
 use Blueprint\Models\Statements\MailStatement;
 use Blueprint\Models\Statements\RenderStatement;
+use Blueprint\Models\Statements\ValidateStatement;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -197,5 +198,22 @@ class StatementLexerTest extends TestCase
         $this->assertEquals('ReviewMail', $actual[0]->mail());
         $this->assertEquals('post.author', $actual[0]->to());
         $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_validate_statement()
+    {
+        $tokens = [
+            'validate' => 'title, author_id, content'
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(ValidateStatement::class, $actual[0]);
+
+        $this->assertSame(['title', 'author_id', 'content'], $actual[0]->data());
     }
 }

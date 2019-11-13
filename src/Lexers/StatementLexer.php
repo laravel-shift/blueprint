@@ -9,6 +9,7 @@ use Blueprint\Models\Statements\EventStatement;
 use Blueprint\Models\Statements\MailStatement;
 use Blueprint\Models\Statements\QueryStatement;
 use Blueprint\Models\Statements\RenderStatement;
+use Blueprint\Models\Statements\ValidateStatement;
 
 class StatementLexer implements Lexer
 {
@@ -33,6 +34,9 @@ class StatementLexer implements Lexer
                     break;
                 case 'send':
                     $statements[] = $this->analyzeMail($statement);
+                    break;
+                case 'validate':
+                    $statements[] = $this->analyzeValidate($statement);
                     break;
             }
         }
@@ -88,6 +92,11 @@ class StatementLexer implements Lexer
         }
 
         return new MailStatement($object, $to, $data);
+    }
+
+    private function analyzeValidate($statement)
+    {
+        return new ValidateStatement(preg_split('/,([ \t]+)?/', $statement));
     }
 
 
