@@ -1,0 +1,37 @@
+<?php
+
+
+namespace Blueprint\Models\Statements;
+
+
+class RenderStatement
+{
+    /**
+     * @var string
+     */
+    private $view;
+
+    /**
+     * @var array
+     */
+    private $data;
+
+    public function __construct(string $view, array $data = [])
+    {
+        $this->view = $view;
+        $this->data = $data;
+    }
+
+    public function view()
+    {
+        return $this->view;
+    }
+
+    /**
+     * @return array
+     */
+    public function data(): array
+    {
+        return $this->data;
+    }
+}
