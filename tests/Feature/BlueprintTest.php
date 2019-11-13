@@ -97,24 +97,23 @@ class BlueprintTest extends TestCase
         $this->assertEquals([
             'models' => [
                 'Post' => [
-                    'id' => 'id',
-                    'title' => 'string',
-                    'content' => 'bigtext',
+                    'title' => 'string:400',
+                    'content' => 'longtext',
                     'published_at' => 'nullable timestamp',
-                    'timestamps' => 'timestamps'
                 ],
             ],
             'controllers' => [
                 'Post' => [
                     'index' => [
                         'query' => 'all posts',
-                        'render' => 'post.index with posts',
+                        'render' => 'post.index with:posts',
                     ],
                     'store' => [
                         'validate' => 'title, content',
                         'save' => 'post',
-                        'send' => 'ReviewNotifcation to post.author',
-                        'queue' => 'SyncMedia',
+                        'send' => 'ReviewNotification to:post.author with:post',
+                        'dispatch' => 'SyncMedia with:post',
+                        'fire' => 'NewPost with:post',
                         'flash' => 'post.title',
                         'redirect' => 'post.index',
                     ],

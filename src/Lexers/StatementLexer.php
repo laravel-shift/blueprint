@@ -63,11 +63,12 @@ class StatementLexer implements Lexer
 
     private function parseWithStatement(string $statement)
     {
-        [$object, , $variables] = explode(' ', $statement, 3);
+        [$object, $with] = explode(' ', $statement, 2);
 
         $data = [];
-        if (!empty($variables)) {
-            $data = preg_split('/,([ \t]+)?/', $variables);
+
+        if (!empty($with)) {
+            $data = preg_split('/,([ \t]+)?/', substr($with, 5));
         }
 
         return [$object, $data];
@@ -75,11 +76,15 @@ class StatementLexer implements Lexer
 
     private function analyzeMail($statement)
     {
-        [$object, , $to, , $variables] = explode(' ', $statement, 5);
+        [$object, $to, $with] = explode(' ', $statement, 3);
+
+        if (!empty($to)) {
+            $to = substr($to, 3);
+        }
 
         $data = [];
-        if (!empty($variables)) {
-            $data = preg_split('/,([ \t]+)?/', $variables);
+        if (!empty($with)) {
+            $data = preg_split('/,([ \t]+)?/', substr($with, 5));
         }
 
         return new MailStatement($object, $to, $data);
