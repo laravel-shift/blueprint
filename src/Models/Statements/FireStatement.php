@@ -4,7 +4,7 @@
 namespace Blueprint\Models\Statements;
 
 
-class EventStatement
+class FireStatement
 {
     /**
      * @var string
@@ -33,5 +33,10 @@ class EventStatement
     public function data(): array
     {
         return $this->data;
+    }
+
+    public function isNamedEvent(): bool
+    {
+        return preg_match('/^[a-z0-9.]+$/', $this->event) === 1;
     }
 }

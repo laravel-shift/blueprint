@@ -1,0 +1,12 @@
+<?php
+
+namespace DummyNamespace;
+
+use Illuminate\Queue\SerializesModels;
+
+class DummyClass
+{
+    use SerializesModels;
+
+    // properties...
+}

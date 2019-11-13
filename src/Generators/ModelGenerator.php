@@ -137,7 +137,6 @@ class ModelGenerator implements Generator
             $output = preg_replace('/^(\s+)[^=]+=>\s+/m', '$1', $output);
         }
 
-
         return trim($output);
     }
 

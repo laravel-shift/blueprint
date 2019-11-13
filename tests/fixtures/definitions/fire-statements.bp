@@ -1,0 +1,14 @@
+controllers:
+  User:
+    store:
+      fire: UserCreated with:user
+      redirect: user.show with:user.id
+    destroy:
+      fire: UserDeleted
+      redirect: user.show with:user.id
+
+  Role:
+    destroy:
+      fire: role.changed with:user
+      delete: user
+      redirect: role.index

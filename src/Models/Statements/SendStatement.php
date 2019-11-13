@@ -4,7 +4,7 @@
 namespace Blueprint\Models\Statements;
 
 
-class MailStatement
+class SendStatement
 {
     /**
      * @var string
