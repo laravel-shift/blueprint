@@ -39,16 +39,17 @@ models:
     published_at: nullable timestamp
 
 controllers:
-  PostController:
+  Post:
     index:
       query: all posts
-      render: post.index with posts
+      render: post.index with:posts
 
     store:
       validate: title, content
       save: post
-      send: ReviewNotification to post.author
-      queue: SyncMedia
+      send: ReviewNotification to:post.author with:post
+      dispatch: SyncMedia with:post
+      fire: NewPost with:post
       flash: post.title
       redirect: post.index
 ```

@@ -58,7 +58,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_render_statement_with_data()
     {
         $tokens = [
-            'render' => 'post.index with foo,bar,baz'
+            'render' => 'post.index with:foo,bar,baz'
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -94,7 +94,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_an_event_statement_with_data()
     {
         $tokens = [
-            'fire' => 'some.event with foo, bar,  baz'
+            'fire' => 'some.event with:foo, bar,  baz'
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -130,7 +130,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_dispatch_statement_with_data()
     {
         $tokens = [
-            'dispatch' => 'ProcessPodcast with foo, bar,        baz'
+            'dispatch' => 'ProcessPodcast with:foo, bar,        baz'
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -167,7 +167,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_mail_statement_sent_to()
     {
         $tokens = [
-            'send' => 'ReviewMail to post.author'
+            'send' => 'ReviewMail to:post.author'
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -186,7 +186,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_mail_statement_with_data()
     {
         $tokens = [
-            'send' => 'ReviewMail to post.author with foo, bar, baz'
+            'send' => 'ReviewMail to:post.author with:foo, bar, baz'
         ];
 
         $actual = $this->subject->analyze($tokens);
