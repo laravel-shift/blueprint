@@ -1,10 +1,10 @@
 controllers:
   User:
     index:
-      render: user.index with:users
+      render: user.index with:users, categories
     create:
       render: user.create
 
-  Role:
-    index:
-      render: role.index with:roles, admin_roles
+  Post:
+    show:
+      render: post.show with:post

@@ -1,0 +1,61 @@
+<?php
+
+namespace Blueprint\Generators\Statements;
+
+use Blueprint\Contracts\Generator;
+use Blueprint\Models\Statements\RenderStatement;
+
+class ViewGenerator implements Generator
+{
+    /**
+     * @var \Illuminate\Contracts\Filesystem\Filesystem
+     */
+    private $files;
+
+    public function __construct($files)
+    {
+        $this->files = $files;
+    }
+
+    public function output(array $tree): array
+    {
+        $output = [];
+
+        $stub = $this->files->get(STUBS_PATH . '/view.stub');
+
+        /** @var \Blueprint\Controller $controller */
+        foreach ($tree['controllers'] as $controller) {
+            foreach ($controller->methods() as $method => $statements) {
+                foreach ($statements as $statement) {
+                    if (!$statement instanceof RenderStatement) {
+                        continue;
+                    }
+
+                    $path = $this->getPath($statement->view());
+
+                    if ($this->files->exists($path)) {
+                        continue;
+                    }
+
+                    $this->files->put(
+                        $path,
+                        $this->populateStub($stub, $statement)
+                    );
+
+                    $output['created'][] = $path;
+                }
+            }
+        }
+        return $output;
+    }
+
+    protected function getPath(string $view)
+    {
+        return 'resources/' . str_replace('.', DIRECTORY_SEPARATOR, $view) . '.blade.php';
+    }
+
+    protected function populateStub(string $stub, RenderStatement $renderStatement)
+    {
+        return str_replace('DummyView', $renderStatement->view(), $stub);
+    }
+}
