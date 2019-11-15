@@ -24,6 +24,9 @@ class Rules
         if (in_array($column->dataType(), ['string', 'char', 'text', 'longText'])) {
             $rules = array_merge($rules, ['string']);
         }
+        if ($column->dataType() === 'email') {
+            $rules = array_merge($rules, ['email']);
+        }
 
         if ($column->attributes()) {
             if (in_array($column->dataType(), ['string', 'char'])) {
