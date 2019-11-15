@@ -19,7 +19,7 @@ class Rules
         // modifiers (unsigned, nullable, unique)
 
         // hack for tests...
-        if (in_array($column->dataType(), ['string', 'longText'])) {
+        if (in_array($column->dataType(), ['string', 'char', 'text', 'longText'])) {
             $rules = array_merge($rules, ['string']);
         }
 
