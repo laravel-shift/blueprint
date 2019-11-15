@@ -63,4 +63,14 @@ class Model
     {
         $this->softDeletes = true;
     }
+
+    public function hasColumn(string $name)
+    {
+        return isset($this->columns[$name]);
+    }
+
+    public function column(string $name)
+    {
+        return $this->columns[$name];
+    }
 }

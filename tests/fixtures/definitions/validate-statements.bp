@@ -1,0 +1,20 @@
+models:
+  Post:
+    title: string:400
+    content: longtext
+    published_at: nullable timestamp
+
+controllers:
+  Post:
+    index:
+      validate: post.title
+      render: post.index with:posts
+
+    store:
+      validate: title, content
+      redirect: post.index
+
+  Other:
+    store:
+      validate: other.field, other.text
+      redirect: post.index
