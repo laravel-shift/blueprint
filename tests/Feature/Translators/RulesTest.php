@@ -52,4 +52,16 @@ class RulesTest extends TestCase
         ];
     }
 
+    /**
+     * @test
+     */
+    public function forColumn_returns_email_rule_for_email_attribute()
+    {
+        $column = new Column('email_address', 'email', ['nullable'], []);
+        $rules = Rules::fromColumn($column);
+
+        $this->assertContains('email', $rules);
+        $this->assertContains('nullable', $rules);
+        $this->assertNotContains('required', $rules);
+    }
 }
