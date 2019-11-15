@@ -8,8 +8,10 @@ class Rules
 {
     public static function fromColumn(Column $column)
     {
-        // TODO: what about nullable?
         $rules = ['required'];
+        if (in_array('nullable', $column->modifiers())) {
+            $rules = ['nullable'];
+        }
 
         // TODO: handle translation for...
         // common names (email)
