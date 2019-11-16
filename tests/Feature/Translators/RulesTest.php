@@ -72,12 +72,64 @@ class RulesTest extends TestCase
         $this->assertNotContains('string', Rules::fromColumn($column));
     }
 
+    /**
+     * @test
+     * @dataProvider numericDataTypesProvider
+     */
+    public function forColumn_returns_numeric_rule_for_numeric_types($data_type)
+    {
+        $column = new Column('test', $data_type);
+
+        $this->assertContains('numeric', Rules::fromColumn($column));
+    }
+
+    /**
+     * @test
+     */
+    public function forColumn_returns_gt0_rule_for_unsigned_numeric_types()
+    {
+        $column = new Column('test', 'integer');
+
+        $this->assertContains('numeric', Rules::fromColumn($column));
+        $this->assertNotContains('gt:0', Rules::fromColumn($column));
+
+        $column = new Column('test', 'unsignedInteger');
+
+        $this->assertContains('gt:0', Rules::fromColumn($column));
+        $this->assertContains('numeric', Rules::fromColumn($column));
+    }
+
     public function stringDataTypesProvider()
     {
         return [
             ['string'],
             ['char'],
             ['text']
+        ];
+    }
+
+    public function numericDataTypesProvider()
+    {
+        return [
+            ['integer'],
+            ['tinyInteger'],
+            ['smallInteger'],
+            ['mediumInteger'],
+            ['bigInteger'],
+            ['decimal'],
+            ['double'],
+            ['float'],
+            ['increments'],
+            ['tinyIncrements'],
+            ['smallIncrements'],
+            ['mediumIncrements'],
+            ['bigIncrements'],
+            ['unsignedBigInteger'],
+            ['unsignedDecimal'],
+            ['unsignedInteger'],
+            ['unsignedMediumInteger'],
+            ['unsignedSmallInteger'],
+            ['unsignedTinyInteger'],
         ];
     }
 }

@@ -24,6 +24,34 @@ class Rules
             $rules = array_merge($rules, [self::overrideStringRuleForSpecialNames($column->name())]);
         }
 
+        if (in_array($column->dataType(), [
+            'integer',
+            'tinyInteger',
+            'smallInteger',
+            'mediumInteger',
+            'bigInteger',
+            'decimal',
+            'double',
+            'float',
+            'increments',
+            'tinyIncrements',
+            'smallIncrements',
+            'mediumIncrements',
+            'bigIncrements',
+            'unsignedBigInteger',
+            'unsignedDecimal',
+            'unsignedInteger',
+            'unsignedMediumInteger',
+            'unsignedSmallInteger',
+            'unsignedTinyInteger'
+        ])) {
+            $rules = array_merge($rules, ['numeric']);
+
+            if (Str::startsWith($column->dataType(), 'unsigned')) {
+                $rules = array_merge($rules, ['gt:0']);
+            }
+        }
+
 
         if ($column->attributes()) {
             if (in_array($column->dataType(), ['string', 'char'])) {
