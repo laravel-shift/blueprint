@@ -43,6 +43,35 @@ class RulesTest extends TestCase
         $this->assertContains('max:10', Rules::fromColumn($column));
     }
 
+    /**
+     * @test
+     * @dataProvider stringDataTypesProvider
+     */
+    public function forColumn_overrides_string_rule_with_email_rule_for_attributes_named_email_or_email_address($data_type)
+    {
+        $column = new Column('email', $data_type);
+
+        $this->assertContains('email', Rules::fromColumn($column));
+        $this->assertNotContains('string', Rules::fromColumn($column));
+
+        $column = new Column('email_address', $data_type);
+
+        $this->assertContains('email', Rules::fromColumn($column));
+        $this->assertNotContains('string', Rules::fromColumn($column));
+    }
+
+    /**
+     * @test
+     * @dataProvider stringDataTypesProvider
+     */
+    public function forColumn_overrides_string_rule_with_password_rule_for_attributes_named_password($data_type)
+    {
+        $column = new Column('password', $data_type);
+
+        $this->assertContains('password', Rules::fromColumn($column));
+        $this->assertNotContains('string', Rules::fromColumn($column));
+    }
+
     public function stringDataTypesProvider()
     {
         return [
@@ -51,5 +80,4 @@ class RulesTest extends TestCase
             ['text']
         ];
     }
-
 }
