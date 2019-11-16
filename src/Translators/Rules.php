@@ -31,10 +31,6 @@ class Rules
             }
         }
 
-        // if () {
-        // $rules = array_merge($rules, ['email']);
-        // }
-
         return $rules;
     }
 
