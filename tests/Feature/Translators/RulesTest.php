@@ -99,6 +99,19 @@ class RulesTest extends TestCase
         $this->assertContains('numeric', Rules::fromColumn($column));
     }
 
+    /**
+     * @test
+     */
+    public function forColumn_returns_in_rule_for_enums_and_sets()
+    {
+        $column = new Column('test', 'enum', [], ['alpha', 'bravo', 'charlie']);
+        $this->assertContains('in:alpha,bravo,charlie', Rules::fromColumn($column));
+
+        $column = new Column('test', 'set', [], [2,4,6]);
+
+        $this->assertContains('in:2,4,6', Rules::fromColumn($column));
+    }
+
     public function stringDataTypesProvider()
     {
         return [

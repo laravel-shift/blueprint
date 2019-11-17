@@ -52,6 +52,9 @@ class Rules
             }
         }
 
+        if (in_array($column->dataType(), ['enum', 'set'])) {
+            $rules = array_merge($rules, ['in:' . implode(',', $column->attributes())]);
+        }
 
         if ($column->attributes()) {
             if (in_array($column->dataType(), ['string', 'char'])) {
