@@ -30,20 +30,29 @@ class Rules
             'smallInteger',
             'mediumInteger',
             'bigInteger',
-            'decimal',
-            'double',
-            'float',
             'increments',
             'tinyIncrements',
             'smallIncrements',
             'mediumIncrements',
             'bigIncrements',
             'unsignedBigInteger',
-            'unsignedDecimal',
             'unsignedInteger',
             'unsignedMediumInteger',
             'unsignedSmallInteger',
             'unsignedTinyInteger'
+        ])) {
+            $rules = array_merge($rules, ['integer']);
+
+            if (Str::startsWith($column->dataType(), 'unsigned')) {
+                $rules = array_merge($rules, ['gt:0']);
+            }
+        }
+
+        if (in_array($column->dataType(), [
+            'decimal',
+            'double',
+            'float',
+            'unsignedDecimal',
         ])) {
             $rules = array_merge($rules, ['numeric']);
 
@@ -71,16 +80,13 @@ class Rules
 
     private static function overrideStringRuleForSpecialNames($name)
     {
-        switch ($name) {
-            case Str::startsWith($name, 'email'):
-                return 'email';
-                break;
-            case $name === 'password':
-                return 'password';
-                break;
-            default:
-                return 'string';
-                break;
+        if (Str::startsWith($name, 'email')) {
+            return 'email';
         }
+        if ($name === 'password') {
+            return 'password';
+        }
+
+        return 'string';
     }
 }

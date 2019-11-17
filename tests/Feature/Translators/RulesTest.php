@@ -85,18 +85,27 @@ class RulesTest extends TestCase
 
     /**
      * @test
+     * @dataProvider integerDataTypesProvider
+     */
+    public function forColumn_returns_integer_rule_for_integer_types($data_type)
+    {
+        $column = new Column('test', $data_type);
+
+        $this->assertContains('integer', Rules::fromColumn($column));
+    }
+
+    /**
+     * @test
      */
     public function forColumn_returns_gt0_rule_for_unsigned_numeric_types()
     {
         $column = new Column('test', 'integer');
 
-        $this->assertContains('numeric', Rules::fromColumn($column));
         $this->assertNotContains('gt:0', Rules::fromColumn($column));
 
         $column = new Column('test', 'unsignedInteger');
 
         $this->assertContains('gt:0', Rules::fromColumn($column));
-        $this->assertContains('numeric', Rules::fromColumn($column));
     }
 
     /**
@@ -132,7 +141,7 @@ class RulesTest extends TestCase
         ];
     }
 
-    public function numericDataTypesProvider()
+    public function integerDataTypesProvider()
     {
         return [
             ['integer'],
@@ -140,20 +149,26 @@ class RulesTest extends TestCase
             ['smallInteger'],
             ['mediumInteger'],
             ['bigInteger'],
-            ['decimal'],
-            ['double'],
-            ['float'],
+            ['unsignedBigInteger'],
+            ['unsignedInteger'],
+            ['unsignedMediumInteger'],
+            ['unsignedSmallInteger'],
+            ['unsignedTinyInteger'],
             ['increments'],
             ['tinyIncrements'],
             ['smallIncrements'],
             ['mediumIncrements'],
             ['bigIncrements'],
-            ['unsignedBigInteger'],
+        ];
+    }
+
+    public function numericDataTypesProvider()
+    {
+        return [
+            ['decimal'],
+            ['double'],
+            ['float'],
             ['unsignedDecimal'],
-            ['unsignedInteger'],
-            ['unsignedMediumInteger'],
-            ['unsignedSmallInteger'],
-            ['unsignedTinyInteger'],
         ];
     }
 
