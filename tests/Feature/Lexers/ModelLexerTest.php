@@ -292,6 +292,28 @@ class ModelLexerTest extends TestCase
     /**
      * @test
      */
+    public function it_handles_attributes_and_modifiers_with_attributes()
+    {
+        $tokens = [
+            'models' => [
+                'Model' => [
+                    'column' => 'string:100 unique charset:utf8'
+                ]
+            ],
+        ];
+
+        $actual = $this->subject->analyze($tokens)['models']['Model']->columns()['column'];
+
+        $this->assertEquals('column', $actual->name());
+        $this->assertEquals('string', $actual->dataType());
+        $this->assertEquals(['unique', ['charset' => 'utf8']], $actual->modifiers());
+        $this->assertEquals(['100'], $actual->attributes());
+    }
+
+
+    /**
+     * @test
+     */
     public function it_enables_soft_deletes()
     {
         $tokens = [

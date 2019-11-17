@@ -16,7 +16,7 @@ class CreateModifiersTable extends Migration
         Schema::create('modifiers', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title')->nullable();
-            $table->string('name', 1000);
+            $table->string('name', 1000)->unique()->charset('utf8');
             $table->string('content')->default('');
             $table->decimal('total', 10, 2);
             $table->char('ssn', 11);

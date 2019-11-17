@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 
 class Rules
 {
-    public static function fromColumn(Column $column)
+    public static function fromColumn(Column $column, string $context = null)
     {
         // TODO: what about nullable?
         $rules = ['required'];
@@ -73,6 +73,10 @@ class Rules
             if (in_array($column->dataType(), ['string', 'char'])) {
                 $rules = array_merge($rules, ['max:' . implode($column->attributes())]);
             }
+        }
+
+        if (in_array('unique', $column->modifiers()) && $context) {
+            $rules = array_merge($rules, ['unique:' . $context]);
         }
 
         return $rules;
