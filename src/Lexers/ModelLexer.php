@@ -79,6 +79,7 @@ class ModelLexer implements Lexer
         'unsigned' => 'unsigned',
         'usecurrent' => 'useCurrent',
         'always' => 'always',
+        'unique' => 'unique',
     ];
 
     public function analyze(array $tokens): array
@@ -137,11 +138,11 @@ class ModelLexer implements Lexer
         foreach ($tokens as $token) {
             $parts = explode(':', $token);
             $value = $parts[0];
-            $attributes = $parts[1] ?? null;
 
             if ($value === 'id') {
                 $data_type = 'id';
             } elseif (isset(self::$dataTypes[strtolower($value)])) {
+                $attributes = $parts[1] ?? null;
                 $data_type = self::$dataTypes[strtolower($value)];
                 if (!empty($attributes)) {
                     $attributes = explode(',', $attributes);
@@ -149,11 +150,11 @@ class ModelLexer implements Lexer
             }
 
             if (isset(self::$modifiers[strtolower($value)])) {
-                if (empty($attributes)) {
+                $modifierAttributes = $parts[1] ?? null;
+                if (empty($modifierAttributes)) {
                     $modifiers[] = self::$modifiers[strtolower($value)];
                 } else {
-                    $modifiers[] = [self::$modifiers[strtolower($value)] => $attributes];
-                    $attributes = [];
+                    $modifiers[] = [self::$modifiers[strtolower($value)] => $modifierAttributes];
                 }
             }
         }

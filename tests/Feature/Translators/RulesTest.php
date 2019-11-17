@@ -132,6 +132,30 @@ class RulesTest extends TestCase
         $this->assertContains('date', Rules::fromColumn($column));
     }
 
+    /**
+     * @test
+     * @dataProvider stringDataTypesProvider
+     */
+    public function forColumn_does_not_return_unique_rule_for_the_unique_modifier_without_context($data_type)
+    {
+        $column = new Column('test', $data_type, ['unique', 'nullable']);
+
+        $this->assertNotContains('unique:', Rules::fromColumn($column));
+    }
+
+    /**
+     * @test
+     */
+    public function forColumn_returns_unique_rule_for_the_unique_modifier()
+    {
+        $column = new Column('test', 'string', ['unique'], [100]);
+
+        $actual = Rules::fromColumn($column, 'connection.table');
+
+        $this->assertContains('unique:connection.table', $actual);
+        $this->assertContains('max:100', $actual);
+    }
+
     public function stringDataTypesProvider()
     {
         return [
