@@ -31,7 +31,9 @@ class FormRequestGenerator implements Generator
 
         $stub = $this->files->get(STUBS_PATH . '/form-request.stub');
 
-        $this->registerModels($tree['models']);
+        if (isset($tree['models'])) {
+            $this->registerModels($tree['models']);
+        }
 
         /** @var \Blueprint\Controller $controller */
         foreach ($tree['controllers'] as $controller) {
