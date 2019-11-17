@@ -112,6 +112,17 @@ class RulesTest extends TestCase
         $this->assertContains('in:2,4,6', Rules::fromColumn($column));
     }
 
+    /**
+     * @test
+     * @dataProvider dateDataTypesProvider
+     */
+    public function forColumn_returns_date_rule_for_date_types($data_type)
+    {
+        $column = new Column('test', $data_type);
+
+        $this->assertContains('date', Rules::fromColumn($column));
+    }
+
     public function stringDataTypesProvider()
     {
         return [
@@ -143,6 +154,15 @@ class RulesTest extends TestCase
             ['unsignedMediumInteger'],
             ['unsignedSmallInteger'],
             ['unsignedTinyInteger'],
+        ];
+    }
+
+    public function dateDataTypesProvider()
+    {
+        return [
+            ['date'],
+            ['datetime'],
+            ['datetimetz'],
         ];
     }
 }

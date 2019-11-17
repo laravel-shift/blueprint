@@ -56,6 +56,10 @@ class Rules
             $rules = array_merge($rules, ['in:' . implode(',', $column->attributes())]);
         }
 
+        if (in_array($column->dataType(), ['date', 'datetime', 'datetimetz'])) {
+            $rules = array_merge($rules, ['date']);
+        }
+
         if ($column->attributes()) {
             if (in_array($column->dataType(), ['string', 'char'])) {
                 $rules = array_merge($rules, ['max:' . implode($column->attributes())]);
