@@ -8,10 +8,8 @@ class Rules
 {
     public static function fromColumn(Column $column)
     {
+        // TODO: post v1 figure out how to handle nullable Rule
         $rules = ['required'];
-        if (in_array('nullable', $column->modifiers())) {
-            $rules = ['nullable'];
-        }
 
         // TODO: handle translation for...
         // common names (email)
@@ -20,12 +18,24 @@ class Rules
         // attributes (lengths,precisions,enums|set)
         // modifiers (unsigned, nullable, unique)
 
-        // hack for tests...
+        if (in_array('email', explode('_', $column->name()))) {
+            $rules = array_merge($rules, ['email']);
+        }
+
+        $rules = self::createRulesForStringableDataTypes($column, $rules);
+
+
+        return $rules;
+    }
+
+    private function createRulesForStringableDataTypes($column, $rules)
+    {
+        if (in_array('email', $rules)) {
+            return $rules;
+        }
+
         if (in_array($column->dataType(), ['string', 'char', 'text', 'longText'])) {
             $rules = array_merge($rules, ['string']);
-        }
-        if ($column->dataType() === 'email') {
-            $rules = array_merge($rules, ['email']);
         }
 
         if ($column->attributes()) {
