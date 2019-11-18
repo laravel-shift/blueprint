@@ -5,11 +5,15 @@ namespace Blueprint\Lexers;
 
 use Blueprint\Contracts\Lexer;
 use Blueprint\Models\Statements\DispatchStatement;
+use Blueprint\Models\Statements\EloquentStatement;
 use Blueprint\Models\Statements\FireStatement;
+use Blueprint\Models\Statements\RedirectStatement;
 use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\QueryStatement;
 use Blueprint\Models\Statements\RenderStatement;
+use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
+use Illuminate\Support\Facades\Redirect;
 
 class StatementLexer implements Lexer
 {
@@ -38,6 +42,18 @@ class StatementLexer implements Lexer
                 case 'validate':
                     $statements[] = $this->analyzeValidate($statement);
                     break;
+                case 'redirect':
+                    $statements[] = $this->analyzeRedirect($statement);
+                    break;
+                case 'save':
+                case 'update':
+                case 'delete':
+                    $statements[] = new EloquentStatement($command, $statement);
+                    break;
+                case 'flash':
+                case 'store':
+                    $statements[] = new SessionStatement($command, $statement);
+                    break;
             }
         }
 
@@ -63,6 +79,13 @@ class StatementLexer implements Lexer
         [$job, $data] = $this->parseWithStatement($statement);
 
         return new DispatchStatement($job, $data);
+    }
+
+    private function analyzeRedirect(string $statement)
+    {
+        [$route, $data] = $this->parseWithStatement($statement);
+
+        return new RedirectStatement($route, $data);
     }
 
     private function parseWithStatement(string $statement)
@@ -107,6 +130,4 @@ class StatementLexer implements Lexer
     {
         return array_pad(preg_split('/[ \t]+/', $statement, $limit), $limit, null);
     }
-
-
 }

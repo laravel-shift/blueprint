@@ -4,9 +4,12 @@ namespace Tests\Feature\Lexers;
 
 use Blueprint\Lexers\StatementLexer;
 use Blueprint\Models\Statements\DispatchStatement;
+use Blueprint\Models\Statements\EloquentStatement;
 use Blueprint\Models\Statements\FireStatement;
-use Blueprint\Models\Statements\SendStatement;
+use Blueprint\Models\Statements\RedirectStatement;
 use Blueprint\Models\Statements\RenderStatement;
+use Blueprint\Models\Statements\SendStatement;
+use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
 use PHPUnit\Framework\TestCase;
 
@@ -234,5 +237,96 @@ class StatementLexerTest extends TestCase
         $this->assertInstanceOf(ValidateStatement::class, $actual[0]);
 
         $this->assertSame(['title', 'author_id', 'content'], $actual[0]->data());
+    }
+
+    /**
+     * @test
+     * @dataProvider eloquentTokensProvider
+     */
+    public function it_returns_an_eloquent_statement($operation, $reference)
+    {
+        $tokens = [
+            $operation => $reference
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(EloquentStatement::class, $actual[0]);
+
+        $this->assertSame($operation, $actual[0]->operation());
+        $this->assertSame($reference, $actual[0]->reference());
+    }
+
+    /**
+     * @test
+     * @dataProvider sessionTokensProvider
+     */
+    public function it_returns_a_session_statement($operation, $reference)
+    {
+        $tokens = [
+            $operation => $reference
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(SessionStatement::class, $actual[0]);
+
+        $this->assertSame($operation, $actual[0]->operation());
+        $this->assertSame($reference, $actual[0]->reference());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_redirect_statement()
+    {
+        $tokens = [
+            'redirect' => 'route.index'
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(RedirectStatement::class, $actual[0]);
+
+        $this->assertEquals('route.index', $actual[0]->route());
+        $this->assertSame([], $actual[0]->data());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_redirect_statement_with_data()
+    {
+        $tokens = [
+            'redirect' => 'route.show with:foo, bar,        baz'
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(RedirectStatement::class, $actual[0]);
+
+        $this->assertEquals('route.show', $actual[0]->route());
+        $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
+    }
+
+    public function eloquentTokensProvider()
+    {
+        return [
+            ['save', 'post'],
+            ['update', 'post'],
+            ['delete', 'post.id'],
+        ];
+    }
+
+    public function sessionTokensProvider()
+    {
+        return [
+            ['flash', 'post.title'],
+            ['store', 'post.id'],
+        ];
     }
 }
