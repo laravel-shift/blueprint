@@ -18,7 +18,7 @@ class RulesTest extends TestCase
     {
         $column = new Column('test', 'unknown');
 
-        $this->assertEquals(['required'], Rules::fromColumn($column));
+        $this->assertEquals(['required'], Rules::fromColumn('context', $column));
     }
 
     /**
@@ -29,7 +29,7 @@ class RulesTest extends TestCase
     {
         $column = new Column('test', $data_type);
 
-        $this->assertContains('string', Rules::fromColumn($column));
+        $this->assertContains('string', Rules::fromColumn('context', $column));
     }
 
     /**
@@ -39,11 +39,11 @@ class RulesTest extends TestCase
     {
         $column = new Column('test', 'string', [], [1000]);
 
-        $this->assertContains('max:1000', Rules::fromColumn($column));
+        $this->assertContains('max:1000', Rules::fromColumn('context', $column));
 
         $column = new Column('test', 'char', [], [10]);
 
-        $this->assertContains('max:10', Rules::fromColumn($column));
+        $this->assertContains('max:10', Rules::fromColumn('context', $column));
     }
 
     /**
@@ -54,13 +54,13 @@ class RulesTest extends TestCase
     {
         $column = new Column('email', $data_type);
 
-        $this->assertContains('email', Rules::fromColumn($column));
-        $this->assertNotContains('string', Rules::fromColumn($column));
+        $this->assertContains('email', Rules::fromColumn('context', $column));
+        $this->assertNotContains('string', Rules::fromColumn('context', $column));
 
         $column = new Column('email_address', $data_type);
 
-        $this->assertContains('email', Rules::fromColumn($column));
-        $this->assertNotContains('string', Rules::fromColumn($column));
+        $this->assertContains('email', Rules::fromColumn('context', $column));
+        $this->assertNotContains('string', Rules::fromColumn('context', $column));
     }
 
     /**
@@ -71,8 +71,8 @@ class RulesTest extends TestCase
     {
         $column = new Column('password', $data_type);
 
-        $this->assertContains('password', Rules::fromColumn($column));
-        $this->assertNotContains('string', Rules::fromColumn($column));
+        $this->assertContains('password', Rules::fromColumn('context', $column));
+        $this->assertNotContains('string', Rules::fromColumn('context', $column));
     }
 
     /**
@@ -83,7 +83,7 @@ class RulesTest extends TestCase
     {
         $column = new Column('test', $data_type);
 
-        $this->assertContains('numeric', Rules::fromColumn($column));
+        $this->assertContains('numeric', Rules::fromColumn('context', $column));
     }
 
     /**
@@ -93,7 +93,7 @@ class RulesTest extends TestCase
     public function forColumn_returns_integer_rule_for_integer_types($data_type)
     {
         $column = new Column('test', $data_type);
-        $this->assertContains('integer', Rules::fromColumn($column));
+        $this->assertContains('integer', Rules::fromColumn('context', $column));
     }
 
     /**
@@ -104,7 +104,7 @@ class RulesTest extends TestCase
     {
         $column = new Column($name, 'id');
 
-        $actual = Rules::fromColumn($column);
+        $actual = Rules::fromColumn('context', $column);
 
         $this->assertContains('integer', $actual);
         $this->assertContains("exists:{$table},id", $actual);
@@ -117,11 +117,11 @@ class RulesTest extends TestCase
     {
         $column = new Column('test', 'integer');
 
-        $this->assertNotContains('gt:0', Rules::fromColumn($column));
+        $this->assertNotContains('gt:0', Rules::fromColumn('context', $column));
 
         $column = new Column('test', 'unsignedInteger');
 
-        $this->assertContains('gt:0', Rules::fromColumn($column));
+        $this->assertContains('gt:0', Rules::fromColumn('context', $column));
     }
 
     /**
@@ -130,11 +130,11 @@ class RulesTest extends TestCase
     public function forColumn_returns_in_rule_for_enums_and_sets()
     {
         $column = new Column('test', 'enum', [], ['alpha', 'bravo', 'charlie']);
-        $this->assertContains('in:alpha,bravo,charlie', Rules::fromColumn($column));
+        $this->assertContains('in:alpha,bravo,charlie', Rules::fromColumn('context', $column));
 
         $column = new Column('test', 'set', [], [2, 4, 6]);
 
-        $this->assertContains('in:2,4,6', Rules::fromColumn($column));
+        $this->assertContains('in:2,4,6', Rules::fromColumn('context', $column));
     }
 
     /**
@@ -145,33 +145,17 @@ class RulesTest extends TestCase
     {
         $column = new Column('test', $data_type);
 
-        $this->assertContains('date', Rules::fromColumn($column));
-    }
-
-    /**
-     * @test
-     * @dataProvider stringDataTypesProvider
-     */
-    public function forColumn_does_not_return_unique_rule_for_the_unique_modifier_without_context($data_type)
-    {
-        $this->markTestIncomplete();
-        $column = new Column('test', $data_type, ['unique', 'nullable']);
-
-        $this->assertNotContains('unique:', Rules::fromColumn($column));
+        $this->assertContains('date', Rules::fromColumn('context', $column));
     }
 
     /**
      * @test
      */
-    public function forColumn_returns_unique_rule_for_the_unique_modifier()
+    public function forColumn_return_exists_rule_for_the_unique_modifier()
     {
-        $this->markTestIncomplete();
-        $column = new Column('test', 'string', ['unique'], [100]);
+        $column = new Column('column', 'string', ['unique']);
 
-        $actual = Rules::fromColumn($column, 'connection.table');
-
-        $this->assertContains('unique:connection.table', $actual);
-        $this->assertContains('max:100', $actual);
+        $this->assertContains('unique:connection.table,column', Rules::fromColumn('connection.table', $column));
     }
 
     public function stringDataTypesProvider()

@@ -129,7 +129,7 @@ class FormRequestGenerator implements Generator
         if (!is_null($model) && $model->hasColumn($column)) {
             $column = $model->column($column);
 
-            return implode('|', Rules::fromColumn($column));
+            return implode('|', Rules::fromColumn($model->tableName(), $column));
         }
 
         return 'required';

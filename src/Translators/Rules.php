@@ -7,13 +7,13 @@ use Illuminate\Support\Str;
 
 class Rules
 {
-    public static function fromColumn(Column $column, string $context = null)
+    public static function fromColumn(string $context, Column $column)
     {
         $rules = ['required'];
 
         // hack for tests...
         if (in_array($column->dataType(), ['string', 'char', 'text', 'longText'])) {
-            $rules = array_merge($rules, [self::overrideStringRuleForSpecialNames($column->name())]);
+            array_push($rules, self::overrideStringRuleForSpecialNames($column->name()));
         }
 
         if ($column->dataType() === 'id' && Str::endsWith($column->name(), '_id')) {
@@ -38,10 +38,10 @@ class Rules
             'unsignedSmallInteger',
             'unsignedTinyInteger'
         ])) {
-            $rules = array_merge($rules, ['integer']);
+            array_push($rules, 'integer');
 
             if (Str::startsWith($column->dataType(), 'unsigned')) {
-                $rules = array_merge($rules, ['gt:0']);
+                array_push($rules, 'gt:0');
             }
         }
 
@@ -51,29 +51,29 @@ class Rules
             'float',
             'unsignedDecimal',
         ])) {
-            $rules = array_merge($rules, ['numeric']);
+            array_push($rules, 'numeric');
 
             if (Str::startsWith($column->dataType(), 'unsigned')) {
-                $rules = array_merge($rules, ['gt:0']);
+                array_push($rules, 'gt:0');
             }
         }
 
         if (in_array($column->dataType(), ['enum', 'set'])) {
-            $rules = array_merge($rules, ['in:' . implode(',', $column->attributes())]);
+            array_push($rules, 'in:' . implode(',', $column->attributes()));
         }
 
         if (in_array($column->dataType(), ['date', 'datetime', 'datetimetz'])) {
-            $rules = array_merge($rules, ['date']);
+            array_push($rules, 'date');
         }
 
         if ($column->attributes()) {
             if (in_array($column->dataType(), ['string', 'char'])) {
-                $rules = array_merge($rules, ['max:' . implode($column->attributes())]);
+                array_push($rules, 'max:' . implode($column->attributes()));
             }
         }
 
-        if (in_array('unique', $column->modifiers()) && $context) {
-            $rules = array_merge($rules, ['unique:' . $context]);
+        if (in_array('unique', $column->modifiers())) {
+            array_push($rules, 'unique:' . $context . ',' . $column->name());
         }
 
         return $rules;
