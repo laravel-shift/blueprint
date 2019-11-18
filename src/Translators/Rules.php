@@ -46,6 +46,11 @@ class Rules
             if (Str::startsWith($column->dataType(), 'unsigned')) {
                 $rules = array_merge($rules, ['gt:0']);
             }
+
+            if (Str::endsWith($column->name(), '_id')) {
+                [$table, $field] = explode('_', $column->name());
+                $rules = array_merge($rules, ['exists:' . Str::plural($table) . ',' . $field]);
+            }
         }
 
         if (in_array($column->dataType(), [
