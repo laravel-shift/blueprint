@@ -30,7 +30,7 @@ class FormRequestGenerator implements Generator
 
         $stub = $this->files->get(STUBS_PATH . '/form-request.stub');
 
-        $this->registerModels($tree['models']);
+        $this->registerModels($tree['models'] ?? []);
 
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree['controllers'] as $controller) {
@@ -104,7 +104,7 @@ class FormRequestGenerator implements Generator
 
     private function modelForContext(string $context)
     {
-        return $this->models[Str::studly($context)] ?? $this->models[Str::lower($context)];
+        return $this->models[Str::studly($context)] ?? $this->models[Str::lower($context)] ?? null;
     }
 
     private function getName(string $context, string $method)
@@ -137,7 +137,7 @@ class FormRequestGenerator implements Generator
 
     private function registerModels(?array $models)
     {
-        $this->models = $models ?? [];
+        $this->models = $models;
     }
 
 
