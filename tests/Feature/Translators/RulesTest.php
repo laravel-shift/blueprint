@@ -90,8 +90,19 @@ class RulesTest extends TestCase
     public function forColumn_returns_integer_rule_for_integer_types($data_type)
     {
         $column = new Column('test', $data_type);
+        $this->assertContains('integer', Rules::fromColumn($column));
+    }
+
+    /**
+     * @test
+     * @dataProvider integerDataTypesProvider
+     */
+    public function forColumn_returns_exists_rule_for_foreign_keys($data_type)
+    {
+        $column = new Column('test_id', $data_type);
 
         $this->assertContains('integer', Rules::fromColumn($column));
+        $this->assertContains('exists:tests,id', Rules::fromColumn($column));
     }
 
     /**
