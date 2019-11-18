@@ -3,7 +3,7 @@
 namespace Blueprint\Generators;
 
 use Blueprint\Contracts\Generator;
-use Blueprint\Model;
+use Blueprint\Models\Model;
 
 class FactoryGenerator implements Generator
 {
@@ -23,7 +23,7 @@ class FactoryGenerator implements Generator
 
         $stub = $this->files->get(STUBS_PATH . '/factory.stub');
 
-        /** @var \Blueprint\Model $model */
+        /** @var \Blueprint\Models\Model $model */
         foreach ($tree['models'] as $model) {
             $path = $this->getPath($model);
             $this->files->put(
@@ -55,7 +55,7 @@ class FactoryGenerator implements Generator
     {
         $definition = '';
 
-        /** @var \Blueprint\Column $column */
+        /** @var \Blueprint\Models\Column $column */
         foreach ($model->columns() as $column) {
             if ($column->name() === 'id') {
                 continue;

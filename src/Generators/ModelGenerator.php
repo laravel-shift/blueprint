@@ -2,9 +2,9 @@
 
 namespace Blueprint\Generators;
 
-use Blueprint\Column;
 use Blueprint\Contracts\Generator;
-use Blueprint\Model;
+use Blueprint\Models\Column;
+use Blueprint\Models\Model;
 
 class ModelGenerator implements Generator
 {
@@ -22,7 +22,7 @@ class ModelGenerator implements Generator
 
         $stub = $this->files->get(STUBS_PATH . '/model/class.stub');
 
-        /** @var \Blueprint\Model $model */
+        /** @var \Blueprint\Models\Model $model */
         foreach ($tree['models'] as $model) {
             $path = $this->getPath($model);
             $this->files->put(

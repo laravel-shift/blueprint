@@ -2,9 +2,8 @@
 
 namespace Blueprint\Generators;
 
-use Blueprint\Column;
 use Blueprint\Contracts\Generator;
-use Blueprint\Controller;
+use Blueprint\Models\Controller;
 use Illuminate\Support\Str;
 
 class ControllerGenerator implements Generator
@@ -23,7 +22,7 @@ class ControllerGenerator implements Generator
 
         $stub = $this->files->get(STUBS_PATH . '/controller/class.stub');
 
-        /** @var \Blueprint\Controller $controller */
+        /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree['controllers'] as $controller) {
             $path = $this->getPath($controller);
             $this->files->put(

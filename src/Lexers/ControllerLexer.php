@@ -3,9 +3,7 @@
 namespace Blueprint\Lexers;
 
 use Blueprint\Contracts\Lexer;
-use Blueprint\Controller;
-use Blueprint\Models\Statements\QueryStatement;
-use Blueprint\Models\Statements\RenderStatement;
+use Blueprint\Models\Controller;
 
 class ControllerLexer implements Lexer
 {

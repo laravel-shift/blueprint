@@ -2,9 +2,9 @@
 
 namespace Blueprint\Lexers;
 
-use Blueprint\Column;
 use Blueprint\Contracts\Lexer;
-use Blueprint\Model;
+use Blueprint\Models\Column;
+use Blueprint\Models\Model;
 
 class ModelLexer implements Lexer
 {

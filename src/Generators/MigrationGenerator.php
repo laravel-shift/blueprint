@@ -3,7 +3,7 @@
 namespace Blueprint\Generators;
 
 use Blueprint\Contracts\Generator;
-use Blueprint\Model;
+use Blueprint\Models\Model;
 use Illuminate\Support\Str;
 
 class MigrationGenerator implements Generator
@@ -24,7 +24,7 @@ class MigrationGenerator implements Generator
 
         $stub = $this->files->get(STUBS_PATH . '/migration.stub');
 
-        /** @var \Blueprint\Model $model */
+        /** @var \Blueprint\Models\Model $model */
         foreach ($tree['models'] as $model) {
             $path = $this->getPath($model);
             $this->files->put(
@@ -51,7 +51,7 @@ class MigrationGenerator implements Generator
     {
         $definition = '';
 
-        /** @var \Blueprint\Column $column */
+        /** @var \Blueprint\Models\Column $column */
         foreach ($model->columns() as $column) {
             $dataType = $column->dataType();
             if ($column->name() === 'id') {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Blueprint;
+namespace Blueprint\Models;
 
 class Column
 {

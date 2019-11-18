@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Translators;
 
-use Blueprint\Column;
+use Blueprint\Models\Column;
 use Blueprint\Translators\Rules;
 use Tests\TestCase;
 

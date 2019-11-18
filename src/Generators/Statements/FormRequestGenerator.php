@@ -2,9 +2,8 @@
 
 namespace Blueprint\Generators\Statements;
 
-use Blueprint\Column;
 use Blueprint\Contracts\Generator;
-use Blueprint\Model;
+use Blueprint\Models\Model;
 use Blueprint\Models\Statements\ValidateStatement;
 use Blueprint\Translators\Rules;
 use Illuminate\Support\Str;
@@ -33,7 +32,7 @@ class FormRequestGenerator implements Generator
 
         $this->registerModels($tree['models']);
 
-        /** @var \Blueprint\Controller $controller */
+        /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree['controllers'] as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
@@ -124,7 +123,7 @@ class FormRequestGenerator implements Generator
 
     private function validationRules(string $qualifier, string $column)
     {
-        /** @var Model $model */
+        /** @var \Blueprint\Models\Model $model */
         $model = $this->modelForContext($qualifier);
 
         if (!is_null($model) && $model->hasColumn($column)) {

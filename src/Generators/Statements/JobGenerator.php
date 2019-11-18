@@ -23,7 +23,7 @@ class JobGenerator implements Generator
 
         $stub = $this->files->get(STUBS_PATH . '/job.stub');
 
-        /** @var \Blueprint\Controller $controller */
+        /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree['controllers'] as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {

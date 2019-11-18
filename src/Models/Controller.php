@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Blueprint;
+namespace Blueprint\Models;
 
 
 class Controller

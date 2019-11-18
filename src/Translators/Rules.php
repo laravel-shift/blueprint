@@ -2,7 +2,7 @@
 
 namespace Blueprint\Translators;
 
-use Blueprint\Column;
+use Blueprint\Models\Column;
 use Illuminate\Support\Str;
 
 class Rules
