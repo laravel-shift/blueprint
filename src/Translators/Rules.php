@@ -9,19 +9,16 @@ class Rules
 {
     public static function fromColumn(Column $column, string $context = null)
     {
-        // TODO: what about nullable?
         $rules = ['required'];
-
-        // TODO: handle translation for...
-        // common names (email)
-        // relationship (user_id = exists:users,id)
-        // dataType (integer,digit,date,etc)
-        // attributes (lengths,precisions,enums|set)
-        // modifiers (unsigned, nullable, unique)
 
         // hack for tests...
         if (in_array($column->dataType(), ['string', 'char', 'text', 'longText'])) {
             $rules = array_merge($rules, [self::overrideStringRuleForSpecialNames($column->name())]);
+        }
+
+        if ($column->dataType() === 'id' && Str::endsWith($column->name(), '_id')) {
+            [$prefix, $field] = explode('_', $column->name());
+            $rules = array_merge($rules, ['integer', 'exists:' . Str::plural($prefix) . ',' . $field]);
         }
 
         if (in_array($column->dataType(), [
@@ -45,11 +42,6 @@ class Rules
 
             if (Str::startsWith($column->dataType(), 'unsigned')) {
                 $rules = array_merge($rules, ['gt:0']);
-            }
-
-            if (Str::endsWith($column->name(), '_id')) {
-                [$table, $field] = explode('_', $column->name());
-                $rules = array_merge($rules, ['exists:' . Str::plural($table) . ',' . $field]);
             }
         }
 

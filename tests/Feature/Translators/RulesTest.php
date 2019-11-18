@@ -6,6 +6,9 @@ use Blueprint\Column;
 use Blueprint\Translators\Rules;
 use Tests\TestCase;
 
+/**
+ * @see Rules
+ */
 class RulesTest extends TestCase
 {
     /**
@@ -47,7 +50,7 @@ class RulesTest extends TestCase
      * @test
      * @dataProvider stringDataTypesProvider
      */
-    public function forColumn_overrides_string_rule_with_email_rule_for_attributes_named_email_or_email_address($data_type)
+    public function forColumn_uses_email_rule_for_columns_named_email_or_email_address($data_type)
     {
         $column = new Column('email', $data_type);
 
@@ -64,7 +67,7 @@ class RulesTest extends TestCase
      * @test
      * @dataProvider stringDataTypesProvider
      */
-    public function forColumn_overrides_string_rule_with_password_rule_for_attributes_named_password($data_type)
+    public function forColumn_uses_password_rule_for_columns_named_password($data_type)
     {
         $column = new Column('password', $data_type);
 
@@ -95,14 +98,16 @@ class RulesTest extends TestCase
 
     /**
      * @test
-     * @dataProvider integerDataTypesProvider
+     * @dataProvider relationshipColumnProvider
      */
-    public function forColumn_returns_exists_rule_for_foreign_keys($data_type)
+    public function forColumn_returns_exists_rule_for_foreign_keys($name, $table)
     {
-        $column = new Column('test_id', $data_type);
+        $column = new Column($name, 'id');
 
-        $this->assertContains('integer', Rules::fromColumn($column));
-        $this->assertContains('exists:tests,id', Rules::fromColumn($column));
+        $actual = Rules::fromColumn($column);
+
+        $this->assertContains('integer', $actual);
+        $this->assertContains("exists:{$table},id", $actual);
     }
 
     /**
@@ -127,7 +132,7 @@ class RulesTest extends TestCase
         $column = new Column('test', 'enum', [], ['alpha', 'bravo', 'charlie']);
         $this->assertContains('in:alpha,bravo,charlie', Rules::fromColumn($column));
 
-        $column = new Column('test', 'set', [], [2,4,6]);
+        $column = new Column('test', 'set', [], [2, 4, 6]);
 
         $this->assertContains('in:2,4,6', Rules::fromColumn($column));
     }
@@ -149,6 +154,7 @@ class RulesTest extends TestCase
      */
     public function forColumn_does_not_return_unique_rule_for_the_unique_modifier_without_context($data_type)
     {
+        $this->markTestIncomplete();
         $column = new Column('test', $data_type, ['unique', 'nullable']);
 
         $this->assertNotContains('unique:', Rules::fromColumn($column));
@@ -159,6 +165,7 @@ class RulesTest extends TestCase
      */
     public function forColumn_returns_unique_rule_for_the_unique_modifier()
     {
+        $this->markTestIncomplete();
         $column = new Column('test', 'string', ['unique'], [100]);
 
         $actual = Rules::fromColumn($column, 'connection.table');
@@ -213,6 +220,15 @@ class RulesTest extends TestCase
             ['date'],
             ['datetime'],
             ['datetimetz'],
+        ];
+    }
+
+    public function relationshipColumnProvider()
+    {
+        return [
+            ['test_id', 'tests'],
+            ['user_id', 'users'],
+            ['sheep_id', 'sheep']
         ];
     }
 }
