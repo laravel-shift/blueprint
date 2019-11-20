@@ -1,0 +1,21 @@
+models:
+  Post:
+    title: string:400
+    content: longtext
+    published_at: nullable timestamp
+
+controllers:
+  Post:
+    index:
+      query: where:title where:content order:published_at limit:5
+      render: post.index with:posts
+
+    edit:
+      find: id
+      render: post.edit with:post
+
+    update:
+      find: post.id
+      query: where:post.title take:3 pluck:post.id
+      save: post
+      redirect: post.edit

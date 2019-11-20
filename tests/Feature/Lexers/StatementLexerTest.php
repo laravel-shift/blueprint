@@ -6,6 +6,7 @@ use Blueprint\Lexers\StatementLexer;
 use Blueprint\Models\Statements\DispatchStatement;
 use Blueprint\Models\Statements\EloquentStatement;
 use Blueprint\Models\Statements\FireStatement;
+use Blueprint\Models\Statements\QueryStatement;
 use Blueprint\Models\Statements\RedirectStatement;
 use Blueprint\Models\Statements\RenderStatement;
 use Blueprint\Models\Statements\SendStatement;
@@ -320,6 +321,45 @@ class StatementLexerTest extends TestCase
             ['update', 'post'],
             ['delete', 'post.id'],
         ];
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_query_all_statement()
+    {
+        $tokens = [
+            'query' => 'all:posts',
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(QueryStatement::class, $actual[0]);
+
+        $this->assertEquals('all', $actual[0]->operation());
+        $this->assertSame('posts', $actual[0]->reference());
+        $this->assertSame('Post', $actual[0]->model());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_query_get_statement()
+    {
+        $tokens = [
+            'query' => 'where:post.title order:post.created_at',
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(QueryStatement::class, $actual[0]);
+
+        $this->assertEquals('get', $actual[0]->operation());
+        $this->assertSame('', $actual[0]->reference());
+        $this->assertSame('', $actual[0]->model());
+        $this->assertSame(['where:post.title', 'order:post.created_at'], $actual[0]->clauses());
     }
 
     public function sessionTokensProvider()

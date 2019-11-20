@@ -31,4 +31,14 @@ class SessionStatement
     {
         return $this->reference;
     }
+
+    public function output()
+    {
+        $code = '$request->session()->' . $this->operation() . '(';
+        $code .= "'" . $this->reference() . "', ";
+        $code .= '$' . str_replace('.', '->', $this->reference());
+        $code .= ');';
+
+        return $code;
+    }
 }

@@ -2,7 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewPost;
+use App\Http\Requests\PostStoreRequest;
+use App\Jobs\SyncMedia;
+use App\Mail\ReviewNotification;
+use App\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class PostController extends Controller
 {
@@ -12,15 +18,27 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        //
+        $posts = Post::all();
+
+        return view('post.index', compact('posts'));
     }
 
     /**
-     * @param  \Illuminate\Http\Request $request
+     * @param  \App\Http\Requests\PostStoreRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PostStoreRequest $request)
     {
-        //
+        $post = Post::create($request->all());
+
+        Mail::to($post->author)->send(new ReviewNotification($post));
+
+        SyncMedia::dispatch($post);
+
+        event(new NewPost($post));
+
+        $request->session()->flash('post.title', $post->title);
+
+        return redirect()->route('post.index');
     }
 }

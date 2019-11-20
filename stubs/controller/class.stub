@@ -2,7 +2,7 @@
 
 namespace DummyNamespace;
 
-use Illuminate\Http\Request;
+// imports...
 
 class DummyClass extends Controller
 {

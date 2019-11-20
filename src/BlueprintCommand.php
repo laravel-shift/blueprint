@@ -59,6 +59,8 @@ class BlueprintCommand extends Command
         $blueprint->registerGenerator(new \Blueprint\Generators\ModelGenerator($this->files));
         $blueprint->registerGenerator(new \Blueprint\Generators\FactoryGenerator($this->files));
 
+        // TODO: load additional generators
+
         $tokens = $blueprint->parse($contents);
         $registry = $blueprint->analyze($tokens);
         $generated = $blueprint->generate($registry);

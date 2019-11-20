@@ -24,8 +24,7 @@ class StatementLexer implements Lexer
         foreach ($tokens as $command => $statement) {
             switch ($command) {
                 case 'query':
-                case 'find':
-                    $statements[] = new QueryStatement();
+                    $statements[] = $this->analyzeQuery($statement);
                     break;
                 case 'render':
                     $statements[] = $this->analyzeRender($statement);
@@ -48,6 +47,7 @@ class StatementLexer implements Lexer
                 case 'save':
                 case 'update':
                 case 'delete':
+                case 'find':
                     $statements[] = new EloquentStatement($command, $statement);
                     break;
                 case 'flash':
@@ -126,8 +126,18 @@ class StatementLexer implements Lexer
         return new ValidateStatement(preg_split('/,([ \t]+)?/', $statement));
     }
 
-    private function extractTokens(string $statement, int $limit)
+    private function extractTokens(string $statement, int $limit = -1)
     {
         return array_pad(preg_split('/[ \t]+/', $statement, $limit), $limit, null);
+    }
+
+    private function analyzeQuery($statement)
+    {
+        $found = preg_match('/^all:(\\S+)$/', $statement, $matches);
+        if ($found) {
+            return new QueryStatement('all', $matches[1]);
+        }
+
+        return new QueryStatement('get', '', $this->extractTokens($statement));
     }
 }

@@ -7,6 +7,9 @@ use Blueprint\Generators\ControllerGenerator;
 use Blueprint\Lexers\StatementLexer;
 use Tests\TestCase;
 
+/**
+ * @see ControllerGenerator
+ */
 class ControllerGeneratorTest extends TestCase
 {
     private $blueprint;
@@ -75,6 +78,7 @@ class ControllerGeneratorTest extends TestCase
     {
         return [
             ['definitions/readme-example.bp', 'app/Http/Controllers/PostController.php', 'controllers/readme-example.php'],
+            ['definitions/crazy-eloquent.bp', 'app/Http/Controllers/PostController.php', 'controllers/crazy-eloquent.php'],
         ];
     }
 }

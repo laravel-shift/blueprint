@@ -46,7 +46,7 @@ class ControllerLexerTest extends TestCase
             'controllers' => [
                 'PostController' => [
                     'index' => [
-                        'query' => 'all posts',
+                        'query' => 'all:posts',
                         'render' => 'post.index with posts'
                     ],
                     'show' => [
@@ -63,7 +63,7 @@ class ControllerLexerTest extends TestCase
 
         $this->statementLexer->shouldReceive('analyze')
             ->with([
-                'query' => 'all posts',
+                'query' => 'all:posts',
                 'render' => 'post.index with posts'
             ])
             ->andReturn(['index-statement-1', 'index-statement-2']);

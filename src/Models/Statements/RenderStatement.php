@@ -34,4 +34,26 @@ class RenderStatement
     {
         return $this->data;
     }
+
+    public function output()
+    {
+        $code = "return view('" . $this->view() . "'";
+
+        if ($this->data()) {
+            $code .= ', compact(' . $this->buildParameters($this->data()) . ')';
+        }
+
+        $code .= ');';
+
+        return $code;
+    }
+
+    private function buildParameters(array $data)
+    {
+        $parameters = array_map(function ($parameter) {
+            return "'" . $parameter . "'";
+        }, $data);
+
+        return implode(', ', $parameters);
+    }
 }

@@ -41,7 +41,7 @@ models:
 controllers:
   Post:
     index:
-      query: all posts
+      query: all:posts
       render: post.index with:posts
 
     store:

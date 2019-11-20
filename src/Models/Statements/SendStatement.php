@@ -45,4 +45,31 @@ class SendStatement
     {
         return $this->data;
     }
+
+    public function output() {
+        $code = 'Mail::';
+
+        if ($this->to()) {
+            $code .= 'to($' . str_replace('.', '->', $this->to()) . ')->';
+        }
+
+        $code .= 'send(new ' . $this->mail() . '(';
+
+        if ($this->data()) {
+            $code .= $this->buildParameters($this->data());
+        }
+
+        $code .= '));';
+
+        return $code;
+    }
+
+    private function buildParameters(array $data)
+    {
+        $parameters = array_map(function ($parameter) {
+            return '$' . $parameter;
+        }, $data);
+
+        return implode(', ', $parameters);
+    }
 }

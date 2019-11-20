@@ -34,4 +34,26 @@ class DispatchStatement
     {
         return $this->data;
     }
+
+    public function output()
+    {
+        $code = $this->job() . '::dispatch(';
+
+        if ($this->data()) {
+            $code .= $this->buildParameters($this->data());
+        }
+
+        $code .= ');';
+
+        return $code;
+    }
+
+    private function buildParameters(array $data)
+    {
+        $parameters = array_map(function ($parameter) {
+            return '$' . $parameter;
+        }, $data);
+
+        return implode(', ', $parameters);
+    }
 }
