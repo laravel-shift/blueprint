@@ -44,7 +44,11 @@ class BlueprintCommand extends Command
      */
     public function handle()
     {
-        $contents = $this->files->get(posix_getcwd() . $this->argument('draft'));
+        if (!file_exists($file = $this->argument('draft'))) {
+            $this->error("The {$file} file could not be found.");
+        }
+
+        $contents = $this->files->get($file);
 
         $blueprint = new Blueprint();
 
