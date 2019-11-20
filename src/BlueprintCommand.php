@@ -44,7 +44,7 @@ class BlueprintCommand extends Command
      */
     public function handle()
     {
-        $contents = $this->files->get($this->argument('draft'));
+        $contents = $this->files->get(posix_getcwd() . $this->argument('draft'));
 
         $blueprint = new Blueprint();
 
