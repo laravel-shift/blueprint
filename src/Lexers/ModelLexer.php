@@ -109,11 +109,17 @@ class ModelLexer implements Lexer
             }
 
             unset($columns['timestamps']);
+        } elseif (isset($columns['timestampstz'])) {
+            $model->enableTimestamps(true);
+            unset($columns['timestampstz']);
         }
 
         if (isset($columns['softdeletes'])) {
             $model->enableSoftDeletes();
             unset($columns['softdeletes']);
+        } elseif (isset($columns['softdeletestz'])) {
+            $model->enableSoftDeletes(true);
+            unset($columns['softdeletestz']);
         }
 
         if (!isset($columns['id'])) {

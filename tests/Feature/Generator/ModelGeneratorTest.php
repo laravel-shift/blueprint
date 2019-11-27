@@ -83,6 +83,7 @@ class ModelGeneratorTest extends TestCase
         return [
             ['definitions/readme-example.bp', 'app/Post.php', 'models/readme-example.php'],
             ['definitions/soft-deletes.bp', 'app/Comment.php', 'models/soft-deletes.php'],
+            ['definitions/with-timezones.bp', 'app/Comment.php', 'models/soft-deletes.php'],
         ];
     }
 }

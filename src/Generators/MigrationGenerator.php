@@ -83,8 +83,12 @@ class MigrationGenerator implements Generator
             $definition .= ';' . PHP_EOL;
         }
 
+        if ($model->usesSoftDeletes()) {
+            $definition .= self::INDENT . '$table->' . $model->softDeletesDataType() . '();' . PHP_EOL;
+        }
+
         if ($model->usesTimestamps()) {
-            $definition .= self::INDENT . '$table->timestamps();' . PHP_EOL;
+            $definition .= self::INDENT . '$table->' . $model->timestampsDataType() . '();' . PHP_EOL;
         }
 
         return trim($definition);

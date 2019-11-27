@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 class Model
 {
     private $name;
-    private $timestamps = true;
+    private $timestamps = 'timestamps';
     private $softDeletes = false;
     private $columns = [];
 
@@ -34,19 +34,9 @@ class Model
         return $this->columns;
     }
 
-    public function usesTimestamps()
-    {
-        return $this->timestamps;
-    }
-
-    public function disableTimestamps()
-    {
-        $this->timestamps = false;
-    }
-
     public function primaryKey()
     {
-
+        return 'id';
     }
 
     public function tableName()
@@ -54,14 +44,39 @@ class Model
         return Str::snake(Str::pluralStudly($this->name));
     }
 
-    public function usesSoftDeletes(): bool
+    public function timestampsDataType(): string
+    {
+        return $this->timestamps;
+    }
+
+    public function usesTimestamps(): bool
+    {
+        return $this->timestamps !== false;
+    }
+
+    public function disableTimestamps()
+    {
+        $this->timestamps = false;
+    }
+
+    public function enableTimestamps(bool $withTimezone = false)
+    {
+        $this->timestamps = $withTimezone ? 'timestampsTz' : 'timestamps';
+    }
+
+    public function softDeletesDataType(): string
     {
         return $this->softDeletes;
     }
 
-    public function enableSoftDeletes()
+    public function usesSoftDeletes(): bool
     {
-        $this->softDeletes = true;
+        return $this->softDeletes !== false;
+    }
+
+    public function enableSoftDeletes(bool $withTimezone = false)
+    {
+        $this->softDeletes = $withTimezone ? 'softDeletesTz' : 'softDeletes';
     }
 
     public function hasColumn(string $name)

@@ -8,6 +8,9 @@ use Blueprint\Contracts\Lexer;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Tests\TestCase;
 
+/**
+ * @see Blueprint
+ */
 class BlueprintTest extends TestCase
 {
     /**
@@ -82,6 +85,23 @@ class BlueprintTest extends TestCase
                     'softdeletes' => 'softDeletes',
                     'id' => 'id',
                     'timestamps' => 'timestamps',
+                ],
+            ],
+        ], $this->subject->parse($blueprint));
+    }
+
+    /**
+     * @test
+     */
+    public function it_parses_shorthands_with_timezones()
+    {
+        $blueprint = $this->fixture('definitions/with-timezones.bp');
+
+        $this->assertEquals([
+            'models' => [
+                'Comment' => [
+                    'softdeletestz' => 'softDeletesTz',
+                    'timestampstz' => 'timestampstz',
                 ],
             ],
         ], $this->subject->parse($blueprint));

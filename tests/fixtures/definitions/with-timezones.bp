@@ -1,0 +1,4 @@
+models:
+  Comment:
+    softDeletesTz
+    timestampstz
