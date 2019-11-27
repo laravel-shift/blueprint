@@ -54,12 +54,18 @@ class BlueprintCommand extends Command
         $blueprint = new Blueprint();
 
         $blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
+        $blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new \Blueprint\Lexers\StatementLexer()));
 
         $blueprint->registerGenerator(new \Blueprint\Generators\MigrationGenerator($this->files));
         $blueprint->registerGenerator(new \Blueprint\Generators\ModelGenerator($this->files));
         $blueprint->registerGenerator(new \Blueprint\Generators\FactoryGenerator($this->files));
 
-        // TODO: load additional generators
+        $blueprint->registerGenerator(new \Blueprint\Generators\ControllerGenerator($this->files));
+        $blueprint->registerGenerator(new \Blueprint\Generators\Statements\EventGenerator($this->files));
+        $blueprint->registerGenerator(new \Blueprint\Generators\Statements\FormRequestGenerator($this->files));
+        $blueprint->registerGenerator(new \Blueprint\Generators\Statements\JobGenerator($this->files));
+        $blueprint->registerGenerator(new \Blueprint\Generators\Statements\MailGenerator($this->files));
+        $blueprint->registerGenerator(new \Blueprint\Generators\Statements\ViewGenerator($this->files));
 
         $tokens = $blueprint->parse($contents);
         $registry = $blueprint->analyze($tokens);
