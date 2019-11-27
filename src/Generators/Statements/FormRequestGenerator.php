@@ -3,7 +3,6 @@
 namespace Blueprint\Generators\Statements;
 
 use Blueprint\Contracts\Generator;
-use Blueprint\Models\Model;
 use Blueprint\Models\Statements\ValidateStatement;
 use Blueprint\Translators\Rules;
 use Illuminate\Support\Str;
@@ -40,7 +39,7 @@ class FormRequestGenerator implements Generator
                         continue;
                     }
 
-                    $context = $this->getContextFromController($controller->name());
+                    $context = Str::singular($controller->prefix());
                     $name = $this->getName($context, $method);
                     $path = $this->getPath($name);
 
@@ -89,17 +88,6 @@ class FormRequestGenerator implements Generator
             $output .= self::INDENT . "'{$column}' => '{$rules}'," . PHP_EOL;
             return $output;
         }, ''));
-    }
-
-    private function getContextFromController(string $name)
-    {
-        $context = $name;
-
-        if (Str::endsWith($name, 'Controller')) {
-            $context = Str::substr($name, 0, -10);
-        }
-
-        return Str::singular($context);
     }
 
     private function modelForContext(string $context)

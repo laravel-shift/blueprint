@@ -4,6 +4,8 @@
 namespace Blueprint\Models;
 
 
+use Illuminate\Support\Str;
+
 class Controller
 {
     /**
@@ -30,6 +32,11 @@ class Controller
         return $this->name;
     }
 
+    public function className(): string
+    {
+        return $this->name() . (Str::endsWith($this->name(), 'Controller') ? '' : 'Controller');
+    }
+
     public function methods(): array
     {
         return $this->methods;
@@ -38,5 +45,14 @@ class Controller
     public function addMethod(string $name, array $statements)
     {
         $this->methods[$name] = $statements;
+    }
+
+    public function prefix()
+    {
+        if (Str::endsWith($this->name(), 'Controller')) {
+            return Str::substr($this->name(), 0, -10);
+        }
+
+        return $this->name();
     }
 }

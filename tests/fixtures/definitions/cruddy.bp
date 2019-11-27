@@ -1,0 +1,28 @@
+controllers:
+  Crud:
+    index:
+      render: crud.index
+    create:
+      render: crud.create
+    store:
+      redirect: crud.index
+    edit:
+      render: crud.create
+    update:
+      redirect: crud.index
+    show:
+      render: crud.show
+    destroy:
+      redirect: crud.index
+
+  UsersController:
+    index:
+      render: users.index
+    edit:
+      render: users.create
+    update:
+      redirect: users.index
+    show:
+      render: users.show
+    destroy:
+      redirect: users.index

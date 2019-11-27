@@ -53,7 +53,7 @@ class ControllerGenerator implements Generator
     protected function populateStub(string $stub, Controller $controller)
     {
         $stub = str_replace('DummyNamespace', 'App\\Http\\Controllers', $stub);
-        $stub = str_replace('DummyClass', $this->className($controller), $stub);
+        $stub = str_replace('DummyClass', $controller->className(), $stub);
         $stub = str_replace('// methods...', $this->buildMethods($controller), $stub);
         $stub = str_replace('// imports...', $this->buildImports($controller), $stub);
 
@@ -121,7 +121,7 @@ class ControllerGenerator implements Generator
 
     protected function getPath(Controller $controller)
     {
-        return 'app/Http/Controllers/' . $this->className($controller) . '.php';
+        return 'app/Http/Controllers/' . $controller->className() . '.php';
     }
 
     private function methodStub()
@@ -133,11 +133,6 @@ class ControllerGenerator implements Generator
         }
 
         return $stub;
-    }
-
-    protected function className(Controller $controller): string
-    {
-        return $controller->name() . (Str::endsWith($controller->name(), 'Controller') ? '' : 'Controller');
     }
 
     private function addImport(Controller $controller, $class)

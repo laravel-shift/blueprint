@@ -1,0 +1,14 @@
+controllers:
+  Some:
+    index:
+      render: some.index
+    show:
+      render: some.show
+    whatever:
+      redirect: some.index
+    slugName:
+      redirect: some.index
+
+  Subscriptions:
+      resume:
+        redirect: subscriptions.index

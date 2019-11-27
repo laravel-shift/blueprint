@@ -66,6 +66,7 @@ class BlueprintCommand extends Command
         $blueprint->registerGenerator(new \Blueprint\Generators\Statements\JobGenerator($this->files));
         $blueprint->registerGenerator(new \Blueprint\Generators\Statements\MailGenerator($this->files));
         $blueprint->registerGenerator(new \Blueprint\Generators\Statements\ViewGenerator($this->files));
+        $blueprint->registerGenerator(new \Blueprint\Generators\RouteGenerator($this->files));
 
         $tokens = $blueprint->parse($contents);
         $registry = $blueprint->analyze($tokens);
