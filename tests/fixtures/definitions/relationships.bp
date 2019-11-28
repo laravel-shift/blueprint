@@ -1,0 +1,4 @@
+models:
+  Comment:
+    post_id: id
+    author_id: id:user

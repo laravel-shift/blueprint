@@ -67,6 +67,12 @@ class ModelGeneratorTest extends TestCase
                 ->andReturn(file_get_contents('stubs/model/dates.stub'));
         }
 
+        if ($definition === 'definitions/relationships.bp') {
+            $this->files->expects('get')
+                ->with('stubs/model/method.stub')
+                ->andReturn(file_get_contents('stubs/model/method.stub'));
+        }
+
         $this->files->expects('put')
             ->with($path, $this->fixture($model));
 
@@ -84,6 +90,7 @@ class ModelGeneratorTest extends TestCase
             ['definitions/readme-example.bp', 'app/Post.php', 'models/readme-example.php'],
             ['definitions/soft-deletes.bp', 'app/Comment.php', 'models/soft-deletes.php'],
             ['definitions/with-timezones.bp', 'app/Comment.php', 'models/soft-deletes.php'],
+            ['definitions/relationships.bp', 'app/Comment.php', 'models/relationships.php'],
         ];
     }
 }

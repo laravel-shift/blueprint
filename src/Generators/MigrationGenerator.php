@@ -62,7 +62,7 @@ class MigrationGenerator implements Generator
 
             $definition .= self::INDENT . '$table->' . $dataType . "('{$column->name()}'";
 
-            if (!empty($column->attributes())) {
+            if (!empty($column->attributes()) && $column->dataType() !== 'id') {
                 $definition .= ', ';
                 if (in_array($column->dataType(), ['set', 'enum'])) {
                     $definition .= json_encode($column->attributes());

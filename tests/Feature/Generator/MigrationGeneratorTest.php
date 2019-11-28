@@ -77,6 +77,7 @@ class MigrationGeneratorTest extends TestCase
             ['definitions/model-modifiers.bp', 'database/migrations/timestamp_create_modifiers_table.php', 'migrations/modifiers.php'],
             ['definitions/soft-deletes.bp', 'database/migrations/timestamp_create_comments_table.php', 'migrations/soft-deletes.php'],
             ['definitions/with-timezones.bp', 'database/migrations/timestamp_create_comments_table.php', 'migrations/with-timezones.php'],
+            ['definitions/relationships.bp', 'database/migrations/timestamp_create_comments_table.php', 'migrations/relationships.php'],
         ];
     }
 }

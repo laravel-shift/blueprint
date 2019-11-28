@@ -5,6 +5,7 @@ namespace Blueprint\Generators;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Column;
 use Blueprint\Models\Model;
+use Illuminate\Support\Str;
 
 class ModelGenerator implements Generator
 {
@@ -40,7 +41,12 @@ class ModelGenerator implements Generator
     {
         $stub = str_replace('DummyNamespace', 'App', $stub);
         $stub = str_replace('DummyClass', $model->name(), $stub);
-        $stub = str_replace('// properties...', $this->buildProperties($model), $stub);
+
+        $body = $this->buildProperties($model);
+        $body .= PHP_EOL . PHP_EOL;
+        $body .= $this->buildRelationships($model);
+
+        $stub = str_replace('// ...', trim($body), $stub);
         $stub = $this->addTraits($model, $stub);
 
         return $stub;
@@ -52,22 +58,50 @@ class ModelGenerator implements Generator
 
         $columns = $this->fillableColumns($model->columns());
         if (!empty($columns)) {
-            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->propertyStub('fillable'));
+            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->getStub('fillable'));
         } else {
-            $properties .= $this->propertyStub('fillable');
+            $properties .= $this->getStub('fillable');
         }
 
         $columns = $this->castableColumns($model->columns());
         if (!empty($columns)) {
-            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns), $this->propertyStub('casts'));
+            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns), $this->getStub('casts'));
         }
 
         $columns = $this->dateColumns($model->columns());
         if (!empty($columns)) {
-            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->propertyStub('dates'));
+            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->getStub('dates'));
         }
 
         return trim($properties);
+    }
+
+    private function buildRelationships(Model $model)
+    {
+        $columns = array_filter($model->columns(), function (Column $column) {
+            return Str::endsWith($column->name(), '_id');
+        });
+
+        if (empty($columns)) {
+            return '';
+        }
+
+        $methods = '';
+        $template = $this->getStub('method');
+
+        /** @var Column $column */
+        foreach ($columns as $column) {
+            $name = Str::substr($column->name(), 0, -3);
+            $class = Str::studly($column->attributes()[0] ?? $name);
+            $relationship = sprintf("\$this->belongsTo(\App\%s::class)", $class);
+
+            $method = str_replace('DummyName', Str::camel($name), $template);
+            $method = str_replace('null', $relationship, $method);
+
+            $methods .= PHP_EOL . $method;
+        }
+
+        return $methods;
     }
 
     protected function getPath(Model $model)
@@ -140,7 +174,7 @@ class ModelGenerator implements Generator
         return trim($output);
     }
 
-    private function propertyStub(string $stub)
+    private function getStub(string $stub)
     {
         static $stubs = [];
 

@@ -147,6 +147,9 @@ class ModelLexer implements Lexer
 
             if ($value === 'id') {
                 $data_type = 'id';
+                if (isset($parts[1])) {
+                    $attributes = [$parts[1]];
+                }
             } elseif (isset(self::$dataTypes[strtolower($value)])) {
                 $attributes = $parts[1] ?? null;
                 $data_type = self::$dataTypes[strtolower($value)];
