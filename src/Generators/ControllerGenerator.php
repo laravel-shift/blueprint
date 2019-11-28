@@ -69,7 +69,19 @@ class ControllerGenerator implements Generator
         foreach ($controller->methods() as $name => $statements) {
             $method = str_replace('DummyMethod', $name, $template);
 
-            // TODO: if resourceful action, do implicit model binding
+            if (in_array($name, ['edit', 'update', 'show', 'destroy'])) {
+                $context = Str::singular($controller->prefix());
+                $reference = 'App\\' . $context;
+                $variable = '$' . Str::camel($context);
+
+                // TODO: verify is model
+                $search = '     * @return \\Illuminate\\Http\\Response';
+                $method = str_replace($search,'     * @param \\' . $reference . ' ' . $variable . PHP_EOL . $search, $method);
+
+                $search = '(Request $request';
+                $method = str_replace($search, $search  . ', ' . $context . ' ' . $variable, $method);
+                $this->addImport($controller, $reference);
+            }
 
             $body = '';
             foreach ($statements as $statement) {
@@ -81,7 +93,7 @@ class ControllerGenerator implements Generator
                     $class = $controller->name() . Str::studly($name) . 'Request';
 
                     $method = str_replace('\Illuminate\Http\Request $request', '\\App\\Http\\Requests\\' . $class . ' $request', $method);
-                    $method = str_replace('(Request $request)', '(' . $class . ' $request)', $method);
+                    $method = str_replace('(Request $request', '(' . $class . ' $request', $method);
 
                     $this->addImport($controller, 'App\\Http\\Requests\\' . $class);
                 } elseif ($statement instanceof DispatchStatement) {
@@ -100,7 +112,7 @@ class ControllerGenerator implements Generator
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
                 } elseif ($statement instanceof EloquentStatement) {
                     // TODO: pass controller method for context..
-                    $body .= self::INDENT . $statement->output() . PHP_EOL;
+                    $body .= self::INDENT . $statement->output($name) . PHP_EOL;
                     $this->addImport($controller, 'App\\' . Str::studly($statement->reference()));
                 } elseif ($statement instanceof QueryStatement) {
                     $body .= self::INDENT . $statement->output() . PHP_EOL;

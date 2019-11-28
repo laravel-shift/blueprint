@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Mail;
 class PostController extends Controller
 {
     /**
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
@@ -24,7 +24,7 @@ class PostController extends Controller
     }
 
     /**
-     * @param  \App\Http\Requests\PostStoreRequest $request
+     * @param \App\Http\Requests\PostStoreRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(PostStoreRequest $request)

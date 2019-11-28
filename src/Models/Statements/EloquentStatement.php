@@ -34,13 +34,17 @@ class EloquentStatement
         return $this->reference;
     }
 
-    public function output()
+    public function output(string $context)
     {
         if ($this->operation() == 'save') {
-            $code = "$" . Str::lower(Str::singular($this->reference()));
-            $code .= ' = ';
-            $code .= Str::studly($this->reference());
-            $code .= '::create($request->all());';
+            if ($context === 'store') {
+                $code = "$" . Str::lower(Str::singular($this->reference()));
+                $code .= ' = ';
+                $code .= Str::studly($this->reference());
+                $code .= '::create($request->all());';
+            } else {
+                $code = "$" . Str::lower(Str::singular($this->reference())) . '->save();';
+            }
         }
 
         if ($this->operation() == 'find') {

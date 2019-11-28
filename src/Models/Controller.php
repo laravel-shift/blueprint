@@ -8,6 +8,9 @@ use Illuminate\Support\Str;
 
 class Controller
 {
+    /** @var array */
+    public static $resourceMethods = ['index', 'create', 'store', 'edit', 'update', 'show', 'destroy'];
+
     /**
      * @var string
      */

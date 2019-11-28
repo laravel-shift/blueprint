@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class PostController extends Controller
 {
     /**
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
@@ -19,8 +19,8 @@ class PostController extends Controller
     }
 
     /**
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Post $post
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Post $post
      * @return \Illuminate\Http\Response
      */
     public function edit(Request $request, Post $post)
@@ -31,18 +31,18 @@ class PostController extends Controller
     }
 
     /**
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Post $post
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Post $post
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Post $post)
     {
-        $post = Post::find($id);
+        $post = Post::find($post->id);
 
-        $post_ids = Post::where('title', $title)->take(3)->pluck('id');
+        $post_ids = Post::where('title', $post->title)->take(3)->pluck('id');
 
         $post->save();
 
-        return redirect()->route('post.edit', $id);
+        return redirect()->route('post.edit', $post->id);
     }
 }
