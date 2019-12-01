@@ -72,28 +72,38 @@ class ViewGeneratorTest extends TestCase
             ->with('stubs/view.stub')
             ->andReturn($template);
 
+        $this->files->shouldReceive('exists')
+            ->times(2)
+            ->with('resources/views/user')
+            ->andReturnTrue();
         $this->files->expects('exists')
-            ->with('resources/user/index.blade.php')
+            ->with('resources/views/user/index.blade.php')
             ->andReturnFalse();
         $this->files->expects('put')
-            ->with('resources/user/index.blade.php', str_replace('DummyView', 'user.index', $template));
+            ->with('resources/views/user/index.blade.php', str_replace('DummyView', 'user.index', $template));
 
         $this->files->expects('exists')
-            ->with('resources/user/create.blade.php')
+            ->with('resources/views/user/create.blade.php')
             ->andReturnFalse();
         $this->files->expects('put')
-            ->with('resources/user/create.blade.php', str_replace('DummyView', 'user.create', $template));
+            ->with('resources/views/user/create.blade.php', str_replace('DummyView', 'user.create', $template));
 
         $this->files->expects('exists')
-            ->with('resources/post/show.blade.php')
+            ->with('resources/views/post')
+            ->andReturns(false, true);
+        $this->files->expects('exists')
+            ->with('resources/views/post/show.blade.php')
+            ->andReturnFalse();
+        $this->files->expects('makeDirectory')
+            ->with('resources/views/post')
             ->andReturnFalse();
         $this->files->expects('put')
-            ->with('resources/post/show.blade.php', str_replace('DummyView', 'post.show', $template));
+            ->with('resources/views/post/show.blade.php', str_replace('DummyView', 'post.show', $template));
 
         $tokens = $this->blueprint->parse($this->fixture('definitions/render-statements.bp'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['resources/user/index.blade.php', 'resources/user/create.blade.php', 'resources/post/show.blade.php']], $this->subject->output($tree));
+        $this->assertEquals(['created' => ['resources/views/user/index.blade.php', 'resources/views/user/create.blade.php', 'resources/views/post/show.blade.php']], $this->subject->output($tree));
     }
 
     /**
@@ -106,13 +116,13 @@ class ViewGeneratorTest extends TestCase
             ->andReturn(file_get_contents('stubs/view.stub'));
 
         $this->files->expects('exists')
-            ->with('resources/user/index.blade.php')
+            ->with('resources/views/user/index.blade.php')
             ->andReturnTrue();
         $this->files->expects('exists')
-            ->with('resources/user/create.blade.php')
+            ->with('resources/views/user/create.blade.php')
             ->andReturnTrue();
         $this->files->expects('exists')
-            ->with('resources/post/show.blade.php')
+            ->with('resources/views/post/show.blade.php')
             ->andReturnTrue();
 
         $tokens = $this->blueprint->parse($this->fixture('definitions/render-statements.bp'));

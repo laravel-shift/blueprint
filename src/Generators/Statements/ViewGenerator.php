@@ -34,7 +34,12 @@ class ViewGenerator implements Generator
                     $path = $this->getPath($statement->view());
 
                     if ($this->files->exists($path)) {
+                        // TODO: mark skipped...
                         continue;
+                    }
+
+                    if (!$this->files->exists(dirname($path))) {
+                        $this->files->makeDirectory(dirname($path));
                     }
 
                     $this->files->put(
@@ -51,7 +56,7 @@ class ViewGenerator implements Generator
 
     protected function getPath(string $view)
     {
-        return 'resources/' . str_replace('.', DIRECTORY_SEPARATOR, $view) . '.blade.php';
+        return 'resources/views/' . str_replace('.', DIRECTORY_SEPARATOR, $view) . '.blade.php';
     }
 
     protected function populateStub(string $stub, RenderStatement $renderStatement)
