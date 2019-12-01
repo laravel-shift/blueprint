@@ -41,7 +41,7 @@ models:
 controllers:
   Post:
     index:
-      query: all:posts
+      query: all
       render: post.index with:posts
 
     store:
@@ -58,12 +58,13 @@ controllers:
 - [x] Migration
 - [x] Model
 - [x] Factory
-- [ ] Route
-- [ ] Controller
-- [ ] Form Request
-- [ ] Mailable
-- [ ] Job
-- [ ] View (stub)
+- [x] Route
+- [x] Controller
+- [x] Form Request
+- [x] Mailable
+- [x] Job
+- [x] Event
+- [x] View (stub)
 
 
 ## Contributing
