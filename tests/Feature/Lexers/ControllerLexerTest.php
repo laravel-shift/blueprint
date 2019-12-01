@@ -4,8 +4,6 @@ namespace Tests\Feature\Lexers;
 
 use Blueprint\Lexers\ControllerLexer;
 use Blueprint\Lexers\StatementLexer;
-use Blueprint\Models\Statements\QueryStatement;
-use Blueprint\Models\Statements\RenderStatement;
 use PHPUnit\Framework\TestCase;
 
 class ControllerLexerTest extends TestCase

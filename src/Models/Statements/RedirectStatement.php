@@ -4,6 +4,8 @@
 namespace Blueprint\Models\Statements;
 
 
+use Illuminate\Support\Str;
+
 class RedirectStatement
 {
     /**
@@ -42,6 +44,11 @@ class RedirectStatement
 
         if ($this->data()) {
             $code .= ', [' . $this->buildParameters($this->data()) . ']';
+        } elseif (Str::contains($this->route(), '.')) {
+            [$model, $method] = explode('.', $this->route());
+            if (in_array($method, ['edit', 'update', 'show', 'destroy'])) {
+                $code .= sprintf(", ['%s' => $%s]", $model, $model);
+            }
         }
 
         $code .= ');';

@@ -26,7 +26,7 @@ class SessionStatement
     {
         return $this->operation;
     }
-    
+
     public function reference(): string
     {
         return $this->reference;

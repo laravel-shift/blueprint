@@ -7,13 +7,13 @@ use Blueprint\Contracts\Lexer;
 use Blueprint\Models\Statements\DispatchStatement;
 use Blueprint\Models\Statements\EloquentStatement;
 use Blueprint\Models\Statements\FireStatement;
-use Blueprint\Models\Statements\RedirectStatement;
-use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\QueryStatement;
+use Blueprint\Models\Statements\RedirectStatement;
 use Blueprint\Models\Statements\RenderStatement;
+use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
-use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Str;
 
 class StatementLexer implements Lexer
 {
@@ -133,11 +133,24 @@ class StatementLexer implements Lexer
 
     private function analyzeQuery($statement)
     {
-        $found = preg_match('/^all:(\\S+)$/', $statement, $matches);
-        if ($found) {
-            return new QueryStatement('all', $matches[1]);
+        if ($statement === 'all') {
+            return new QueryStatement('all');
         }
 
-        return new QueryStatement('get', '', $this->extractTokens($statement));
+        $found = preg_match('/^all:(\\S+)$/', $statement, $matches);
+        if ($found) {
+            return new QueryStatement('all', [$matches[1]]);
+        }
+
+        if (Str::contains($statement, 'pluck:')) {
+            return new QueryStatement('pluck', $this->extractTokens($statement));
+        }
+
+        $found = preg_match('/\b(count|exists)\b/', $statement, $matches);
+        if ($found) {
+            return new QueryStatement($matches[1], $this->extractTokens(trim(str_replace($matches[1], '', $statement))));
+        }
+
+        return new QueryStatement('get', $this->extractTokens($statement));
     }
 }

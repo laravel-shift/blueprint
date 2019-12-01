@@ -28,39 +28,48 @@ class EloquentStatement
     {
         return $this->operation;
     }
-    
+
     public function reference(): string
     {
         return $this->reference;
     }
 
-    public function output(string $context)
+    public function output(string $controller_prefix, string $context): string
     {
+        $model = $this->determineModel($controller_prefix);
+        $code = '';
+
         if ($this->operation() == 'save') {
             if ($context === 'store') {
-                $code = "$" . Str::lower(Str::singular($this->reference()));
+                $code = "$" . Str::lower($model);
                 $code .= ' = ';
-                $code .= Str::studly($this->reference());
+                $code .= $model;
                 $code .= '::create($request->all());';
             } else {
-                $code = "$" . Str::lower(Str::singular($this->reference())) . '->save();';
+                $code = "$" . Str::lower($model) . '->save();';
             }
         }
 
         if ($this->operation() == 'find') {
             if ($this->usesQualifiedReference()) {
                 $model = $this->extractModel();
-            } else {
-                // TODO: this needs to be a real model reference
-                $model = 'Model';
             }
-            $code = "$" . Str::lower(Str::singular($model));
+
+            $code = "$" . Str::lower($model);
             $code .= ' = ';
             $code .= $model;
             $code .= '::find($' . $this->columnName($this->reference()) . ');';
         }
 
-        // TODO: handle other operations: destroy
+        if ($this->operation() === 'delete') {
+            if ($this->usesQualifiedReference()) {
+                $code = $this->extractModel();
+                $code .= '::destroy($' . str_replace('.', '->', $this->reference()) . ');';
+            } else {
+                // TODO: only for certain contexts or no matter what given simple reference?
+                $code = "$" . Str::lower($model) . '->delete();';
+            }
+        }
 
         return $code;
     }
@@ -83,5 +92,14 @@ class EloquentStatement
     private function extractModel()
     {
         return Str::studly(Str::before($this->reference(), '.'));
+    }
+
+    private function determineModel(string $prefix)
+    {
+        if (empty($this->reference()) || $this->reference() === 'id') {
+            return Str::studly(Str::singular($prefix));
+        }
+
+        return Str::studly($this->reference());
     }
 }

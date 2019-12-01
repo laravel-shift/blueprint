@@ -10,5 +10,5 @@ controllers:
       redirect: some.index
 
   Subscriptions:
-      resume:
-        redirect: subscriptions.index
+    resume:
+      redirect: subscriptions.index

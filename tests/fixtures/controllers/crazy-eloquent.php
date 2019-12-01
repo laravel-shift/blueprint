@@ -37,12 +37,12 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        $post = Post::find($post->id);
+        $post = Post::find($id);
 
         $post_ids = Post::where('title', $post->title)->take(3)->pluck('id');
 
         $post->save();
 
-        return redirect()->route('post.edit', $post->id);
+        return redirect()->route('post.edit', ['post' => $post]);
     }
 }

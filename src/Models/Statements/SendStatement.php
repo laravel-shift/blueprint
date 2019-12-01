@@ -46,7 +46,8 @@ class SendStatement
         return $this->data;
     }
 
-    public function output() {
+    public function output()
+    {
         $code = 'Mail::';
 
         if ($this->to()) {

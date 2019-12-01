@@ -338,8 +338,27 @@ class StatementLexerTest extends TestCase
         $this->assertInstanceOf(QueryStatement::class, $actual[0]);
 
         $this->assertEquals('all', $actual[0]->operation());
-        $this->assertSame('posts', $actual[0]->reference());
+        $this->assertSame(['posts'], $actual[0]->clauses());
         $this->assertSame('Post', $actual[0]->model());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_query_all_statement_without_clause()
+    {
+        $tokens = [
+            'query' => 'all',
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(QueryStatement::class, $actual[0]);
+
+        $this->assertEquals('all', $actual[0]->operation());
+        $this->assertSame([], $actual[0]->clauses());
+        $this->assertNull($actual[0]->model());
     }
 
     /**
@@ -357,9 +376,65 @@ class StatementLexerTest extends TestCase
         $this->assertInstanceOf(QueryStatement::class, $actual[0]);
 
         $this->assertEquals('get', $actual[0]->operation());
-        $this->assertSame('', $actual[0]->reference());
-        $this->assertSame('', $actual[0]->model());
         $this->assertSame(['where:post.title', 'order:post.created_at'], $actual[0]->clauses());
+        $this->assertNull($actual[0]->model());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_query_pluck_statement()
+    {
+        $tokens = [
+            'query' => 'order:post.created_at pluck:id',
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(QueryStatement::class, $actual[0]);
+
+        $this->assertEquals('pluck', $actual[0]->operation());
+        $this->assertSame(['order:post.created_at', 'pluck:id'], $actual[0]->clauses());
+        $this->assertNull($actual[0]->model());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_query_count_statement()
+    {
+        $tokens = [
+            'query' => 'where:title count',
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(QueryStatement::class, $actual[0]);
+
+        $this->assertEquals('count', $actual[0]->operation());
+        $this->assertSame(['where:title'], $actual[0]->clauses());
+        $this->assertNull($actual[0]->model());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_query_exists_statement()
+    {
+        $tokens = [
+            'query' => 'where:title exists',
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(QueryStatement::class, $actual[0]);
+
+        $this->assertEquals('exists', $actual[0]->operation());
+        $this->assertSame(['where:title'], $actual[0]->clauses());
+        $this->assertNull($actual[0]->model());
     }
 
     public function sessionTokensProvider()

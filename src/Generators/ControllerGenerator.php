@@ -74,12 +74,12 @@ class ControllerGenerator implements Generator
                 $reference = 'App\\' . $context;
                 $variable = '$' . Str::camel($context);
 
-                // TODO: verify is model
+                // TODO: verify controller prefix references a model
                 $search = '     * @return \\Illuminate\\Http\\Response';
-                $method = str_replace($search,'     * @param \\' . $reference . ' ' . $variable . PHP_EOL . $search, $method);
+                $method = str_replace($search, '     * @param \\' . $reference . ' ' . $variable . PHP_EOL . $search, $method);
 
                 $search = '(Request $request';
-                $method = str_replace($search, $search  . ', ' . $context . ' ' . $variable, $method);
+                $method = str_replace($search, $search . ', ' . $context . ' ' . $variable, $method);
                 $this->addImport($controller, $reference);
             }
 
@@ -111,11 +111,11 @@ class ControllerGenerator implements Generator
                 } elseif ($statement instanceof SessionStatement) {
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
                 } elseif ($statement instanceof EloquentStatement) {
-                    // TODO: pass controller method for context..
-                    $body .= self::INDENT . $statement->output($name) . PHP_EOL;
-                    $this->addImport($controller, 'App\\' . Str::studly($statement->reference()));
+                    $body .= self::INDENT . $statement->output($controller->prefix(), $name) . PHP_EOL;
+                    $this->addImport($controller, 'App\\' . $this->determineModel($controller->prefix(), $statement->reference()));
                 } elseif ($statement instanceof QueryStatement) {
-                    $body .= self::INDENT . $statement->output() . PHP_EOL;
+                    $body .= self::INDENT . $statement->output($controller->prefix()) . PHP_EOL;
+                    $this->addImport($controller, 'App\\' . $this->determineModel($controller->prefix(), $statement->model()));
                 }
 
                 $body .= PHP_EOL;
@@ -160,5 +160,18 @@ class ControllerGenerator implements Generator
         return implode(PHP_EOL, array_map(function ($class) {
             return 'use ' . $class . ';';
         }, $imports));
+    }
+
+    private function determineModel(string $prefix, ?string $reference)
+    {
+        if (empty($reference) || $reference === 'id') {
+            return Str::studly(Str::singular($prefix));
+        }
+
+        if (Str::contains($reference, '.')) {
+            return Str::studly(Str::before($reference, '.'));
+        }
+
+        return Str::studly($reference);
     }
 }

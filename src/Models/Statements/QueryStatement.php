@@ -14,20 +14,23 @@ class QueryStatement
     private $operation;
 
     /**
-     * @var string
-     */
-    private $reference;
-
-    /**
      * @var array
      */
     private $clauses;
 
-    public function __construct(string $operation, string $reference, array $clauses = [])
+    /**
+     * @var string
+     */
+    private $model = null;
+
+    public function __construct(string $operation, array $clauses = [])
     {
         $this->operation = $operation;
-        $this->reference = $reference;
         $this->clauses = $clauses;
+
+        if ($operation === 'all' && !empty($this->clauses())) {
+            $this->model = Str::studly(Str::singular($this->clauses()[0]));
+        }
     }
 
     public function operation(): string
@@ -35,14 +38,9 @@ class QueryStatement
         return $this->operation;
     }
 
-    public function reference(): string
+    public function model(): ?string
     {
-        return $this->reference;
-    }
-
-    public function model(): string
-    {
-        return Str::studly(Str::singular($this->reference()));
+        return $this->model;
     }
 
     public function clauses()
@@ -50,38 +48,42 @@ class QueryStatement
         return $this->clauses;
     }
 
-    public function output()
+    public function output(string $controller): string
     {
+        $model = $this->determineModel($controller);
+
         if ($this->operation() === 'all') {
-            return '$' . $this->reference() . ' = ' . $this->model() . '::all();';
+            if (is_null($this->model())) {
+                return '$' . Str::lower(Str::plural($model)) . ' = ' . $model . '::all();';
+            } else {
+                return '$' . Str::lower($this->clauses()[0]) . ' = ' . $this->model() . '::all();';
+            }
         }
 
         $methods = [];
-        $pluck_field = null;
         foreach ($this->clauses as $clause) {
-            [$method, $value] = explode(':', $clause);
+            [$method, $argument] = explode(':', $clause);
 
             if (in_array($method, ['where', 'order', 'pluck'])) {
-                $value = $this->columnName($value);
+                $column = $this->columnName($model, $argument);
             }
 
             if ($method === 'where') {
-                $methods[] = $method . '(' . "'{$value}', $" . $value . ')';
+                $methods[] = $method . '(' . "'{$column}', $" . str_replace('.', '->', $argument) . ')';
             } elseif ($method === 'pluck') {
-                $pluck_field = $value;
-                $methods[] = "pluck('{$value}')";
+                $pluck_field = $argument;
+                $methods[] = "pluck('{$column}')";
             } elseif ($method === 'order') {
-                $methods[] = "orderBy('{$value}')";
+                $methods[] = "orderBy('{$column}')";
             } else {
-                $methods[] = $method . '(' . $value . ')';
+                $methods[] = $method . '(' . $argument . ')';
             }
         }
 
-        // TODO: leverage model/context...
-        $model = 'Post';
-
-        if ($pluck_field) {
+        if ($this->operation() === 'pluck') {
             $variable_name = $this->pluckName($pluck_field);
+        } elseif ($this->operation() === 'count') {
+            $variable_name = Str::lower($model) . '_count';
         } else {
             $variable_name = Str::lower(Str::plural($model));
         }
@@ -90,8 +92,8 @@ class QueryStatement
 
         $code .= implode('->', $methods);
 
-        if (!$pluck_field) {
-            $code .= '->get()';
+        if (in_array($this->operation(), ['get', 'count'])) {
+            $code .= '->' . $this->operation() . '()';
         }
 
         $code .= ';';
@@ -99,10 +101,13 @@ class QueryStatement
         return $code;
     }
 
-    private function columnName($value)
+    private function columnName($model, $value)
     {
         if (Str::contains($value, '.')) {
-            return Str::after($value, '.');
+            $reference = Str::before($value, '.');
+            if (strcasecmp($model, $reference) === 0) {
+                return Str::after($value, '.');
+            }
         }
 
         return $value;
@@ -111,10 +116,18 @@ class QueryStatement
     private function pluckName(string $field)
     {
         if (Str::contains($field, '.')) {
-            dump('here');
             return Str::lower(Str::plural(str_replace('.', '_', $field)));
         }
 
         return Str::lower('Post' . '_' . Str::plural($field));
+    }
+
+    private function determineModel(string $prefix)
+    {
+        if (empty($this->model())) {
+            return Str::studly(Str::singular($prefix));
+        }
+
+        return Str::studly($this->model());
     }
 }
