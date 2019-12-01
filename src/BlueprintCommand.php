@@ -110,7 +110,7 @@ class BlueprintCommand extends Command
         if ($action === 'deleted') {
             return 'error';
         } elseif ($action === 'updated') {
-            return 'warning';
+            return 'comment';
         }
 
         return 'info';
