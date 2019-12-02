@@ -2,7 +2,7 @@
 
 _Blueprint_ is an open-source tool for **rapidly generating multiple** Laravel components from a **single, human readable** definition.
 
-Watch a quick [demo of Blueprint](https://twitter.com/gonedark/status/1192513115826589698?s=20) in action and continue reading this document to get started.
+Watch a quick [demo of Blueprint](https://www.youtube.com/watch?v=A_gUCwni_6c) in action and continue reading this document to get started.
 
 - [Installation](#installation)
 - [Requirements](#requirements)
