@@ -75,9 +75,15 @@ class JobGeneratorTest extends TestCase
             ->with('stubs/partials/constructor.stub')
             ->andReturn(file_get_contents('stubs/partials/constructor.stub'));
 
+        $this->files->shouldReceive('exists')
+            ->twice()
+            ->with('app/Jobs')
+            ->andReturns(false, true);
         $this->files->expects('exists')
             ->with('app/Jobs/CreateUser.php')
             ->andReturnFalse();
+        $this->files->expects('makeDirectory')
+            ->with('app/Jobs');
         $this->files->expects('put')
             ->with('app/Jobs/CreateUser.php', $this->fixture('jobs/create-user.php'));
 

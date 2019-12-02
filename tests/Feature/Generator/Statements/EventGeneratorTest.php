@@ -75,9 +75,15 @@ class EventGeneratorTest extends TestCase
             ->with('stubs/partials/constructor.stub')
             ->andReturn(file_get_contents('stubs/partials/constructor.stub'));
 
+        $this->files->shouldReceive('exists')
+            ->twice()
+            ->with('app/Events')
+            ->andReturns(false, true);
         $this->files->expects('exists')
             ->with('app/Events/UserCreated.php')
             ->andReturnFalse();
+        $this->files->expects('makeDirectory')
+            ->with('app/Events');
         $this->files->expects('put')
             ->with('app/Events/UserCreated.php', $this->fixture('events/user-created.php'));
 

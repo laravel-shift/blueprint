@@ -75,9 +75,15 @@ class MailGeneratorTest extends TestCase
             ->with('stubs/partials/constructor.stub')
             ->andReturn(file_get_contents('stubs/partials/constructor.stub'));
 
+        $this->files->shouldReceive('exists')
+            ->twice()
+            ->with('app/Mail')
+            ->andReturns(false, true);
         $this->files->expects('exists')
             ->with('app/Mail/ReviewPost.php')
             ->andReturnFalse();
+        $this->files->expects('makeDirectory')
+            ->with('app/Mail');
         $this->files->expects('put')
             ->with('app/Mail/ReviewPost.php', $this->fixture('mailables/review-post.php'));
 

@@ -72,9 +72,15 @@ class FormRequestGeneratorTest extends TestCase
             ->with('stubs/form-request.stub')
             ->andReturn(file_get_contents('stubs/form-request.stub'));
 
+        $this->files->shouldReceive('exists')
+            ->times(3)
+            ->with('app/Http/Requests')
+            ->andReturns(false, true, true);
         $this->files->expects('exists')
             ->with('app/Http/Requests/PostIndexRequest.php')
             ->andReturnFalse();
+        $this->files->expects('makeDirectory')
+            ->with('app/Http/Requests');
         $this->files->expects('put')
             ->with('app/Http/Requests/PostIndexRequest.php', $this->fixture('form-requests/post-index.php'));
 
