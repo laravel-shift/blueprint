@@ -223,7 +223,14 @@ The `key` defines the _type_ of statement to generate. Currently, Blueprint supp
   <dt>flash</dt>
   <dd>
 
-  Generates a statement to [flash data](https://laravel.com/docs/session#flash-data) to the session. Blueprint will use the `value` as the session key and expands the reference as the session value.</dd>
+  Generates a statement to [flash data](https://laravel.com/docs/session#flash-data) to the session. Blueprint will use the `value` as the session key and expands the reference as the session value.
+  
+  For example:
+  
+  ```yaml
+  flash: post.title
+  ```
+  </dd>
 
   <dt>render</dt>
   <dd>Generates a `return view();` statement complete with a template reference and data.
