@@ -57,25 +57,6 @@ class RouteGeneratorTest extends TestCase
         $this->assertEquals(['updated' => [$path]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     * @dataProvider controllerTreeDataProvider
-     */
-    public function erase_deletes_routes_in_tree($definition, $routes)
-    {
-        $path = 'routes/web.php';
-
-        $this->files->expects('get')
-            ->with($path);
-        $this->files->expects('put')
-            ->with($path, '');
-
-        $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree = $this->blueprint->analyze($tokens);
-
-        $this->assertEquals(['updated' => [$path]], $this->subject->erase($tree));
-    }
-
     public function controllerTreeDataProvider()
     {
         return [

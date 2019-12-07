@@ -60,21 +60,6 @@ class FactoryGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     * @dataProvider modelTreeDataProvider
-     */
-    public function erase_deletes_factories_listed_in_tree($definition, $path)
-    {
-        $this->files->expects('delete')
-            ->with($path);
-
-        $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree = $this->blueprint->analyze($tokens);
-
-        $this->assertEquals(['deleted' => [$path]], $this->subject->erase($tree));
-    }
-
     public function modelTreeDataProvider()
     {
         return [

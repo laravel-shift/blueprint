@@ -95,26 +95,6 @@ class MigrationGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$post_path, $comment_path]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     * @dataProvider modelTreeDataProvider
-     */
-    public function erase_deltes_migrations_listed_in_model_tree($definition, $path)
-    {
-        $now = Carbon::now();
-        Carbon::setTestNow($now);
-
-        $timestamp_path = str_replace('timestamp', $now->format('Y_m_d_His'), $path);
-
-        $this->files->expects('delete')
-            ->with($timestamp_path);
-
-        $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree = $this->blueprint->analyze($tokens);
-
-        $this->assertEquals(['deleted' => [$timestamp_path]], $this->subject->erase($tree));
-    }
-
     public function modelTreeDataProvider()
     {
         return [
