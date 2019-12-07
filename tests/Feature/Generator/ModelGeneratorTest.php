@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Generators;
 
+use Tests\TestCase;
 use Blueprint\Blueprint;
 use Blueprint\Generators\ModelGenerator;
-use Tests\TestCase;
 
 class ModelGeneratorTest extends TestCase
 {
@@ -80,9 +80,23 @@ class ModelGeneratorTest extends TestCase
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
-        ++$iteration;
+        $iteration++;
     }
 
+    /**
+     * @test
+     * @dataProvider modelTreeDataProvider
+     */
+    public function erase_deletes_models_listed_in_tree($definition, $path)
+    {
+        $this->files->expects('delete')
+            ->with($path);
+
+        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['deleted' => [$path]], $this->subject->erase($tree));
+    }
 
     public function modelTreeDataProvider()
     {
