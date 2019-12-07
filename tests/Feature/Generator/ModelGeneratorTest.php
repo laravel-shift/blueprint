@@ -83,21 +83,6 @@ class ModelGeneratorTest extends TestCase
         $iteration++;
     }
 
-    /**
-     * @test
-     * @dataProvider modelTreeDataProvider
-     */
-    public function erase_deletes_models_listed_in_tree($definition, $path)
-    {
-        $this->files->expects('delete')
-            ->with($path);
-
-        $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree = $this->blueprint->analyze($tokens);
-
-        $this->assertEquals(['deleted' => [$path]], $this->subject->erase($tree));
-    }
-
     public function modelTreeDataProvider()
     {
         return [
