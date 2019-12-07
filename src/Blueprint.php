@@ -2,10 +2,9 @@
 
 namespace Blueprint;
 
-
-use Blueprint\Contracts\Generator;
 use Blueprint\Contracts\Lexer;
 use Symfony\Component\Yaml\Yaml;
+use Blueprint\Contracts\Generator;
 
 class Blueprint
 {
@@ -25,7 +24,7 @@ class Blueprint
     {
         $registry = [
             'models' => [],
-            'controllers' => []
+            'controllers' => [],
         ];
 
         foreach ($this->lexers as $lexer) {
@@ -44,6 +43,11 @@ class Blueprint
         }
 
         return $components;
+    }
+
+    public function dump(array $generated)
+    {
+        return Yaml::dump($generated);
     }
 
     public function registerLexer(Lexer $lexer)
