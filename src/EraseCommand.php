@@ -14,7 +14,7 @@ class EraseCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'blueprint:erase {draft=draft.yaml}';
+    protected $signature = 'blueprint:erase';
 
     /**
      * The console command description.
@@ -44,36 +44,24 @@ class EraseCommand extends Command
      */
     public function handle()
     {
-        $file = $this->argument('draft');
-        if (!file_exists($file)) {
-            $this->error('Draft file could not be found: ' . $file);
-        }
-
-        $contents = $this->files->get($file);
+        $contents = $this->files->get('.last_build.yaml');
 
         $blueprint = new Blueprint();
+        $lastBuild = $blueprint->parse($contents);
 
-        $blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
-        $blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new \Blueprint\Lexers\StatementLexer()));
+        collect($lastBuild)->each(function ($files, $action) {
+            if ($action === 'created') {
+                $this->files->delete($files);
+            }
 
-        $blueprint->registerGenerator(new \Blueprint\Generators\MigrationGenerator($this->files));
-        $blueprint->registerGenerator(new \Blueprint\Generators\ModelGenerator($this->files));
-        $blueprint->registerGenerator(new \Blueprint\Generators\FactoryGenerator($this->files));
-
-        $blueprint->registerGenerator(new \Blueprint\Generators\ControllerGenerator($this->files));
-        $blueprint->registerGenerator(new \Blueprint\Generators\Statements\EventGenerator($this->files));
-        $blueprint->registerGenerator(new \Blueprint\Generators\Statements\FormRequestGenerator($this->files));
-        $blueprint->registerGenerator(new \Blueprint\Generators\Statements\JobGenerator($this->files));
-        $blueprint->registerGenerator(new \Blueprint\Generators\Statements\MailGenerator($this->files));
-        $blueprint->registerGenerator(new \Blueprint\Generators\Statements\ViewGenerator($this->files));
-        $blueprint->registerGenerator(new \Blueprint\Generators\RouteGenerator($this->files));
-
-        $tokens = $blueprint->parse($contents);
-        $registry = $blueprint->analyze($tokens);
-        $generated = $blueprint->generate($registry);
-
-        collect($generated)->each(function ($files, $action) {
             $this->line(Str::studly($action) . ':', $this->outputStyle($action));
+
+            if ($action === 'updated') {
+                $this->error(
+                    'Please check the following files which cannot be erased of previous changes automatically.',
+                );
+            }
+
             collect($files)->each(function ($file) {
                 $this->line('- ' . $file);
             });
@@ -106,12 +94,10 @@ class EraseCommand extends Command
 
     private function outputStyle($action)
     {
-        if ($action === 'deleted') {
+        if ($action === 'created') {
             return 'error';
-        } elseif ($action === 'updated') {
-            return 'comment';
         }
 
-        return 'info';
+        return 'comment';
     }
 }

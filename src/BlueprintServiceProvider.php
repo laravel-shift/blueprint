@@ -2,8 +2,8 @@
 
 namespace Blueprint;
 
-use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Support\DeferrableProvider;
 
 class BlueprintServiceProvider extends ServiceProvider implements DeferrableProvider
 {
@@ -32,8 +32,16 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
                 return new BlueprintCommand($app['files']);
             }
         );
+        $this->app->bind('command.blueprint.erase',
+            function ($app) {
+                return new EraseCommand($app['files']);
+            }
+        );
 
-        $this->commands('command.blueprint.build');
+        $this->commands([
+            'command.blueprint.build',
+            'command.blueprint.erase',
+        ]);
     }
 
     /**
@@ -43,7 +51,9 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
      */
     public function provides()
     {
-        return ['command.blueprint.build'];
+        return [
+            'command.blueprint.build',
+            'command.blueprint.erase',
+        ];
     }
-
 }
