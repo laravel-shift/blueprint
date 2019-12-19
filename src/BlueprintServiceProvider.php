@@ -2,8 +2,8 @@
 
 namespace Blueprint;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\Support\ServiceProvider;
 
 class BlueprintServiceProvider extends ServiceProvider implements DeferrableProvider
 {
@@ -14,7 +14,6 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
      */
     public function boot()
     {
-        // ...
         if (!defined('STUBS_PATH')) {
             define('STUBS_PATH', dirname(__DIR__) . '/stubs');
         }

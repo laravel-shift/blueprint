@@ -82,7 +82,7 @@ class BlueprintCommand extends Command
         });
 
         $this->files->put(
-            '.last_build.yaml',
+            '.blueprint',
             $blueprint->dump($generated)
         );
     }

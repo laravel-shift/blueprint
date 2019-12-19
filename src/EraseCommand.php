@@ -21,7 +21,7 @@ class EraseCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Erase components created from a Blueprint draft';
+    protected $description = 'Erase components created from last Blueprint build';
 
     /** @var Filesystem $files */
     protected $files;
@@ -44,22 +44,17 @@ class EraseCommand extends Command
      */
     public function handle()
     {
-        $contents = $this->files->get('.last_build.yaml');
+        $contents = $this->files->get('.blueprint');
 
         $blueprint = new Blueprint();
-        $lastBuild = $blueprint->parse($contents);
+        $generated = $blueprint->parse($contents);
 
-        collect($lastBuild)->each(function ($files, $action) {
+        collect($generated)->each(function ($files, $action) {
             if ($action === 'created') {
+                $this->line('Deleted:', $this->outputStyle($action));
                 $this->files->delete($files);
-            }
-
-            $this->line(Str::studly($action) . ':', $this->outputStyle($action));
-
-            if ($action === 'updated') {
-                $this->error(
-                    'Please check the following files which cannot be erased of previous changes automatically.',
-                );
+            } elseif ($action === 'updated') {
+                $this->comment('The updates to the following files can not be erased automatically.');
             }
 
             collect($files)->each(function ($file) {
