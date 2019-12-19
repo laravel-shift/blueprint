@@ -69,6 +69,32 @@ class MigrationGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
     }
 
+    /**
+     * @test
+     */
+    public function output_uses_past_timestamp_for_multiple_migrations()
+    {
+        $this->files->expects('get')
+            ->with('stubs/migration.stub')
+            ->andReturn(file_get_contents('stubs/migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $post_path = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_posts_table.php');
+        $comment_path = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_comments_table.php');
+
+        $this->files->expects('put')
+            ->with($post_path, $this->fixture('migrations/posts.php'));
+        $this->files->expects('put')
+            ->with($comment_path, $this->fixture('migrations/comments.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/multiple-models.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$post_path, $comment_path]], $this->subject->output($tree));
+    }
+
     public function modelTreeDataProvider()
     {
         return [
