@@ -64,7 +64,8 @@ class FactoryGeneratorTest extends TestCase
     public function modelTreeDataProvider()
     {
         return [
-            ['definitions/post.bp', 'database/factories/PostFactory.php', 'factories/post.php']
+            ['definitions/post.bp', 'database/factories/PostFactory.php', 'factories/post.php'],
+            ['definitions/team.bp', 'database/factories/TeamFactory.php', 'factories/team.php']
         ];
     }
 }

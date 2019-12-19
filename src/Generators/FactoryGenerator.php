@@ -4,6 +4,7 @@ namespace Blueprint\Generators;
 
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Model;
+use Illuminate\Support\Str;
 
 class FactoryGenerator implements Generator
 {
@@ -61,10 +62,19 @@ class FactoryGenerator implements Generator
                 continue;
             }
 
-            $definition .= self::INDENT . "'{$column->name()}' => ";
-            $faker = $this->fakerData($column->name()) ?? $this->fakerDataType($column->dataType());
-            $definition .= '$faker->' . $faker;
-            $definition .= ',' . PHP_EOL;
+            if ($column->dataType() === 'id') {
+                $name = Str::substr($column->name(), 0, -3);
+                $class = Str::studly($column->attributes()[0] ?? $name);
+
+                $definition .= self::INDENT . "'{$column->name()}' => ";
+                $definition .= sprintf("factory(\App\%s::class)", $class);
+                $definition .= ',' . PHP_EOL;
+            } else {
+                $definition .= self::INDENT . "'{$column->name()}' => ";
+                $faker = $this->fakerData($column->name()) ?? $this->fakerDataType($column->dataType());
+                $definition .= '$faker->' . $faker;
+                $definition .= ',' . PHP_EOL;
+            }
         }
 
         return trim($definition);
