@@ -63,18 +63,18 @@ class FactoryGenerator implements Generator
             }
 
             if ($column->dataType() === 'id') {
-				$name = Str::substr($column->name(), 0, -3);
-				$class = Str::studly($column->attributes()[0] ?? $name);
+                $name = Str::substr($column->name(), 0, -3);
+                $class = Str::studly($column->attributes()[0] ?? $name);
 
-				$definition .= self::INDENT . "'{$column->name()}' => ";
-				$definition .= sprintf("factory(\App\%s::class)", $class);
-				$definition .= ',' . PHP_EOL;
-			} else {
-				$definition .= self::INDENT . "'{$column->name()}' => ";
-				$faker = $this->fakerData($column->name()) ?? $this->fakerDataType($column->dataType());
-				$definition .= '$faker->' . $faker;
-				$definition .= ',' . PHP_EOL;
-			}
+                $definition .= self::INDENT . "'{$column->name()}' => ";
+                $definition .= sprintf("factory(\App\%s::class)", $class);
+                $definition .= ',' . PHP_EOL;
+            } else {
+                $definition .= self::INDENT . "'{$column->name()}' => ";
+                $faker = $this->fakerData($column->name()) ?? $this->fakerDataType($column->dataType());
+                $definition .= '$faker->' . $faker;
+                $definition .= ',' . PHP_EOL;
+            }
         }
 
         return trim($definition);
