@@ -1,0 +1,6 @@
+models:
+  Post:
+    title: string
+
+  Comment:
+    content: text

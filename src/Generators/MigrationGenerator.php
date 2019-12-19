@@ -4,6 +4,7 @@ namespace Blueprint\Generators;
 
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Model;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 
 class MigrationGenerator implements Generator
@@ -24,9 +25,11 @@ class MigrationGenerator implements Generator
 
         $stub = $this->files->get(STUBS_PATH . '/migration.stub');
 
+        $sequential_timestamp = \Carbon\Carbon::now()->subSeconds(count($tree['models']));
+
         /** @var \Blueprint\Models\Model $model */
         foreach ($tree['models'] as $model) {
-            $path = $this->getPath($model);
+            $path = $this->getPath($model, $sequential_timestamp->addSecond());
             $this->files->put(
                 $path,
                 $this->populateStub($stub, $model)
@@ -99,8 +102,8 @@ class MigrationGenerator implements Generator
         return 'Create' . Str::studly($model->tableName()) . 'Table';
     }
 
-    protected function getPath(Model $model)
+    protected function getPath(Model $model, Carbon $timestamp)
     {
-        return 'database/migrations/' . \Carbon\Carbon::now()->format('Y_m_d_His') . '_create_' . $model->tableName() . '_table.php';
+        return 'database/migrations/' . $timestamp->format('Y_m_d_His') . '_create_' . $model->tableName() . '_table.php';
     }
 }
