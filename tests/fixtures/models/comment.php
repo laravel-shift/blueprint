@@ -14,9 +14,7 @@ class Comment extends Model
      *
      * @var array
      */
-    protected $fillable = [
-        'post_id',
-    ];
+    protected $fillable = [];
 
     /**
      * The attributes that should be cast to native types.
@@ -25,12 +23,5 @@ class Comment extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'post_id' => 'integer',
     ];
-
-
-    public function post()
-    {
-        return $this->belongsTo(\App\Post::class);
-    }
 }

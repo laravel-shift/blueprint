@@ -1,3 +1,4 @@
 models:
   Comment:
+    post_id: id
     softdeletes
