@@ -53,6 +53,7 @@ class ModelGeneratorTest extends TestCase
             ->with('stubs/model/class.stub')
             ->andReturn(file_get_contents('stubs/model/class.stub'));
 
+        // TODO: remove conditional expectations
         if ($iteration === 0) {
             $this->files->expects('get')
                 ->with('stubs/model/fillable.stub')
@@ -67,7 +68,7 @@ class ModelGeneratorTest extends TestCase
                 ->andReturn(file_get_contents('stubs/model/dates.stub'));
         }
 
-        if ($definition === 'definitions/relationships.bp') {
+        if ($definition === 'definitions/soft-deletes.bp') {
             $this->files->expects('get')
                 ->with('stubs/model/method.stub')
                 ->andReturn(file_get_contents('stubs/model/method.stub'));
@@ -88,8 +89,8 @@ class ModelGeneratorTest extends TestCase
     {
         return [
             ['definitions/readme-example.bp', 'app/Post.php', 'models/readme-example.php'],
+            ['definitions/with-timezones.bp', 'app/Comment.php', 'models/comment.php'],
             ['definitions/soft-deletes.bp', 'app/Comment.php', 'models/soft-deletes.php'],
-            ['definitions/with-timezones.bp', 'app/Comment.php', 'models/soft-deletes.php'],
             ['definitions/relationships.bp', 'app/Comment.php', 'models/relationships.php'],
         ];
     }

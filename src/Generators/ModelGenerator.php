@@ -192,7 +192,7 @@ class ModelGenerator implements Generator
         }
 
         $stub = str_replace('use Illuminate\\Database\\Eloquent\\Model;', 'use Illuminate\\Database\\Eloquent\\Model;' . PHP_EOL . 'use Illuminate\\Database\\Eloquent\\SoftDeletes;', $stub);
-        $stub = str_replace('{', '{' . PHP_EOL . '    use SoftDeletes;' . PHP_EOL, $stub);
+        $stub = preg_replace('/^\\{$/m', '{' . PHP_EOL . '    use SoftDeletes;' . PHP_EOL, $stub);
 
         return $stub;
     }
