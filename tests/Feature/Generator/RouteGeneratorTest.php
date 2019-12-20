@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Generators;
 
-use Blueprint\Blueprint;
-use Blueprint\Generators\RouteGenerator;
-use Blueprint\Lexers\StatementLexer;
 use Tests\TestCase;
+use Blueprint\Blueprint;
+use Blueprint\Lexers\StatementLexer;
+use Blueprint\Generators\RouteGenerator;
 
 /**
  * @see RouteGenerator
@@ -56,7 +56,6 @@ class RouteGeneratorTest extends TestCase
 
         $this->assertEquals(['updated' => [$path]], $this->subject->output($tree));
     }
-
 
     public function controllerTreeDataProvider()
     {

@@ -60,7 +60,6 @@ class FactoryGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
-
     public function modelTreeDataProvider()
     {
         return [

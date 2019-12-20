@@ -14,7 +14,6 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
      */
     public function boot()
     {
-        // ...
         if (!defined('STUBS_PATH')) {
             define('STUBS_PATH', dirname(__DIR__) . '/stubs');
         }
@@ -32,8 +31,16 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
                 return new BlueprintCommand($app['files']);
             }
         );
+        $this->app->bind('command.blueprint.erase',
+            function ($app) {
+                return new EraseCommand($app['files']);
+            }
+        );
 
-        $this->commands('command.blueprint.build');
+        $this->commands([
+            'command.blueprint.build',
+            'command.blueprint.erase',
+        ]);
     }
 
     /**
@@ -43,7 +50,9 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
      */
     public function provides()
     {
-        return ['command.blueprint.build'];
+        return [
+            'command.blueprint.build',
+            'command.blueprint.erase',
+        ];
     }
-
 }

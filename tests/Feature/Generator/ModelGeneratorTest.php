@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Generators;
 
+use Tests\TestCase;
 use Blueprint\Blueprint;
 use Blueprint\Generators\ModelGenerator;
-use Tests\TestCase;
 
 class ModelGeneratorTest extends TestCase
 {
@@ -81,9 +81,8 @@ class ModelGeneratorTest extends TestCase
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
-        ++$iteration;
+        $iteration++;
     }
-
 
     public function modelTreeDataProvider()
     {

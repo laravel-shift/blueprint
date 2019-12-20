@@ -2,9 +2,9 @@
 
 namespace Blueprint;
 
+use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputArgument;
 
 class BlueprintCommand extends Command
@@ -80,8 +80,12 @@ class BlueprintCommand extends Command
 
             $this->line('');
         });
-    }
 
+        $this->files->put(
+            '.blueprint',
+            $blueprint->dump($generated)
+        );
+    }
 
     /**
      * Get the console command arguments.
