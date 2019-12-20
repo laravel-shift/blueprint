@@ -31,11 +31,32 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
                 return new BlueprintCommand($app['files']);
             }
         );
+
         $this->app->bind('command.blueprint.erase',
             function ($app) {
                 return new EraseCommand($app['files']);
             }
         );
+
+        $this->app->singleton(Blueprint::class, function ($app) {
+            $blueprint = new Blueprint();
+            $blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
+            $blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new \Blueprint\Lexers\StatementLexer()));
+
+            $blueprint->registerGenerator(new \Blueprint\Generators\MigrationGenerator($app['files']));
+            $blueprint->registerGenerator(new \Blueprint\Generators\ModelGenerator($app['files']));
+            $blueprint->registerGenerator(new \Blueprint\Generators\FactoryGenerator($app['files']));
+
+            $blueprint->registerGenerator(new \Blueprint\Generators\ControllerGenerator($app['files']));
+            $blueprint->registerGenerator(new \Blueprint\Generators\Statements\EventGenerator($app['files']));
+            $blueprint->registerGenerator(new \Blueprint\Generators\Statements\FormRequestGenerator($app['files']));
+            $blueprint->registerGenerator(new \Blueprint\Generators\Statements\JobGenerator($app['files']));
+            $blueprint->registerGenerator(new \Blueprint\Generators\Statements\MailGenerator($app['files']));
+            $blueprint->registerGenerator(new \Blueprint\Generators\Statements\ViewGenerator($app['files']));
+            $blueprint->registerGenerator(new \Blueprint\Generators\RouteGenerator($app['files']));
+
+            return $blueprint;
+        });
 
         $this->commands([
             'command.blueprint.build',
@@ -53,6 +74,7 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
         return [
             'command.blueprint.build',
             'command.blueprint.erase',
+            Blueprint::class,
         ];
     }
 }

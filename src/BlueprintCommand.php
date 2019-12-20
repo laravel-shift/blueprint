@@ -50,27 +50,8 @@ class BlueprintCommand extends Command
         }
 
         $contents = $this->files->get($file);
-
-        $blueprint = new Blueprint();
-
-        $blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
-        $blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new \Blueprint\Lexers\StatementLexer()));
-
-        $blueprint->registerGenerator(new \Blueprint\Generators\MigrationGenerator($this->files));
-        $blueprint->registerGenerator(new \Blueprint\Generators\ModelGenerator($this->files));
-        $blueprint->registerGenerator(new \Blueprint\Generators\FactoryGenerator($this->files));
-
-        $blueprint->registerGenerator(new \Blueprint\Generators\ControllerGenerator($this->files));
-        $blueprint->registerGenerator(new \Blueprint\Generators\Statements\EventGenerator($this->files));
-        $blueprint->registerGenerator(new \Blueprint\Generators\Statements\FormRequestGenerator($this->files));
-        $blueprint->registerGenerator(new \Blueprint\Generators\Statements\JobGenerator($this->files));
-        $blueprint->registerGenerator(new \Blueprint\Generators\Statements\MailGenerator($this->files));
-        $blueprint->registerGenerator(new \Blueprint\Generators\Statements\ViewGenerator($this->files));
-        $blueprint->registerGenerator(new \Blueprint\Generators\RouteGenerator($this->files));
-
-        $tokens = $blueprint->parse($contents);
-        $registry = $blueprint->analyze($tokens);
-        $generated = $blueprint->generate($registry);
+        $blueprint = resolve(Blueprint::class);
+        $generated = Builder::execute($blueprint, $contents);
 
         collect($generated)->each(function ($files, $action) {
             $this->line(Str::studly($action) . ':', $this->outputStyle($action));
