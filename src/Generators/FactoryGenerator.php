@@ -137,6 +137,7 @@ class FactoryGenerator implements Generator
             'smallint' => 'randomNumber()',
             'decimal' => 'randomFloat()',
             'float' => 'randomFloat()',
+            'longtext' => 'text',
             'boolean' => 'boolean'
         ];
 
