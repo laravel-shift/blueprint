@@ -79,7 +79,7 @@ class ModelGenerator implements Generator
     private function buildRelationships(Model $model)
     {
         $columns = array_filter($model->columns(), function (Column $column) {
-            return Str::endsWith($column->name(), '_id');
+            return $column->name() !== 'id' && $column->dataType() === 'id';
         });
 
         if (empty($columns)) {
@@ -91,7 +91,7 @@ class ModelGenerator implements Generator
 
         /** @var Column $column */
         foreach ($columns as $column) {
-            $name = Str::substr($column->name(), 0, -3);
+            $name = Str::beforeLast($column->name(), '_id');
             $class = Str::studly($column->attributes()[0] ?? $name);
             $relationship = sprintf("\$this->belongsTo(\App\%s::class)", $class);
 

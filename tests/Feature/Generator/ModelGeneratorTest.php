@@ -91,6 +91,7 @@ class ModelGeneratorTest extends TestCase
             ['definitions/with-timezones.bp', 'app/Comment.php', 'models/comment.php'],
             ['definitions/soft-deletes.bp', 'app/Comment.php', 'models/soft-deletes.php'],
             ['definitions/relationships.bp', 'app/Comment.php', 'models/relationships.php'],
+            ['definitions/unconventional.bp', 'app/Team.php', 'models/unconventional.php'],
         ];
     }
 }

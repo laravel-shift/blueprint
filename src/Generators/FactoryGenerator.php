@@ -63,7 +63,7 @@ class FactoryGenerator implements Generator
             }
 
             if ($column->dataType() === 'id') {
-                $name = Str::substr($column->name(), 0, -3);
+                $name = Str::beforeLast($column->name(), '_id');
                 $class = Str::studly($column->attributes()[0] ?? $name);
 
                 $definition .= self::INDENT . "'{$column->name()}' => ";

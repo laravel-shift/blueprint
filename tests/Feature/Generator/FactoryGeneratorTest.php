@@ -6,6 +6,9 @@ use Blueprint\Blueprint;
 use Blueprint\Generators\FactoryGenerator;
 use Tests\TestCase;
 
+/**
+ * @see FactoryGenerator
+ */
 class FactoryGeneratorTest extends TestCase
 {
     private $blueprint;
@@ -64,7 +67,8 @@ class FactoryGeneratorTest extends TestCase
     {
         return [
             ['definitions/post.bp', 'database/factories/PostFactory.php', 'factories/post.php'],
-            ['definitions/team.bp', 'database/factories/TeamFactory.php', 'factories/team.php']
+            ['definitions/team.bp', 'database/factories/TeamFactory.php', 'factories/team.php'],
+            ['definitions/unconventional.bp', 'database/factories/TeamFactory.php', 'factories/unconventional.php']
         ];
     }
 }
