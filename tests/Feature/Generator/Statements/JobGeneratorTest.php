@@ -120,4 +120,38 @@ class JobGeneratorTest extends TestCase
 
         $this->assertEquals([], $this->subject->output($tree));
     }
+
+    /**
+     * @test
+     */
+    public function it_respects_configuration()
+    {
+        $this->app['config']->set('blueprint.namespace', 'Some\\App');
+        $this->app['config']->set('blueprint.app_path', 'src/path');
+
+        $this->files->expects('get')
+            ->with('stubs/job.stub')
+            ->andReturn(file_get_contents('stubs/job.stub'));
+
+        $this->files->expects('get')
+            ->with('stubs/partials/constructor.stub')
+            ->andReturn(file_get_contents('stubs/partials/constructor.stub'));
+
+        $this->files->shouldReceive('exists')
+            ->twice()
+            ->with('src/path/Jobs')
+            ->andReturnFalse();
+        $this->files->expects('exists')
+            ->with('src/path/Jobs/SyncMedia.php')
+            ->andReturnFalse();
+        $this->files->expects('makeDirectory')
+            ->with('src/path/Jobs');
+        $this->files->expects('put')
+            ->with('src/path/Jobs/SyncMedia.php', $this->fixture('jobs/job-configured.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/readme-example.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['src/path/Jobs/SyncMedia.php']], $this->subject->output($tree));
+    }
 }

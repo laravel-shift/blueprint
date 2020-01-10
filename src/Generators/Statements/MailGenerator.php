@@ -55,12 +55,12 @@ class MailGenerator implements Generator
 
     protected function getPath(string $name)
     {
-        return 'app/Mail/' . $name . '.php';
+        return config('blueprint.app_path') . '/Mail/' . $name . '.php';
     }
 
     protected function populateStub(string $stub, SendStatement $sendStatement)
     {
-        $stub = str_replace('DummyNamespace', 'App\\Mail', $stub);
+        $stub = str_replace('DummyNamespace', config('blueprint.namespace') . '\\Mail', $stub);
         $stub = str_replace('DummyClass', $sendStatement->mail(), $stub);
         $stub = str_replace('// properties...', $this->buildConstructor($sendStatement), $stub);
 

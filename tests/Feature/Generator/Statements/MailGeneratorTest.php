@@ -120,4 +120,38 @@ class MailGeneratorTest extends TestCase
 
         $this->assertEquals([], $this->subject->output($tree));
     }
+
+    /**
+     * @test
+     */
+    public function it_respects_configuration()
+    {
+        $this->app['config']->set('blueprint.namespace', 'Some\\App');
+        $this->app['config']->set('blueprint.app_path', 'src/path');
+
+        $this->files->expects('get')
+            ->with('stubs/mail.stub')
+            ->andReturn(file_get_contents('stubs/mail.stub'));
+
+        $this->files->expects('get')
+            ->with('stubs/partials/constructor.stub')
+            ->andReturn(file_get_contents('stubs/partials/constructor.stub'));
+
+        $this->files->shouldReceive('exists')
+            ->twice()
+            ->with('src/path/Mail')
+            ->andReturnFalse();
+        $this->files->expects('exists')
+            ->with('src/path/Mail/ReviewNotification.php')
+            ->andReturnFalse();
+        $this->files->expects('makeDirectory')
+            ->with('src/path/Mail');
+        $this->files->expects('put')
+            ->with('src/path/Mail/ReviewNotification.php', $this->fixture('mailables/mail-configured.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/readme-example.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['src/path/Mail/ReviewNotification.php']], $this->subject->output($tree));
+    }
 }

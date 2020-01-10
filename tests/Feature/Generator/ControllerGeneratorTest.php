@@ -73,11 +73,38 @@ class ControllerGeneratorTest extends TestCase
         $iteration++;
     }
 
+    /**
+     * @test
+     */
+    public function output_respects_configuration()
+    {
+        $this->app['config']->set('blueprint.app_path', 'src/path');
+        $this->app['config']->set('blueprint.namespace', 'Some\\App');
+        $this->app['config']->set('blueprint.controllers_namespace', 'Other\\Http');
+
+        $this->files->expects('get')
+            ->with('stubs/controller/class.stub')
+            ->andReturn(file_get_contents('stubs/controller/class.stub'));
+
+        $this->files->expects('get')
+            ->with('stubs/controller/method.stub')
+            ->andReturn(file_get_contents('stubs/controller/method.stub'));
+
+        $this->files->expects('put')
+            ->with('src/path/Other/Http/UserController.php', $this->fixture('controllers/controller-configured.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/simple-controller.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['src/path/Other/Http/UserController.php']], $this->subject->output($tree));
+    }
+
     public function controllerTreeDataProvider()
     {
         return [
             ['definitions/readme-example.bp', 'app/Http/Controllers/PostController.php', 'controllers/readme-example.php'],
             ['definitions/crazy-eloquent.bp', 'app/Http/Controllers/PostController.php', 'controllers/crazy-eloquent.php'],
+            ['definitions/nested-components.bp', 'app/Http/Controllers/Admin/UserController.php', 'controllers/nested-components.php'],
         ];
     }
 }

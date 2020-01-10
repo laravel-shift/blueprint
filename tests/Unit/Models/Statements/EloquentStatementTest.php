@@ -3,7 +3,7 @@
 namespace Tests\Feature\Generators;
 
 use Blueprint\Models\Statements\EloquentStatement;
-use Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @see EloquentStatement

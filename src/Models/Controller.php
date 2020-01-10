@@ -17,6 +17,11 @@ class Controller
     private $name;
 
     /**
+     * @var string
+     */
+    private $namespace;
+
+    /**
      * @var array
      */
     private $methods = [];
@@ -27,7 +32,8 @@ class Controller
      */
     public function __construct(string $name)
     {
-        $this->name = $name;
+        $this->name = class_basename($name);
+        $this->namespace = trim(implode('\\', array_slice(explode('\\', str_replace('/', '\\', $name)), 0, -1)), '\\');
     }
 
     public function name(): string
@@ -38,6 +44,35 @@ class Controller
     public function className(): string
     {
         return $this->name() . (Str::endsWith($this->name(), 'Controller') ? '' : 'Controller');
+    }
+
+    public function namespace()
+    {
+        if (empty($this->namespace)) {
+            return '';
+        }
+
+        return $this->namespace;
+    }
+
+    public function fullyQualifiedNamespace()
+    {
+        $fqn = config('blueprint.namespace');
+
+        if (config('blueprint.controllers_namespace')) {
+            $fqn .= '\\' . config('blueprint.controllers_namespace');
+        }
+
+        if ($this->namespace) {
+            $fqn .= '\\' . $this->namespace;
+        }
+
+        return $fqn;
+    }
+
+    public function fullyQualifiedClassName()
+    {
+        return $this->fullyQualifiedNamespace() . '\\' . $this->className();
     }
 
     public function methods(): array

@@ -2,6 +2,7 @@
 
 namespace Blueprint\Generators;
 
+use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Controller;
 use Blueprint\Models\Statements\DispatchStatement;
@@ -52,7 +53,7 @@ class ControllerGenerator implements Generator
 
     protected function populateStub(string $stub, Controller $controller)
     {
-        $stub = str_replace('DummyNamespace', 'App\\Http\\Controllers', $stub);
+        $stub = str_replace('DummyNamespace', $controller->fullyQualifiedNamespace(), $stub);
         $stub = str_replace('DummyClass', $controller->className(), $stub);
         $stub = str_replace('// methods...', $this->buildMethods($controller), $stub);
         $stub = str_replace('// imports...', $this->buildImports($controller), $stub);
@@ -71,7 +72,7 @@ class ControllerGenerator implements Generator
 
             if (in_array($name, ['edit', 'update', 'show', 'destroy'])) {
                 $context = Str::singular($controller->prefix());
-                $reference = 'App\\' . $context;
+                $reference = config('blueprint.namespace') . '\\' . $context;
                 $variable = '$' . Str::camel($context);
 
                 // TODO: verify controller prefix references a model
@@ -88,21 +89,23 @@ class ControllerGenerator implements Generator
                 if ($statement instanceof SendStatement) {
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
                     $this->addImport($controller, 'Illuminate\\Support\\Facades\\Mail');
-                    $this->addImport($controller, 'App\\Mail\\' . $statement->mail());
+                    $this->addImport($controller, config('blueprint.namespace') . '\\Mail\\' . $statement->mail());
                 } elseif ($statement instanceof ValidateStatement) {
-                    $class = $controller->name() . Str::studly($name) . 'Request';
+                    $class_name = $controller->name() . Str::studly($name) . 'Request';
 
-                    $method = str_replace('\Illuminate\Http\Request $request', '\\App\\Http\\Requests\\' . $class . ' $request', $method);
-                    $method = str_replace('(Request $request', '(' . $class . ' $request', $method);
+                    $fqcn = config('blueprint.namespace') . '\\Http\\Requests\\' . ($controller->namespace() ? $controller->namespace() . '\\' : '') . $class_name;
 
-                    $this->addImport($controller, 'App\\Http\\Requests\\' . $class);
+                    $method = str_replace('\Illuminate\Http\Request $request', '\\' . $fqcn . ' $request', $method);
+                    $method = str_replace('(Request $request', '(' . $class_name . ' $request', $method);
+
+                    $this->addImport($controller, $fqcn);
                 } elseif ($statement instanceof DispatchStatement) {
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
-                    $this->addImport($controller, 'App\\Jobs\\' . $statement->job());
+                    $this->addImport($controller, config('blueprint.namespace') . '\\Jobs\\' . $statement->job());
                 } elseif ($statement instanceof FireStatement) {
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
                     if (!$statement->isNamedEvent()) {
-                        $this->addImport($controller, 'App\\Events\\' . $statement->event());
+                        $this->addImport($controller, config('blueprint.namespace') . '\\Events\\' . $statement->event());
                     }
                 } elseif ($statement instanceof RenderStatement) {
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
@@ -112,10 +115,10 @@ class ControllerGenerator implements Generator
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
                 } elseif ($statement instanceof EloquentStatement) {
                     $body .= self::INDENT . $statement->output($controller->prefix(), $name) . PHP_EOL;
-                    $this->addImport($controller, 'App\\' . $this->determineModel($controller->prefix(), $statement->reference()));
+                    $this->addImport($controller, config('blueprint.namespace') . '\\' . ($controller->namespace() ? $controller->namespace() . '\\' : '') . $this->determineModel($controller, $statement->reference()));
                 } elseif ($statement instanceof QueryStatement) {
                     $body .= self::INDENT . $statement->output($controller->prefix()) . PHP_EOL;
-                    $this->addImport($controller, 'App\\' . $this->determineModel($controller->prefix(), $statement->model()));
+                    $this->addImport($controller, config('blueprint.namespace') . '\\' . ($controller->namespace() ? $controller->namespace() . '\\' : '')  . $this->determineModel($controller, $statement->model()));
                 }
 
                 $body .= PHP_EOL;
@@ -133,7 +136,9 @@ class ControllerGenerator implements Generator
 
     protected function getPath(Controller $controller)
     {
-        return 'app/Http/Controllers/' . $controller->className() . '.php';
+        $path = str_replace('\\', '/', Blueprint::relativeNamespace($controller->fullyQualifiedClassName()));
+
+        return config('blueprint.app_path') . '/' . $path . '.php';
     }
 
     private function methodStub()
@@ -162,10 +167,10 @@ class ControllerGenerator implements Generator
         }, $imports));
     }
 
-    private function determineModel(string $prefix, ?string $reference)
+    private function determineModel(Controller $controller, ?string $reference)
     {
         if (empty($reference) || $reference === 'id') {
-            return Str::studly(Str::singular($prefix));
+            return Str::studly(Str::singular($controller->prefix()));
         }
 
         if (Str::contains($reference, '.')) {

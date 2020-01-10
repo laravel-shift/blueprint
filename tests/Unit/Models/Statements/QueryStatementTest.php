@@ -3,7 +3,7 @@
 namespace Tests\Feature\Generators;
 
 use Blueprint\Models\Statements\QueryStatement;
-use Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @see QueryStatement

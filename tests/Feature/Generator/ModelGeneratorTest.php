@@ -84,6 +84,28 @@ class ModelGeneratorTest extends TestCase
         $iteration++;
     }
 
+    /**
+     * @test
+     */
+    public function output_respects_configuration()
+    {
+        $this->app['config']->set('blueprint.app_path', 'src/path');
+        $this->app['config']->set('blueprint.namespace', 'Some\\App');
+        $this->app['config']->set('blueprint.models_namespace', 'Models');
+
+        $this->files->expects('get')
+            ->with('stubs/model/class.stub')
+            ->andReturn(file_get_contents('stubs/model/class.stub'));
+
+        $this->files->expects('put')
+            ->with('src/path/Models/Comment.php', $this->fixture('models/model-configured.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/relationships.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['src/path/Models/Comment.php']], $this->subject->output($tree));
+    }
+
     public function modelTreeDataProvider()
     {
         return [
@@ -92,6 +114,7 @@ class ModelGeneratorTest extends TestCase
             ['definitions/soft-deletes.bp', 'app/Comment.php', 'models/soft-deletes.php'],
             ['definitions/relationships.bp', 'app/Comment.php', 'models/relationships.php'],
             ['definitions/unconventional.bp', 'app/Team.php', 'models/unconventional.php'],
+            ['definitions/nested-components.bp', 'app/Admin/User.php', 'models/nested-components.php'],
         ];
     }
 }

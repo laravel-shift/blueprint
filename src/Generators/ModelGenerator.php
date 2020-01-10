@@ -2,6 +2,7 @@
 
 namespace Blueprint\Generators;
 
+use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Column;
 use Blueprint\Models\Model;
@@ -39,7 +40,7 @@ class ModelGenerator implements Generator
 
     protected function populateStub(string $stub, Model $model)
     {
-        $stub = str_replace('DummyNamespace', 'App', $stub);
+        $stub = str_replace('DummyNamespace', $model->fullyQualifiedNamespace(), $stub);
         $stub = str_replace('DummyClass', $model->name(), $stub);
 
         $body = $this->buildProperties($model);
@@ -93,7 +94,7 @@ class ModelGenerator implements Generator
         foreach ($columns as $column) {
             $name = Str::beforeLast($column->name(), '_id');
             $class = Str::studly($column->attributes()[0] ?? $name);
-            $relationship = sprintf("\$this->belongsTo(\App\%s::class)", $class);
+            $relationship = sprintf("\$this->belongsTo(%s::class)", '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);
 
             $method = str_replace('DummyName', Str::camel($name), $template);
             $method = str_replace('null', $relationship, $method);
@@ -106,7 +107,9 @@ class ModelGenerator implements Generator
 
     protected function getPath(Model $model)
     {
-        return 'app/' . $model->name() . '.php';
+        $path = str_replace('\\', '/', Blueprint::relativeNamespace($model->fullyQualifiedClassName()));
+
+        return config('blueprint.app_path') . '/' . $path . '.php';
     }
 
     private function fillableColumns(array $columns)

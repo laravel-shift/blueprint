@@ -63,12 +63,34 @@ class FactoryGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
+    /**
+     * @test
+     */
+    public function output_respects_configuration()
+    {
+        $this->app['config']->set('blueprint.namespace', 'Some\\App');
+        $this->app['config']->set('blueprint.models_namespace', 'Models');
+
+        $this->files->expects('get')
+            ->with('stubs/factory.stub')
+            ->andReturn(file_get_contents('stubs/factory.stub'));
+
+        $this->files->expects('put')
+            ->with('database/factories/PostFactory.php', $this->fixture('factories/post-configured.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/post.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['database/factories/PostFactory.php']], $this->subject->output($tree));
+    }
+
     public function modelTreeDataProvider()
     {
         return [
             ['definitions/post.bp', 'database/factories/PostFactory.php', 'factories/post.php'],
             ['definitions/team.bp', 'database/factories/TeamFactory.php', 'factories/team.php'],
-            ['definitions/unconventional.bp', 'database/factories/TeamFactory.php', 'factories/unconventional.php']
+            ['definitions/unconventional.bp', 'database/factories/TeamFactory.php', 'factories/unconventional.php'],
+            ['definitions/nested-components.bp', 'database/factories/Admin/UserFactory.php', 'factories/nested-components.php']
         ];
     }
 }

@@ -120,4 +120,37 @@ class EventGeneratorTest extends TestCase
 
         $this->assertEquals([], $this->subject->output($tree));
     }
+
+    /**
+     * @test
+     */
+    public function it_respects_configuration()
+    {
+        $this->app['config']->set('blueprint.namespace', 'Some\\App');
+        $this->app['config']->set('blueprint.app_path', 'src/path');
+
+        $this->files->expects('get')
+            ->with('stubs/event.stub')
+            ->andReturn(file_get_contents('stubs/event.stub'));
+
+        $this->files->expects('get')
+            ->with('stubs/partials/constructor.stub')
+            ->andReturn(file_get_contents('stubs/partials/constructor.stub'));
+
+        $this->files->expects('exists')
+            ->with('src/path/Events')
+            ->andReturnFalse();
+        $this->files->expects('makeDirectory')
+            ->with('src/path/Events');
+        $this->files->expects('exists')
+            ->with('src/path/Events/NewPost.php')
+            ->andReturnFalse();
+        $this->files->expects('put')
+            ->with('src/path/Events/NewPost.php', $this->fixture('events/event-configured.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/readme-example.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['src/path/Events/NewPost.php']], $this->subject->output($tree));
+    }
 }

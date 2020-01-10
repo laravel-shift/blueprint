@@ -28,8 +28,8 @@ class QueryStatement
         $this->operation = $operation;
         $this->clauses = $clauses;
 
-        if ($operation === 'all' && !empty($this->clauses())) {
-            $this->model = Str::studly(Str::singular($this->clauses()[0]));
+        if ($operation === 'all' && !empty($clauses)) {
+            $this->model = Str::studly(Str::singular($clauses[0]));
         }
     }
 

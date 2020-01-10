@@ -40,12 +40,17 @@ class FactoryGenerator implements Generator
 
     protected function getPath(Model $model)
     {
-        return 'database/factories/' . $model->name() . 'Factory.php';
+        $path = $model->name();
+        if ($model->namespace()) {
+            $path = str_replace('\\', '/', $model->namespace()) . '/' . $path;
+        }
+
+        return 'database/factories/' . $path . 'Factory.php';
     }
 
     protected function populateStub(string $stub, Model $model)
     {
-        $stub = str_replace('DummyNamespace', 'App', $stub);
+        $stub = str_replace('DummyModel', $model->fullyQualifiedClassName(), $stub);
         $stub = str_replace('DummyClass', $model->name(), $stub);
         $stub = str_replace('// definition...', $this->buildDefinition($model), $stub);
 
@@ -67,7 +72,7 @@ class FactoryGenerator implements Generator
                 $class = Str::studly($column->attributes()[0] ?? $name);
 
                 $definition .= self::INDENT . "'{$column->name()}' => ";
-                $definition .= sprintf("factory(\App\%s::class)", $class);
+                $definition .= sprintf("factory(%s::class)", '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);
                 $definition .= ',' . PHP_EOL;
             } else {
                 $definition .= self::INDENT . "'{$column->name()}' => ";
