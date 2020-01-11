@@ -58,7 +58,7 @@ class MigrationGenerator implements Generator
         foreach ($model->columns() as $column) {
             $dataType = $column->dataType();
             if ($column->name() === 'id') {
-                $dataType = 'increments';
+                $dataType = 'bigIncrements';
             } elseif ($column->dataType() === 'id') {
                 $dataType = 'unsignedBigInteger';
             }
