@@ -50,7 +50,7 @@ class BlueprintCommand extends Command
         }
 
         $contents = $this->files->get($file);
-        $blueprint = resolve(Blueprint::class);
+        $blueprint = $this->resolve(Blueprint::class);
         $generated = Builder::execute($blueprint, $contents);
 
         collect($generated)->each(function ($files, $action) {
@@ -99,5 +99,10 @@ class BlueprintCommand extends Command
         }
 
         return 'info';
+    }
+
+    private function resolve($name, array $parameters = [])
+    {
+        return app($name, $parameters);
     }
 }
