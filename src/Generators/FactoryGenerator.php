@@ -76,7 +76,7 @@ class FactoryGenerator implements Generator
                 $definition .= ',' . PHP_EOL;
             } else {
                 $definition .= self::INDENT . "'{$column->name()}' => ";
-                $faker = $this->fakerData($column->name()) ?? $this->fakerDataType($column->dataType());
+                $faker = self::fakerData($column->name()) ?? self::fakerDataType($column->dataType());
                 $definition .= '$faker->' . $faker;
                 $definition .= ',' . PHP_EOL;
             }
@@ -85,7 +85,7 @@ class FactoryGenerator implements Generator
         return trim($definition);
     }
 
-    protected function fakerData(string $name)
+    public static function fakerData(string $name)
     {
         static $fakeableNames = [
             'city' => 'city',
@@ -125,7 +125,7 @@ class FactoryGenerator implements Generator
         return $fakeableNames[$name] ?? null;
     }
 
-    protected function fakerDataType(string $type)
+    public static function fakerDataType(string $type)
     {
         $fakeableTypes = [
             'id' => 'randomDigitNotNull',

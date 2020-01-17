@@ -1,0 +1,7 @@
+    /**
+     * @test
+     */
+    public function dummy_test_case()
+    {
+        // ...
+    }
