@@ -2,11 +2,11 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use DummyModel;
+use App\Admin\User;
 use Faker\Generator as Faker;
 
-$factory->define(DummyClass::class, function (Faker $faker) {
+$factory->define(User::class, function (Faker $faker) {
     return [
-        // definition...
+        'name' => $faker->name,
     ];
 });

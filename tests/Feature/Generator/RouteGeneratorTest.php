@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Generators;
 
-use Tests\TestCase;
 use Blueprint\Blueprint;
-use Blueprint\Lexers\StatementLexer;
 use Blueprint\Generators\RouteGenerator;
+use Blueprint\Lexers\StatementLexer;
+use Tests\TestCase;
 
 /**
  * @see RouteGenerator

@@ -1,0 +1,11 @@
+controllers:
+  User:
+    index:
+      query: all:users
+      render: user.index with:users
+
+    store:
+      validate: name
+      save: user
+      flash: user.name
+      redirect: post.index

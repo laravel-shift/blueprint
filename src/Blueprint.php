@@ -11,6 +11,11 @@ class Blueprint
     private $lexers = [];
     private $generators = [];
 
+    public static function relativeNamespace(string $fullyQualifiedClassName)
+    {
+        return ltrim(str_replace(config('blueprint.namespace'), '', $fullyQualifiedClassName), '\\');
+    }
+
     public function parse($content)
     {
         $content = preg_replace_callback('/^(\s+)(id|timestamps(Tz)?|softDeletes(Tz)?)$/mi', function ($matches) {

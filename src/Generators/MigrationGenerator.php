@@ -23,7 +23,7 @@ class MigrationGenerator implements Generator
     {
         $output = [];
 
-        $stub = $this->files->get(STUBS_PATH . '/migration.stub');
+        $stub = $this->files->stub('migration.stub');
 
         $sequential_timestamp = \Carbon\Carbon::now()->subSeconds(count($tree['models']));
 

@@ -36,8 +36,8 @@ class MigrationGeneratorTest extends TestCase
      */
     public function output_writes_nothing_for_empty_tree()
     {
-        $this->files->expects('get')
-            ->with('stubs/migration.stub')
+        $this->files->expects('stub')
+            ->with('migration.stub')
             ->andReturn(file_get_contents('stubs/migration.stub'));
 
         $this->files->shouldNotHaveReceived('put');
@@ -51,8 +51,8 @@ class MigrationGeneratorTest extends TestCase
      */
     public function output_writes_migration_for_model_tree($definition, $path, $migration)
     {
-        $this->files->expects('get')
-            ->with('stubs/migration.stub')
+        $this->files->expects('stub')
+            ->with('migration.stub')
             ->andReturn(file_get_contents('stubs/migration.stub'));
 
         $now = Carbon::now();
@@ -74,8 +74,8 @@ class MigrationGeneratorTest extends TestCase
      */
     public function output_uses_past_timestamp_for_multiple_migrations()
     {
-        $this->files->expects('get')
-            ->with('stubs/migration.stub')
+        $this->files->expects('stub')
+            ->with('migration.stub')
             ->andReturn(file_get_contents('stubs/migration.stub'));
 
         $now = Carbon::now();

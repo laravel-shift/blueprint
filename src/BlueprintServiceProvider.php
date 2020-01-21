@@ -3,6 +3,7 @@
 namespace Blueprint;
 
 use Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 
 class BlueprintServiceProvider extends ServiceProvider implements DeferrableProvider
@@ -17,6 +18,10 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
         if (!defined('STUBS_PATH')) {
             define('STUBS_PATH', dirname(__DIR__) . '/stubs');
         }
+
+        $this->publishes([
+            __DIR__.'/../config/blueprint.php' => config_path('blueprint.php'),
+        ]);
     }
 
     /**
@@ -26,6 +31,12 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
      */
     public function register()
     {
+        $this->mergeConfigFrom(
+            __DIR__.'/../config/blueprint.php', 'blueprint'
+        );
+
+        File::mixin(new FileMixins());
+
         $this->app->bind('command.blueprint.build',
             function ($app) {
                 return new BlueprintCommand($app['files']);

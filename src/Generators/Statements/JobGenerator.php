@@ -21,7 +21,7 @@ class JobGenerator implements Generator
     {
         $output = [];
 
-        $stub = $this->files->get(STUBS_PATH . '/job.stub');
+        $stub = $this->files->stub('job.stub');
 
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree['controllers'] as $controller) {
@@ -55,12 +55,12 @@ class JobGenerator implements Generator
 
     protected function getPath(string $name)
     {
-        return 'app/Jobs/' . $name . '.php';
+        return config('blueprint.app_path') . '/Jobs/' . $name . '.php';
     }
 
     protected function populateStub(string $stub, DispatchStatement $dispatchStatement)
     {
-        $stub = str_replace('DummyNamespace', 'App\\Jobs', $stub);
+        $stub = str_replace('DummyNamespace', config('blueprint.namespace') . '\\Jobs', $stub);
         $stub = str_replace('DummyClass', $dispatchStatement->job(), $stub);
         $stub = str_replace('// properties...', $this->buildConstructor($dispatchStatement), $stub);
 
@@ -72,7 +72,7 @@ class JobGenerator implements Generator
         static $constructor = null;
 
         if (is_null($constructor)) {
-            $constructor = str_replace('new instance', 'new job instance', $this->files->get(STUBS_PATH . '/partials/constructor.stub'));
+            $constructor = str_replace('new instance', 'new job instance', $this->files->stub('partials/constructor.stub'));
         }
 
         if (empty($dispatchStatement->data())) {

@@ -3,6 +3,7 @@
 namespace Blueprint\Generators\Statements;
 
 use Blueprint\Contracts\Generator;
+use Blueprint\Models\Controller;
 use Blueprint\Models\Statements\ValidateStatement;
 use Blueprint\Translators\Rules;
 use Illuminate\Support\Str;
@@ -27,7 +28,7 @@ class FormRequestGenerator implements Generator
     {
         $output = [];
 
-        $stub = $this->files->get(STUBS_PATH . '/form-request.stub');
+        $stub = $this->files->stub('form-request.stub');
 
         $this->registerModels($tree['models'] ?? []);
 
@@ -41,7 +42,7 @@ class FormRequestGenerator implements Generator
 
                     $context = Str::singular($controller->prefix());
                     $name = $this->getName($context, $method);
-                    $path = $this->getPath($name);
+                    $path = $this->getPath($controller, $name);
 
                     if ($this->files->exists($path)) {
                         continue;
@@ -53,7 +54,7 @@ class FormRequestGenerator implements Generator
 
                     $this->files->put(
                         $path,
-                        $this->populateStub($stub, $name, $context, $statement)
+                        $this->populateStub($stub, $name, $context, $statement, $controller)
                     );
 
                     $output['created'][] = $path;
@@ -64,14 +65,14 @@ class FormRequestGenerator implements Generator
         return $output;
     }
 
-    protected function getPath(string $name)
+    protected function getPath(Controller $controller, string $name)
     {
-        return 'app/Http/Requests/' . $name . '.php';
+        return config('blueprint.app_path') . '/Http/Requests/' . ($controller->namespace() ? $controller->namespace() . '/' : '') . $name . '.php';
     }
 
-    protected function populateStub(string $stub, string $name, $context, ValidateStatement $validateStatement)
+    protected function populateStub(string $stub, string $name, $context, ValidateStatement $validateStatement, Controller $controller)
     {
-        $stub = str_replace('DummyNamespace', 'App\\Http\\Requests', $stub);
+        $stub = str_replace('DummyNamespace', config('blueprint.namespace') . '\\Http\\Requests' . ($controller->namespace() ? '\\' . $controller->namespace() : ''), $stub);
         $stub = str_replace('DummyClass', $name, $stub);
         $stub = str_replace('// rules...', $this->buildRules($context, $validateStatement), $stub);
 
@@ -96,7 +97,19 @@ class FormRequestGenerator implements Generator
 
     private function modelForContext(string $context)
     {
-        return $this->models[Str::studly($context)] ?? $this->models[Str::lower($context)] ?? null;
+        if (isset($this->models[Str::studly($context)])) {
+            return $this->models[Str::studly($context)];
+        }
+
+        $matches = array_filter(array_keys($this->models), function ($key) use ($context) {
+            return Str::endsWith($key, '/' . Str::studly($context));
+        });
+
+        if (count($matches) === 1) {
+            return $this->models[$matches[0]];
+        }
+
+        return null;
     }
 
     private function getName(string $context, string $method)

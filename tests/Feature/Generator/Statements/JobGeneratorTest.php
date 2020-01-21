@@ -36,8 +36,8 @@ class JobGeneratorTest extends TestCase
      */
     public function output_writes_nothing_for_empty_tree()
     {
-        $this->files->expects('get')
-            ->with('stubs/job.stub')
+        $this->files->expects('stub')
+            ->with('job.stub')
             ->andReturn(file_get_contents('stubs/job.stub'));
 
         $this->files->shouldNotHaveReceived('put');
@@ -50,8 +50,8 @@ class JobGeneratorTest extends TestCase
      */
     public function output_writes_nothing_tree_without_validate_statements()
     {
-        $this->files->expects('get')
-            ->with('stubs/job.stub')
+        $this->files->expects('stub')
+            ->with('job.stub')
             ->andReturn(file_get_contents('stubs/job.stub'));
 
         $this->files->shouldNotHaveReceived('put');
@@ -67,12 +67,12 @@ class JobGeneratorTest extends TestCase
      */
     public function output_writes_jobs()
     {
-        $this->files->expects('get')
-            ->with('stubs/job.stub')
+        $this->files->expects('stub')
+            ->with('job.stub')
             ->andReturn(file_get_contents('stubs/job.stub'));
 
-        $this->files->expects('get')
-            ->with('stubs/partials/constructor.stub')
+        $this->files->expects('stub')
+            ->with('partials/constructor.stub')
             ->andReturn(file_get_contents('stubs/partials/constructor.stub'));
 
         $this->files->shouldReceive('exists')
@@ -104,8 +104,8 @@ class JobGeneratorTest extends TestCase
      */
     public function it_only_outputs_new_jobs()
     {
-        $this->files->expects('get')
-            ->with('stubs/job.stub')
+        $this->files->expects('stub')
+            ->with('job.stub')
             ->andReturn(file_get_contents('stubs/job.stub'));
 
         $this->files->expects('exists')
@@ -119,5 +119,34 @@ class JobGeneratorTest extends TestCase
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function it_respects_configuration()
+    {
+        $this->app['config']->set('blueprint.namespace', 'Some\\App');
+        $this->app['config']->set('blueprint.app_path', 'src/path');
+
+        $this->files->expects('stub')
+            ->with('job.stub')
+            ->andReturn(file_get_contents('stubs/job.stub'));
+
+        $this->files->expects('exists')
+            ->with('src/path/Jobs')
+            ->andReturnFalse();
+        $this->files->expects('exists')
+            ->with('src/path/Jobs/SyncMedia.php')
+            ->andReturnFalse();
+        $this->files->expects('makeDirectory')
+            ->with('src/path/Jobs');
+        $this->files->expects('put')
+            ->with('src/path/Jobs/SyncMedia.php', $this->fixture('jobs/job-configured.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/readme-example.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['src/path/Jobs/SyncMedia.php']], $this->subject->output($tree));
     }
 }

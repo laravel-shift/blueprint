@@ -37,8 +37,8 @@ class FormRequestGeneratorTest extends TestCase
      */
     public function output_writes_nothing_for_empty_tree()
     {
-        $this->files->expects('get')
-            ->with('stubs/form-request.stub')
+        $this->files->expects('stub')
+            ->with('form-request.stub')
             ->andReturn(file_get_contents('stubs/form-request.stub'));
 
         $this->files->shouldNotHaveReceived('put');
@@ -51,8 +51,8 @@ class FormRequestGeneratorTest extends TestCase
      */
     public function output_writes_nothing_without_validate_statements()
     {
-        $this->files->expects('get')
-            ->with('stubs/form-request.stub')
+        $this->files->expects('stub')
+            ->with('form-request.stub')
             ->andReturn(file_get_contents('stubs/form-request.stub'));
 
         $this->files->shouldNotHaveReceived('put');
@@ -68,8 +68,8 @@ class FormRequestGeneratorTest extends TestCase
      */
     public function output_writes_form_requests()
     {
-        $this->files->expects('get')
-            ->with('stubs/form-request.stub')
+        $this->files->expects('stub')
+            ->with('form-request.stub')
             ->andReturn(file_get_contents('stubs/form-request.stub'));
 
         $this->files->shouldReceive('exists')
@@ -107,8 +107,8 @@ class FormRequestGeneratorTest extends TestCase
      */
     public function it_only_outputs_new_form_requests()
     {
-        $this->files->expects('get')
-            ->with('stubs/form-request.stub')
+        $this->files->expects('stub')
+            ->with('form-request.stub')
             ->andReturn(file_get_contents('stubs/form-request.stub'));
 
         $this->files->expects('exists')
@@ -125,5 +125,60 @@ class FormRequestGeneratorTest extends TestCase
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function output_supports_nested_form_requests()
+    {
+        $this->files->expects('stub')
+            ->with('form-request.stub')
+            ->andReturn(file_get_contents('stubs/form-request.stub'));
+
+        $this->files->expects('exists')
+            ->with('app/Http/Requests/Admin')
+            ->andReturnFalse();
+        $this->files->expects('exists')
+            ->with('app/Http/Requests/Admin/UserStoreRequest.php')
+            ->andReturnFalse();
+        $this->files->expects('makeDirectory')
+            ->with('app/Http/Requests/Admin');
+        $this->files->expects('put')
+            ->with('app/Http/Requests/Admin/UserStoreRequest.php', $this->fixture('form-requests/nested-components.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/nested-components.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['app/Http/Requests/Admin/UserStoreRequest.php']], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function it_respects_configuration()
+    {
+        $this->app['config']->set('blueprint.namespace', 'Some\\App');
+        $this->app['config']->set('blueprint.app_path', 'src/path');
+
+        $this->files->expects('stub')
+            ->with('form-request.stub')
+            ->andReturn(file_get_contents('stubs/form-request.stub'));
+
+        $this->files->expects('exists')
+            ->with('src/path/Http/Requests')
+            ->andReturns(false);
+        $this->files->expects('exists')
+            ->with('src/path/Http/Requests/PostStoreRequest.php')
+            ->andReturnFalse();
+        $this->files->expects('makeDirectory')
+            ->with('src/path/Http/Requests');
+        $this->files->expects('put')
+            ->with('src/path/Http/Requests/PostStoreRequest.php', $this->fixture('form-requests/form-request-configured.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/readme-example.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['src/path/Http/Requests/PostStoreRequest.php']], $this->subject->output($tree));
     }
 }

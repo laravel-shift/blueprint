@@ -36,8 +36,8 @@ class MailGeneratorTest extends TestCase
      */
     public function output_writes_nothing_for_empty_tree()
     {
-        $this->files->expects('get')
-            ->with('stubs/mail.stub')
+        $this->files->expects('stub')
+            ->with('mail.stub')
             ->andReturn(file_get_contents('stubs/mail.stub'));
 
         $this->files->shouldNotHaveReceived('put');
@@ -50,8 +50,8 @@ class MailGeneratorTest extends TestCase
      */
     public function output_writes_nothing_tree_without_validate_statements()
     {
-        $this->files->expects('get')
-            ->with('stubs/mail.stub')
+        $this->files->expects('stub')
+            ->with('mail.stub')
             ->andReturn(file_get_contents('stubs/mail.stub'));
 
         $this->files->shouldNotHaveReceived('put');
@@ -67,12 +67,12 @@ class MailGeneratorTest extends TestCase
      */
     public function output_writes_mails()
     {
-        $this->files->expects('get')
-            ->with('stubs/mail.stub')
+        $this->files->expects('stub')
+            ->with('mail.stub')
             ->andReturn(file_get_contents('stubs/mail.stub'));
 
-        $this->files->expects('get')
-            ->with('stubs/partials/constructor.stub')
+        $this->files->expects('stub')
+            ->with('partials/constructor.stub')
             ->andReturn(file_get_contents('stubs/partials/constructor.stub'));
 
         $this->files->shouldReceive('exists')
@@ -104,8 +104,8 @@ class MailGeneratorTest extends TestCase
      */
     public function it_only_outputs_new_mails()
     {
-        $this->files->expects('get')
-            ->with('stubs/mail.stub')
+        $this->files->expects('stub')
+            ->with('mail.stub')
             ->andReturn(file_get_contents('stubs/mail.stub'));
 
         $this->files->expects('exists')
@@ -119,5 +119,34 @@ class MailGeneratorTest extends TestCase
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function it_respects_configuration()
+    {
+        $this->app['config']->set('blueprint.namespace', 'Some\\App');
+        $this->app['config']->set('blueprint.app_path', 'src/path');
+
+        $this->files->expects('stub')
+            ->with('mail.stub')
+            ->andReturn(file_get_contents('stubs/mail.stub'));
+
+        $this->files->expects('exists')
+            ->with('src/path/Mail')
+            ->andReturnFalse();
+        $this->files->expects('exists')
+            ->with('src/path/Mail/ReviewNotification.php')
+            ->andReturnFalse();
+        $this->files->expects('makeDirectory')
+            ->with('src/path/Mail');
+        $this->files->expects('put')
+            ->with('src/path/Mail/ReviewNotification.php', $this->fixture('mailables/mail-configured.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/readme-example.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['src/path/Mail/ReviewNotification.php']], $this->subject->output($tree));
     }
 }

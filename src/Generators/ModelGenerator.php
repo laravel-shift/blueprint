@@ -2,6 +2,7 @@
 
 namespace Blueprint\Generators;
 
+use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Column;
 use Blueprint\Models\Model;
@@ -21,7 +22,7 @@ class ModelGenerator implements Generator
     {
         $output = [];
 
-        $stub = $this->files->get(STUBS_PATH . '/model/class.stub');
+        $stub = $this->files->stub('model/class.stub');
 
         /** @var \Blueprint\Models\Model $model */
         foreach ($tree['models'] as $model) {
@@ -39,7 +40,7 @@ class ModelGenerator implements Generator
 
     protected function populateStub(string $stub, Model $model)
     {
-        $stub = str_replace('DummyNamespace', 'App', $stub);
+        $stub = str_replace('DummyNamespace', $model->fullyQualifiedNamespace(), $stub);
         $stub = str_replace('DummyClass', $model->name(), $stub);
 
         $body = $this->buildProperties($model);
@@ -58,19 +59,19 @@ class ModelGenerator implements Generator
 
         $columns = $this->fillableColumns($model->columns());
         if (!empty($columns)) {
-            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->getStub('fillable'));
+            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model/fillable.stub'));
         } else {
-            $properties .= $this->getStub('fillable');
+            $properties .= $this->files->stub('model/fillable.stub');
         }
 
         $columns = $this->castableColumns($model->columns());
         if (!empty($columns)) {
-            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns), $this->getStub('casts'));
+            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns), $this->files->stub('model/casts.stub'));
         }
 
         $columns = $this->dateColumns($model->columns());
         if (!empty($columns)) {
-            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->getStub('dates'));
+            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model/dates.stub'));
         }
 
         return trim($properties);
@@ -87,13 +88,13 @@ class ModelGenerator implements Generator
         }
 
         $methods = '';
-        $template = $this->getStub('method');
+        $template = $this->files->stub('model/method.stub');
 
         /** @var Column $column */
         foreach ($columns as $column) {
             $name = Str::beforeLast($column->name(), '_id');
             $class = Str::studly($column->attributes()[0] ?? $name);
-            $relationship = sprintf("\$this->belongsTo(\App\%s::class)", $class);
+            $relationship = sprintf("\$this->belongsTo(%s::class)", '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);
 
             $method = str_replace('DummyName', Str::camel($name), $template);
             $method = str_replace('null', $relationship, $method);
@@ -106,7 +107,9 @@ class ModelGenerator implements Generator
 
     protected function getPath(Model $model)
     {
-        return 'app/' . $model->name() . '.php';
+        $path = str_replace('\\', '/', Blueprint::relativeNamespace($model->fullyQualifiedClassName()));
+
+        return config('blueprint.app_path') . '/' . $path . '.php';
     }
 
     private function fillableColumns(array $columns)
@@ -172,17 +175,6 @@ class ModelGenerator implements Generator
         }
 
         return trim($output);
-    }
-
-    private function getStub(string $stub)
-    {
-        static $stubs = [];
-
-        if (empty($stubs[$stub])) {
-            $stubs[$stub] = $this->files->get(STUBS_PATH . '/model/' . $stub . '.stub');
-        }
-
-        return $stubs[$stub];
     }
 
     private function addTraits(Model $model, $stub)

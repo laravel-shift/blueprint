@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 class Model
 {
     private $name;
+    private $namespace;
     private $timestamps = 'timestamps';
     private $softDeletes = false;
     private $columns = [];
@@ -16,12 +17,42 @@ class Model
      */
     public function __construct($name)
     {
-        $this->name = $name;
+        $this->name = class_basename($name);
+        $this->namespace = trim(implode('\\', array_slice(explode('\\', str_replace('/', '\\', $name)), 0, -1)), '\\');
     }
 
     public function name(): string
     {
         return Str::studly($this->name);
+    }
+
+    public function namespace()
+    {
+        if (empty($this->namespace)) {
+            return '';
+        }
+
+        return $this->namespace;
+    }
+
+    public function fullyQualifiedNamespace()
+    {
+        $fqn = config('blueprint.namespace');
+
+        if (config('blueprint.models_namespace')) {
+            $fqn .= '\\' . config('blueprint.models_namespace');
+        }
+
+        if ($this->namespace) {
+            $fqn .= '\\' . $this->namespace;
+        }
+
+        return $fqn;
+    }
+
+    public function fullyQualifiedClassName()
+    {
+        return $this->fullyQualifiedNamespace() . '\\' . $this->name;
     }
 
     public function addColumn(Column $column)
