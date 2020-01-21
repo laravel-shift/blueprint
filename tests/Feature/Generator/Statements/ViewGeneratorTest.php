@@ -36,8 +36,8 @@ class ViewGeneratorTest extends TestCase
      */
     public function output_writes_nothing_for_empty_tree()
     {
-        $this->files->expects('get')
-            ->with('stubs/view.stub')
+        $this->files->expects('stub')
+            ->with('view.stub')
             ->andReturn(file_get_contents('stubs/view.stub'));
 
         $this->files->shouldNotHaveReceived('put');
@@ -50,8 +50,8 @@ class ViewGeneratorTest extends TestCase
      */
     public function output_writes_nothing_without_render_statements()
     {
-        $this->files->expects('get')
-            ->with('stubs/view.stub')
+        $this->files->expects('stub')
+            ->with('view.stub')
             ->andReturn(file_get_contents('stubs/view.stub'));
 
         $this->files->shouldNotHaveReceived('put');
@@ -68,8 +68,8 @@ class ViewGeneratorTest extends TestCase
     public function output_writes_views_for_render_statements()
     {
         $template = file_get_contents('stubs/view.stub');
-        $this->files->expects('get')
-            ->with('stubs/view.stub')
+        $this->files->expects('stub')
+            ->with('view.stub')
             ->andReturn($template);
 
         $this->files->shouldReceive('exists')
@@ -111,8 +111,8 @@ class ViewGeneratorTest extends TestCase
      */
     public function it_only_outputs_new_views()
     {
-        $this->files->expects('get')
-            ->with('stubs/view.stub')
+        $this->files->expects('stub')
+            ->with('view.stub')
             ->andReturn(file_get_contents('stubs/view.stub'));
 
         $this->files->expects('exists')

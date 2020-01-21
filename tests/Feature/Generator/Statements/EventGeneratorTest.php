@@ -36,8 +36,8 @@ class EventGeneratorTest extends TestCase
      */
     public function output_writes_nothing_for_empty_tree()
     {
-        $this->files->expects('get')
-            ->with('stubs/event.stub')
+        $this->files->expects('stub')
+            ->with('event.stub')
             ->andReturn(file_get_contents('stubs/event.stub'));
 
         $this->files->shouldNotHaveReceived('put');
@@ -50,8 +50,8 @@ class EventGeneratorTest extends TestCase
      */
     public function output_writes_nothing_tree_without_validate_statements()
     {
-        $this->files->expects('get')
-            ->with('stubs/event.stub')
+        $this->files->expects('stub')
+            ->with('event.stub')
             ->andReturn(file_get_contents('stubs/event.stub'));
 
         $this->files->shouldNotHaveReceived('put');
@@ -67,12 +67,12 @@ class EventGeneratorTest extends TestCase
      */
     public function output_writes_events()
     {
-        $this->files->expects('get')
-            ->with('stubs/event.stub')
+        $this->files->expects('stub')
+            ->with('event.stub')
             ->andReturn(file_get_contents('stubs/event.stub'));
 
-        $this->files->expects('get')
-            ->with('stubs/partials/constructor.stub')
+        $this->files->expects('stub')
+            ->with('partials/constructor.stub')
             ->andReturn(file_get_contents('stubs/partials/constructor.stub'));
 
         $this->files->shouldReceive('exists')
@@ -104,8 +104,8 @@ class EventGeneratorTest extends TestCase
      */
     public function it_only_outputs_new_events()
     {
-        $this->files->expects('get')
-            ->with('stubs/event.stub')
+        $this->files->expects('stub')
+            ->with('event.stub')
             ->andReturn(file_get_contents('stubs/event.stub'));
 
         $this->files->expects('exists')
@@ -129,13 +129,9 @@ class EventGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
         $this->app['config']->set('blueprint.app_path', 'src/path');
 
-        $this->files->expects('get')
-            ->with('stubs/event.stub')
+        $this->files->expects('stub')
+            ->with('event.stub')
             ->andReturn(file_get_contents('stubs/event.stub'));
-
-        $this->files->expects('get')
-            ->with('stubs/partials/constructor.stub')
-            ->andReturn(file_get_contents('stubs/partials/constructor.stub'));
 
         $this->files->expects('exists')
             ->with('src/path/Events')

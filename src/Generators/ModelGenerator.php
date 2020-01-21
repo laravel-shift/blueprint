@@ -22,7 +22,7 @@ class ModelGenerator implements Generator
     {
         $output = [];
 
-        $stub = $this->files->get(STUBS_PATH . '/model/class.stub');
+        $stub = $this->files->stub('model/class.stub');
 
         /** @var \Blueprint\Models\Model $model */
         foreach ($tree['models'] as $model) {
@@ -59,19 +59,19 @@ class ModelGenerator implements Generator
 
         $columns = $this->fillableColumns($model->columns());
         if (!empty($columns)) {
-            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->getStub('fillable'));
+            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model/fillable.stub'));
         } else {
-            $properties .= $this->getStub('fillable');
+            $properties .= $this->files->stub('model/fillable.stub');
         }
 
         $columns = $this->castableColumns($model->columns());
         if (!empty($columns)) {
-            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns), $this->getStub('casts'));
+            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns), $this->files->stub('model/casts.stub'));
         }
 
         $columns = $this->dateColumns($model->columns());
         if (!empty($columns)) {
-            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->getStub('dates'));
+            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model/dates.stub'));
         }
 
         return trim($properties);
@@ -88,7 +88,7 @@ class ModelGenerator implements Generator
         }
 
         $methods = '';
-        $template = $this->getStub('method');
+        $template = $this->files->stub('model/method.stub');
 
         /** @var Column $column */
         foreach ($columns as $column) {
@@ -175,17 +175,6 @@ class ModelGenerator implements Generator
         }
 
         return trim($output);
-    }
-
-    private function getStub(string $stub)
-    {
-        static $stubs = [];
-
-        if (empty($stubs[$stub])) {
-            $stubs[$stub] = $this->files->get(STUBS_PATH . '/model/' . $stub . '.stub');
-        }
-
-        return $stubs[$stub];
     }
 
     private function addTraits(Model $model, $stub)

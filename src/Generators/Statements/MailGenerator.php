@@ -21,7 +21,7 @@ class MailGenerator implements Generator
     {
         $output = [];
 
-        $stub = $this->files->get(STUBS_PATH . '/mail.stub');
+        $stub = $this->files->stub('mail.stub');
 
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree['controllers'] as $controller) {
@@ -72,7 +72,7 @@ class MailGenerator implements Generator
         static $constructor = null;
 
         if (is_null($constructor)) {
-            $constructor = str_replace('new instance', 'new message instance', $this->files->get(STUBS_PATH . '/partials/constructor.stub'));
+            $constructor = str_replace('new instance', 'new message instance', $this->files->stub('partials/constructor.stub'));
         }
 
         if (empty($sendStatement->data())) {

@@ -35,8 +35,8 @@ class FactoryGeneratorTest extends TestCase
      */
     public function output_writes_nothing_for_empty_tree()
     {
-        $this->files->expects('get')
-            ->with('stubs/factory.stub')
+        $this->files->expects('stub')
+            ->with('factory.stub')
             ->andReturn(file_get_contents('stubs/factory.stub'));
 
         $this->files->shouldNotHaveReceived('put');
@@ -50,8 +50,8 @@ class FactoryGeneratorTest extends TestCase
      */
     public function output_writes_migration_for_model_tree($definition, $path, $migration)
     {
-        $this->files->expects('get')
-            ->with('stubs/factory.stub')
+        $this->files->expects('stub')
+            ->with('factory.stub')
             ->andReturn(file_get_contents('stubs/factory.stub'));
 
         $this->files->expects('put')
@@ -71,8 +71,8 @@ class FactoryGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
         $this->app['config']->set('blueprint.models_namespace', 'Models');
 
-        $this->files->expects('get')
-            ->with('stubs/factory.stub')
+        $this->files->expects('stub')
+            ->with('factory.stub')
             ->andReturn(file_get_contents('stubs/factory.stub'));
 
         $this->files->expects('put')

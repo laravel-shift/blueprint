@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Generators;
 
-use Tests\TestCase;
 use Blueprint\Blueprint;
 use Blueprint\Generators\ModelGenerator;
+use Tests\TestCase;
 
 class ModelGeneratorTest extends TestCase
 {
@@ -32,8 +32,8 @@ class ModelGeneratorTest extends TestCase
      */
     public function output_writes_nothing_for_empty_tree()
     {
-        $this->files->expects('get')
-            ->with('stubs/model/class.stub')
+        $this->files->expects('stub')
+            ->with('model/class.stub')
             ->andReturn(file_get_contents('stubs/model/class.stub'));
 
         $this->files->shouldNotHaveReceived('put');
@@ -47,32 +47,27 @@ class ModelGeneratorTest extends TestCase
      */
     public function output_writes_migration_for_model_tree($definition, $path, $model)
     {
-        static $iteration = 0;
-
-        $this->files->expects('get')
-            ->with('stubs/model/class.stub')
+        $this->files->expects('stub')
+            ->with('model/class.stub')
             ->andReturn(file_get_contents('stubs/model/class.stub'));
 
-        // TODO: remove conditional expectations
-        if ($iteration === 0) {
-            $this->files->expects('get')
-                ->with('stubs/model/fillable.stub')
-                ->andReturn(file_get_contents('stubs/model/fillable.stub'));
+        $this->files->expects('stub')
+            ->with('model/fillable.stub')
+            ->andReturn(file_get_contents('stubs/model/fillable.stub'));
 
-            $this->files->expects('get')
-                ->with('stubs/model/casts.stub')
-                ->andReturn(file_get_contents('stubs/model/casts.stub'));
+        $this->files->expects('stub')
+            ->with('model/casts.stub')
+            ->andReturn(file_get_contents('stubs/model/casts.stub'));
 
-            $this->files->expects('get')
-                ->with('stubs/model/dates.stub')
+        if ($definition === 'definitions/readme-example.bp') {
+            $this->files->expects('stub')
+                ->with('model/dates.stub')
                 ->andReturn(file_get_contents('stubs/model/dates.stub'));
         }
 
-        if ($definition === 'definitions/soft-deletes.bp') {
-            $this->files->expects('get')
-                ->with('stubs/model/method.stub')
-                ->andReturn(file_get_contents('stubs/model/method.stub'));
-        }
+        $this->files->shouldReceive('stub')
+            ->with('model/method.stub')
+            ->andReturn(file_get_contents('stubs/model/method.stub'));
 
         $this->files->expects('put')
             ->with($path, $this->fixture($model));
@@ -81,7 +76,6 @@ class ModelGeneratorTest extends TestCase
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
-        $iteration++;
     }
 
     /**
@@ -93,9 +87,21 @@ class ModelGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
         $this->app['config']->set('blueprint.models_namespace', 'Models');
 
-        $this->files->expects('get')
-            ->with('stubs/model/class.stub')
+        $this->files->expects('stub')
+            ->with('model/class.stub')
             ->andReturn(file_get_contents('stubs/model/class.stub'));
+
+        $this->files->expects('stub')
+            ->with('model/fillable.stub')
+            ->andReturn(file_get_contents('stubs/model/fillable.stub'));
+
+        $this->files->expects('stub')
+            ->with('model/casts.stub')
+            ->andReturn(file_get_contents('stubs/model/casts.stub'));
+
+        $this->files->expects('stub')
+            ->with('model/method.stub')
+            ->andReturn(file_get_contents('stubs/model/method.stub'));
 
         $this->files->expects('put')
             ->with('src/path/Models/Comment.php', $this->fixture('models/model-configured.php'));

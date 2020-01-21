@@ -28,7 +28,7 @@ class FormRequestGenerator implements Generator
     {
         $output = [];
 
-        $stub = $this->files->get(STUBS_PATH . '/form-request.stub');
+        $stub = $this->files->stub('form-request.stub');
 
         $this->registerModels($tree['models'] ?? []);
 

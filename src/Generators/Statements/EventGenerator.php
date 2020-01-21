@@ -21,7 +21,7 @@ class EventGenerator implements Generator
     {
         $output = [];
 
-        $stub = $this->files->get(STUBS_PATH . '/event.stub');
+        $stub = $this->files->stub('event.stub');
 
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree['controllers'] as $controller) {
@@ -76,7 +76,7 @@ class EventGenerator implements Generator
         static $constructor = null;
 
         if (is_null($constructor)) {
-            $constructor = str_replace('new instance', 'new event instance', $this->files->get(STUBS_PATH . '/partials/constructor.stub'));
+            $constructor = str_replace('new instance', 'new event instance', $this->files->stub('partials/constructor.stub'));
         }
 
         if (empty($fireStatement->data())) {

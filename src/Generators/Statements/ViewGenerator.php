@@ -21,7 +21,7 @@ class ViewGenerator implements Generator
     {
         $output = [];
 
-        $stub = $this->files->get(STUBS_PATH . '/view.stub');
+        $stub = $this->files->stub('view.stub');
 
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree['controllers'] as $controller) {

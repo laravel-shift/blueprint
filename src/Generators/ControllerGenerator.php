@@ -34,7 +34,7 @@ class ControllerGenerator implements Generator
     {
         $output = [];
 
-        $stub = $this->files->get(STUBS_PATH . '/controller/class.stub');
+        $stub = $this->files->stub('controller/class.stub');
 
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree['controllers'] as $controller) {
@@ -63,7 +63,7 @@ class ControllerGenerator implements Generator
 
     private function buildMethods(Controller $controller)
     {
-        $template = $this->methodStub();
+        $template = $this->files->stub('controller/method.stub');
 
         $methods = '';
 
@@ -118,7 +118,7 @@ class ControllerGenerator implements Generator
                     $this->addImport($controller, config('blueprint.namespace') . '\\' . ($controller->namespace() ? $controller->namespace() . '\\' : '') . $this->determineModel($controller, $statement->reference()));
                 } elseif ($statement instanceof QueryStatement) {
                     $body .= self::INDENT . $statement->output($controller->prefix()) . PHP_EOL;
-                    $this->addImport($controller, config('blueprint.namespace') . '\\' . ($controller->namespace() ? $controller->namespace() . '\\' : '')  . $this->determineModel($controller, $statement->model()));
+                    $this->addImport($controller, config('blueprint.namespace') . '\\' . ($controller->namespace() ? $controller->namespace() . '\\' : '') . $this->determineModel($controller, $statement->model()));
                 }
 
                 $body .= PHP_EOL;
@@ -139,17 +139,6 @@ class ControllerGenerator implements Generator
         $path = str_replace('\\', '/', Blueprint::relativeNamespace($controller->fullyQualifiedClassName()));
 
         return config('blueprint.app_path') . '/' . $path . '.php';
-    }
-
-    private function methodStub()
-    {
-        static $stub = '';
-
-        if (empty($stub)) {
-            $stub = $this->files->get(STUBS_PATH . '/controller/method.stub');
-        }
-
-        return $stub;
     }
 
     private function addImport(Controller $controller, $class)

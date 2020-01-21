@@ -22,7 +22,7 @@ class FactoryGenerator implements Generator
     {
         $output = [];
 
-        $stub = $this->files->get(STUBS_PATH . '/factory.stub');
+        $stub = $this->files->stub('factory.stub');
 
         /** @var \Blueprint\Models\Model $model */
         foreach ($tree['models'] as $model) {

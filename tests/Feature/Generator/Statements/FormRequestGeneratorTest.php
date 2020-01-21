@@ -37,8 +37,8 @@ class FormRequestGeneratorTest extends TestCase
      */
     public function output_writes_nothing_for_empty_tree()
     {
-        $this->files->expects('get')
-            ->with('stubs/form-request.stub')
+        $this->files->expects('stub')
+            ->with('form-request.stub')
             ->andReturn(file_get_contents('stubs/form-request.stub'));
 
         $this->files->shouldNotHaveReceived('put');
@@ -51,8 +51,8 @@ class FormRequestGeneratorTest extends TestCase
      */
     public function output_writes_nothing_without_validate_statements()
     {
-        $this->files->expects('get')
-            ->with('stubs/form-request.stub')
+        $this->files->expects('stub')
+            ->with('form-request.stub')
             ->andReturn(file_get_contents('stubs/form-request.stub'));
 
         $this->files->shouldNotHaveReceived('put');
@@ -68,8 +68,8 @@ class FormRequestGeneratorTest extends TestCase
      */
     public function output_writes_form_requests()
     {
-        $this->files->expects('get')
-            ->with('stubs/form-request.stub')
+        $this->files->expects('stub')
+            ->with('form-request.stub')
             ->andReturn(file_get_contents('stubs/form-request.stub'));
 
         $this->files->shouldReceive('exists')
@@ -107,8 +107,8 @@ class FormRequestGeneratorTest extends TestCase
      */
     public function it_only_outputs_new_form_requests()
     {
-        $this->files->expects('get')
-            ->with('stubs/form-request.stub')
+        $this->files->expects('stub')
+            ->with('form-request.stub')
             ->andReturn(file_get_contents('stubs/form-request.stub'));
 
         $this->files->expects('exists')
@@ -132,8 +132,8 @@ class FormRequestGeneratorTest extends TestCase
      */
     public function output_supports_nested_form_requests()
     {
-        $this->files->expects('get')
-            ->with('stubs/form-request.stub')
+        $this->files->expects('stub')
+            ->with('form-request.stub')
             ->andReturn(file_get_contents('stubs/form-request.stub'));
 
         $this->files->expects('exists')
@@ -161,8 +161,8 @@ class FormRequestGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
         $this->app['config']->set('blueprint.app_path', 'src/path');
 
-        $this->files->expects('get')
-            ->with('stubs/form-request.stub')
+        $this->files->expects('stub')
+            ->with('form-request.stub')
             ->andReturn(file_get_contents('stubs/form-request.stub'));
 
         $this->files->expects('exists')
