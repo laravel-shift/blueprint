@@ -42,6 +42,7 @@ class ModelGenerator implements Generator
     {
         $stub = str_replace('DummyNamespace', $model->fullyQualifiedNamespace(), $stub);
         $stub = str_replace('DummyClass', $model->name(), $stub);
+        $stub = str_replace('/** DummyPHPDocClass **/', $this->buildClassPhpDoc($model), $stub);
 
         $body = $this->buildProperties($model);
         $body .= PHP_EOL . PHP_EOL;
@@ -51,6 +52,18 @@ class ModelGenerator implements Generator
         $stub = $this->addTraits($model, $stub);
 
         return $stub;
+    }
+
+    private function buildClassPhpDoc(Model $model)
+    {
+        $phpDoc = '/**' . PHP_EOL;
+        /** @var Column $column */
+        foreach ($model->columns() as $column) {
+            $phpDoc.= " * @property {$column->phpDocDataType()} \${$column->name()}" . PHP_EOL;
+        }
+        $phpDoc.= ' */';
+
+        return $phpDoc;
     }
 
     private function buildProperties(Model $model)

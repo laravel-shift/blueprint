@@ -7,12 +7,14 @@ class Column
     private $modifiers;
     private $name;
     private $dataType;
+    private $phpDocDataType;
     private $attributes;
 
-    public function __construct(string $name, string $dataType = 'string', array $modifiers = [], array $attributes = [])
+    public function __construct(string $name, string $dataType = 'string', string $phpDocDataType = 'string', array $modifiers = [], array $attributes = [])
     {
         $this->name = $name;
         $this->dataType = $dataType;
+        $this->phpDocDataType = $phpDocDataType;
         $this->modifiers = $modifiers;
         $this->attributes = $attributes;
     }
@@ -25,6 +27,11 @@ class Column
     public function dataType()
     {
         return $this->dataType;
+    }
+
+    public function phpDocDataType()
+    {
+        return $this->phpDocDataType;
     }
 
     public function attributes()

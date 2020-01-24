@@ -82,6 +82,69 @@ class ModelLexer implements Lexer
         'unique' => 'unique',
     ];
 
+    private static $phpDocDataTypes = [
+        'id' => 'integer',
+        'bigincrements' => 'integer',
+        'biginteger' => 'integer',
+        'binary' => 'string',
+        'boolean' => 'boolean',
+        'char' => 'string',
+        'date' => 'Carbon',
+        'datetime' => 'Carbon',
+        'datetimetz' => 'Carbon',
+        'decimal' => 'float',
+        'double' => 'double',
+        'enum' => 'string',
+        'float' => 'float',
+        'geometry' => 'string',
+        'geometrycollection' => 'string',
+        'increments' => 'integer',
+        'integer' => 'integer',
+        'ipaddress' => 'string',
+        'json' => 'string',
+        'jsonb' => 'string',
+        'linestring' => 'string',
+        'longtext' => 'string',
+        'macaddress' => 'string',
+        'mediumincrements' => 'integer',
+        'mediuminteger' => 'integer',
+        'mediumtext' => 'string',
+        'morphs' => 'string',
+        'uuidmorphs' => 'string',
+        'multilinestring' => 'string',
+        'multipoint' => 'string',
+        'multipolygon' => 'string',
+        'nullablemorphs' => 'string',
+        'nullableuuidmorphs' => 'string',
+        'nullabletimestamps' => 'Carbon',
+        'point' => 'string',
+        'polygon' => 'string',
+        'remembertoken' => 'string',
+        'set' => 'string',
+        'smallincrements' => 'integer',
+        'smallinteger' => 'integer',
+        'softdeletes' => 'Carbon',
+        'softdeletestz' => 'Carbon',
+        'string' => 'string',
+        'text' => 'string',
+        'time' => 'Carbon',
+        'timetz' => 'Carbon',
+        'timestamp' => 'Carbon',
+        'timestamptz' => 'Carbon',
+        'timestamps' => 'Carbon',
+        'timestampstz' => 'Carbon',
+        'tinyincrements' => 'integer',
+        'tinyinteger' => 'integer',
+        'unsignedbiginteger' => 'integer',
+        'unsigneddecimal' => 'float',
+        'unsignedinteger' => 'integer',
+        'unsignedmediuminteger' => 'integer',
+        'unsignedsmallinteger' => 'integer',
+        'unsignedtinyinteger' => 'integer',
+        'uuid' => 'string',
+        'year' => 'integer',
+    ];
+
     public function analyze(array $tokens): array
     {
         $registry = [
@@ -138,6 +201,7 @@ class ModelLexer implements Lexer
     private function buildColumn(string $name, string $definition)
     {
         $data_type = 'string';
+        $phpDocDataType = 'string';
         $modifiers = [];
 
         $tokens = explode(' ', $definition);
@@ -158,6 +222,10 @@ class ModelLexer implements Lexer
                 }
             }
 
+            if (isset(self::$phpDocDataTypes[strtolower($value)])) {
+                $phpDocDataType = self::$phpDocDataTypes[strtolower($value)];
+            }
+
             if (isset(self::$modifiers[strtolower($value)])) {
                 $modifierAttributes = $parts[1] ?? null;
                 if (empty($modifierAttributes)) {
@@ -168,6 +236,6 @@ class ModelLexer implements Lexer
             }
         }
 
-        return new Column($name, $data_type, $modifiers, $attributes ?? []);
+        return new Column($name, $data_type, $phpDocDataType, $modifiers, $attributes ?? []);
     }
 }
