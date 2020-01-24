@@ -37,7 +37,7 @@ class RulesTest extends TestCase
      */
     public function forColumn_returns_max_rule_for_string_attributes()
     {
-        $column = new Column('test', 'string', [], [1000]);
+        $column = new Column('test', 'string', 'string', [], [1000]);
 
         $this->assertContains('max:1000', Rules::fromColumn('context', $column));
 
