@@ -41,7 +41,7 @@ class RulesTest extends TestCase
 
         $this->assertContains('max:1000', Rules::fromColumn('context', $column));
 
-        $column = new Column('test', 'char', [], [10]);
+        $column = new Column('test', 'char', 'string', [], [10]);
 
         $this->assertContains('max:10', Rules::fromColumn('context', $column));
     }
@@ -129,10 +129,10 @@ class RulesTest extends TestCase
      */
     public function forColumn_returns_in_rule_for_enums_and_sets()
     {
-        $column = new Column('test', 'enum', [], ['alpha', 'bravo', 'charlie']);
+        $column = new Column('test', 'enum', 'string', [], ['alpha', 'bravo', 'charlie']);
         $this->assertContains('in:alpha,bravo,charlie', Rules::fromColumn('context', $column));
 
-        $column = new Column('test', 'set', [], [2, 4, 6]);
+        $column = new Column('test', 'set', 'string', [], [2, 4, 6]);
 
         $this->assertContains('in:2,4,6', Rules::fromColumn('context', $column));
     }
@@ -153,7 +153,7 @@ class RulesTest extends TestCase
      */
     public function forColumn_return_exists_rule_for_the_unique_modifier()
     {
-        $column = new Column('column', 'string', ['unique']);
+        $column = new Column('column', 'string', 'string', ['unique']);
 
         $this->assertContains('unique:connection.table,column', Rules::fromColumn('connection.table', $column));
     }
