@@ -42,6 +42,7 @@ class ModelGenerator implements Generator
     {
         $stub = str_replace('DummyNamespace', $model->fullyQualifiedNamespace(), $stub);
         $stub = str_replace('DummyClass', $model->name(), $stub);
+        $stub = str_replace('/** DummyPHPDocClass **/', $this->buildClassPhpDoc($model), $stub);
 
         $body = $this->buildProperties($model);
         $body .= PHP_EOL . PHP_EOL;
@@ -51,6 +52,19 @@ class ModelGenerator implements Generator
         $stub = $this->addTraits($model, $stub);
 
         return $stub;
+    }
+
+    private function buildClassPhpDoc(Model $model)
+    {
+        $phpDoc = '/**' . PHP_EOL;
+        /** @var Column $column */
+        foreach ($model->columns() as $column) {
+            $phpDoc .= sprintf(' * @property %s $%s', $this->phpDataType($column->dataType()), $column->name());
+            $phpDoc .= PHP_EOL;
+        }
+        $phpDoc .= ' */';
+
+        return $phpDoc;
     }
 
     private function buildProperties(Model $model)
@@ -187,5 +201,47 @@ class ModelGenerator implements Generator
         $stub = preg_replace('/^\\{$/m', '{' . PHP_EOL . '    use SoftDeletes;' . PHP_EOL, $stub);
 
         return $stub;
+    }
+
+    private function phpDataType(string $dataType)
+    {
+        static $php_data_types = [
+            'id' => 'int',
+            'bigincrements' => 'int',
+            'biginteger' => 'int',
+            'boolean' => 'bool',
+            'date' => '\Carbon\Carbon',
+            'datetime' => '\Carbon\Carbon',
+            'datetimetz' => '\Carbon\Carbon',
+            'decimal' => 'float',
+            'double' => 'double',
+            'float' => 'float',
+            'increments' => 'int',
+            'integer' => 'int',
+            'mediumincrements' => 'int',
+            'mediuminteger' => 'int',
+            'nullabletimestamps' => '\Carbon\Carbon',
+            'smallincrements' => 'int',
+            'smallinteger' => 'int',
+            'softdeletes' => '\Carbon\Carbon',
+            'softdeletestz' => '\Carbon\Carbon',
+            'time' => '\Carbon\Carbon',
+            'timetz' => '\Carbon\Carbon',
+            'timestamp' => '\Carbon\Carbon',
+            'timestamptz' => '\Carbon\Carbon',
+            'timestamps' => '\Carbon\Carbon',
+            'timestampstz' => '\Carbon\Carbon',
+            'tinyincrements' => 'integer',
+            'tinyinteger' => 'int',
+            'unsignedbiginteger' => 'int',
+            'unsigneddecimal' => 'float',
+            'unsignedinteger' => 'int',
+            'unsignedmediuminteger' => 'int',
+            'unsignedsmallinteger' => 'int',
+            'unsignedtinyinteger' => 'int',
+            'year' => 'int',
+        ];
+
+        return $php_data_types[strtolower($dataType)] ?? 'string';
     }
 }

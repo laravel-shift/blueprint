@@ -4,6 +4,10 @@ namespace App\Admin;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property integer $id
+ * @property string $name
+ */
 class User extends Model
 {
     /**
