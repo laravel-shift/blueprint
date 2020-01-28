@@ -22,6 +22,10 @@ class Blueprint
             return $matches[1] . strtolower($matches[2]) . ': ' . $matches[2];
         }, $content);
 
+        $content = preg_replace_callback('/^(\s+)(id|timestamps(Tz)?|softDeletes(Tz)?): true$/mi', function ($matches) {
+            return $matches[1] . strtolower($matches[2]) . ': ' . $matches[2];
+        }, $content);
+
         return Yaml::parse($content);
     }
 

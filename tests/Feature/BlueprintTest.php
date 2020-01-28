@@ -110,6 +110,33 @@ class BlueprintTest extends TestCase
     /**
      * @test
      */
+    public function it_parses_longhands()
+    {
+        $blueprint = $this->fixture('definitions/longhands.bp');
+
+        $this->assertEquals([
+            'models' => [
+                'Proper' => [
+                    'id' => 'id',
+                    'softdeletes' => 'softDeletes',
+                    'timestamps' => 'timestamps',
+                ],
+                'Lower' => [
+                    'id' => 'id',
+                    'softdeletes' => 'softdeletes',
+                    'timestampstz' => 'timestampstz',
+                ],
+                'Timezone' => [
+                    'softdeletestz' => 'softdeletestz',
+                    'timestampstz' => 'timestampsTz',
+                ],
+            ],
+        ], $this->subject->parse($blueprint));
+    }
+
+    /**
+     * @test
+     */
     public function it_parses_the_readme_example()
     {
         $blueprint = $this->fixture('definitions/readme-example.bp');
