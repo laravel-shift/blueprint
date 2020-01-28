@@ -44,4 +44,16 @@ return [
     */
     'app_path' => app_path(),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Generate PHPDocs
+    |--------------------------------------------------------------------------
+    |
+    | Here you may enable generate PHPDocs for classes like Models. This
+    | not only serves as documentation, but also allows your IDE to
+    | map to the dynamic properties used by Laravel Models.
+    |
+    */
+    'generate_phpdocs' => false,
+
 ];

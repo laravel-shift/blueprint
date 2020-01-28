@@ -56,12 +56,31 @@ class ModelGenerator implements Generator
 
     private function buildClassPhpDoc(Model $model)
     {
-        $phpDoc = '/**' . PHP_EOL;
+        if (!config('blueprint.generate_phpdocs')) {
+            return '';
+        }
+
+        $phpDoc = PHP_EOL;
+        $phpDoc .= '/**';
+        $phpDoc .= PHP_EOL;
         /** @var Column $column */
         foreach ($model->columns() as $column) {
             $phpDoc .= sprintf(' * @property %s $%s', $this->phpDataType($column->dataType()), $column->name());
             $phpDoc .= PHP_EOL;
         }
+
+        if ($model->usesSoftDeletes()) {
+            $phpDoc .= ' * @property \Carbon\Carbon $deleted_at';
+            $phpDoc .= PHP_EOL;
+        }
+
+        if ($model->usesTimestamps()) {
+            $phpDoc .= ' * @property \Carbon\Carbon $created_at';
+            $phpDoc .= PHP_EOL;
+            $phpDoc .= ' * @property \Carbon\Carbon $updated_at';
+            $phpDoc .= PHP_EOL;
+        }
+
         $phpDoc .= ' */';
 
         return $phpDoc;

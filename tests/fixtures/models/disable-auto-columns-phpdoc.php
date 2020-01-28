@@ -4,7 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Post extends Model
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $code
+ */
+class State extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -12,9 +17,8 @@ class Post extends Model
      * @var array
      */
     protected $fillable = [
-        'title',
-        'content',
-        'published_at',
+        'name',
+        'code',
     ];
 
     /**
@@ -24,14 +28,5 @@ class Post extends Model
      */
     protected $casts = [
         'id' => 'integer',
-    ];
-
-    /**
-     * The attributes that should be mutated to dates.
-     *
-     * @var array
-     */
-    protected $dates = [
-        'published_at',
     ];
 }

@@ -4,11 +4,6 @@ namespace Some\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * @property integer $id
- * @property integer $post_id
- * @property integer $author_id
- */
 class Comment extends Model
 {
     /**
