@@ -30,7 +30,7 @@ class ModelGeneratorTest extends TestCase
     /**
      * @test
      */
-    public function output_writes_nothing_for_empty_tree()
+    public function output_generates_nothing_for_empty_tree()
     {
         $this->files->expects('stub')
             ->with('model/class.stub')
@@ -45,7 +45,7 @@ class ModelGeneratorTest extends TestCase
      * @test
      * @dataProvider modelTreeDataProvider
      */
-    public function output_writes_migration_for_model_tree($definition, $path, $model)
+    public function output_generates_models($definition, $path, $model)
     {
         $this->files->expects('stub')
             ->with('model/class.stub')
@@ -112,6 +112,45 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['src/path/Models/Comment.php']], $this->subject->output($tree));
     }
 
+    /**
+     * @test
+     * @dataProvider docBlockModelsDataProvider
+     */
+    public function output_generates_phpdoc_for_model($definition, $path, $model)
+    {
+        $this->app['config']->set('blueprint.generate_phpdocs', true);
+
+        $this->files->expects('stub')
+            ->with('model/class.stub')
+            ->andReturn(file_get_contents('stubs/model/class.stub'));
+
+        $this->files->expects('stub')
+            ->with('model/fillable.stub')
+            ->andReturn(file_get_contents('stubs/model/fillable.stub'));
+
+        $this->files->expects('stub')
+            ->with('model/casts.stub')
+            ->andReturn(file_get_contents('stubs/model/casts.stub'));
+
+        if ($definition === 'definitions/readme-example.bp') {
+            $this->files->expects('stub')
+                ->with('model/dates.stub')
+                ->andReturn(file_get_contents('stubs/model/dates.stub'));
+        }
+
+        $this->files->shouldReceive('stub')
+            ->with('model/method.stub')
+            ->andReturn(file_get_contents('stubs/model/method.stub'));
+
+        $this->files->expects('put')
+            ->with($path, $this->fixture($model));
+
+        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+    }
+
     public function modelTreeDataProvider()
     {
         return [
@@ -121,6 +160,15 @@ class ModelGeneratorTest extends TestCase
             ['definitions/relationships.bp', 'app/Comment.php', 'models/relationships.php'],
             ['definitions/unconventional.bp', 'app/Team.php', 'models/unconventional.php'],
             ['definitions/nested-components.bp', 'app/Admin/User.php', 'models/nested-components.php'],
+        ];
+    }
+
+    public function docBlockModelsDataProvider()
+    {
+        return [
+            ['definitions/readme-example.bp', 'app/Post.php', 'models/readme-example-phpdoc.php'],
+            ['definitions/soft-deletes.bp', 'app/Comment.php', 'models/soft-deletes-phpdoc.php'],
+            ['definitions/disable-auto-columns.bp', 'app/State.php', 'models/disable-auto-columns-phpdoc.php'],
         ];
     }
 }
