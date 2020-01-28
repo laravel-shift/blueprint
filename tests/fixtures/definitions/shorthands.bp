@@ -3,3 +3,25 @@ models:
     softDeletes
     id
     timestamps
+  Name1:
+    id
+    timestamps
+    softdeletes
+  Name2:
+    softdeletes: true
+    timestamps: false
+  Name3:
+    softDeletes
+    timestampsTz
+  Name4:
+    softDeletes: true
+  Name5:
+    softdeletestz
+    timestampstz
+  Name6:
+    softdeletestz: true
+  Name7:
+    softDeletesTz
+  Name8:
+    softDeletesTz: true
+    timestampsTz

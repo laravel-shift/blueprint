@@ -77,7 +77,10 @@ class Model
 
     public function timestampsDataType(): string
     {
-        return $this->timestamps;
+        if (strtolower($this->timestamps) === 'timestampstz') {
+            return 'timestampsTz';
+        }
+        return 'timestamps';
     }
 
     public function usesTimestamps(): bool
@@ -92,12 +95,15 @@ class Model
 
     public function enableTimestamps(bool $withTimezone = false)
     {
-        $this->timestamps = $withTimezone ? 'timestampsTz' : 'timestamps';
+        $this->timestamps = $withTimezone ? 'timestampstz' : 'timestamps';
     }
 
     public function softDeletesDataType(): string
     {
-        return $this->softDeletes;
+        if(strtolower($this->softDeletes) === 'softdeletestz') {
+            return 'softDeletesTz';
+        }
+        return 'softDeletes';
     }
 
     public function usesSoftDeletes(): bool
@@ -107,7 +113,7 @@ class Model
 
     public function enableSoftDeletes(bool $withTimezone = false)
     {
-        $this->softDeletes = $withTimezone ? 'softDeletesTz' : 'softDeletes';
+        $this->softDeletes = $withTimezone ? 'softdeletestz' : 'softdeletes';
     }
 
     public function hasColumn(string $name)
