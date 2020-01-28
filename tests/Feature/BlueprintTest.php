@@ -82,9 +82,39 @@ class BlueprintTest extends TestCase
         $this->assertEquals([
             'models' => [
                 'Name' => [
-                    'softdeletes' => 'softDeletes',
+                    'softdeletes' => 'softdeletes',
                     'id' => 'id',
                     'timestamps' => 'timestamps',
+                ],
+                'Name1' => [
+                    'id' => 'id',
+                    'timestamps' => 'timestamps',
+                    'softdeletes' => 'softdeletes'
+                ],
+                'Name2' => [
+                    'softdeletes' => 'softdeletes',
+                    'timestamps' => false
+                ],
+                'Name3' => [
+                    'softdeletes' => 'softdeletes',
+                    'timestampstz' => 'timestampstz'
+                ],
+                'Name4' => [
+                    'softdeletes' => 'softdeletes'
+                ],
+                'Name5' => [
+                    'softdeletestz' => 'softdeletestz',
+                    'timestampstz' => 'timestampstz',
+                ],
+                'Name6' => [
+                    'softdeletestz' => 'softdeletestz'
+                ],
+                'Name7' => [
+                    'softdeletestz' => 'softdeletestz'
+                ],
+                'Name8' => [
+                    'softdeletestz' => 'softdeletestz',
+                    'timestampstz' => 'timestampstz'
                 ],
             ],
         ], $this->subject->parse($blueprint));
@@ -100,7 +130,7 @@ class BlueprintTest extends TestCase
         $this->assertEquals([
             'models' => [
                 'Comment' => [
-                    'softdeletestz' => 'softDeletesTz',
+                    'softdeletestz' => 'softdeletestz',
                     'timestampstz' => 'timestampstz',
                 ],
             ],
