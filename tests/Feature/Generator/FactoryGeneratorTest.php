@@ -87,6 +87,7 @@ class FactoryGeneratorTest extends TestCase
     public function modelTreeDataProvider()
     {
         return [
+            ['definitions/phone.bp', 'database/factories/PhoneFactory.php', 'factories/phone.php'],
             ['definitions/post.bp', 'database/factories/PostFactory.php', 'factories/post.php'],
             ['definitions/team.bp', 'database/factories/TeamFactory.php', 'factories/team.php'],
             ['definitions/unconventional.bp', 'database/factories/TeamFactory.php', 'factories/unconventional.php'],
