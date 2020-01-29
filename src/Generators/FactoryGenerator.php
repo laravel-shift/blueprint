@@ -80,8 +80,8 @@ class FactoryGenerator implements Generator
                 $definition .= '$faker->' . $faker;
                 $definition .= ',' . PHP_EOL;
 
-                if ($column->dataType() === 'enum' and !empty($column->attributes())) {
-                    $definition = str_replace("/** attributes **/", json_encode($column->attributes()), $definition);
+                if (in_array($column->dataType(), ['enum', 'set']) and !empty($column->attributes())) {
+                    $definition = str_replace("/** {$column->dataType()}_attributes **/", json_encode($column->attributes()), $definition);
                 }
             }
         }
@@ -148,7 +148,8 @@ class FactoryGenerator implements Generator
             'float' => 'randomFloat()',
             'longtext' => 'text',
             'boolean' => 'boolean',
-            'enum' => 'randomElement(/** attributes **/)',
+            'set' => 'randomElement(/** set_attributes **/)',
+            'enum' => 'randomElement(/** enum_attributes **/)',
         ];
 
         return $fakeableTypes[$type] ?? null;

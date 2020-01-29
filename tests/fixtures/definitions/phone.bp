@@ -4,3 +4,4 @@ models:
     user_id: id
     phone_number: text
     type: enum:home,cell
+    status: set:archived,deleted

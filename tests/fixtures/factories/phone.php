@@ -10,6 +10,7 @@ $factory->define(Phone::class, function (Faker $faker) {
         'label' => $faker->word,
         'user_id' => factory(\App\User::class),
         'phone_number' => $faker->phoneNumber,
-        'type' => $faker->randomElement(["home", "cell"]),
+        'type' => $faker->randomElement(["home","cell"]),
+        'status' => $faker->randomElement(["archived","deleted"]),
     ];
 });
