@@ -1,0 +1,6 @@
+models:
+  Phone:
+    label: string
+    user_id: id
+    phone_number: text
+    type: enum:home,cell
