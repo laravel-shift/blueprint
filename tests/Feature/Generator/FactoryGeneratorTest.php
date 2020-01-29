@@ -91,7 +91,8 @@ class FactoryGeneratorTest extends TestCase
             ['definitions/post.bp', 'database/factories/PostFactory.php', 'factories/post.php'],
             ['definitions/team.bp', 'database/factories/TeamFactory.php', 'factories/team.php'],
             ['definitions/unconventional.bp', 'database/factories/TeamFactory.php', 'factories/unconventional.php'],
-            ['definitions/nested-components.bp', 'database/factories/Admin/UserFactory.php', 'factories/nested-components.php']
+            ['definitions/nested-components.bp', 'database/factories/Admin/UserFactory.php', 'factories/nested-components.php'],
+            ['definitions/model-modifiers.bp', 'database/factories/ModifierFactory.php', 'factories/model-modifiers.php']
         ];
     }
 }

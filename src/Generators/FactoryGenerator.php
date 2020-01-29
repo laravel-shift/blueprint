@@ -92,6 +92,8 @@ class FactoryGenerator implements Generator
     protected function fakerData(string $name)
     {
         static $fakeableNames = [
+            'address1' => 'streetAddress',
+            'address2' => 'secondaryAddress',
             'city' => 'city',
             'company' => 'company',
             'content' => 'paragraphs(3, true)',
@@ -111,12 +113,11 @@ class FactoryGenerator implements Generator
             'password' => 'password',
             'phone' => 'phoneNumber',
             'phone_number' => 'phoneNumber',
-            'postcode' => 'postcode',
             'postal_code' => 'postcode',
+            'postcode' => 'postcode',
             'slug' => 'slug',
+            'ssn' => 'ssn',
             'street' => 'streetName',
-            'address1' => 'streetAddress',
-            'address2' => 'secondaryAddress',
             'summary' => 'text',
             'title' => 'sentence(4)',
             'url' => 'url',
