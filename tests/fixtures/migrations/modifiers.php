@@ -18,6 +18,7 @@ class CreateModifiersTable extends Migration
             $table->string('title')->nullable();
             $table->string('name', 1000)->unique()->charset('utf8');
             $table->string('content')->default('');
+            $table->float('amount', 9, 3);
             $table->decimal('total', 10, 2);
             $table->char('ssn', 11);
             $table->enum('role', ["user","admin","owner"]);

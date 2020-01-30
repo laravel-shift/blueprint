@@ -3,6 +3,7 @@ models:
     title: string nullable
     name: string:1000 unique charset:'utf8'
     content: string default:''
+    amount: float:9,3
     total: decimal:10,2
     ssn: char:11
     role: enum:user,admin,owner
