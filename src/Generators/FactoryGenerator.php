@@ -74,15 +74,35 @@ class FactoryGenerator implements Generator
                 $definition .= self::INDENT . "'{$column->name()}' => ";
                 $definition .= sprintf("factory(%s::class)", '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);
                 $definition .= ',' . PHP_EOL;
-            } else {
+            } else if(in_array($column->dataType(), ['enum', 'set']) and !empty($column->attributes())){
+                $definition .= self::INDENT . "'{$column->name()}' => ";
+                $faker = $this->fakerData($column->name()) ?? $this->fakerDataType($column->dataType());
+                $definition .= '$faker->' . $faker;
+                $definition .= ',' . PHP_EOL;
+                $definition = str_replace(
+                    "/** {$column->dataType()}_attributes **/",
+                    json_encode($column->attributes()),
+                    $definition
+                );
+            } else if (in_array($column->dataType(), ['decimal', 'float'])) {
                 $definition .= self::INDENT . "'{$column->name()}' => ";
                 $faker = $this->fakerData($column->name()) ?? $this->fakerDataType($column->dataType());
                 $definition .= '$faker->' . $faker;
                 $definition .= ',' . PHP_EOL;
 
-                if (in_array($column->dataType(), ['enum', 'set']) and !empty($column->attributes())) {
-                    $definition = str_replace("/** {$column->dataType()}_attributes **/", json_encode($column->attributes()), $definition);
-                }
+                $precision = min([65, intval($column->attributes()[0] ?? 10)]);
+                $scale = min([30, max([0, intval($column->attributes()[1] ?? 0)])]);
+
+                $definition = str_replace(
+                    "/** {$column->dataType()}_attributes **/",
+                    implode(', ', [$precision, 0, (intval(str_repeat(9, $precision)) / pow(10, $scale))]),
+                    $definition
+                );
+            } else {
+                $definition .= self::INDENT . "'{$column->name()}' => ";
+                $faker = $this->fakerData($column->name()) ?? $this->fakerDataType($column->dataType());
+                $definition .= '$faker->' . $faker;
+                $definition .= ',' . PHP_EOL;
             }
         }
 
@@ -145,8 +165,8 @@ class FactoryGenerator implements Generator
             'integer' => 'randomNumber()',
             'bigint' => 'randomNumber()',
             'smallint' => 'randomNumber()',
-            'decimal' => 'randomFloat()',
-            'float' => 'randomFloat()',
+            'decimal' => 'randomFloat(/** decimal_attributes **/)',
+            'float' => 'randomFloat(/** float_attributes **/)',
             'longtext' => 'text',
             'boolean' => 'boolean',
             'set' => 'randomElement(/** set_attributes **/)',

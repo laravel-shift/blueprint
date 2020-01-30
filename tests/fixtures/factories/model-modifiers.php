@@ -10,7 +10,8 @@ $factory->define(Modifier::class, function (Faker $faker) {
         'title' => $faker->sentence(4),
         'name' => $faker->name,
         'content' => $faker->paragraphs(3, true),
-        'total' => $faker->randomFloat(),
+        'amount' => $faker->randomFloat(3, 0, 999999.999),
+        'total' => $faker->randomFloat(2, 0, 99999999.99),
         'ssn' => $faker->ssn,
         'role' => $faker->randomElement(["user","admin","owner"]),
     ];
