@@ -4,6 +4,7 @@ namespace Blueprint\Generators;
 
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class FactoryGenerator implements Generator
@@ -83,6 +84,17 @@ class FactoryGenerator implements Generator
                 if (in_array($column->dataType(), ['enum', 'set']) and !empty($column->attributes())) {
                     $definition = str_replace("/** {$column->dataType()}_attributes **/", json_encode($column->attributes()), $definition);
                 }
+
+                if (in_array($column->dataType(), ['float', 'decimal']) and !empty($column->attributes())) {
+                    $precision = intval(Arr::last($column->attributes()));
+                    $scale = intval(Arr::first($column->attributes()));
+
+                    $definition = str_replace(
+                        "/** {$column->dataType()}_attributes **/",
+                        implode(', ', [$precision, 0, intval(str_repeat(9, $scale)) / pow(10, $precision)]),
+                        $definition
+                    );
+                }
             }
         }
 
@@ -145,8 +157,8 @@ class FactoryGenerator implements Generator
             'integer' => 'randomNumber()',
             'bigint' => 'randomNumber()',
             'smallint' => 'randomNumber()',
-            'decimal' => 'randomFloat()',
-            'float' => 'randomFloat()',
+            'decimal' => 'randomFloat(/** decimal_attributes **/)',
+            'float' => 'randomFloat(/** float_attributes **/)',
             'longtext' => 'text',
             'boolean' => 'boolean',
             'set' => 'randomElement(/** set_attributes **/)',
