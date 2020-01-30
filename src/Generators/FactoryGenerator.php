@@ -4,7 +4,6 @@ namespace Blueprint\Generators;
 
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Model;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class FactoryGenerator implements Generator
