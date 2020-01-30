@@ -20,6 +20,7 @@ class CreateModifiersTable extends Migration
             $table->string('content')->default('');
             $table->float('amount', 9, 3);
             $table->decimal('total', 10, 2);
+            $table->decimal('overflow', 99, 99);
             $table->char('ssn', 11);
             $table->enum('role', ["user","admin","owner"]);
             $table->timestamps();

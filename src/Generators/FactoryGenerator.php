@@ -95,7 +95,7 @@ class FactoryGenerator implements Generator
 
                 $definition = str_replace(
                     "/** {$column->dataType()}_attributes **/",
-                    implode(', ', [$precision, 0, (intval(str_repeat(9, $precision)) / pow(10, $scale))]),
+                    implode(', ', [$scale, 0, (str_repeat(9, $precision - $scale) . '.' . str_repeat(9, $scale))]),
                     $definition
                 );
             } else {

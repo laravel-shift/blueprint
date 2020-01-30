@@ -5,5 +5,6 @@ models:
     content: string default:''
     amount: float:9,3
     total: decimal:10,2
+    overflow: decimal:99,99
     ssn: char:11
     role: enum:user,admin,owner
