@@ -3,7 +3,6 @@
 
 namespace Blueprint\Models;
 
-
 use Illuminate\Support\Str;
 
 class Controller

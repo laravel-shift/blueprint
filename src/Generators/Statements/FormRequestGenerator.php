@@ -140,10 +140,8 @@ class FormRequestGenerator implements Generator
         return 'required';
     }
 
-    private function registerModels(?array $models)
+    private function registerModels(array $models)
     {
         $this->models = $models;
     }
-
-
 }

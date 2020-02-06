@@ -110,5 +110,4 @@ class JobGenerator implements Generator
             return $output;
         }, ''));
     }
-
 }
