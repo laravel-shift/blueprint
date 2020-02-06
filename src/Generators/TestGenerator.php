@@ -3,7 +3,6 @@
 
 namespace Blueprint\Generators;
 
-
 use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Controller;
@@ -149,7 +148,6 @@ class TestGenerator implements Generator
                     $assertion .= ');';
 
                     $assertions['mock'][] = $assertion;
-
                 } elseif ($statement instanceof ValidateStatement) {
                     $this->addTestAssertionsTrait($controller);
 
@@ -178,7 +176,6 @@ class TestGenerator implements Generator
                             $request_data[$data] = '$' . $data;
                         }
                     }
-
                 } elseif ($statement instanceof DispatchStatement) {
                     $this->addImport($controller, 'Illuminate\\Support\\Facades\\Queue');
                     $this->addImport($controller, config('blueprint.namespace') . '\\Jobs\\' . $statement->job());
@@ -316,7 +313,6 @@ class TestGenerator implements Generator
                         } else {
                             $assertions['generic'][] = '$this->assertDatabaseHas(' . Str::lower(Str::plural($model)) . ', [ /* ... */ ]);';
                         }
-
                     } elseif ($statement->operation() === 'find') {
                         $setup['data'][] = sprintf('$%s = factory(%s::class)->create();', $variable, $model);
                     } elseif ($statement->operation() === 'delete') {

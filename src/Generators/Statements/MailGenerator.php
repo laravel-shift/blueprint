@@ -110,5 +110,4 @@ class MailGenerator implements Generator
             return $output;
         }, ''));
     }
-
 }

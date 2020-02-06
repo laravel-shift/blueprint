@@ -3,7 +3,6 @@
 
 namespace Blueprint\Models\Statements;
 
-
 use Illuminate\Support\Str;
 
 class RedirectStatement

@@ -3,7 +3,6 @@
 
 namespace Blueprint;
 
-
 class FileMixins
 {
     private $stubs = [];

@@ -144,6 +144,4 @@ class FormRequestGenerator implements Generator
     {
         $this->models = $models;
     }
-
-
 }
