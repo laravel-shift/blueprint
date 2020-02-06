@@ -74,7 +74,7 @@ class FactoryGenerator implements Generator
                 $definition .= self::INDENT . "'{$column->name()}' => ";
                 $definition .= sprintf("factory(%s::class)", '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);
                 $definition .= ',' . PHP_EOL;
-            } else if(in_array($column->dataType(), ['enum', 'set']) and !empty($column->attributes())){
+            } elseif (in_array($column->dataType(), ['enum', 'set']) and !empty($column->attributes())) {
                 $definition .= self::INDENT . "'{$column->name()}' => ";
                 $faker = $this->fakerData($column->name()) ?? $this->fakerDataType($column->dataType());
                 $definition .= '$faker->' . $faker;
@@ -84,7 +84,7 @@ class FactoryGenerator implements Generator
                     json_encode($column->attributes()),
                     $definition
                 );
-            } else if (in_array($column->dataType(), ['decimal', 'float'])) {
+            } elseif (in_array($column->dataType(), ['decimal', 'float'])) {
                 $definition .= self::INDENT . "'{$column->name()}' => ";
                 $faker = $this->fakerData($column->name()) ?? $this->fakerDataType($column->dataType());
                 $definition .= '$faker->' . $faker;
