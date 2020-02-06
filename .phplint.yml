@@ -1,0 +1,10 @@
+path:
+  - src
+  - tests
+jobs: 10
+no-cache: true
+exclude:
+  - fixtures
+extensions:
+  - php
+
