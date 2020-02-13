@@ -34,5 +34,8 @@
                 "Blueprint\\BlueprintServiceProvider"
             ]
         }
+    },
+    "suggest": {
+        "jasonmccreary/laravel-test-assertions": "A set of helpful assertions when testing Laravel applications"
     }
 }
