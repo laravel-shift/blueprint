@@ -1,0 +1,7 @@
+controllers:
+  UserController:
+    store:
+      validate: email, password
+      save: user
+      flash: user.email
+      redirect: dashboard

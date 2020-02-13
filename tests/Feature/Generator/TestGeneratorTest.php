@@ -50,7 +50,7 @@ class TestGeneratorTest extends TestCase
      * @test
      * @dataProvider controllerTreeDataProvider
      */
-    public function output_writes_migration_for_controller_tree($definition, $path, $test)
+    public function output_generates_test_for_controller_tree($definition, $path, $test)
     {
         $this->files->expects('get')
             ->with('stubs/test/class.stub')
@@ -71,6 +71,38 @@ class TestGeneratorTest extends TestCase
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function output_generates_test_for_controller_tree_using_cached_model()
+    {
+        $this->files->expects('get')
+            ->with('stubs/test/class.stub')
+            ->andReturn(file_get_contents('stubs/test/class.stub'));
+
+        $this->files->expects('get')
+            ->with('stubs/test/case.stub')
+            ->andReturn(file_get_contents('stubs/test/case.stub'));
+        $this->files->expects('exists')
+            ->with('tests/Feature/Http/Controllers')
+            ->andReturnFalse();
+        $this->files->expects('makeDirectory')
+            ->with('tests/Feature/Http/Controllers', 0755, true);
+        $this->files->expects('put')
+            ->with('tests/Feature/Http/Controllers/UserControllerTest.php', $this->fixture('tests/reference-cache.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/reference-cache.bp'));
+        $tokens['cache'] = [
+            'User' => [
+                'email' => 'string',
+                'password' => 'string',
+            ]
+        ];
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['tests/Feature/Http/Controllers/UserControllerTest.php']], $this->subject->output($tree));
     }
 
     public function controllerTreeDataProvider()

@@ -44,7 +44,7 @@ class TestGenerator implements Generator
 
         $stub = $this->files->get(STUBS_PATH . '/test/class.stub');
 
-        $this->registerModels($tree['models'] ?? []);
+        $this->registerModels($tree);
 
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree['controllers'] as $controller) {
@@ -525,9 +525,9 @@ END;
         return null;
     }
 
-    private function registerModels(array $models)
+    private function registerModels(array $tree)
     {
-        $this->models = $models;
+        $this->models = array_merge($tree['cache'] ?? [], $tree['models'] ?? []);
     }
 
     private function splitField($field)

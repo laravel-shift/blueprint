@@ -181,4 +181,37 @@ class FormRequestGeneratorTest extends TestCase
 
         $this->assertEquals(['created' => ['src/path/Http/Requests/PostStoreRequest.php']], $this->subject->output($tree));
     }
+
+
+    /**
+     * @test
+     */
+    public function output_generates_test_for_controller_tree_using_cached_model()
+    {
+        $this->files->expects('stub')
+            ->with('form-request.stub')
+            ->andReturn(file_get_contents('stubs/form-request.stub'));
+
+        $this->files->expects('exists')
+            ->with('app/Http/Requests')
+            ->andReturnFalse();
+        $this->files->expects('exists')
+            ->with('app/Http/Requests/UserStoreRequest.php')
+            ->andReturnFalse();
+        $this->files->expects('makeDirectory')
+            ->with('app/Http/Requests', 0755, true);
+        $this->files->expects('put')
+            ->with('app/Http/Requests/UserStoreRequest.php', $this->fixture('form-requests/reference-cache.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/reference-cache.bp'));
+        $tokens['cache'] = [
+            'User' => [
+                'email' => 'string',
+                'password' => 'string',
+            ]
+        ];
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['app/Http/Requests/UserStoreRequest.php']], $this->subject->output($tree));
+    }
 }

@@ -1,10 +1,12 @@
 <?php
 
-namespace Blueprint;
+namespace Blueprint\Commands;
 
-use Illuminate\Support\Str;
+use Blueprint\Blueprint;
+use Blueprint\Builder;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputArgument;
 
 class BlueprintCommand extends Command
@@ -49,9 +51,8 @@ class BlueprintCommand extends Command
             $this->error('Draft file could not be found: ' . $file);
         }
 
-        $contents = $this->files->get($file);
         $blueprint = resolve(Blueprint::class);
-        $generated = Builder::execute($blueprint, $contents);
+        $generated = Builder::execute($blueprint, $this->files, $file);
 
         collect($generated)->each(function ($files, $action) {
             $this->line(Str::studly($action) . ':', $this->outputStyle($action));
@@ -61,11 +62,6 @@ class BlueprintCommand extends Command
 
             $this->line('');
         });
-
-        $this->files->put(
-            '.blueprint',
-            $blueprint->dump($generated)
-        );
     }
 
     /**

@@ -24,7 +24,10 @@ class ModelLexerTest extends TestCase
      */
     public function it_returns_nothing_without_models_token()
     {
-        $this->assertEquals(['models' => []], $this->subject->analyze([]));
+        $this->assertEquals([
+            'models' => [],
+            'cache' => []
+        ], $this->subject->analyze([]));
     }
 
     /**
@@ -339,6 +342,81 @@ class ModelLexerTest extends TestCase
         $this->assertEquals('id', $columns['id']->name());
         $this->assertEquals('id', $columns['id']->dataType());
         $this->assertEquals([], $columns['id']->modifiers());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_traced_models()
+    {
+        $tokens = [
+            'models' => [
+                'NewModel' => [
+                    'id' => 'id',
+                    'name' => 'string nullable'
+                ],
+            ],
+            'cache' => [
+                'CachedModelOne' => [
+                    'count' => 'integer',
+                    'timestamps' => 'timestamps'
+                ],
+                'CachedModelTwo' => [
+                    'id' => 'id',
+                    'name' => 'string nullable'
+                ],
+            ]
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertIsArray($actual['models']);
+        $this->assertCount(1, $actual['models']);
+
+        $model = $actual['models']['NewModel'];
+        $this->assertEquals('NewModel', $model->name());
+        $this->assertTrue($model->usesTimestamps());
+        $this->assertFalse($model->usesSoftDeletes());
+
+        $columns = $model->columns();
+        $this->assertCount(2, $columns);
+        $this->assertEquals('id', $columns['id']->name());
+        $this->assertEquals('id', $columns['id']->dataType());
+        $this->assertEquals([], $columns['id']->modifiers());
+        $this->assertEquals('name', $columns['name']->name());
+        $this->assertEquals('string', $columns['name']->dataType());
+        $this->assertEquals(['nullable'], $columns['name']->modifiers());
+
+        $this->assertIsArray($actual['cache']);
+        $this->assertCount(2, $actual['cache']);
+
+        $model = $actual['cache']['CachedModelOne'];
+        $this->assertEquals('CachedModelOne', $model->name());
+        $this->assertTrue($model->usesTimestamps());
+        $this->assertFalse($model->usesSoftDeletes());
+
+        $columns = $model->columns();
+        $this->assertCount(2, $columns);
+        $this->assertEquals('id', $columns['id']->name());
+        $this->assertEquals('id', $columns['id']->dataType());
+        $this->assertEquals([], $columns['id']->modifiers());
+        $this->assertEquals('count', $columns['count']->name());
+        $this->assertEquals('integer', $columns['count']->dataType());
+        $this->assertEquals([], $columns['count']->modifiers());
+
+        $model = $actual['cache']['CachedModelTwo'];
+        $this->assertEquals('CachedModelTwo', $model->name());
+        $this->assertTrue($model->usesTimestamps());
+        $this->assertFalse($model->usesSoftDeletes());
+
+        $columns = $model->columns();
+        $this->assertCount(2, $columns);
+        $this->assertEquals('id', $columns['id']->name());
+        $this->assertEquals('id', $columns['id']->dataType());
+        $this->assertEquals([], $columns['id']->modifiers());
+        $this->assertEquals('name', $columns['name']->name());
+        $this->assertEquals('string', $columns['name']->dataType());
+        $this->assertEquals(['nullable'], $columns['name']->modifiers());
     }
 
     /**
