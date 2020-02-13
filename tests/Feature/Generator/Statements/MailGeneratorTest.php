@@ -83,7 +83,7 @@ class MailGeneratorTest extends TestCase
             ->with('app/Mail/ReviewPost.php')
             ->andReturnFalse();
         $this->files->expects('makeDirectory')
-            ->with('app/Mail');
+            ->with('app/Mail', 0755, true);
         $this->files->expects('put')
             ->with('app/Mail/ReviewPost.php', $this->fixture('mailables/review-post.php'));
 
@@ -140,7 +140,7 @@ class MailGeneratorTest extends TestCase
             ->with('src/path/Mail/ReviewNotification.php')
             ->andReturnFalse();
         $this->files->expects('makeDirectory')
-            ->with('src/path/Mail');
+            ->with('src/path/Mail', 0755, true);
         $this->files->expects('put')
             ->with('src/path/Mail/ReviewNotification.php', $this->fixture('mailables/mail-configured.php'));
 

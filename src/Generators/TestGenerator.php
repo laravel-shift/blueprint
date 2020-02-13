@@ -49,6 +49,11 @@ class TestGenerator implements Generator
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree['controllers'] as $controller) {
             $path = $this->getPath($controller);
+
+            if (!$this->files->exists(dirname($path))) {
+                $this->files->makeDirectory(dirname($path), 0755, true);
+            }
+
             $this->files->put(
                 $path,
                 $this->populateStub($stub, $controller)

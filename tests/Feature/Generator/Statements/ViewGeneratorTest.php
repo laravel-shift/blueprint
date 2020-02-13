@@ -95,8 +95,7 @@ class ViewGeneratorTest extends TestCase
             ->with('resources/views/post/show.blade.php')
             ->andReturnFalse();
         $this->files->expects('makeDirectory')
-            ->with('resources/views/post')
-            ->andReturnFalse();
+            ->with('resources/views/post', 0755, true);
         $this->files->expects('put')
             ->with('resources/views/post/show.blade.php', str_replace('DummyView', 'post.show', $template));
 

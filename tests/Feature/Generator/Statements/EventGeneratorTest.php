@@ -83,7 +83,7 @@ class EventGeneratorTest extends TestCase
             ->with('app/Events/UserCreated.php')
             ->andReturnFalse();
         $this->files->expects('makeDirectory')
-            ->with('app/Events');
+            ->with('app/Events', 0755, true);
         $this->files->expects('put')
             ->with('app/Events/UserCreated.php', $this->fixture('events/user-created.php'));
 
@@ -137,7 +137,7 @@ class EventGeneratorTest extends TestCase
             ->with('src/path/Events')
             ->andReturnFalse();
         $this->files->expects('makeDirectory')
-            ->with('src/path/Events');
+            ->with('src/path/Events', 0755, true);
         $this->files->expects('exists')
             ->with('src/path/Events/NewPost.php')
             ->andReturnFalse();

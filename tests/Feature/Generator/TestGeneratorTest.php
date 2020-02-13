@@ -59,7 +59,11 @@ class TestGeneratorTest extends TestCase
         $this->files->expects('get')
             ->with('stubs/test/case.stub')
             ->andReturn(file_get_contents('stubs/test/case.stub'));
-
+        $this->files->expects('exists')
+            ->with('tests/Feature/Http/Controllers')
+            ->andReturnFalse();
+        $this->files->expects('makeDirectory')
+            ->with('tests/Feature/Http/Controllers', 0755, true);
         $this->files->expects('put')
             ->with($path, $this->fixture($test));
 

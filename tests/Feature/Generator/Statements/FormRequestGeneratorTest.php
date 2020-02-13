@@ -80,7 +80,7 @@ class FormRequestGeneratorTest extends TestCase
             ->with('app/Http/Requests/PostIndexRequest.php')
             ->andReturnFalse();
         $this->files->expects('makeDirectory')
-            ->with('app/Http/Requests');
+            ->with('app/Http/Requests', 0755, true);
         $this->files->expects('put')
             ->with('app/Http/Requests/PostIndexRequest.php', $this->fixture('form-requests/post-index.php'));
 
@@ -143,7 +143,7 @@ class FormRequestGeneratorTest extends TestCase
             ->with('app/Http/Requests/Admin/UserStoreRequest.php')
             ->andReturnFalse();
         $this->files->expects('makeDirectory')
-            ->with('app/Http/Requests/Admin');
+            ->with('app/Http/Requests/Admin', 0755, true);
         $this->files->expects('put')
             ->with('app/Http/Requests/Admin/UserStoreRequest.php', $this->fixture('form-requests/nested-components.php'));
 
@@ -172,7 +172,7 @@ class FormRequestGeneratorTest extends TestCase
             ->with('src/path/Http/Requests/PostStoreRequest.php')
             ->andReturnFalse();
         $this->files->expects('makeDirectory')
-            ->with('src/path/Http/Requests');
+            ->with('src/path/Http/Requests', 0755, true);
         $this->files->expects('put')
             ->with('src/path/Http/Requests/PostStoreRequest.php', $this->fixture('form-requests/form-request-configured.php'));
 
