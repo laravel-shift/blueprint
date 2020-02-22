@@ -104,4 +104,155 @@ class ControllerLexerTest extends TestCase
         $this->assertCount(1, $methods['index']);
         $this->assertEquals('index-statement-1', $methods['index'][0]);
     }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_resource_controller()
+    {
+        $tokens = [
+            'controllers' => [
+                'Comment' => [
+                    'resource' => 'all'
+                ]
+            ]
+        ];
+
+        $this->statementLexer->shouldReceive('analyze')
+            ->with([
+                'query' => 'all:comments',
+                'render' => 'comment.index with comments'
+            ])
+            ->andReturn(['index-statements']);
+
+        $this->statementLexer->shouldReceive('analyze')
+            ->with([
+                'render' => 'comment.create'
+            ])
+            ->andReturn(['create-statements']);
+
+        $this->statementLexer->shouldReceive('analyze')
+            ->with([
+                'validate' => 'comment',
+                'save' => 'comment',
+                'flash' => 'comment.id',
+                'redirect' => 'comment.index'
+            ])
+            ->andReturn(['store-statements']);
+
+        $this->statementLexer->shouldReceive('analyze')
+            ->with([
+                'render' => 'comment.show with:comment'
+            ])
+            ->andReturn(['show-statements']);
+
+        $this->statementLexer->shouldReceive('analyze')
+            ->with([
+                'render' => 'comment.edit with:comment'
+            ])
+            ->andReturn(['edit-statements']);
+
+        $this->statementLexer->shouldReceive('analyze')
+            ->with([
+                'validate' => 'comment',
+                'update' => 'comment',
+                'flash' => 'comment.id',
+                'redirect' => 'comment.index'
+            ])
+            ->andReturn(['update-statements']);
+
+        $this->statementLexer->shouldReceive('analyze')
+            ->with([
+                'delete' => 'comment',
+                'redirect' => 'comment.index'
+            ])
+            ->andReturn(['destroy-statements']);
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual['controllers']);
+
+        $controller = $actual['controllers']['Comment'];
+        $this->assertEquals('CommentController', $controller->className());
+
+        $methods = $controller->methods();
+        $this->assertCount(7, $methods);
+
+        $this->assertCount(1, $methods['index']);
+        $this->assertEquals('index-statements', $methods['index'][0]);
+        $this->assertCount(1, $methods['create']);
+        $this->assertEquals('create-statements', $methods['create'][0]);
+        $this->assertCount(1, $methods['store']);
+        $this->assertEquals('store-statements', $methods['store'][0]);
+        $this->assertCount(1, $methods['show']);
+        $this->assertEquals('show-statements', $methods['show'][0]);
+        $this->assertCount(1, $methods['edit']);
+        $this->assertEquals('edit-statements', $methods['edit'][0]);
+        $this->assertCount(1, $methods['update']);
+        $this->assertEquals('update-statements', $methods['update'][0]);
+        $this->assertCount(1, $methods['destroy']);
+        $this->assertEquals('destroy-statements', $methods['destroy'][0]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_limited_resource_controller()
+    {
+        $tokens = [
+            'controllers' => [
+                'User' => [
+                    'resource' => 'index, edit, update, destroy'
+                ]
+            ]
+        ];
+
+        $this->statementLexer->shouldReceive('analyze')
+            ->with([
+                'query' => 'all:users',
+                'render' => 'user.index with users'
+            ])
+            ->andReturn(['index-statements']);
+
+        $this->statementLexer->shouldReceive('analyze')
+            ->with([
+                'render' => 'user.edit with:user'
+            ])
+            ->andReturn(['edit-statements']);
+
+        $this->statementLexer->shouldReceive('analyze')
+            ->with([
+                'validate' => 'user',
+                'update' => 'user',
+                'flash' => 'user.id',
+                'redirect' => 'user.index'
+            ])
+            ->andReturn(['update-statements']);
+
+        $this->statementLexer->shouldReceive('analyze')
+            ->with([
+                'delete' => 'user',
+                'redirect' => 'user.index'
+            ])
+            ->andReturn(['destroy-statements']);
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual['controllers']);
+
+        $controller = $actual['controllers']['User'];
+        $this->assertEquals('UserController', $controller->className());
+
+        $methods = $controller->methods();
+        $this->assertCount(4, $methods);
+
+        $this->assertCount(1, $methods['index']);
+        $this->assertEquals('index-statements', $methods['index'][0]);
+        $this->assertCount(1, $methods['edit']);
+        $this->assertEquals('edit-statements', $methods['edit'][0]);
+        $this->assertCount(1, $methods['update']);
+        $this->assertEquals('update-statements', $methods['update'][0]);
+        $this->assertCount(1, $methods['destroy']);
+        $this->assertEquals('destroy-statements', $methods['destroy'][0]);
+    }
 }

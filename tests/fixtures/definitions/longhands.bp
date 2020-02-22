@@ -12,3 +12,7 @@ models:
   Timezone:
     softdeletestz: true
     timestampsTz: true
+
+controllers:
+  Context:
+    resource: true

@@ -87,6 +87,11 @@ class BlueprintTest extends TestCase
                     'timestamps' => 'timestamps',
                 ],
             ],
+            'controllers' => [
+                'Context' => [
+                    'resource' => 'all'
+                ]
+            ]
         ], $this->subject->parse($blueprint));
     }
 
@@ -129,6 +134,28 @@ class BlueprintTest extends TestCase
                 'Timezone' => [
                     'softdeletestz' => 'softdeletestz',
                     'timestampstz' => 'timestampsTz',
+                ],
+            ],
+            'controllers' => [
+                'Context' => [
+                    'resource' => 'all'
+                ]
+            ]
+        ], $this->subject->parse($blueprint));
+    }
+
+    /**
+     * @test
+     */
+    public function it_parses_resource_shorthands()
+    {
+        $blueprint = $this->fixture('definitions/with-timezones.bp');
+
+        $this->assertEquals([
+            'models' => [
+                'Comment' => [
+                    'softdeletestz' => 'softDeletesTz',
+                    'timestampstz' => 'timestampstz',
                 ],
             ],
         ], $this->subject->parse($blueprint));

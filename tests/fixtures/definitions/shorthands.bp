@@ -3,3 +3,7 @@ models:
     softDeletes
     id
     timestamps
+
+controllers:
+  Context:
+    resource
