@@ -173,6 +173,6 @@ class FactoryGenerator implements Generator
             'enum' => 'randomElement(/** enum_attributes **/)',
         ];
 
-        return $fakeableTypes[$type] ?? null;
+        return $fakeableTypes[strtolower($type)] ?? null;
     }
 }

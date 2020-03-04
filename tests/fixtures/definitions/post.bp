@@ -2,6 +2,7 @@ models:
   Post:
     title: string
     author_id: id
+    author_bio: longtext
     content: bigtext nullable
     published_at: timestamp nullable
     word_count: integer unsigned
