@@ -158,7 +158,7 @@ class ModelGenerator implements Generator
                 if ('belongsTo' === $methodName) {
                     throw new \Exception('The belongsTo relationship for the '.$modelName.' model on the '.$model->name().' model should be defined using the '.$modelName.'_id: id syntax');
                 }
-                if (stripos($methodName, 'many') !== false) {
+                if (Str::contains($methodName, 'many')) {
                     $modelName = Str::plural($modelName);
                 }
                 $class = Str::studly($column->attributes()[0] ?? $modelName);
