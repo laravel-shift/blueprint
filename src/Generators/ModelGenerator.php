@@ -155,6 +155,9 @@ class ModelGenerator implements Generator
         /** @var Column $column */
         foreach ($columns as $column) {
             foreach ($column->attributes() as $methodName => $modelName) {
+                if ('belongsTo' === $methodName) {
+                    throw new \Exception('A belongsTo relationship should be defined using the model_id: id syntax');
+                }
                 if (stripos($methodName, 'many') !== false) {
                     $modelName = Str::plural($modelName);
                 }
