@@ -93,22 +93,19 @@ class ModelGenerator implements Generator
 
         $columns = $this->fillableColumns($model->columns());
         if (!empty($columns)) {
-            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false),
-                    $this->files->stub('model/fillable.stub'));
+            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model/fillable.stub'));
         } else {
             $properties .= $this->files->stub('model/fillable.stub');
         }
 
         $columns = $this->castableColumns($model->columns());
         if (!empty($columns)) {
-            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns),
-                    $this->files->stub('model/casts.stub'));
+            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns), $this->files->stub('model/casts.stub'));
         }
 
         $columns = $this->dateColumns($model->columns());
         if (!empty($columns)) {
-            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false),
-                    $this->files->stub('model/dates.stub'));
+            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model/dates.stub'));
         }
 
         return trim($properties);
@@ -131,8 +128,7 @@ class ModelGenerator implements Generator
         foreach ($columns as $column) {
             $name = Str::beforeLast($column->name(), '_id');
             $class = Str::studly($column->attributes()[0] ?? $name);
-            $relationship = sprintf("\$this->belongsTo(%s::class)",
-                '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);
+            $relationship = sprintf("\$this->belongsTo(%s::class)", '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);
 
             $method = str_replace('DummyName', Str::camel($name), $template);
             $method = str_replace('null', $relationship, $method);
@@ -158,19 +154,16 @@ class ModelGenerator implements Generator
 
         /** @var Column $column */
         foreach ($columns as $column) {
-            $relations = explode(',', $column->dataType());
-            foreach ($relations as $relation) {
-                list($methodName, $columnName) = explode(":", $relation);
-                $name = Str::beforeLast($columnName, '_id');
+            foreach ($column->attributes() as $methodName => $modelName) {
                 if (stripos($methodName, 'many') !== false) {
-                    $name = Str::plural($name);
+                    $modelName = Str::plural($modelName);
                 }
-                $class = Str::studly($column->attributes()[0] ?? $name);
+                $class = Str::studly($column->attributes()[0] ?? $modelName);
                 $relationship = sprintf("\$this->%s(%s::class)",
                     $methodName,
                     '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);
 
-                $method = str_replace('DummyName', Str::camel($name), $template);
+                $method = str_replace('DummyName', Str::camel($modelName), $template);
                 $method = str_replace('null', $relationship, $method);
 
                 $methods .= PHP_EOL . $method;
@@ -191,11 +184,11 @@ class ModelGenerator implements Generator
     {
         return array_diff(array_keys($columns), [
             'id',
-            'relationships',
             'password',
             'deleted_at',
             'created_at',
-            'updated_at'
+            'updated_at',
+            'relationships',
         ]);
     }
 
@@ -259,9 +252,7 @@ class ModelGenerator implements Generator
             return $stub;
         }
 
-        $stub = str_replace('use Illuminate\\Database\\Eloquent\\Model;',
-            'use Illuminate\\Database\\Eloquent\\Model;' . PHP_EOL . 'use Illuminate\\Database\\Eloquent\\SoftDeletes;',
-            $stub);
+        $stub = str_replace('use Illuminate\\Database\\Eloquent\\Model;', 'use Illuminate\\Database\\Eloquent\\Model;' . PHP_EOL . 'use Illuminate\\Database\\Eloquent\\SoftDeletes;', $stub);
         $stub = preg_replace('/^\\{$/m', '{' . PHP_EOL . '    use SoftDeletes;' . PHP_EOL, $stub);
 
         return $stub;
