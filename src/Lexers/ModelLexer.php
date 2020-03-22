@@ -135,35 +135,39 @@ class ModelLexer implements Lexer
         return $model;
     }
 
-    private function buildColumn(string $name, string $definition)
+    private function buildColumn(string $name, $definition)
     {
         $data_type = 'string';
         $modifiers = [];
 
-        $tokens = explode(' ', $definition);
-        foreach ($tokens as $token) {
-            $parts = explode(':', $token);
-            $value = $parts[0];
+        if ($name === 'relationships' && is_array($definition)) {
+            $attributes = $definition;
+        } else {
+            $tokens = explode(' ', $definition);
+            foreach ($tokens as $token) {
+                $parts = explode(':', $token);
+                $value = $parts[0];
 
-            if ($value === 'id') {
-                $data_type = 'id';
-                if (isset($parts[1])) {
-                    $attributes = [$parts[1]];
+                if ($value === 'id') {
+                    $data_type = 'id';
+                    if (isset($parts[1])) {
+                        $attributes = [$parts[1]];
+                    }
+                } elseif (isset(self::$dataTypes[strtolower($value)])) {
+                    $attributes = $parts[1] ?? null;
+                    $data_type = self::$dataTypes[strtolower($value)];
+                    if (!empty($attributes)) {
+                        $attributes = explode(',', $attributes);
+                    }
                 }
-            } elseif (isset(self::$dataTypes[strtolower($value)])) {
-                $attributes = $parts[1] ?? null;
-                $data_type = self::$dataTypes[strtolower($value)];
-                if (!empty($attributes)) {
-                    $attributes = explode(',', $attributes);
-                }
-            }
 
-            if (isset(self::$modifiers[strtolower($value)])) {
-                $modifierAttributes = $parts[1] ?? null;
-                if (empty($modifierAttributes)) {
-                    $modifiers[] = self::$modifiers[strtolower($value)];
-                } else {
-                    $modifiers[] = [self::$modifiers[strtolower($value)] => $modifierAttributes];
+                if (isset(self::$modifiers[strtolower($value)])) {
+                    $modifierAttributes = $parts[1] ?? null;
+                    if (empty($modifierAttributes)) {
+                        $modifiers[] = self::$modifiers[strtolower($value)];
+                    } else {
+                        $modifiers[] = [self::$modifiers[strtolower($value)] => $modifierAttributes];
+                    }
                 }
             }
         }
