@@ -137,8 +137,8 @@ class StatementLexer implements Lexer
 
     private function analyzeQuery($statement)
     {
-        if ($statement === 'all') {
-            return new QueryStatement('all');
+        if ($statement === 'all' || $statement === 'user.all') {
+            return new QueryStatement($statement);
         }
 
         $found = preg_match('/^all:(\\S+)$/', $statement, $matches);
