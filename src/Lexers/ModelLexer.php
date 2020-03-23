@@ -8,6 +8,12 @@ use Blueprint\Models\Model;
 
 class ModelLexer implements Lexer
 {
+    private static $relationships = [
+        'belongsto' => 'belongsTo',
+        'hasone' => 'hasOne',
+        'hasmany' => 'hasMany',
+    ];
+
     private static $dataTypes = [
         'bigincrements' => 'bigIncrements',
         'biginteger' => 'bigInteger',
@@ -122,6 +128,18 @@ class ModelLexer implements Lexer
             unset($columns['softdeletestz']);
         }
 
+        if (isset($columns['relationships'])) {
+            if (is_array($columns['relationships'])) {
+                foreach ($columns['relationships'] as $type => $relationships) {
+                    foreach (explode(',', $relationships) as $reference) {
+                        $model->addRelationship(self::$relationships[strtolower($type)], trim($reference));
+                    }
+                }
+            }
+
+            unset($columns['relationships']);
+        }
+
         if (!isset($columns['id'])) {
             $column = $this->buildColumn('id', 'id');
             $model->addColumn($column);
@@ -130,44 +148,48 @@ class ModelLexer implements Lexer
         foreach ($columns as $name => $definition) {
             $column = $this->buildColumn($name, $definition);
             $model->addColumn($column);
+
+            if ($column->name() !== 'id' && $column->dataType() === 'id') {
+                if ($column->attributes()) {
+                    $model->addRelationship('belongsTo', $column->attributes()[0] . ':' . $column->name());
+                } else {
+                    $model->addRelationship('belongsTo', $column->name());
+                }
+            }
         }
 
         return $model;
     }
 
-    private function buildColumn(string $name, $definition)
+    private function buildColumn(string $name, string $definition)
     {
         $data_type = 'string';
         $modifiers = [];
 
-        if ($name === 'relationships' && is_array($definition)) {
-            $attributes = $definition;
-        } else {
-            $tokens = explode(' ', $definition);
-            foreach ($tokens as $token) {
-                $parts = explode(':', $token);
-                $value = $parts[0];
+        $tokens = explode(' ', $definition);
+        foreach ($tokens as $token) {
+            $parts = explode(':', $token);
+            $value = $parts[0];
 
-                if ($value === 'id') {
-                    $data_type = 'id';
-                    if (isset($parts[1])) {
-                        $attributes = [$parts[1]];
-                    }
-                } elseif (isset(self::$dataTypes[strtolower($value)])) {
-                    $attributes = $parts[1] ?? null;
-                    $data_type = self::$dataTypes[strtolower($value)];
-                    if (!empty($attributes)) {
-                        $attributes = explode(',', $attributes);
-                    }
+            if ($value === 'id') {
+                $data_type = 'id';
+                if (isset($parts[1])) {
+                    $attributes = [$parts[1]];
                 }
+            } elseif (isset(self::$dataTypes[strtolower($value)])) {
+                $attributes = $parts[1] ?? null;
+                $data_type = self::$dataTypes[strtolower($value)];
+                if (!empty($attributes)) {
+                    $attributes = explode(',', $attributes);
+                }
+            }
 
-                if (isset(self::$modifiers[strtolower($value)])) {
-                    $modifierAttributes = $parts[1] ?? null;
-                    if (empty($modifierAttributes)) {
-                        $modifiers[] = self::$modifiers[strtolower($value)];
-                    } else {
-                        $modifiers[] = [self::$modifiers[strtolower($value)] => $modifierAttributes];
-                    }
+            if (isset(self::$modifiers[strtolower($value)])) {
+                $modifierAttributes = $parts[1] ?? null;
+                if (empty($modifierAttributes)) {
+                    $modifiers[] = self::$modifiers[strtolower($value)];
+                } else {
+                    $modifiers[] = [self::$modifiers[strtolower($value)] => $modifierAttributes];
                 }
             }
         }

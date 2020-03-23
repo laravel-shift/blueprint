@@ -1,0 +1,6 @@
+models:
+  Subscription:
+    user_id: id
+    relationships:
+      hasMany: Order
+      hasOne: Duration, Transaction

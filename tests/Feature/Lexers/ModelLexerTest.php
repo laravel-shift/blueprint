@@ -341,6 +341,47 @@ class ModelLexerTest extends TestCase
         $this->assertEquals([], $columns['id']->modifiers());
     }
 
+    /**
+     * @test
+     */
+    public function it_stores_relationships()
+    {
+        $tokens = [
+            'models' => [
+                'Subscription' => [
+                    'different_id' => 'id:user',
+                    'title' => 'string',
+                    'price' => 'float',
+                    'relationships' => [
+                        'hasmany' => 'Order',
+                        'hasOne' => 'Duration, Transaction:tid',
+                    ],
+                ]
+            ],
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertIsArray($actual['models']);
+        $this->assertCount(1, $actual['models']);
+
+        $model = $actual['models']['Subscription'];
+        $this->assertEquals('Subscription', $model->name());
+
+        $columns = $model->columns();
+        $this->assertCount(4, $columns);
+        $this->assertArrayHasKey('id', $columns);
+        $this->assertArrayHasKey('different_id', $columns);
+        $this->assertArrayHasKey('title', $columns);
+        $this->assertArrayHasKey('price', $columns);
+
+        $relationships = $model->relationships();
+        $this->assertCount(3, $relationships);
+        $this->assertEquals(['user:different_id'], $relationships['belongsTo']);
+        $this->assertEquals(['Order'], $relationships['hasMany']);
+        $this->assertEquals(['Duration', 'Transaction:tid'], $relationships['hasOne']);
+    }
+
     public function dataTypeAttributesDataProvider()
     {
         return [

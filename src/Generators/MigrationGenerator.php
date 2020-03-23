@@ -61,8 +61,6 @@ class MigrationGenerator implements Generator
                 $dataType = 'bigIncrements';
             } elseif ($column->dataType() === 'id') {
                 $dataType = 'unsignedBigInteger';
-            } elseif ($column->name() === 'relationships') {
-                continue;
             }
 
             $definition .= self::INDENT . '$table->' . $dataType . "('{$column->name()}'";

@@ -11,6 +11,7 @@ class Model
     private $timestamps = 'timestamps';
     private $softDeletes = false;
     private $columns = [];
+    private $relationships = [];
 
     /**
      * @param $name
@@ -63,6 +64,11 @@ class Model
     public function columns(): array
     {
         return $this->columns;
+    }
+
+    public function relationships(): array
+    {
+        return $this->relationships;
     }
 
     public function primaryKey()
@@ -119,4 +125,15 @@ class Model
     {
         return $this->columns[$name];
     }
+
+    public function addRelationship(string $type, string $reference)
+    {
+        if (!isset($this->relationships[$type])) {
+            $this->relationships[$type] = [];
+        }
+
+        $this->relationships[$type][] = $reference;
+    }
+
+
 }

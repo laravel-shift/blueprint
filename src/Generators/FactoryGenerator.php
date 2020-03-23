@@ -63,7 +63,7 @@ class FactoryGenerator implements Generator
 
         /** @var \Blueprint\Models\Column $column */
         foreach ($model->columns() as $column) {
-            if ($column->name() === 'id' || $column->name() === 'relationships') {
+            if ($column->name() === 'id') {
                 continue;
             }
 

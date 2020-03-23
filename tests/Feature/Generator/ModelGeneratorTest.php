@@ -81,6 +81,36 @@ class ModelGeneratorTest extends TestCase
     /**
      * @test
      */
+    public function output_generates_relationships()
+    {
+        $this->files->expects('stub')
+            ->with('model/class.stub')
+            ->andReturn(file_get_contents('stubs/model/class.stub'));
+
+        $this->files->expects('stub')
+            ->with('model/fillable.stub')
+            ->andReturn(file_get_contents('stubs/model/fillable.stub'));
+
+        $this->files->expects('stub')
+            ->with('model/casts.stub')
+            ->andReturn(file_get_contents('stubs/model/casts.stub'));
+
+        $this->files->expects('stub')
+            ->with('model/method.stub')
+            ->andReturn(file_get_contents('stubs/model/method.stub'));
+
+        $this->files->expects('put')
+            ->with('app/Subscription.php', $this->fixture('models/model-relationships.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/model-relationships.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['app/Subscription.php']], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
     public function output_respects_configuration()
     {
         $this->app['config']->set('blueprint.app_path', 'src/path');
