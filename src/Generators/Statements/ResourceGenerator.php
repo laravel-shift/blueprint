@@ -45,10 +45,7 @@ class ResourceGenerator implements Generator
                 $this->files->makeDirectory(dirname($path), 0755, true);
             }
 
-            $this->files->put(
-                $path,
-                $this->populateStub($stub, $name, $controller)
-            );
+            $this->files->put($path, $this->populateStub($stub, $name, $controller));
 
             $output['created'][] = $path;
         }
@@ -65,18 +62,13 @@ class ResourceGenerator implements Generator
             '.php';
     }
 
-    protected function populateStub(
-        string $stub,
-        string $name,
-        Controller $controller
-    ) {
+    protected function populateStub(string $stub, string $name, Controller $controller)
+    {
         $stub = str_replace(
             'DummyNamespace',
             config('blueprint.namespace') .
                 '\\Http\\Resources' .
-                ($controller->namespace()
-                    ? '\\' . $controller->namespace()
-                    : ''),
+                ($controller->namespace() ? '\\' . $controller->namespace() : ''),
             $stub
         );
         $stub = str_replace('DummyClass', $name, $stub);
