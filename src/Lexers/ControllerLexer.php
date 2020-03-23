@@ -27,13 +27,21 @@ class ControllerLexer implements Lexer
         }
 
         foreach ($tokens['controllers'] as $name => $definition) {
-            $controller = new Controller($name);
+            $controller = new Controller($name, $this->isAPI($definition));
 
             if ($this->isResource($definition)) {
+                $original = $definition;
                 $definition = $this->generateResourceTokens($controller, $this->methodsForResource($definition['resource']));
+                // unset shorthand
+                unset($original['resource']);
+                // this gives the ability to both use a shorthand and override some methods
+                $definition = array_merge($definition, $original);
             }
 
             foreach ($definition as $method => $body) {
+                if (isset($body['resource'])) {
+                    $controller->setAPI();
+                }
                 $controller->addMethod($method, $this->statementLexer->analyze($body));
             }
 
@@ -48,15 +56,24 @@ class ControllerLexer implements Lexer
         return isset($definition['resource']) && is_string($definition['resource']);
     }
 
+    private function isAPI(array $definition)
+    {
+        return isset($definition['resource']) &&
+            is_string($definition['resource']) &&
+            $definition['resource'] === 'api';
+    }
+
     private function generateResourceTokens(Controller $controller, array $methods)
     {
         return collect($this->resourceTokens())
             ->filter(function ($statements, $method) use ($methods) {
                 return in_array($method, $methods);
             })
-            ->map(function ($statements) use ($controller) {
-                return collect($statements)
-                    ->map(function ($statement) use ($controller) {
+            ->mapWithKeys(function ($statements, $method) use ($controller) {
+                return [
+                    str_replace('.api', '', $method) => collect($statements)->map(function ($statement) use (
+                        $controller
+                    ) {
                         $model = Str::singular($controller->prefix());
 
                         return str_replace(
@@ -64,7 +81,8 @@ class ControllerLexer implements Lexer
                             [Str::lower($model), Str::lower(Str::plural($model))],
                             $statement
                         );
-                    });
+                    }),
+                ];
             })
             ->toArray();
     }
@@ -74,40 +92,65 @@ class ControllerLexer implements Lexer
         return [
             'index' => [
                 'query' => 'all:[plural]',
-                'render' => '[singular].index with [plural]'
+                'render' => '[singular].index with [plural]',
             ],
             'create' => [
-                'render' => '[singular].create'
+                'render' => '[singular].create',
             ],
             'store' => [
                 'validate' => '[singular]',
                 'save' => '[singular]',
                 'flash' => '[singular].id',
-                'redirect' => '[singular].index'
+                'redirect' => '[singular].index',
             ],
             'show' => [
-                'render' => '[singular].show with:[singular]'
+                'render' => '[singular].show with:[singular]',
             ],
             'edit' => [
-                'render' => '[singular].edit with:[singular]'
+                'render' => '[singular].edit with:[singular]',
             ],
             'update' => [
                 'validate' => '[singular]',
                 'update' => '[singular]',
                 'flash' => '[singular].id',
-                'redirect' => '[singular].index'
+                'redirect' => '[singular].index',
             ],
             'destroy' => [
                 'delete' => '[singular]',
-                'redirect' => '[singular].index'
-            ]
+                'redirect' => '[singular].index',
+            ],
+
+            'index.api' => [
+                'query' => 'all:[plural]',
+                'resource' => '[singular] collection',
+            ],
+            'store.api' => [
+                'validate' => '[singular]',
+                'save' => '[singular]',
+                'resource' => '[singular]',
+            ],
+            'show.api' => [
+                'authorize' => '[singular]',
+                'resource' => '[singular]',
+            ],
+            'update.api' => [
+                'authorize' => '[singular]',
+                'validate' => '[singular]',
+                'update' => '[singular]',
+                'resource' => 'empty',
+            ],
+            'destroy.api' => [
+                'authorize' => '[singular]',
+                'delete' => '[singular]',
+                'resource' => 'empty',
+            ],
         ];
     }
 
     private function methodsForResource(string $type)
     {
         if ($type === 'api') {
-            return ['index', 'store', 'show', 'update', 'destroy'];
+            return ['index.api', 'store.api', 'show.api', 'update.api', 'destroy.api'];
         }
 
         if ($type === 'all') {

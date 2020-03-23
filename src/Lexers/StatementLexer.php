@@ -13,6 +13,7 @@ use Blueprint\Models\Statements\RenderStatement;
 use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
+use Blueprint\Models\Statements\ResourceStatement;
 use Illuminate\Support\Str;
 
 class StatementLexer implements Lexer
@@ -43,6 +44,9 @@ class StatementLexer implements Lexer
                     break;
                 case 'redirect':
                     $statements[] = $this->analyzeRedirect($statement);
+                    break;
+                case 'resource':
+                    $statements[] = $this->analyzeResource($statement);
                     break;
                 case 'save':
                 case 'update':
@@ -152,5 +156,12 @@ class StatementLexer implements Lexer
         }
 
         return new QueryStatement('get', $this->extractTokens($statement));
+    }
+
+    private function analyzeResource($statement)
+    {
+        [$object, $collection] = $this->extractTokens($statement, 2);
+
+        return new ResourceStatement($object, $collection);
     }
 }
