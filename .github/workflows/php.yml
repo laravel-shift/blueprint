@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - uses: michaelw90/PHP-Lint@master
+    - uses: jasonmccreary/PHP-Lint@fetch-signature
 
     - name: Validate composer.json and composer.lock
       run: composer validate
