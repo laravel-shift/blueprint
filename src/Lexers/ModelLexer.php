@@ -86,13 +86,16 @@ class ModelLexer implements Lexer
         'usecurrent' => 'useCurrent',
         'always' => 'always',
         'unique' => 'unique',
+        'index' => 'index',
+        'primary' => 'primary',
+        'foreign' => 'foreign',
     ];
 
     public function analyze(array $tokens): array
     {
         $registry = [
             'models' => [],
-            'cache' => []
+            'cache' => [],
         ];
 
         if (!empty($tokens['models'])) {
@@ -106,7 +109,6 @@ class ModelLexer implements Lexer
                 $registry['cache'][$name] = $this->buildModel($name, $definition);
             }
         }
-
 
         return $registry;
     }
@@ -155,7 +157,7 @@ class ModelLexer implements Lexer
             $column = $this->buildColumn($name, $definition);
             $model->addColumn($column);
 
-            if ($column->name() !== 'id' && $column->dataType() === 'id') {
+            if ($column->name() !== 'id' && in_array($column->dataType(), ['id', 'uuid'])) {
                 if ($column->attributes()) {
                     $model->addRelationship('belongsTo', $column->attributes()[0] . ':' . $column->name());
                 } else {
