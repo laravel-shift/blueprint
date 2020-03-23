@@ -134,6 +134,4 @@ class Model
 
         $this->relationships[$type][] = $reference;
     }
-
-
 }
