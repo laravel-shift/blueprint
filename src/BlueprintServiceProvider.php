@@ -2,6 +2,9 @@
 
 namespace Blueprint;
 
+use Blueprint\Commands\BlueprintCommand;
+use Blueprint\Commands\EraseCommand;
+use Blueprint\Commands\TraceCommand;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
@@ -20,7 +23,7 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
         }
 
         $this->publishes([
-            __DIR__.'/../config/blueprint.php' => config_path('blueprint.php'),
+            __DIR__ . '/../config/blueprint.php' => config_path('blueprint.php'),
         ]);
     }
 
@@ -32,7 +35,7 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
     public function register()
     {
         $this->mergeConfigFrom(
-            __DIR__.'/../config/blueprint.php', 'blueprint'
+            __DIR__ . '/../config/blueprint.php', 'blueprint'
         );
 
         File::mixin(new FileMixins());
@@ -42,10 +45,14 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
                 return new BlueprintCommand($app['files']);
             }
         );
-
         $this->app->bind('command.blueprint.erase',
             function ($app) {
                 return new EraseCommand($app['files']);
+            }
+        );
+        $this->app->bind('command.blueprint.trace',
+            function ($app) {
+                return new TraceCommand($app['files']);
             }
         );
 
@@ -74,6 +81,7 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
         $this->commands([
             'command.blueprint.build',
             'command.blueprint.erase',
+            'command.blueprint.trace',
         ]);
     }
 
@@ -87,6 +95,7 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
         return [
             'command.blueprint.build',
             'command.blueprint.erase',
+            'command.blueprint.trace',
             Blueprint::class,
         ];
     }

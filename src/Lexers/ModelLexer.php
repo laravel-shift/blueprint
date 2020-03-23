@@ -91,16 +91,22 @@ class ModelLexer implements Lexer
     public function analyze(array $tokens): array
     {
         $registry = [
-            'models' => []
+            'models' => [],
+            'cache' => []
         ];
 
-        if (empty($tokens['models'])) {
-            return $registry;
+        if (!empty($tokens['models'])) {
+            foreach ($tokens['models'] as $name => $definition) {
+                $registry['models'][$name] = $this->buildModel($name, $definition);
+            }
         }
 
-        foreach ($tokens['models'] as $name => $definition) {
-            $registry['models'][$name] = $this->buildModel($name, $definition);
+        if (!empty($tokens['cache'])) {
+            foreach ($tokens['cache'] as $name => $definition) {
+                $registry['cache'][$name] = $this->buildModel($name, $definition);
+            }
         }
+
 
         return $registry;
     }

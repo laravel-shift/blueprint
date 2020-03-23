@@ -30,7 +30,7 @@ class FormRequestGenerator implements Generator
 
         $stub = $this->files->stub('form-request.stub');
 
-        $this->registerModels($tree['models'] ?? []);
+        $this->registerModels($tree);
 
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree['controllers'] as $controller) {
@@ -140,8 +140,8 @@ class FormRequestGenerator implements Generator
         return 'required';
     }
 
-    private function registerModels(array $models)
+    private function registerModels(array $tree)
     {
-        $this->models = $models;
+        $this->models = array_merge($tree['cache'] ?? [], $tree['models'] ?? []);
     }
 }
