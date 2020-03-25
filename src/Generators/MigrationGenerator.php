@@ -30,10 +30,7 @@ class MigrationGenerator implements Generator
         /** @var \Blueprint\Models\Model $model */
         foreach ($tree['models'] as $model) {
             $path = $this->getPath($model, $sequential_timestamp->addSecond());
-            $this->files->put(
-                $path,
-                $this->populateStub($stub, $model)
-            );
+            $this->files->put($path, $this->populateStub($stub, $model));
 
             $output['created'][] = $path;
         }
@@ -57,15 +54,19 @@ class MigrationGenerator implements Generator
         /** @var \Blueprint\Models\Column $column */
         foreach ($model->columns() as $column) {
             $dataType = $column->dataType();
-            if ($column->name() === 'id') {
+            if ($column->name() === 'id' && $dataType != 'uuid') {
                 $dataType = 'bigIncrements';
             } elseif ($column->dataType() === 'id') {
                 $dataType = 'unsignedBigInteger';
             }
 
+            if ($column->dataType() === 'uuid') {
+                $dataType = 'uuid';
+            }
+
             $definition .= self::INDENT . '$table->' . $dataType . "('{$column->name()}'";
 
-            if (!empty($column->attributes()) && $column->dataType() !== 'id') {
+            if (!empty($column->attributes()) && !in_array($column->dataType(), ['id', 'uuid'])) {
                 $definition .= ', ';
                 if (in_array($column->dataType(), ['set', 'enum'])) {
                     $definition .= json_encode($column->attributes());
@@ -75,15 +76,27 @@ class MigrationGenerator implements Generator
             }
             $definition .= ')';
 
+            $foreign = '';
+
             foreach ($column->modifiers() as $modifier) {
                 if (is_array($modifier)) {
-                    $definition .= "->" . key($modifier) . "(" . current($modifier) . ")";
+                    if (key($modifier) == 'foreign') {
+                        $foreign =
+                            self::INDENT .
+                            '$table->foreign(' .
+                            "'{$column->name()}')->references('id')->on('" .
+                            Str::lower(Str::plural(current($modifier))) .
+                            "')->onDelete('cascade');" .
+                            PHP_EOL;
+                    } else {
+                        $definition .= '->' . key($modifier) . '(' . current($modifier) . ')';
+                    }
                 } else {
                     $definition .= '->' . $modifier . '()';
                 }
             }
 
-            $definition .= ';' . PHP_EOL;
+            $definition .= ';' . PHP_EOL . $foreign;
         }
 
         if ($model->usesSoftDeletes()) {

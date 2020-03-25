@@ -27,10 +27,7 @@ class FactoryGenerator implements Generator
         /** @var \Blueprint\Models\Model $model */
         foreach ($tree['models'] as $model) {
             $path = $this->getPath($model);
-            $this->files->put(
-                $path,
-                $this->populateStub($stub, $model)
-            );
+            $this->files->put($path, $this->populateStub($stub, $model));
 
             $output['created'][] = $path;
         }
@@ -67,12 +64,12 @@ class FactoryGenerator implements Generator
                 continue;
             }
 
-            if ($column->dataType() === 'id') {
+            if (in_array($column->dataType(), ['id', 'uuid'])) {
                 $name = Str::beforeLast($column->name(), '_id');
                 $class = Str::studly($column->attributes()[0] ?? $name);
 
                 $definition .= self::INDENT . "'{$column->name()}' => ";
-                $definition .= sprintf("factory(%s::class)", '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);
+                $definition .= sprintf('factory(%s::class)', '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);
                 $definition .= ',' . PHP_EOL;
             } elseif (in_array($column->dataType(), ['enum', 'set']) and !empty($column->attributes())) {
                 $definition .= self::INDENT . "'{$column->name()}' => ";
@@ -98,6 +95,8 @@ class FactoryGenerator implements Generator
                     implode(', ', [$scale, 0, (str_repeat(9, $precision - $scale) . '.' . str_repeat(9, $scale))]),
                     $definition
                 );
+            } elseif ($column->dataType() == 'json') {
+                $definition .= self::INDENT . "'{$column->name()}' => '[]'," . PHP_EOL;
             } else {
                 $definition .= self::INDENT . "'{$column->name()}' => ";
                 $faker = self::fakerData($column->name()) ?? self::fakerDataType($column->dataType());
@@ -158,11 +157,13 @@ class FactoryGenerator implements Generator
             'text' => 'text',
             'date' => 'date()',
             'time' => 'time()',
-            'guid' => 'word',
+            'guid' => 'uuid',
+            'uuid' => 'uuid',
             'datetimetz' => 'dateTime()',
             'datetime' => 'dateTime()',
             'timestamp' => 'dateTime()',
             'integer' => 'randomNumber()',
+            'unsignedsmallinteger' => 'randomNumber()',
             'bigint' => 'randomNumber()',
             'smallint' => 'randomNumber()',
             'decimal' => 'randomFloat(/** decimal_attributes **/)',
