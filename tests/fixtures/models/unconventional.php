@@ -15,6 +15,7 @@ class Team extends Model
         'name',
         'owner',
         'manager',
+        'options',
     ];
 
     /**
@@ -26,6 +27,7 @@ class Team extends Model
         'id' => 'integer',
         'owner' => 'integer',
         'manager' => 'integer',
+        'options' => 'array',
     ];
 
 

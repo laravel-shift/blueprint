@@ -95,8 +95,9 @@ class FactoryGenerator implements Generator
                     implode(', ', [$scale, 0, (str_repeat(9, $precision - $scale) . '.' . str_repeat(9, $scale))]),
                     $definition
                 );
-            } elseif ($column->dataType() == 'json') {
-                $definition .= self::INDENT . "'{$column->name()}' => '[]'," . PHP_EOL;
+            } elseif ($column->dataType() === 'json') {
+                $default = $column->defaultValue() ?? "'{}'";
+                $definition .= self::INDENT . "'{$column->name()}' => {$default}," . PHP_EOL;
             } else {
                 $definition .= self::INDENT . "'{$column->name()}' => ";
                 $faker = self::fakerData($column->name()) ?? self::fakerDataType($column->dataType());
@@ -163,7 +164,7 @@ class FactoryGenerator implements Generator
             'datetime' => 'dateTime()',
             'timestamp' => 'dateTime()',
             'integer' => 'randomNumber()',
-            'unsignedsmallinteger' => 'randomNumber()',
+            'unsignedsmallinteger' => 'randomDigitNotNull',
             'bigint' => 'randomNumber()',
             'smallint' => 'randomNumber()',
             'decimal' => 'randomFloat(/** decimal_attributes **/)',

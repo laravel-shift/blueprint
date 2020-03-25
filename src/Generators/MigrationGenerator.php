@@ -54,13 +54,11 @@ class MigrationGenerator implements Generator
         /** @var \Blueprint\Models\Column $column */
         foreach ($model->columns() as $column) {
             $dataType = $column->dataType();
-            if ($column->name() === 'id' && $dataType != 'uuid') {
+            if ($column->name() === 'id' && $dataType !== 'uuid') {
                 $dataType = 'bigIncrements';
             } elseif ($column->dataType() === 'id') {
                 $dataType = 'unsignedBigInteger';
-            }
-
-            if ($column->dataType() === 'uuid') {
+            } elseif ($column->dataType() === 'uuid') {
                 $dataType = 'uuid';
             }
 
@@ -80,7 +78,7 @@ class MigrationGenerator implements Generator
 
             foreach ($column->modifiers() as $modifier) {
                 if (is_array($modifier)) {
-                    if (key($modifier) == 'foreign') {
+                    if (key($modifier) === 'foreign') {
                         $foreign =
                             self::INDENT .
                             '$table->foreign(' .

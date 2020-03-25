@@ -104,6 +104,8 @@ class MigrationGeneratorTest extends TestCase
             ['definitions/soft-deletes.bp', 'database/migrations/timestamp_create_comments_table.php', 'migrations/soft-deletes.php'],
             ['definitions/with-timezones.bp', 'database/migrations/timestamp_create_comments_table.php', 'migrations/with-timezones.php'],
             ['definitions/relationships.bp', 'database/migrations/timestamp_create_comments_table.php', 'migrations/relationships.php'],
+            ['definitions/unconventional.bp', 'database/migrations/timestamp_create_teams_table.php', 'migrations/unconventional.php'],
+            ['definitions/model-key-constraints.bp', 'database/migrations/timestamp_create_orders_table.php', 'migrations/model-key-constraints.php'],
         ];
     }
 }
