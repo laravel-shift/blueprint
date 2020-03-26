@@ -55,6 +55,8 @@ class EraseCommand extends Command
                 $this->files->delete($files);
             } elseif ($action === 'updated') {
                 $this->comment('The updates to the following files can not be erased automatically.');
+            } else {
+                return;
             }
 
             collect($files)->each(function ($file) {
@@ -63,6 +65,14 @@ class EraseCommand extends Command
 
             $this->line('');
         });
+
+        unset($generated['created']);
+        unset($generated['updated']);
+
+        $this->files->put(
+            '.blueprint',
+            $blueprint->dump($generated)
+        );
     }
 
     /**
