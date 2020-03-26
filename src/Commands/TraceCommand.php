@@ -70,10 +70,7 @@ class TraceCommand extends Command
 
         $cache['models'] = $definitions;
 
-        $this->files->put(
-            '.blueprint',
-            $blueprint->dump($cache)
-        );
+        $this->files->put('.blueprint', $blueprint->dump($cache));
 
         $this->info('Traced ' . count($definitions) . ' ' . Str::plural('model', count($definitions)));
     }

@@ -42,15 +42,13 @@ class ViewGenerator implements Generator
                         $this->files->makeDirectory(dirname($path), 0755, true);
                     }
 
-                    $this->files->put(
-                        $path,
-                        $this->populateStub($stub, $statement)
-                    );
+                    $this->files->put($path, $this->populateStub($stub, $statement));
 
                     $output['created'][] = $path;
                 }
             }
         }
+
         return $output;
     }
 

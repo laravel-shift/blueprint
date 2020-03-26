@@ -54,10 +54,7 @@ class TestGenerator implements Generator
                 $this->files->makeDirectory(dirname($path), 0755, true);
             }
 
-            $this->files->put(
-                $path,
-                $this->populateStub($stub, $controller)
-            );
+            $this->files->put($path, $this->populateStub($stub, $controller));
 
             $output['created'][] = $path;
         }

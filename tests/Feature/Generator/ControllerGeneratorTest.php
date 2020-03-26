@@ -54,11 +54,13 @@ class ControllerGeneratorTest extends TestCase
         $this->files->expects('stub')
             ->with('controller/class.stub')
             ->andReturn(file_get_contents('stubs/controller/class.stub'));
-
         $this->files->expects('stub')
             ->with('controller/method.stub')
             ->andReturn(file_get_contents('stubs/controller/method.stub'));
 
+        $this->files->expects('exists')
+            ->with(dirname($path))
+            ->andReturnTrue();
         $this->files->expects('put')
             ->with($path, $this->fixture($controller));
 
@@ -80,11 +82,15 @@ class ControllerGeneratorTest extends TestCase
         $this->files->expects('stub')
             ->with('controller/class.stub')
             ->andReturn(file_get_contents('stubs/controller/class.stub'));
-
         $this->files->expects('stub')
             ->with('controller/method.stub')
             ->andReturn(file_get_contents('stubs/controller/method.stub'));
 
+        $this->files->expects('exists')
+            ->with('src/path/Other/Http')
+            ->andReturnFalse();
+        $this->files->expects('makeDirectory')
+            ->with('src/path/Other/Http', 0755, true);
         $this->files->expects('put')
             ->with('src/path/Other/Http/UserController.php', $this->fixture('controllers/controller-configured.php'));
 

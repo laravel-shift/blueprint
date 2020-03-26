@@ -69,10 +69,7 @@ class EraseCommand extends Command
         unset($generated['created']);
         unset($generated['updated']);
 
-        $this->files->put(
-            '.blueprint',
-            $blueprint->dump($generated)
-        );
+        $this->files->put('.blueprint', $blueprint->dump($generated));
     }
 
     /**

@@ -69,6 +69,9 @@ class ModelGeneratorTest extends TestCase
             ->with('model/method.stub')
             ->andReturn(file_get_contents('stubs/model/method.stub'));
 
+        $this->files->expects('exists')
+            ->with(dirname($path))
+            ->andReturnTrue();
         $this->files->expects('put')
             ->with($path, $this->fixture($model));
 
@@ -86,19 +89,19 @@ class ModelGeneratorTest extends TestCase
         $this->files->expects('stub')
             ->with('model/class.stub')
             ->andReturn(file_get_contents('stubs/model/class.stub'));
-
         $this->files->expects('stub')
             ->with('model/fillable.stub')
             ->andReturn(file_get_contents('stubs/model/fillable.stub'));
-
         $this->files->expects('stub')
             ->with('model/casts.stub')
             ->andReturn(file_get_contents('stubs/model/casts.stub'));
-
         $this->files->expects('stub')
             ->with('model/method.stub')
             ->andReturn(file_get_contents('stubs/model/method.stub'));
 
+        $this->files->expects('exists')
+            ->with('app')
+            ->andReturnTrue();
         $this->files->expects('put')
             ->with('app/Subscription.php', $this->fixture('models/model-relationships.php'));
 
@@ -133,6 +136,11 @@ class ModelGeneratorTest extends TestCase
             ->with('model/method.stub')
             ->andReturn(file_get_contents('stubs/model/method.stub'));
 
+        $this->files->expects('exists')
+            ->with('src/path/Models')
+            ->andReturnFalse();
+        $this->files->expects('makeDirectory')
+            ->with('src/path/Models', 0755, true);
         $this->files->expects('put')
             ->with('src/path/Models/Comment.php', $this->fixture('models/model-configured.php'));
 
@@ -172,6 +180,9 @@ class ModelGeneratorTest extends TestCase
             ->with('model/method.stub')
             ->andReturn(file_get_contents('stubs/model/method.stub'));
 
+        $this->files->expects('exists')
+            ->with(dirname($path))
+            ->andReturnTrue();
         $this->files->expects('put')
             ->with($path, $this->fixture($model));
 

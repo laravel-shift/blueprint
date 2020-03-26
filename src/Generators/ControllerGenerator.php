@@ -39,11 +39,14 @@ class ControllerGenerator implements Generator
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree['controllers'] as $controller) {
             $this->addImport($controller, 'Illuminate\\Http\\Request');
+
             $path = $this->getPath($controller);
-            $this->files->put(
-                $path,
-                $this->populateStub($stub, $controller)
-            );
+
+            if (!$this->files->exists(dirname($path))) {
+                $this->files->makeDirectory(dirname($path), 0755, true);
+            }
+
+            $this->files->put($path, $this->populateStub($stub, $controller));
 
             $output['created'][] = $path;
         }
