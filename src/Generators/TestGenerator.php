@@ -373,6 +373,10 @@ class TestGenerator implements Generator
 
     private function buildTraits(Controller $controller)
     {
+        if (empty($this->traits[$controller->name()])) {
+            return '';
+        }
+
         $traits = array_unique($this->traits[$controller->name()]);
         sort($traits);
 
