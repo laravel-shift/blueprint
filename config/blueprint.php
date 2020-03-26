@@ -42,7 +42,7 @@ return [
     | generated component elsewhere.
     |
     */
-    'app_path' => app_path(),
+    'app_path' => 'app',
 
     /*
     |--------------------------------------------------------------------------
