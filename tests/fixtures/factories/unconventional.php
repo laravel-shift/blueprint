@@ -10,5 +10,6 @@ $factory->define(Team::class, function (Faker $faker) {
         'name' => $faker->name,
         'owner' => factory(\App\Owner::class),
         'manager' => factory(\App\User::class),
+        'options' => '{}',
     ];
 });

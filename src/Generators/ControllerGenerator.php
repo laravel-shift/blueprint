@@ -11,6 +11,7 @@ use Blueprint\Models\Statements\FireStatement;
 use Blueprint\Models\Statements\QueryStatement;
 use Blueprint\Models\Statements\RedirectStatement;
 use Blueprint\Models\Statements\RenderStatement;
+use Blueprint\Models\Statements\RespondStatement;
 use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
@@ -40,7 +41,13 @@ class ControllerGenerator implements Generator
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree['controllers'] as $controller) {
             $this->addImport($controller, 'Illuminate\\Http\\Request');
+
             $path = $this->getPath($controller);
+
+            if (!$this->files->exists(dirname($path))) {
+                $this->files->makeDirectory(dirname($path), 0755, true);
+            }
+
             $this->files->put($path, $this->populateStub($stub, $controller));
 
             $output['created'][] = $path;
@@ -135,6 +142,8 @@ class ControllerGenerator implements Generator
 
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
                 } elseif ($statement instanceof RedirectStatement) {
+                    $body .= self::INDENT . $statement->output() . PHP_EOL;
+                } elseif ($statement instanceof RespondStatement) {
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
                 } elseif ($statement instanceof SessionStatement) {
                     $body .= self::INDENT . $statement->output() . PHP_EOL;

@@ -3,3 +3,4 @@ models:
     name: string
     owner: id
     manager: id:user
+    options: json

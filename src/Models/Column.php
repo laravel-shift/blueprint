@@ -36,4 +36,13 @@ class Column
     {
         return $this->modifiers;
     }
+
+    public function defaultValue()
+    {
+        return collect($this->modifiers())
+            ->collapse()
+            ->first(function ($value, $key) {
+                return $key === 'default';
+            });
+    }
 }

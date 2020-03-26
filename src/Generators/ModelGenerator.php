@@ -27,10 +27,12 @@ class ModelGenerator implements Generator
         /** @var \Blueprint\Models\Model $model */
         foreach ($tree['models'] as $model) {
             $path = $this->getPath($model);
-            $this->files->put(
-                $path,
-                $this->populateStub($stub, $model)
-            );
+
+            if (!$this->files->exists(dirname($path))) {
+                $this->files->makeDirectory(dirname($path), 0755, true);
+            }
+
+            $this->files->put($path, $this->populateStub($stub, $model));
 
             $output['created'][] = $path;
         }
@@ -194,6 +196,10 @@ class ModelGenerator implements Generator
             return 'decimal';
         }
 
+        if ($column->dataType() === 'json') {
+            return 'array';
+        }
+
         return null;
     }
 
@@ -201,7 +207,7 @@ class ModelGenerator implements Generator
     {
         $output = var_export($data, true);
         $output = preg_replace('/^\s+/m', '        ', $output);
-        $output = preg_replace(['/^array\s\(/', "/\)$/"], ['[', '    ]'], $output);
+        $output = preg_replace(['/^array\s\(/', '/\)$/'], ['[', '    ]'], $output);
 
         if (!$assoc) {
             $output = preg_replace('/^(\s+)[^=]+=>\s+/m', '$1', $output);
@@ -226,6 +232,7 @@ class ModelGenerator implements Generator
     {
         static $php_data_types = [
             'id' => 'int',
+            'uuid' => 'string',
             'bigincrements' => 'int',
             'biginteger' => 'int',
             'boolean' => 'bool',

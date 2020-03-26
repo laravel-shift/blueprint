@@ -1,0 +1,9 @@
+controllers:
+  Api/Post:
+    index:
+      query: all:posts
+      respond: posts
+    store:
+      respond: 204
+    error:
+      respond: 400

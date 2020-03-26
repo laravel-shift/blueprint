@@ -1,0 +1,8 @@
+models:
+  Order:
+    id: uuid primary
+    user_id: id foreign:user
+    external_id: string nullable index
+    subscription_id: uuid foreign:subscription
+    expires_at: timestamp nullable index
+    meta: json default:'[]'
