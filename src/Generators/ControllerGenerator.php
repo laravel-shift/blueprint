@@ -11,6 +11,7 @@ use Blueprint\Models\Statements\FireStatement;
 use Blueprint\Models\Statements\QueryStatement;
 use Blueprint\Models\Statements\RedirectStatement;
 use Blueprint\Models\Statements\RenderStatement;
+use Blueprint\Models\Statements\RespondStatement;
 use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
@@ -113,6 +114,8 @@ class ControllerGenerator implements Generator
                 } elseif ($statement instanceof RenderStatement) {
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
                 } elseif ($statement instanceof RedirectStatement) {
+                    $body .= self::INDENT . $statement->output() . PHP_EOL;
+                } elseif ($statement instanceof RespondStatement) {
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
                 } elseif ($statement instanceof SessionStatement) {
                     $body .= self::INDENT . $statement->output() . PHP_EOL;

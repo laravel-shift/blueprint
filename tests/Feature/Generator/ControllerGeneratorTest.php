@@ -106,6 +106,7 @@ class ControllerGeneratorTest extends TestCase
             ['definitions/readme-example.bp', 'app/Http/Controllers/PostController.php', 'controllers/readme-example.php'],
             ['definitions/crazy-eloquent.bp', 'app/Http/Controllers/PostController.php', 'controllers/crazy-eloquent.php'],
             ['definitions/nested-components.bp', 'app/Http/Controllers/Admin/UserController.php', 'controllers/nested-components.php'],
+            ['definitions/respond-statements.bp', 'app/Http/Controllers/Api/PostController.php', 'controllers/respond-statements.php'],
         ];
     }
 }

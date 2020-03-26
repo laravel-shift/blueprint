@@ -10,6 +10,7 @@ use Blueprint\Models\Statements\FireStatement;
 use Blueprint\Models\Statements\QueryStatement;
 use Blueprint\Models\Statements\RedirectStatement;
 use Blueprint\Models\Statements\RenderStatement;
+use Blueprint\Models\Statements\RespondStatement;
 use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
@@ -43,6 +44,9 @@ class StatementLexer implements Lexer
                     break;
                 case 'redirect':
                     $statements[] = $this->analyzeRedirect($statement);
+                    break;
+                case 'respond':
+                    $statements[] = $this->analyzeRespond($statement);
                     break;
                 case 'save':
                 case 'update':
@@ -88,17 +92,9 @@ class StatementLexer implements Lexer
         return new RedirectStatement($route, $data);
     }
 
-    private function parseWithStatement(string $statement)
+    private function analyzeRespond(string $statement)
     {
-        [$object, $with] = $this->extractTokens($statement, 2);
-
-        $data = [];
-
-        if (!empty($with)) {
-            $data = preg_split('/,([ \t]+)?/', substr($with, 5));
-        }
-
-        return [$object, $data];
+        return new RespondStatement($statement);
     }
 
     private function analyzeMail($statement)
@@ -124,6 +120,19 @@ class StatementLexer implements Lexer
     private function analyzeValidate($statement)
     {
         return new ValidateStatement(preg_split('/,([ \t]+)?/', $statement));
+    }
+
+    private function parseWithStatement(string $statement)
+    {
+        [$object, $with] = $this->extractTokens($statement, 2);
+
+        $data = [];
+
+        if (!empty($with)) {
+            $data = preg_split('/,([ \t]+)?/', substr($with, 5));
+        }
+
+        return [$object, $data];
     }
 
     private function extractTokens(string $statement, int $limit = -1)

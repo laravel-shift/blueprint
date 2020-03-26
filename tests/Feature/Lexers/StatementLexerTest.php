@@ -9,6 +9,7 @@ use Blueprint\Models\Statements\FireStatement;
 use Blueprint\Models\Statements\QueryStatement;
 use Blueprint\Models\Statements\RedirectStatement;
 use Blueprint\Models\Statements\RenderStatement;
+use Blueprint\Models\Statements\RespondStatement;
 use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
@@ -314,13 +315,40 @@ class StatementLexerTest extends TestCase
         $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
     }
 
-    public function eloquentTokensProvider()
+    /**
+     * @test
+     */
+    public function it_returns_a_response_statement_with_status_code()
     {
-        return [
-            ['save', 'post'],
-            ['update', 'post'],
-            ['delete', 'post.id'],
+        $tokens = [
+            'respond' => '204'
         ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(RespondStatement::class, $actual[0]);
+
+        $this->assertEquals(204, $actual[0]->status());
+        $this->assertNull($actual[0]->content());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_response_statement_with_content()
+    {
+        $tokens = [
+            'respond' => 'post'
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(RespondStatement::class, $actual[0]);
+
+        $this->assertEquals(200, $actual[0]->status());
+        $this->assertEquals('post', $actual[0]->content());
     }
 
     /**
@@ -442,6 +470,15 @@ class StatementLexerTest extends TestCase
         return [
             ['flash', 'post.title'],
             ['store', 'post.id'],
+        ];
+    }
+
+    public function eloquentTokensProvider()
+    {
+        return [
+            ['save', 'post'],
+            ['update', 'post'],
+            ['delete', 'post.id'],
         ];
     }
 }
