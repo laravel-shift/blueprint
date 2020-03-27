@@ -204,7 +204,8 @@ class BlueprintTest extends TestCase
         $this->expectException(ParseException::class);
 
         $blueprint = $this->fixture('definitions/invalid.bp');
-        dd($this->subject->parse($blueprint));
+        
+        $this->subject->parse($blueprint);
     }
 
     /**
