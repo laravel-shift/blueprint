@@ -12,6 +12,7 @@ use Blueprint\Models\Statements\FireStatement;
 use Blueprint\Models\Statements\QueryStatement;
 use Blueprint\Models\Statements\RedirectStatement;
 use Blueprint\Models\Statements\RenderStatement;
+use Blueprint\Models\Statements\RespondStatement;
 use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
@@ -23,6 +24,7 @@ class TestGenerator implements Generator
     const TESTS_REDIRECT = 2;
     const TESTS_SAVE = 4;
     const TESTS_DELETE = 8;
+    const TESTS_RESPONDS = 16;
 
     /** @var \Illuminate\Contracts\Filesystem\Filesystem */
     private $files;
@@ -289,6 +291,20 @@ class TestGenerator implements Generator
                     $assertion .= '));';
 
                     array_unshift($assertions['response'], $assertion);
+                } elseif ($statement instanceof RespondStatement) {
+                    $tested_bits |= self::TESTS_RESPONDS;
+
+                    if ($statement->content()) {
+                        array_unshift($assertions['response'], '$response->assertJson($' . $statement->content() . ');');
+                    }
+
+                    if ($statement->status() === 200) {
+                        array_unshift($assertions['response'], '$response->assertOk();');
+                    } elseif ($statement->status() === 204) {
+                        array_unshift($assertions['response'], '$response->assertNoContent();');
+                    } else {
+                        array_unshift($assertions['response'], '$response->assertNoContent(' . $statement->status() . ');');
+                    }
                 } elseif ($statement instanceof SessionStatement) {
                     $assertions['response'][] = sprintf('$response->assertSessionHas(\'%s\', %s);', $statement->reference(), '$' . str_replace('.', '->', $statement->reference()));
                 } elseif ($statement instanceof EloquentStatement) {
@@ -489,6 +505,10 @@ END;
 
         if ($tested_bits & self::TESTS_REDIRECT) {
             $verifications[] = 'redirects';
+        }
+
+        if ($tested_bits & self::TESTS_RESPONDS) {
+            $verifications[] = 'responds_with';
         }
 
         if (empty($verifications)) {

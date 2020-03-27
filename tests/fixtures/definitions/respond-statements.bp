@@ -1,7 +1,11 @@
+models:
+  Post:
+    title: string
+
 controllers:
   Api/Post:
     index:
-      query: all:posts
+      query: all
       respond: posts
     store:
       respond: 204
