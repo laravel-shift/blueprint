@@ -54,11 +54,11 @@ class FactoryGeneratorTest extends TestCase
             ->with('factory.stub')
             ->andReturn(file_get_contents('stubs/factory.stub'));
 
-            $this->files->expects('exists')
+        $this->files->expects('exists')
             ->with(dirname($path))
             ->andReturnTrue();
 
-            $this->files->expects('put')
+        $this->files->expects('put')
             ->with($path, $this->fixture($migration));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
