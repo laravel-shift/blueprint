@@ -27,7 +27,7 @@ Blueprint requires a Laravel application running version 6.0 or higher.
 While Blueprint may be more flexible in a future version, it currently assumes a standard project structure using the default `App` namespace.
 
 ## Basic Usage
-Blueprint adds multiple artisan commands.  The most commonly used command is the build command to generate the Laravel components:
+Blueprint adds multiple artisan commands. The most commonly used command is the `blueprint:build` command to generate the Laravel components:
 
 ```sh
 php artisan blueprint:build [draft]
@@ -315,11 +315,21 @@ controllers:
 While these references will often be used within _Eloquent_ and `query` statements, they may be used in other statements as well. When necessary, Blueprint will convert these into variable references using an arrow (`->`) syntax.
 
 ## Additional Console Commands
-Byeond the `blueprint:build` command, Blueprint provides additional commands:
+Beyond the `blueprint:build` command, Blueprint provides additional commands:
 
-`blueprint:erase` - Erase components created from last Blueprint build
+<dl>
+  <dt>blueprint:erase</dt>
+  <dd>
 
-`blueprint:trace` - Create definitions for existing models to reference in new draft
+  Erases the components created by the last _build_ and warns about any updated components.
+  
+  While this command is helpful, it's better to run the `blueprint:build` command from a clean working state and use Git commands like `reset` and `clean` to _undo_ the last _build_.</dd>
+  <dt>blueprint:trace</dt>
+  <dd>
+
+  Loads definitions for existing models into the Blueprint cache file (`.blueprint`) so you may reference them in your _draft_ file.</dd>
+</dl>
+
 
 ## Contributing
 Contributions may be made by submitting a Pull Request against the `master` branch. Any submissions should be complete with tests and adhere to the [PSR-2 code style](https://www.php-fig.org/psr/psr-2/).
