@@ -79,6 +79,12 @@ class FactoryGeneratorTest extends TestCase
             ->with('factory.stub')
             ->andReturn(file_get_contents('stubs/factory.stub'));
 
+        $this->files->expects('exists')
+            ->with('database/factories')
+            ->andReturnFalse();
+        $this->files->expects('makeDirectory')
+            ->with('database/factories', 0755, true);
+
         $this->files->expects('put')
             ->with('database/factories/PostFactory.php', $this->fixture('factories/post-configured.php'));
 
