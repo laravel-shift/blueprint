@@ -2,6 +2,7 @@
 
 namespace Some\App\Other\Http;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Some\App\Http\Requests\UserStoreRequest;
 use Some\App\User;

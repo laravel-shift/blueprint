@@ -41,6 +41,10 @@ class ControllerGenerator implements Generator
         foreach ($tree['controllers'] as $controller) {
             $this->addImport($controller, 'Illuminate\\Http\\Request');
 
+            if ($controller->fullyQualifiedNamespace() !== 'App\\Http\\Controllers') {
+                $this->addImport($controller, 'App\\Http\\Controllers\\Controller');
+            }
+
             $path = $this->getPath($controller);
 
             if (!$this->files->exists(dirname($path))) {
@@ -121,10 +125,10 @@ class ControllerGenerator implements Generator
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
                 } elseif ($statement instanceof EloquentStatement) {
                     $body .= self::INDENT . $statement->output($controller->prefix(), $name) . PHP_EOL;
-                    $this->addImport($controller, config('blueprint.namespace') . '\\' . ($controller->namespace() ? $controller->namespace() . '\\' : '') . $this->determineModel($controller, $statement->reference()));
+                    $this->addImport($controller, $this->determineModel($controller, $statement->reference()));
                 } elseif ($statement instanceof QueryStatement) {
                     $body .= self::INDENT . $statement->output($controller->prefix()) . PHP_EOL;
-                    $this->addImport($controller, config('blueprint.namespace') . '\\' . ($controller->namespace() ? $controller->namespace() . '\\' : '') . $this->determineModel($controller, $statement->model()));
+                    $this->addImport($controller, $this->determineModel($controller, $statement->model()));
                 }
 
                 $body .= PHP_EOL;
@@ -165,13 +169,21 @@ class ControllerGenerator implements Generator
     private function determineModel(Controller $controller, ?string $reference)
     {
         if (empty($reference) || $reference === 'id') {
-            return Str::studly(Str::singular($controller->prefix()));
+            return $this->fullyQualifyModelReference($controller->namespace(), Str::studly(Str::singular($controller->prefix())));
         }
 
         if (Str::contains($reference, '.')) {
-            return Str::studly(Str::before($reference, '.'));
+            return $this->fullyQualifyModelReference($controller->namespace(), Str::studly(Str::before($reference, '.')));
         }
 
-        return Str::studly($reference);
+        return $this->fullyQualifyModelReference($controller->namespace(), Str::studly($reference));
+    }
+
+    private function fullyQualifyModelReference(string $sub_namespace, string $model_name)
+    {
+        // TODO: get model_name from tree.
+        // If not found, assume parallel namespace as controller.
+        // Use respond-statement.php as test case.
+        return config('blueprint.namespace') . '\\' . ($sub_namespace ? $sub_namespace . '\\' : '') . $model_name;
     }
 }

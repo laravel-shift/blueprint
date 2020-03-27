@@ -5,7 +5,7 @@ models:
 controllers:
   Admin/User:
     index:
-      query: all:users
+      query: all
       render: admin.user.index with:users
 
     store:
