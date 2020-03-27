@@ -28,6 +28,10 @@ class FactoryGenerator implements Generator
         foreach ($tree['models'] as $model) {
             $path = $this->getPath($model);
 
+            if (!$this->files->exists(dirname($path))) {
+                $this->files->makeDirectory(dirname($path), 0755, true);
+            }
+
             $this->files->put($path, $this->populateStub($stub, $model));
 
             $output['created'][] = $path;
