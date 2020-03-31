@@ -278,21 +278,24 @@ class BlueprintTest extends TestCase
 
     /**
      * @test
+     * @dataProvider namespacesDataProvider
      */
-    public function relative_namespace_only_replace_first_occurrence_of_default_namespace()
+    public function relative_namespace_removes_namespace_prefix_from_reference($namespace, $expected, $reference)
     {
-        $string = "App\Appointments";
+        config(['blueprint.namespace' => $namespace]);
 
-        $actual = Blueprint::relativeNamespace($string);
+        $this->assertEquals($expected, Blueprint::relativeNamespace($reference));
+    }
 
-        $this->assertEquals("Appointments", $actual);
-
-        config(['blueprint.namespace'=>'Foo']);
-
-        $string = "Foo\Appointments";
-
-        $actual = Blueprint::relativeNamespace($string);
-
-        $this->assertEquals("Appointments", $actual);
+    public function namespacesDataProvider()
+    {
+        return [
+            ['App', 'Models\User', 'App\Models\User'],
+            ['App', 'Models\User', '\App\Models\User'],
+            ['App', 'Some\Other\Reference', 'Some\Other\Reference'],
+            ['App', 'App\Appointments', 'App\App\Appointments'],
+            ['Foo', 'Bar', 'Foo\Bar'],
+            ['Foo', 'Foo\Bar', '\Foo\Foo\Bar'],
+        ];
     }
 }

@@ -3,6 +3,7 @@
 namespace Blueprint;
 
 use Blueprint\Contracts\Lexer;
+use Illuminate\Support\Str;
 use Symfony\Component\Yaml\Yaml;
 use Blueprint\Contracts\Generator;
 
@@ -13,14 +14,14 @@ class Blueprint
 
     public static function relativeNamespace(string $fullyQualifiedClassName)
     {
-        $newClassName = preg_replace(
-            '!^'.preg_quote(config('blueprint.namespace')).'!',
-            '',
-            $fullyQualifiedClassName,
-            1
-        );
+        $namespace = config('blueprint.namespace') . '\\';
+        $reference = ltrim($fullyQualifiedClassName, '\\');
 
-        return ltrim($newClassName, '\\');
+        if (Str::startsWith($reference, $namespace)) {
+            return Str::after($reference, $namespace);
+        }
+
+        return $reference;
     }
 
     public function parse($content)
