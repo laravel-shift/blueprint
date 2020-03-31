@@ -275,4 +275,26 @@ class BlueprintTest extends TestCase
             'deleted' => ['one/trashed.php', 'two/trashed.php'],
         ], $this->subject->generate($tree));
     }
+
+	/**
+	 * @test
+	 */
+	public function relative_namespace_only_replace_first_occurrence_of_default_namespace()
+	{
+		$string = "App\Appointments";
+
+		$actual = Blueprint::relativeNamespace($string);
+
+		$this->assertEquals("Appointments", $actual);
+
+		config(['blueprint.namespace'=>'Foo']);
+
+		$string = "Foo\Appointments";
+
+		$actual = Blueprint::relativeNamespace($string);
+
+		$this->assertEquals("Appointments", $actual);
+
+
+    }
 }
