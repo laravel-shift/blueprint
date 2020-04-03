@@ -2,18 +2,18 @@
 
 namespace DummyNamespace;
 
-use Illuminate\Http\Resources\Json\JsonResource;
+use DummyImport;
 
-class DummyClass extends JsonResource
+class DummyClass extends DummyParent
 {
     /**
-     * Transform the resource into an array.
+     * Transform the DummyItem into an array.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        // data...
     }
 }

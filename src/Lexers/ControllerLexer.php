@@ -27,7 +27,7 @@ class ControllerLexer implements Lexer
         }
 
         foreach ($tokens['controllers'] as $name => $definition) {
-            $controller = new Controller($name, $this->isAPI($definition));
+            $controller = new Controller($name);
 
             if ($this->isResource($definition)) {
                 $original = $definition;
@@ -39,9 +39,6 @@ class ControllerLexer implements Lexer
             }
 
             foreach ($definition as $method => $body) {
-                if (isset($body['resource'])) {
-                    $controller->setAPI();
-                }
                 $controller->addMethod($method, $this->statementLexer->analyze($body));
             }
 
@@ -56,13 +53,6 @@ class ControllerLexer implements Lexer
         return isset($definition['resource']) && is_string($definition['resource']);
     }
 
-    private function isAPI(array $definition)
-    {
-        return isset($definition['resource']) &&
-            is_string($definition['resource']) &&
-            $definition['resource'] === 'api';
-    }
-
     private function generateResourceTokens(Controller $controller, array $methods)
     {
         return collect($this->resourceTokens())
@@ -71,9 +61,7 @@ class ControllerLexer implements Lexer
             })
             ->mapWithKeys(function ($statements, $method) use ($controller) {
                 return [
-                    str_replace('.api', '', $method) => collect($statements)->map(function ($statement) use (
-                        $controller
-                    ) {
+                    str_replace('api.', '', $method) => collect($statements)->map(function ($statement) use ($controller) {
                         $model = Str::singular($controller->prefix());
 
                         return str_replace(
@@ -120,29 +108,26 @@ class ControllerLexer implements Lexer
                 'redirect' => '[singular].index',
             ],
 
-            'index.api' => [
+            'api.index' => [
                 'query' => 'all:[plural]',
-                'resource' => '[singular] collection',
+                'resource' => 'collection:[plural]',
             ],
-            'store.api' => [
+            'api.store' => [
                 'validate' => '[singular]',
                 'save' => '[singular]',
                 'resource' => '[singular]',
             ],
-            'show.api' => [
-                'authorize' => '[singular]',
+            'api.show' => [
                 'resource' => '[singular]',
             ],
-            'update.api' => [
-                'authorize' => '[singular]',
+            'api.update' => [
                 'validate' => '[singular]',
                 'update' => '[singular]',
-                'resource' => 'empty',
+                'resource' => '[singular]',
             ],
-            'destroy.api' => [
-                'authorize' => '[singular]',
+            'api.destroy' => [
                 'delete' => '[singular]',
-                'resource' => 'empty',
+                'respond' => 200,
             ],
         ];
     }
@@ -150,7 +135,7 @@ class ControllerLexer implements Lexer
     private function methodsForResource(string $type)
     {
         if ($type === 'api') {
-            return ['index.api', 'store.api', 'show.api', 'update.api', 'destroy.api'];
+            return ['api.index', 'api.store', 'api.show', 'api.update', 'api.destroy'];
         }
 
         if ($type === 'all') {

@@ -12,19 +12,29 @@ class ResourceStatement
     private $reference;
 
     /**
-     * @var string
+     * @var bool
      */
-    private $collection;
+    private $collection = false;
 
-    public function __construct(string $reference, $collection = '')
+    /**
+     * @var bool
+     */
+    private $paginate = false;
+
+    public function __construct(string $reference, bool $collection = false, bool $paginate = false)
     {
         $this->reference = $reference;
         $this->collection = $collection;
+        $this->paginate = $paginate;
     }
 
-    public function resource(): string
+    public function name(): string
     {
-        return Str::studly(Str::singular($this->reference)) . 'Resource';
+        if ($this->collection()) {
+            return  Str::studly(Str::singular($this->reference)) . 'Collection';
+        }
+
+        return  Str::studly(Str::singular($this->reference));
     }
 
     public function reference(): string
@@ -32,41 +42,32 @@ class ResourceStatement
         return $this->reference;
     }
 
-    public function collection(): string
+    public function collection(): bool
     {
         return $this->collection;
     }
 
-    public function isCollection(): bool
+    public function paginate(): bool
     {
-        return !!$this->collection;
-    }
-
-    public function isEmpty(): bool
-    {
-        return $this->reference === 'empty';
-    }
-
-    public function paginate(): string
-    {
-        return $this->collection == 'collection:paginate' ? '->paginate()' : '';
+        return $this->paginate;
     }
 
     public function output(): string
     {
-        if ($this->isEmpty()) {
-            return 'return response()->json(\'\', 204);';
+        $code = 'return new ' . $this->name();
+
+        if (!$this->collection()) {
+            $code .= 'Resource';
         }
 
-        if ($this->isCollection()) {
-            return 'return ' .
-                $this->resource() .
-                '::collection($' .
-                Str::plural($this->reference) .
-                $this->paginate() .
-                ');';
+        $code .= '($' . $this->reference();
+
+        if ($this->paginate()) {
+            $code .= '->paginate()';
         }
 
-        return 'return new ' . $this->resource() . '($' . $this->reference() . ');';
+        $code .= ');';
+
+        return $code;
     }
 }

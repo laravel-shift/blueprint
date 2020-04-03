@@ -10,11 +10,11 @@ use Blueprint\Models\Statements\FireStatement;
 use Blueprint\Models\Statements\QueryStatement;
 use Blueprint\Models\Statements\RedirectStatement;
 use Blueprint\Models\Statements\RenderStatement;
+use Blueprint\Models\Statements\ResourceStatement;
 use Blueprint\Models\Statements\RespondStatement;
 use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
-use Blueprint\Models\Statements\ResourceStatement;
 use Illuminate\Support\Str;
 
 class StatementLexer implements Lexer
@@ -146,8 +146,8 @@ class StatementLexer implements Lexer
 
     private function analyzeQuery($statement)
     {
-        if ($statement === 'all' || $statement === 'user.all') {
-            return new QueryStatement($statement);
+        if ($statement === 'all') {
+            return new QueryStatement('all');
         }
 
         $found = preg_match('/^all:(\\S+)$/', $statement, $matches);
@@ -169,8 +169,14 @@ class StatementLexer implements Lexer
 
     private function analyzeResource($statement)
     {
-        [$object, $collection] = $this->extractTokens($statement, 2);
+        $reference = $statement;
+        $collection = null;
 
-        return new ResourceStatement($object, $collection);
+        if (Str::contains($statement, ':')) {
+            $collection = Str::before($reference, ':');
+            $reference = Str::after($reference, ':');
+        }
+
+        return new ResourceStatement($reference, !is_null($collection), $collection === 'paginate');
     }
 }

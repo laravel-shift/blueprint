@@ -22,34 +22,17 @@ class RouteGenerator implements Generator
             return [];
         }
 
-        $updated = [];
-        foreach (['web', 'api'] as $type) {
-            $updated[] = $this->dumpRoutes($tree, $type);
-        }
-        $updated = array_filter($updated);
-
-        return compact('updated');
-    }
-
-    private function dumpRoutes($tree, $type)
-    {
         $routes = '';
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree['controllers'] as $controller) {
-            if (($type == 'web' && $controller->isAPI()) || ($type == 'api' && !$controller->isAPI())) {
-                continue;
-            }
             $routes .= PHP_EOL . PHP_EOL . $this->buildRoutes($controller);
         }
         $routes .= PHP_EOL;
-        if (empty(trim($routes))) {
-            return null;
-        }
 
-        $path = "routes/{$type}.php";
+        $path = 'routes/web.php';
         $this->files->append($path, $routes);
 
-        return $path;
+        return ['updated' => [$path]];
     }
 
     protected function buildRoutes(Controller $controller)
@@ -72,6 +55,7 @@ class RouteGenerator implements Generator
                     $routes .= sprintf("->only('%s')", implode("', '", $resource_methods));
                 }
             }
+
 
             $routes .= ';' . PHP_EOL;
         }
