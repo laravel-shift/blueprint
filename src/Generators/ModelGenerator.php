@@ -99,6 +99,11 @@ class ModelGenerator implements Generator
             $properties .= $this->files->stub('model/fillable.stub');
         }
 
+        $columns = $this->hiddenColumns($model->columns());
+        if (!empty($columns)) {
+            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model/hidden.stub'));
+        }
+
         $columns = $this->castableColumns($model->columns());
         if (!empty($columns)) {
             $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns), $this->files->stub('model/casts.stub'));
@@ -156,6 +161,16 @@ class ModelGenerator implements Generator
             'created_at',
             'updated_at',
         ]);
+    }
+
+    private function hiddenColumns(array $columns)
+    {
+        return array_filter(array_keys($columns), function ($column) {
+            return in_array($column, [
+                'password',
+                'remember_token',
+            ]);
+        });
     }
 
     private function castableColumns(array $columns)
