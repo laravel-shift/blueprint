@@ -17,6 +17,15 @@ class User extends Model
     ];
 
     /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password',
+    ];
+
+    /**
      * The attributes that should be cast to native types.
      *
      * @var array

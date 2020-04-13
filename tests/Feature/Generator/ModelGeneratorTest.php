@@ -55,6 +55,12 @@ class ModelGeneratorTest extends TestCase
             ->with('model/fillable.stub')
             ->andReturn(file_get_contents('stubs/model/fillable.stub'));
 
+        if ($definition === 'definitions/nested-components.bp') {
+            $this->files->expects('stub')
+                ->with('model/hidden.stub')
+                ->andReturn(file_get_contents('stubs/model/hidden.stub'));
+        }
+
         $this->files->expects('stub')
             ->with('model/casts.stub')
             ->andReturn(file_get_contents('stubs/model/casts.stub'));
