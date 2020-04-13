@@ -62,7 +62,11 @@ class MigrationGenerator implements Generator
                 $dataType = 'uuid';
             }
 
-            $definition .= self::INDENT . '$table->' . $dataType . "('{$column->name()}'";
+            if ($this->isLaravel7orNewer() && $dataType === 'bigIncrements') {
+                $definition .= self::INDENT . '$table->id(';
+            } else {
+                $definition .= self::INDENT . '$table->' . $dataType . "('{$column->name()}'";
+            }
 
             if (!empty($column->attributes()) && !in_array($column->dataType(), ['id', 'uuid'])) {
                 $definition .= ', ';
@@ -116,5 +120,10 @@ class MigrationGenerator implements Generator
     protected function getPath(Model $model, Carbon $timestamp)
     {
         return 'database/migrations/' . $timestamp->format('Y_m_d_His') . '_create_' . $model->tableName() . '_table.php';
+    }
+
+    protected function isLaravel7orNewer()
+    {
+        return version_compare(app()->version(), '7.0.0', '>=');
     }
 }
