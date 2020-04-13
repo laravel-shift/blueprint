@@ -165,12 +165,10 @@ class ModelGenerator implements Generator
 
     private function hiddenColumns(array $columns)
     {
-        return array_filter(array_keys($columns), function ($column) {
-            return in_array($column, [
-                'password',
-                'remember_token',
-            ]);
-        });
+        return array_intersect(array_keys($columns), [
+            'password',
+            'remember_token',
+        ]);
     }
 
     private function castableColumns(array $columns)
