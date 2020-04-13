@@ -1,6 +1,7 @@
 models:
   Admin/User:
     name: string
+    password: password
 
 controllers:
   Admin/User:
