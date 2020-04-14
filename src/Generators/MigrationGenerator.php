@@ -5,6 +5,7 @@ namespace Blueprint\Generators;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Model;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 
 class MigrationGenerator implements Generator
@@ -62,7 +63,7 @@ class MigrationGenerator implements Generator
                 $dataType = 'uuid';
             }
 
-            if ($this->isLaravel7orNewer() && $dataType === 'bigIncrements') {
+            if ($dataType === 'bigIncrements' && $this->isLaravel7orNewer()) {
                 $definition .= self::INDENT . '$table->id(';
             } else {
                 $definition .= self::INDENT . '$table->' . $dataType . "('{$column->name()}'";
@@ -83,13 +84,7 @@ class MigrationGenerator implements Generator
             foreach ($column->modifiers() as $modifier) {
                 if (is_array($modifier)) {
                     if (key($modifier) === 'foreign') {
-                        $foreign =
-                            self::INDENT .
-                            '$table->foreign(' .
-                            "'{$column->name()}')->references('id')->on('" .
-                            Str::lower(Str::plural(current($modifier))) .
-                            "')->onDelete('cascade');" .
-                            PHP_EOL;
+                        $foreign = self::INDENT . '$table->foreign(' . "'{$column->name()}')->references('id')->on('" . Str::lower(Str::plural(current($modifier))) . "')->onDelete('cascade');" . PHP_EOL;
                     } else {
                         $definition .= '->' . key($modifier) . '(' . current($modifier) . ')';
                     }
@@ -124,6 +119,6 @@ class MigrationGenerator implements Generator
 
     protected function isLaravel7orNewer()
     {
-        return version_compare(app()->version(), '7.0.0', '>=');
+        return version_compare(App::version(), '7.0.0', '>=');
     }
 }

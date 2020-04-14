@@ -14,7 +14,7 @@ class CreateModifiersTable extends Migration
     public function up()
     {
         Schema::create('modifiers', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->string('title')->nullable();
             $table->string('name', 1000)->unique()->charset('utf8');
             $table->string('content')->default('');

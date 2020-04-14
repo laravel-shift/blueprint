@@ -5,6 +5,7 @@ namespace Tests\Feature\Generators;
 use Blueprint\Blueprint;
 use Blueprint\Generators\MigrationGenerator;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
 use Tests\TestCase;
 
 /**
@@ -93,6 +94,35 @@ class MigrationGeneratorTest extends TestCase
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$post_path, $comment_path]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function output_uses_big_increments_for_id_column()
+    {
+        $app = \Mockery::mock();
+        $app->expects('version')
+            ->withNoArgs()
+            ->andReturn('6.0.0');
+        App::swap($app);
+
+        $this->files->expects('stub')
+            ->with('migration.stub')
+            ->andReturn(file_get_contents('stubs/migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $timestamp_path = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_relationships_table.php');
+
+        $this->files->expects('put')
+            ->with($timestamp_path, $this->fixture('migrations/identity-columns-big-increments.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/model-identities.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
     }
 
     public function modelTreeDataProvider()
