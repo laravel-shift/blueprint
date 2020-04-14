@@ -144,7 +144,7 @@ class Model
             $this->relationships[$type] = [];
         }
 
-        if($type === 'belongsToMany') {
+        if ($type === 'belongsToMany') {
             $this->addPivotTable($reference);
         }
 
@@ -158,7 +158,7 @@ class Model
         $this->pivotTables[] = $segments;
     }
 
-    public function pivotTables() : array
+    public function pivotTables(): array
     {
         return $this->pivotTables;
     }

@@ -51,10 +51,10 @@ class MigrationGenerator implements Generator
 
             $output['created'][] = $path;
 
-            if(!empty($modelPivots = $model->pivotTables())) {
-                foreach($modelPivots as $pivotSegments) {
+            if (!empty($modelPivots = $model->pivotTables())) {
+                foreach ($modelPivots as $pivotSegments) {
                     $pivotTable = $this->getPivotTableName($pivotSegments);
-                    if(!isset($this->pivotTables[$pivotTable])) {
+                    if (!isset($this->pivotTables[$pivotTable])) {
                         $this->pivotTables[$pivotTable] = [
                             'tableName' => $pivotTable,
                             'segments' => $pivotSegments
@@ -64,8 +64,8 @@ class MigrationGenerator implements Generator
             }
         }
 
-        if(!empty($this->pivotTables)) {
-            foreach($this->pivotTables as $pivotTable) {
+        if (!empty($this->pivotTables)) {
+            foreach ($this->pivotTables as $pivotTable) {
                 $path = $this->getPivotTablePath($pivotTable['tableName'], $sequential_timestamp->addSecond());
                 $this->files->put($path, $this->populatePivotStub($stub, $pivotTable['segments']));
                 $output['created'][] = $path;
@@ -167,8 +167,7 @@ class MigrationGenerator implements Generator
     {
         $definition = '';
 
-        foreach($segments as $segment)
-        {
+        foreach ($segments as $segment) {
             $column = $segment . '_id';
             $definition .= self::INDENT . '$table->' . $dataType . "('{$column}');" . PHP_EOL;
         }
@@ -203,7 +202,7 @@ class MigrationGenerator implements Generator
 
     protected function getPivotTableName(array $segments)
     {
-        $segments = array_map(function($name) {
+        $segments = array_map(function ($name) {
             return Str::snake($name);
         }, $segments);
         sort($segments);
