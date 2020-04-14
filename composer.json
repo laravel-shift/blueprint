@@ -37,6 +37,6 @@
         }
     },
     "suggest": {
-        "jasonmccreary/laravel-test-assertions": "A set of helpful assertions when testing Laravel applications"
+        "jasonmccreary/laravel-test-assertions": "Required to use additional assertions in generated tests (^1.0)."
     }
 }
