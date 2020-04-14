@@ -11,7 +11,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
-use JMac\Testing\Traits\HttpTestAssertions;
+use JMac\Testing\Traits\AdditionalAssertions;
 use Tests\TestCase;
 
 /**
@@ -19,7 +19,7 @@ use Tests\TestCase;
  */
 class PostControllerTest extends TestCase
 {
-    use HttpTestAssertions, RefreshDatabase, WithFaker;
+    use AdditionalAssertions, RefreshDatabase, WithFaker;
 
     /**
      * @test

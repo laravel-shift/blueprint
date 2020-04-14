@@ -463,8 +463,8 @@ END;
 
     private function addTestAssertionsTrait(Controller $controller)
     {
-        $this->addImport($controller, 'JMac\\Testing\\Traits\HttpTestAssertions');
-        $this->addTrait($controller, 'HttpTestAssertions');
+        $this->addImport($controller, 'JMac\\Testing\\Traits\AdditionalAssertions');
+        $this->addTrait($controller, 'AdditionalAssertions');
     }
 
     private function addRefreshDatabaseTrait(Controller $controller)
