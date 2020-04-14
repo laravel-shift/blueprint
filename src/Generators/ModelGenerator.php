@@ -135,7 +135,7 @@ class ModelGenerator implements Generator
                 $class = Str::studly($class ?? $name);
                 $relationship = sprintf("\$this->%s(%s::class)", $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);
 
-                $method_name = $type === 'hasMany' ? Str::plural($name) : $name;
+                $method_name = $type === 'hasMany' || $type === 'belongsToMany' ? Str::plural($name) : $name;
                 $method = str_replace('DummyName', Str::camel($method_name), $template);
                 $method = str_replace('null', $relationship, $method);
                 $methods .= PHP_EOL . $method;
