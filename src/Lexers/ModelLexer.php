@@ -181,7 +181,7 @@ class ModelLexer implements Lexer
         $data_type = 'string';
         $modifiers = [];
 
-        $tokens = explode(' ', $definition);
+        $tokens = preg_split('#".*?"(*SKIP)(*F)|\s+#', $definition);
         foreach ($tokens as $token) {
             $parts = explode(':', $token);
             $value = $parts[0];
