@@ -4,6 +4,7 @@ namespace Tests\Feature\Lexers;
 
 use Blueprint\Lexers\ModelLexer;
 use Tests\TestCase;
+use function var_dump;
 
 class ModelLexerTest extends TestCase
 {
@@ -129,6 +130,30 @@ class ModelLexerTest extends TestCase
         $this->assertEquals('string', $columns['title']->dataType());
         $this->assertEquals([], $columns['title']->attributes());
         $this->assertEquals(['nullable'], $columns['title']->modifiers());
+    }
+
+    /**
+     * @test
+     */
+    public function it_disables_primary_keys()
+    {
+        $tokens = [
+            'models' => [
+                'Model' => [
+                    'id' => false,
+                ]
+            ],
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertIsArray($actual['models']);
+        $this->assertCount(1, $actual['models']);
+
+        $model = $actual['models']['Model'];
+
+        $this->assertEquals('Model', $model->name());
+        $this->assertFalse($model->usesPrimaryKey());
     }
 
     /**
