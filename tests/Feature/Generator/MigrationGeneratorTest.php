@@ -125,6 +125,35 @@ class MigrationGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
     }
 
+    /**
+     * @test
+     */
+    public function output_uses_increments_for_id_column()
+    {
+        $app = \Mockery::mock();
+        $app->expects('version')
+            ->withNoArgs()
+            ->andReturn('6.0.0');
+        App::swap($app);
+
+        $this->files->expects('stub')
+            ->with('migration.stub')
+            ->andReturn(file_get_contents('stubs/migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $timestamp_path = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_roles_table.php');
+
+        $this->files->expects('put')
+            ->with($timestamp_path, $this->fixture('migrations/model-increments-only.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/model-increments-only.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
+    }
+
     public function modelTreeDataProvider()
     {
         return [
@@ -136,6 +165,7 @@ class MigrationGeneratorTest extends TestCase
             ['definitions/relationships.bp', 'database/migrations/timestamp_create_comments_table.php', 'migrations/relationships.php'],
             ['definitions/unconventional.bp', 'database/migrations/timestamp_create_teams_table.php', 'migrations/unconventional.php'],
             ['definitions/model-key-constraints.bp', 'database/migrations/timestamp_create_orders_table.php', 'migrations/model-key-constraints.php'],
+            ['definitions/model-increments-only.bp', 'database/migrations/timestamp_create_roles_table.php', 'migrations/model-increments-only.php'],
         ];
     }
 }

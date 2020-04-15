@@ -1,0 +1,5 @@
+models:
+  Role:
+    id: increments
+    some_id: unsignedInteger
+    timestamps: false
