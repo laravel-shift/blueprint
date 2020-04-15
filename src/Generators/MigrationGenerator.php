@@ -55,12 +55,10 @@ class MigrationGenerator implements Generator
         /** @var \Blueprint\Models\Column $column */
         foreach ($model->columns() as $column) {
             $dataType = $column->dataType();
-            if ($column->name() === 'id' && $dataType !== 'uuid') {
+            if ($column->name() === 'id' && $dataType === 'id') {
                 $dataType = 'bigIncrements';
-            } elseif ($column->dataType() === 'id') {
+            } elseif ($dataType === 'id') {
                 $dataType = 'unsignedBigInteger';
-            } elseif ($column->dataType() === 'uuid') {
-                $dataType = 'uuid';
             }
 
             if ($dataType === 'bigIncrements' && $this->isLaravel7orNewer()) {

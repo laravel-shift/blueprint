@@ -1,5 +1,6 @@
 models:
   Modifier:
+    id: increments
     title: string nullable
     name: string:1000 unique charset:'utf8'
     content: string default:''

@@ -45,13 +45,16 @@ class ModelLexerTest extends TestCase
                     'count' => 'integer',
                     'timestamps' => 'timestamps'
                 ],
+                'ModelThree' => [
+                    'id' => 'increments',
+                ],
             ],
         ];
 
         $actual = $this->subject->analyze($tokens);
 
         $this->assertIsArray($actual['models']);
-        $this->assertCount(2, $actual['models']);
+        $this->assertCount(3, $actual['models']);
 
         $model = $actual['models']['ModelOne'];
         $this->assertEquals('ModelOne', $model->name());
@@ -80,6 +83,17 @@ class ModelLexerTest extends TestCase
         $this->assertEquals('count', $columns['count']->name());
         $this->assertEquals('integer', $columns['count']->dataType());
         $this->assertEquals([], $columns['count']->modifiers());
+
+        $model = $actual['models']['ModelThree'];
+        $this->assertEquals('ModelThree', $model->name());
+        $this->assertTrue($model->usesTimestamps());
+        $this->assertFalse($model->usesSoftDeletes());
+
+        $columns = $model->columns();
+        $this->assertCount(1, $columns);
+        $this->assertEquals('id', $columns['id']->name());
+        $this->assertEquals('increments', $columns['id']->dataType());
+        $this->assertEquals([], $columns['id']->modifiers());
     }
 
     /**
