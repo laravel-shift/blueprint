@@ -95,13 +95,10 @@ class MigrationGenerator implements Generator
             $foreign = '';
 
             foreach ($column->modifiers() as $modifier) {
-                if (is_array($modifier))
-                {
-                    if (key($modifier) === 'foreign')
-                    {
+                if (is_array($modifier)) {
+                    if (key($modifier) === 'foreign') {
                         $foreign = self::INDENT . '$table->foreign(' . "'{$column->name()}')->references('id')->on('" . Str::lower(Str::plural(current($modifier))) . "')->onDelete('cascade');" . PHP_EOL;
-                    } else
-                    {
+                    } else {
                         $definition .= '->' . key($modifier) . '(' . current($modifier) . ')';
                     }
                 } elseif ($modifier === 'unsigned' && strpos($dataType, 'unsigned') === 0) {
