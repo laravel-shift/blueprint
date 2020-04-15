@@ -110,9 +110,9 @@ class MigrationGenerator implements Generator
                     } else {
                         $definition .= '->' . key($modifier) . '(' . current($modifier) . ')';
                     }
-                } elseif ($modifier === 'unsigned' && strpos($dataType, 'unsigned') === 0) {
+                } elseif ($modifier === 'unsigned' && Str::startsWith($dataType, 'unsigned')) {
                     continue;
-                } elseif ($modifier === 'nullable' && strpos($dataType, 'nullable') === 0) {
+                } elseif ($modifier === 'nullable' && Str::startsWith($dataType, 'nullable')) {
                     continue;
                 } else {
                     $definition .= '->' . $modifier . '()';
