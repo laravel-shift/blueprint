@@ -1,0 +1,8 @@
+models:
+  Name:
+    softDeletes
+    timestamps
+
+controllers:
+  Context:
+    resource
