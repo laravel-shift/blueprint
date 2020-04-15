@@ -57,7 +57,7 @@ class MigrationGenerator implements Generator
             $dataType = $column->dataType();
             if ($column->name() === 'id' && $dataType === 'id') {
                 $dataType = 'bigIncrements';
-            }elseif ($column->name() !== 'id' && $dataType === 'id') {
+            } elseif ($dataType === 'id') {
                 $dataType = 'unsignedBigInteger';
             }
 
