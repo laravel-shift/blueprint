@@ -36,6 +36,9 @@ class Comment extends Model
     ];
 
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function post()
     {
         return $this->belongsTo(\App\Post::class);
