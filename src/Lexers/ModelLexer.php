@@ -117,6 +117,12 @@ class ModelLexer implements Lexer
     {
         $model = new Model($name);
 
+        if (isset($columns['id'])) {
+            if ($columns['id'] === false) {
+                $model->disablePrimaryKey();
+            }
+        }
+
         if (isset($columns['timestamps'])) {
             if ($columns['timestamps'] === false) {
                 $model->disableTimestamps();

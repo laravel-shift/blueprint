@@ -134,6 +134,30 @@ class ModelLexerTest extends TestCase
     /**
      * @test
      */
+    public function it_disables_primary_keys()
+    {
+        $tokens = [
+            'models' => [
+                'Model' => [
+                    'id' => false,
+                ]
+            ],
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertIsArray($actual['models']);
+        $this->assertCount(1, $actual['models']);
+
+        $model = $actual['models']['Model'];
+
+        $this->assertEquals('Model', $model->name());
+        $this->assertFalse($model->usesPrimaryKey());
+    }
+
+    /**
+     * @test
+     */
     public function it_disables_timestamps()
     {
         $tokens = [
