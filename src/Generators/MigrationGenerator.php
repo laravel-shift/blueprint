@@ -12,6 +12,20 @@ class MigrationGenerator implements Generator
 {
     const INDENT = '            ';
 
+    const NULLABLE_TYPES = [
+        'morphs',
+        'uuidMorphs',
+    ];
+
+    const UNSIGNABLE_TYPES = [
+      'bigInteger',
+      'decimal',
+      'integer',
+      'mediumInteger',
+      'smallInteger',
+      'tinyInteger',
+    ];
+
     /** @var \Illuminate\Contracts\Filesystem\Filesystem */
     private $files;
 
@@ -61,6 +75,14 @@ class MigrationGenerator implements Generator
                 $dataType = 'unsignedBigInteger';
             }
 
+            if (in_array($dataType, self::UNSIGNABLE_TYPES) && in_array('unsigned', $column->modifiers())) {
+                $dataType = 'unsigned' . ucfirst($dataType);
+            }
+
+            if (in_array($dataType, self::NULLABLE_TYPES) && in_array('nullable', $column->modifiers())) {
+                $dataType = 'nullable' . ucfirst($dataType);
+            }
+
             if ($dataType === 'bigIncrements' && $this->isLaravel7orNewer()) {
                 $definition .= self::INDENT . '$table->id(';
             } else {
@@ -86,6 +108,10 @@ class MigrationGenerator implements Generator
                     } else {
                         $definition .= '->' . key($modifier) . '(' . current($modifier) . ')';
                     }
+                } elseif ($modifier === 'unsigned' && Str::startsWith($dataType, 'unsigned')) {
+                    continue;
+                } elseif ($modifier === 'nullable' && Str::startsWith($dataType, 'nullable')) {
+                    continue;
                 } else {
                     $definition .= '->' . $modifier . '()';
                 }
