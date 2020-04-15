@@ -4,7 +4,6 @@ namespace Tests\Feature\Lexers;
 
 use Blueprint\Lexers\ModelLexer;
 use Tests\TestCase;
-use function var_dump;
 
 class ModelLexerTest extends TestCase
 {

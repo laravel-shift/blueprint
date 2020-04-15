@@ -1,6 +1,7 @@
 models:
   Name:
     softDeletes
+    id: false
     timestamps
 
 controllers:

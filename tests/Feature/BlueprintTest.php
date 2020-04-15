@@ -106,6 +106,7 @@ class BlueprintTest extends TestCase
             'models' => [
                 'Name' => [
                     'softdeletes' => 'softDeletes',
+                    'id' => false,
                     'timestamps' => 'timestamps',
                 ],
             ],
