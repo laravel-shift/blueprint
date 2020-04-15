@@ -21,6 +21,8 @@ class CreateOptimizesTable extends Migration
             $table->unsignedInteger('int');
             $table->unsignedDecimal('dec', 8, 2);
             $table->unsignedBigInteger('big');
+            $table->nullableMorphs('foo');
+            $table->nullableUuidMorphs('foobar');
         });
     }
 

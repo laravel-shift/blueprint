@@ -12,6 +12,11 @@ class MigrationGenerator implements Generator
 {
     const INDENT = '            ';
 
+    const NULLABLE_TYPES = [
+        'morphs',
+        'uuidMorphs',
+    ];
+
     const UNSIGNABLE_TYPES = [
       'bigInteger',
       'decimal',
@@ -76,6 +81,10 @@ class MigrationGenerator implements Generator
                 $dataType = 'unsigned' . ucfirst($dataType);
             }
 
+            if (in_array($dataType, self::NULLABLE_TYPES) && in_array('nullable', $column->modifiers())) {
+                $dataType = 'nullable' . ucfirst($dataType);
+            }
+
             if ($dataType === 'bigIncrements' && $this->isLaravel7orNewer()) {
                 $definition .= self::INDENT . '$table->id(';
             } else {
@@ -102,6 +111,8 @@ class MigrationGenerator implements Generator
                         $definition .= '->' . key($modifier) . '(' . current($modifier) . ')';
                     }
                 } elseif ($modifier === 'unsigned' && strpos($dataType, 'unsigned') === 0) {
+                    continue;
+                } elseif ($modifier === 'nullable' && strpos($dataType, 'nullable') === 0) {
                     continue;
                 } else {
                     $definition .= '->' . $modifier . '()';

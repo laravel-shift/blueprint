@@ -6,4 +6,6 @@ models:
     int: integer unsigned
     dec: decimal:8,2 unsigned
     big: bigInteger unsigned
+    foo: morphs nullable
+    foobar: uuidMorphs nullable
     timestamps: false
