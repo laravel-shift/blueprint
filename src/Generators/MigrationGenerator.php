@@ -12,6 +12,15 @@ class MigrationGenerator implements Generator
 {
     const INDENT = '            ';
 
+    const UNSIGNABLE_TYPES = [
+      'bigInteger',
+      'decimal',
+      'integer',
+      'mediumInteger',
+      'smallInteger',
+      'tinyInteger',
+    ];
+
     /** @var \Illuminate\Contracts\Filesystem\Filesystem */
     private $files;
 
@@ -63,6 +72,10 @@ class MigrationGenerator implements Generator
                 $dataType = 'uuid';
             }
 
+            if (in_array($dataType, self::UNSIGNABLE_TYPES) && in_array('unsigned', $column->modifiers())) {
+                $dataType = 'unsigned' . ucfirst($dataType);
+            }
+
             if ($dataType === 'bigIncrements' && $this->isLaravel7orNewer()) {
                 $definition .= self::INDENT . '$table->id(';
             } else {
@@ -82,12 +95,17 @@ class MigrationGenerator implements Generator
             $foreign = '';
 
             foreach ($column->modifiers() as $modifier) {
-                if (is_array($modifier)) {
-                    if (key($modifier) === 'foreign') {
+                if (is_array($modifier))
+                {
+                    if (key($modifier) === 'foreign')
+                    {
                         $foreign = self::INDENT . '$table->foreign(' . "'{$column->name()}')->references('id')->on('" . Str::lower(Str::plural(current($modifier))) . "')->onDelete('cascade');" . PHP_EOL;
-                    } else {
+                    } else
+                    {
                         $definition .= '->' . key($modifier) . '(' . current($modifier) . ')';
                     }
+                } elseif ($modifier === 'unsigned' && strpos($dataType, 'unsigned') === 0) {
+                    continue;
                 } else {
                     $definition .= '->' . $modifier . '()';
                 }

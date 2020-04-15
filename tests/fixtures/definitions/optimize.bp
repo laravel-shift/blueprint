@@ -1,0 +1,9 @@
+models:
+  Optimize:
+    tiny: tinyInteger unsigned
+    small: smallInteger unsigned
+    medium: mediumInteger unsigned
+    int: integer unsigned
+    dec: decimal:8,2 unsigned
+    big: bigInteger unsigned
+    timestamps: false
