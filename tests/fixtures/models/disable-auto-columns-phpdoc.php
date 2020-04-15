@@ -5,9 +5,9 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property int $id
  * @property string $name
  * @property string $code
+ * @property int $country_id
  */
 class State extends Model
 {
@@ -19,6 +19,7 @@ class State extends Model
     protected $fillable = [
         'name',
         'code',
+        'country_id',
     ];
 
     /**
@@ -27,6 +28,6 @@ class State extends Model
      * @var array
      */
     protected $casts = [
-        'id' => 'integer',
+        'country_id' => 'integer',
     ];
 }

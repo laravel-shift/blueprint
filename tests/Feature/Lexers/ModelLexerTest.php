@@ -134,7 +134,7 @@ class ModelLexerTest extends TestCase
     /**
      * @test
      */
-    public function it_disables_primary_keys()
+    public function it_disables_the_id_column()
     {
         $tokens = [
             'models' => [
@@ -152,6 +152,7 @@ class ModelLexerTest extends TestCase
         $model = $actual['models']['Model'];
 
         $this->assertEquals('Model', $model->name());
+        $this->assertCount(0, $model->columns());
         $this->assertFalse($model->usesPrimaryKey());
     }
 

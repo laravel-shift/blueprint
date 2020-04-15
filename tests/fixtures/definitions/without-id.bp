@@ -1,9 +1,0 @@
-models:
-  Name:
-    softDeletes
-    id: false
-    timestamps
-
-controllers:
-  Context:
-    resource

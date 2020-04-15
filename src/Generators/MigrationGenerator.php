@@ -69,7 +69,8 @@ class MigrationGenerator implements Generator
         /** @var \Blueprint\Models\Column $column */
         foreach ($model->columns() as $column) {
             $dataType = $column->dataType();
-            if ($column->name() === 'id' && $dataType === 'id' && $model->usesPrimaryKey()) {
+
+            if ($column->name() === 'id' && $dataType === 'id') {
                 $dataType = 'bigIncrements';
             } elseif ($dataType === 'id') {
                 $dataType = 'unsignedBigInteger';

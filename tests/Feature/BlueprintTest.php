@@ -98,29 +98,6 @@ class BlueprintTest extends TestCase
     /**
      * @test
      */
-    public function it_parses_shorthands_that_disables_id()
-    {
-        $blueprint = $this->fixture('definitions/without-id.bp');
-
-        $this->assertEquals([
-            'models' => [
-                'Name' => [
-                    'softdeletes' => 'softDeletes',
-                    'id' => false,
-                    'timestamps' => 'timestamps',
-                ],
-            ],
-            'controllers' => [
-                'Context' => [
-                    'resource' => 'all'
-                ]
-            ]
-        ], $this->subject->parse($blueprint));
-    }
-
-    /**
-     * @test
-     */
     public function it_parses_shorthands_with_timezones()
     {
         $blueprint = $this->fixture('definitions/with-timezones.bp');
