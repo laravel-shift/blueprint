@@ -54,6 +54,10 @@ class FactoryGeneratorTest extends TestCase
             ->with('factory.stub')
             ->andReturn(file_get_contents('stubs/factory.stub'));
 
+        $this->files->expects('exists')
+            ->with('database/factories')
+            ->andReturnTrue();
+
         $this->files->expects('put')
             ->with($path, $this->fixture($migration));
 
@@ -75,6 +79,10 @@ class FactoryGeneratorTest extends TestCase
             ->with('factory.stub')
             ->andReturn(file_get_contents('stubs/factory.stub'));
 
+        $this->files->expects('exists')
+            ->with('database/factories')
+            ->andReturnTrue();
+
         $this->files->expects('put')
             ->with('database/factories/PostFactory.php', $this->fixture('factories/post-configured.php'));
 
@@ -84,6 +92,30 @@ class FactoryGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['database/factories/PostFactory.php']], $this->subject->output($tree));
     }
 
+    /**
+     * @test
+     */
+    public function output_creates_directory_for_nested_components()
+    {
+        $this->files->expects('stub')
+            ->with('factory.stub')
+            ->andReturn(file_get_contents('stubs/factory.stub'));
+
+        $this->files->expects('exists')
+            ->with('database/factories/Admin')
+            ->andReturnFalse();
+        $this->files->expects('makeDirectory')
+            ->with('database/factories/Admin', 0755, true);
+
+        $this->files->expects('put')
+            ->with('database/factories/Admin/UserFactory.php', $this->fixture('factories/nested-components.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/nested-components.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['database/factories/Admin/UserFactory.php']], $this->subject->output($tree));
+    }
+
     public function modelTreeDataProvider()
     {
         return [
@@ -91,7 +123,6 @@ class FactoryGeneratorTest extends TestCase
             ['definitions/post.bp', 'database/factories/PostFactory.php', 'factories/post.php'],
             ['definitions/team.bp', 'database/factories/TeamFactory.php', 'factories/team.php'],
             ['definitions/unconventional.bp', 'database/factories/TeamFactory.php', 'factories/unconventional.php'],
-            ['definitions/nested-components.bp', 'database/factories/Admin/UserFactory.php', 'factories/nested-components.php'],
             ['definitions/model-modifiers.bp', 'database/factories/ModifierFactory.php', 'factories/model-modifiers.php'],
             ['definitions/model-key-constraints.bp', 'database/factories/OrderFactory.php', 'factories/model-key-constraints.php'],
         ];

@@ -275,4 +275,27 @@ class BlueprintTest extends TestCase
             'deleted' => ['one/trashed.php', 'two/trashed.php'],
         ], $this->subject->generate($tree));
     }
+
+    /**
+     * @test
+     * @dataProvider namespacesDataProvider
+     */
+    public function relative_namespace_removes_namespace_prefix_from_reference($namespace, $expected, $reference)
+    {
+        config(['blueprint.namespace' => $namespace]);
+
+        $this->assertEquals($expected, Blueprint::relativeNamespace($reference));
+    }
+
+    public function namespacesDataProvider()
+    {
+        return [
+            ['App', 'Models\User', 'App\Models\User'],
+            ['App', 'Models\User', '\App\Models\User'],
+            ['App', 'Some\Other\Reference', 'Some\Other\Reference'],
+            ['App', 'App\Appointments', 'App\App\Appointments'],
+            ['Foo', 'Bar', 'Foo\Bar'],
+            ['Foo', 'Foo\Bar', '\Foo\Foo\Bar'],
+        ];
+    }
 }

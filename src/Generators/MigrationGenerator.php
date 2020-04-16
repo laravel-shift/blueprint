@@ -5,11 +5,26 @@ namespace Blueprint\Generators;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Model;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 
 class MigrationGenerator implements Generator
 {
     const INDENT = '            ';
+
+    const NULLABLE_TYPES = [
+        'morphs',
+        'uuidMorphs',
+    ];
+
+    const UNSIGNABLE_TYPES = [
+      'bigInteger',
+      'decimal',
+      'integer',
+      'mediumInteger',
+      'smallInteger',
+      'tinyInteger',
+    ];
 
     /** @var \Illuminate\Contracts\Filesystem\Filesystem */
     private $files;
@@ -54,15 +69,26 @@ class MigrationGenerator implements Generator
         /** @var \Blueprint\Models\Column $column */
         foreach ($model->columns() as $column) {
             $dataType = $column->dataType();
-            if ($column->name() === 'id' && $dataType !== 'uuid') {
+
+            if ($column->name() === 'id' && $dataType === 'id') {
                 $dataType = 'bigIncrements';
-            } elseif ($column->dataType() === 'id') {
+            } elseif ($dataType === 'id') {
                 $dataType = 'unsignedBigInteger';
-            } elseif ($column->dataType() === 'uuid') {
-                $dataType = 'uuid';
             }
 
-            $definition .= self::INDENT.'$table->'.$dataType."('{$column->name()}'";
+            if (in_array($dataType, self::UNSIGNABLE_TYPES) && in_array('unsigned', $column->modifiers())) {
+                $dataType = 'unsigned' . ucfirst($dataType);
+            }
+
+            if (in_array($dataType, self::NULLABLE_TYPES) && in_array('nullable', $column->modifiers())) {
+                $dataType = 'nullable' . ucfirst($dataType);
+            }
+
+            if ($dataType === 'bigIncrements' && $this->isLaravel7orNewer()) {
+                $definition .= self::INDENT . '$table->id(';
+            } else {
+                $definition .= self::INDENT . '$table->' . $dataType . "('{$column->name()}'";
+            }
 
             if (! empty($column->attributes()) && ! in_array($column->dataType(), ['id', 'uuid'])) {
                 $definition .= ', ';
@@ -79,16 +105,14 @@ class MigrationGenerator implements Generator
             foreach ($column->modifiers() as $modifier) {
                 if (is_array($modifier)) {
                     if (key($modifier) === 'foreign') {
-                        $foreign =
-                            self::INDENT.
-                            '$table->foreign('.
-                            "'{$column->name()}')->references('id')->on('".
-                            Str::lower(Str::plural(current($modifier))).
-                            "')->onDelete('cascade');".
-                            PHP_EOL;
+                        $foreign = self::INDENT . '$table->foreign(' . "'{$column->name()}')->references('id')->on('" . Str::lower(Str::plural(current($modifier))) . "')->onDelete('cascade');" . PHP_EOL;
                     } else {
                         $definition .= '->'.key($modifier).'('.current($modifier).')';
                     }
+                } elseif ($modifier === 'unsigned' && Str::startsWith($dataType, 'unsigned')) {
+                    continue;
+                } elseif ($modifier === 'nullable' && Str::startsWith($dataType, 'nullable')) {
+                    continue;
                 } else {
                     $definition .= '->'.$modifier.'()';
                 }
@@ -116,5 +140,10 @@ class MigrationGenerator implements Generator
     protected function getPath(Model $model, Carbon $timestamp)
     {
         return 'database/migrations/'.$timestamp->format('Y_m_d_His').'_create_'.$model->tableName().'_table.php';
+    }
+
+    protected function isLaravel7orNewer()
+    {
+        return version_compare(App::version(), '7.0.0', '>=');
     }
 }

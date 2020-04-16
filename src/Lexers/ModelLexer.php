@@ -117,6 +117,13 @@ class ModelLexer implements Lexer
     {
         $model = new Model($name);
 
+        if (isset($columns['id'])) {
+            if ($columns['id'] === false) {
+                $model->disablePrimaryKey();
+                unset($columns['id']);
+            }
+        }
+
         if (isset($columns['timestamps'])) {
             if ($columns['timestamps'] === false) {
                 $model->disableTimestamps();
@@ -148,7 +155,7 @@ class ModelLexer implements Lexer
             unset($columns['relationships']);
         }
 
-        if (! isset($columns['id'])) {
+        if (!isset($columns['id']) && $model->usesPrimaryKey()) {
             $column = $this->buildColumn('id', 'id');
             $model->addColumn($column);
         }

@@ -1,11 +1,12 @@
 models:
   Admin/User:
     name: string
+    password: string
 
 controllers:
   Admin/User:
     index:
-      query: all:users
+      query: all
       render: admin.user.index with:users
 
     store:
