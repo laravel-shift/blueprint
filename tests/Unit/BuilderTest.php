@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Unit;
+namespace Blueprint\Tests\Unit;
 
 use Blueprint\Blueprint;
 use Blueprint\Builder;
 use Illuminate\Filesystem\Filesystem;
-use Tests\TestCase;
+use Blueprint\Tests\TestCase;
 
 class BuilderTest extends TestCase
 {

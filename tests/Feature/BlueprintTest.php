@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Feature;
+namespace Blueprint\Tests\Feature;
 
 use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Contracts\Lexer;
 use Symfony\Component\Yaml\Exception\ParseException;
-use Tests\TestCase;
+use Blueprint\Tests\TestCase;
 
 /**
  * @see Blueprint

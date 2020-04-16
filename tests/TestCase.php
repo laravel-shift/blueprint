@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace Blueprint\Tests;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {

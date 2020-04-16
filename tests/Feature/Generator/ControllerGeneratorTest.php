@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Feature\Generators;
+namespace Blueprint\Tests\Feature\Generators;
 
 use Blueprint\Blueprint;
 use Blueprint\Generators\ControllerGenerator;
 use Blueprint\Lexers\StatementLexer;
-use Tests\TestCase;
+use Blueprint\Tests\TestCase;
 
 /**
  * @see ControllerGenerator

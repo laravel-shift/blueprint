@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Feature\Generators;
+namespace Blueprint\Tests\Feature\Generators;
 
 use Blueprint\Blueprint;
 use Blueprint\Generators\MigrationGenerator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
-use Tests\TestCase;
+use Blueprint\Tests\TestCase;
 
 /**
  * @see MigrationGenerator

@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Feature\Translators;
+namespace Blueprint\Tests\Feature\Translators;
 
 use Blueprint\Models\Column;
 use Blueprint\Translators\Rules;
-use Tests\TestCase;
+use Blueprint\Tests\TestCase;
 
 /**
  * @see Rules

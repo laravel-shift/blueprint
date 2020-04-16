@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Feature\Generator\Statements;
+namespace Blueprint\Tests\Feature\Generator\Statements;
 
 use Blueprint\Blueprint;
 use Blueprint\Generators\Statements\JobGenerator;
 use Blueprint\Lexers\StatementLexer;
-use Tests\TestCase;
+use Blueprint\Tests\TestCase;
 
 /**
  * @see JobGenerator

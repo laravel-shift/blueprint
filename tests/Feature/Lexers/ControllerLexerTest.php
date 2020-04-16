@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Lexers;
+namespace Blueprint\Tests\Feature\Lexers;
 
 use Blueprint\Lexers\ControllerLexer;
 use Blueprint\Lexers\StatementLexer;

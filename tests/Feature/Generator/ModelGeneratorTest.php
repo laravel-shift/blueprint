@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Feature\Generators;
+namespace Blueprint\Tests\Feature\Generators;
 
 use Blueprint\Blueprint;
 use Blueprint\Generators\ModelGenerator;
-use Tests\TestCase;
+use Blueprint\Tests\TestCase;
 
 class ModelGeneratorTest extends TestCase
 {

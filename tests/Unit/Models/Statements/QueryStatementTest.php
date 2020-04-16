@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Generators;
+namespace Blueprint\Tests\Feature\Generators;
 
 use Blueprint\Models\Statements\QueryStatement;
 use PHPUnit\Framework\TestCase;
