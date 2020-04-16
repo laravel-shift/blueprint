@@ -1,0 +1,10 @@
+controllers:
+  User:
+    index:
+      resource: paginate:users
+    store:
+      resource: user
+    show:
+      resource: user
+    all:
+      resource: collection:users

@@ -30,7 +30,12 @@ class ControllerLexer implements Lexer
             $controller = new Controller($name);
 
             if ($this->isResource($definition)) {
+                $original = $definition;
                 $definition = $this->generateResourceTokens($controller, $this->methodsForResource($definition['resource']));
+                // unset shorthand
+                unset($original['resource']);
+                // this gives the ability to both use a shorthand and override some methods
+                $definition = array_merge($definition, $original);
             }
 
             foreach ($definition as $method => $body) {
@@ -54,9 +59,9 @@ class ControllerLexer implements Lexer
             ->filter(function ($statements, $method) use ($methods) {
                 return in_array($method, $methods);
             })
-            ->map(function ($statements) use ($controller) {
-                return collect($statements)
-                    ->map(function ($statement) use ($controller) {
+            ->mapWithKeys(function ($statements, $method) use ($controller) {
+                return [
+                    str_replace('api.', '', $method) => collect($statements)->map(function ($statement) use ($controller) {
                         $model = Str::singular($controller->prefix());
 
                         return str_replace(
@@ -64,7 +69,8 @@ class ControllerLexer implements Lexer
                             [Str::lower($model), Str::lower(Str::plural($model))],
                             $statement
                         );
-                    });
+                    }),
+                ];
             })
             ->toArray();
     }
@@ -74,40 +80,62 @@ class ControllerLexer implements Lexer
         return [
             'index' => [
                 'query' => 'all:[plural]',
-                'render' => '[singular].index with [plural]'
+                'render' => '[singular].index with [plural]',
             ],
             'create' => [
-                'render' => '[singular].create'
+                'render' => '[singular].create',
             ],
             'store' => [
                 'validate' => '[singular]',
                 'save' => '[singular]',
                 'flash' => '[singular].id',
-                'redirect' => '[singular].index'
+                'redirect' => '[singular].index',
             ],
             'show' => [
-                'render' => '[singular].show with:[singular]'
+                'render' => '[singular].show with:[singular]',
             ],
             'edit' => [
-                'render' => '[singular].edit with:[singular]'
+                'render' => '[singular].edit with:[singular]',
             ],
             'update' => [
                 'validate' => '[singular]',
                 'update' => '[singular]',
                 'flash' => '[singular].id',
-                'redirect' => '[singular].index'
+                'redirect' => '[singular].index',
             ],
             'destroy' => [
                 'delete' => '[singular]',
-                'redirect' => '[singular].index'
-            ]
+                'redirect' => '[singular].index',
+            ],
+
+            'api.index' => [
+                'query' => 'all:[plural]',
+                'resource' => 'collection:[plural]',
+            ],
+            'api.store' => [
+                'validate' => '[singular]',
+                'save' => '[singular]',
+                'resource' => '[singular]',
+            ],
+            'api.show' => [
+                'resource' => '[singular]',
+            ],
+            'api.update' => [
+                'validate' => '[singular]',
+                'update' => '[singular]',
+                'resource' => '[singular]',
+            ],
+            'api.destroy' => [
+                'delete' => '[singular]',
+                'respond' => 200,
+            ],
         ];
     }
 
     private function methodsForResource(string $type)
     {
         if ($type === 'api') {
-            return ['index', 'store', 'show', 'update', 'destroy'];
+            return ['api.index', 'api.store', 'api.show', 'api.update', 'api.destroy'];
         }
 
         if ($type === 'all') {

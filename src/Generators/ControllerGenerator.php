@@ -11,6 +11,7 @@ use Blueprint\Models\Statements\FireStatement;
 use Blueprint\Models\Statements\QueryStatement;
 use Blueprint\Models\Statements\RedirectStatement;
 use Blueprint\Models\Statements\RenderStatement;
+use Blueprint\Models\Statements\ResourceStatement;
 use Blueprint\Models\Statements\RespondStatement;
 use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
@@ -116,6 +117,19 @@ class ControllerGenerator implements Generator
                         $this->addImport($controller, config('blueprint.namespace') . '\\Events\\' . $statement->event());
                     }
                 } elseif ($statement instanceof RenderStatement) {
+                    $body .= self::INDENT . $statement->output() . PHP_EOL;
+                } elseif ($statement instanceof ResourceStatement) {
+                    $fqcn = config('blueprint.namespace') . '\\Http\\Resources\\' . ($controller->namespace() ? $controller->namespace() . '\\' : '') . $statement->name();
+
+                    $method = str_replace('* @return \\Illuminate\\Http\\Response', '* @return \\' . $fqcn, $method);
+
+                    $import = $fqcn;
+                    if (!$statement->collection()) {
+                        $import .= ' as ' . $statement->name() . 'Resource';
+                    }
+
+                    $this->addImport($controller, $import);
+
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
                 } elseif ($statement instanceof RedirectStatement) {
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
