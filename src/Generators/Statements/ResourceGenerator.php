@@ -4,10 +4,13 @@ namespace Blueprint\Generators\Statements;
 
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Controller;
+use Blueprint\Models\Model;
 use Blueprint\Models\Statements\ResourceStatement;
+use Illuminate\Support\Str;
 
 class ResourceGenerator implements Generator
 {
+    const INDENT = '            ';
     /**
      * @var \Illuminate\Contracts\Filesystem\Filesystem
      */
@@ -26,11 +29,13 @@ class ResourceGenerator implements Generator
 
         $stub = $this->files->stub('resource.stub');
 
+        $this->registerModels($tree);
+
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree['controllers'] as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
-                    if (!$statement instanceof ResourceStatement) {
+                    if (! $statement instanceof ResourceStatement) {
                         continue;
                     }
 
@@ -40,7 +45,7 @@ class ResourceGenerator implements Generator
                         continue;
                     }
 
-                    if (!$this->files->exists(dirname($path))) {
+                    if (! $this->files->exists(dirname($path))) {
                         $this->files->makeDirectory(dirname($path), 0755, true);
                     }
 
@@ -56,12 +61,12 @@ class ResourceGenerator implements Generator
 
     protected function getPath(string $name)
     {
-        return config('blueprint.app_path') . '/Http/Resources/' . $name . '.php';
+        return config('blueprint.app_path').'/Http/Resources/'.$name.'.php';
     }
 
     protected function populateStub(string $stub, ResourceStatement $resource)
     {
-        $stub = str_replace('DummyNamespace', config('blueprint.namespace') . '\\Http\\Resources', $stub);
+        $stub = str_replace('DummyNamespace', config('blueprint.namespace').'\\Http\\Resources', $stub);
         $stub = str_replace('DummyImport', $resource->collection() ? 'Illuminate\\Http\\Resources\\Json\\ResourceCollection' : 'Illuminate\\Http\\Resources\\Json\\JsonResource', $stub);
         $stub = str_replace('DummyParent', $resource->collection() ? 'ResourceCollection' : 'JsonResource', $stub);
         $stub = str_replace('DummyClass', $resource->name(), $stub);
@@ -74,14 +79,54 @@ class ResourceGenerator implements Generator
 
     private function buildData(ResourceStatement $resource)
     {
+        $context = Str::singular($resource->reference());
+
+        /** @var \Blueprint\Models\Model $model */
+        $model = $this->modelForContext($context);
+
+        $data = [];
         if ($resource->collection()) {
-            return 'return [
-            \'data\' => $this->collection,
-        ];';
+            $data[] = 'return [';
+            $data[] = self::INDENT.'\'data\' => $this->collection,';
+            $data[] = '        ];';
+
+            return implode(PHP_EOL, $data);
         }
 
-        return 'return [
-            \'id\' => $this->id,
-        ];';
+        $data[] = 'return [';
+        foreach ($this->visibleColumns($model) as $column) {
+            $data[] = self::INDENT.'\''.$column.'\' => $this->'.$column.',';
+        }
+        $data[] = '        ];';
+
+        return implode(PHP_EOL, $data);
+    }
+
+    private function visibleColumns(Model $model)
+    {
+        return array_diff(array_keys($model->columns()), [
+            'password',
+            'remember_token',
+        ]);
+    }
+
+    private function modelForContext(string $context)
+    {
+        if (isset($this->models[Str::studly($context)])) {
+            return $this->models[Str::studly($context)];
+        }
+
+        $matches = array_filter(array_keys($this->models), function ($key) use ($context) {
+            return Str::endsWith($key, '/'.Str::studly($context));
+        });
+
+        if (count($matches) === 1) {
+            return $this->models[$matches[0]];
+        }
+    }
+
+    private function registerModels(array $tree)
+    {
+        $this->models = array_merge($tree['cache'] ?? [], $tree['models'] ?? []);
     }
 }

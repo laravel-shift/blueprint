@@ -1,3 +1,10 @@
+models:
+  User:
+    name: string
+    email: string
+    password: string
+    remember_token: remembertoken
+
 controllers:
   User:
     index:
