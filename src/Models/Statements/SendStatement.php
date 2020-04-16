@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Blueprint\Models\Statements;
 
 class SendStatement
@@ -50,10 +49,10 @@ class SendStatement
         $code = 'Mail::';
 
         if ($this->to()) {
-            $code .= 'to($' . str_replace('.', '->', $this->to()) . ')->';
+            $code .= 'to($'.str_replace('.', '->', $this->to()).')->';
         }
 
-        $code .= 'send(new ' . $this->mail() . '(';
+        $code .= 'send(new '.$this->mail().'(';
 
         if ($this->data()) {
             $code .= $this->buildParameters($this->data());
@@ -67,7 +66,7 @@ class SendStatement
     private function buildParameters(array $data)
     {
         $parameters = array_map(function ($parameter) {
-            return '$' . $parameter;
+            return '$'.$parameter;
         }, $data);
 
         return implode(', ', $parameters);

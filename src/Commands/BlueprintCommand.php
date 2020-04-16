@@ -25,7 +25,7 @@ class BlueprintCommand extends Command
      */
     protected $description = 'Build components from a Blueprint draft';
 
-    /** @var Filesystem $files */
+    /** @var Filesystem */
     protected $files;
 
     /**
@@ -47,17 +47,17 @@ class BlueprintCommand extends Command
     public function handle()
     {
         $file = $this->argument('draft');
-        if (!file_exists($file)) {
-            $this->error('Draft file could not be found: ' . $file);
+        if (! file_exists($file)) {
+            $this->error('Draft file could not be found: '.$file);
         }
 
         $blueprint = resolve(Blueprint::class);
         $generated = Builder::execute($blueprint, $this->files, $file);
 
         collect($generated)->each(function ($files, $action) {
-            $this->line(Str::studly($action) . ':', $this->outputStyle($action));
+            $this->line(Str::studly($action).':', $this->outputStyle($action));
             collect($files)->each(function ($file) {
-                $this->line('- ' . $file);
+                $this->line('- '.$file);
             });
 
             $this->line('');

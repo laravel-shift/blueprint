@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Blueprint\Models\Statements;
 
 class RenderStatement
@@ -36,10 +35,10 @@ class RenderStatement
 
     public function output()
     {
-        $code = "return view('" . $this->view() . "'";
+        $code = "return view('".$this->view()."'";
 
         if ($this->data()) {
-            $code .= ', compact(' . $this->buildParameters($this->data()) . ')';
+            $code .= ', compact('.$this->buildParameters($this->data()).')';
         }
 
         $code .= ');';
@@ -50,7 +49,7 @@ class RenderStatement
     private function buildParameters(array $data)
     {
         $parameters = array_map(function ($parameter) {
-            return "'" . $parameter . "'";
+            return "'".$parameter."'";
         }, $data);
 
         return implode(', ', $parameters);

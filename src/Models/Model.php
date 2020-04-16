@@ -41,11 +41,11 @@ class Model
         $fqn = config('blueprint.namespace');
 
         if (config('blueprint.models_namespace')) {
-            $fqn .= '\\' . config('blueprint.models_namespace');
+            $fqn .= '\\'.config('blueprint.models_namespace');
         }
 
         if ($this->namespace) {
-            $fqn .= '\\' . $this->namespace;
+            $fqn .= '\\'.$this->namespace;
         }
 
         return $fqn;
@@ -53,7 +53,7 @@ class Model
 
     public function fullyQualifiedClassName()
     {
-        return $this->fullyQualifiedNamespace() . '\\' . $this->name;
+        return $this->fullyQualifiedNamespace().'\\'.$this->name;
     }
 
     public function addColumn(Column $column)
@@ -128,7 +128,7 @@ class Model
 
     public function addRelationship(string $type, string $reference)
     {
-        if (!isset($this->relationships[$type])) {
+        if (! isset($this->relationships[$type])) {
             $this->relationships[$type] = [];
         }
 

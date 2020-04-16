@@ -1,9 +1,6 @@
 <?php
 
-
 namespace Blueprint\Models\Statements;
-
-use Illuminate\Support\Str;
 
 class RespondStatement
 {
@@ -20,7 +17,7 @@ class RespondStatement
     public function __construct(string $data)
     {
         if (ctype_digit($data)) {
-            $this->status = (int)$data;
+            $this->status = (int) $data;
         } else {
             $this->content = $data;
         }
@@ -39,7 +36,7 @@ class RespondStatement
     public function output()
     {
         if ($this->content()) {
-            return 'return $' . $this->content . ';';
+            return 'return $'.$this->content.';';
         }
 
         return sprintf('return response()->noContent(%s);', $this->status() === 204 ? '' : $this->status());

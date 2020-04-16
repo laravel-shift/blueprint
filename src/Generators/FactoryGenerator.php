@@ -39,10 +39,10 @@ class FactoryGenerator implements Generator
     {
         $path = $model->name();
         if ($model->namespace()) {
-            $path = str_replace('\\', '/', $model->namespace()) . '/' . $path;
+            $path = str_replace('\\', '/', $model->namespace()).'/'.$path;
         }
 
-        return 'database/factories/' . $path . 'Factory.php';
+        return 'database/factories/'.$path.'Factory.php';
     }
 
     protected function populateStub(string $stub, Model $model)
@@ -68,41 +68,41 @@ class FactoryGenerator implements Generator
                 $name = Str::beforeLast($column->name(), '_id');
                 $class = Str::studly($column->attributes()[0] ?? $name);
 
-                $definition .= self::INDENT . "'{$column->name()}' => ";
-                $definition .= sprintf('factory(%s::class)', '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);
-                $definition .= ',' . PHP_EOL;
-            } elseif (in_array($column->dataType(), ['enum', 'set']) and !empty($column->attributes())) {
-                $definition .= self::INDENT . "'{$column->name()}' => ";
+                $definition .= self::INDENT."'{$column->name()}' => ";
+                $definition .= sprintf('factory(%s::class)', '\\'.$model->fullyQualifiedNamespace().'\\'.$class);
+                $definition .= ','.PHP_EOL;
+            } elseif (in_array($column->dataType(), ['enum', 'set']) and ! empty($column->attributes())) {
+                $definition .= self::INDENT."'{$column->name()}' => ";
                 $faker = $this->fakerData($column->name()) ?? $this->fakerDataType($column->dataType());
-                $definition .= '$faker->' . $faker;
-                $definition .= ',' . PHP_EOL;
+                $definition .= '$faker->'.$faker;
+                $definition .= ','.PHP_EOL;
                 $definition = str_replace(
                     "/** {$column->dataType()}_attributes **/",
                     json_encode($column->attributes()),
                     $definition
                 );
             } elseif (in_array($column->dataType(), ['decimal', 'float'])) {
-                $definition .= self::INDENT . "'{$column->name()}' => ";
+                $definition .= self::INDENT."'{$column->name()}' => ";
                 $faker = $this->fakerData($column->name()) ?? $this->fakerDataType($column->dataType());
-                $definition .= '$faker->' . $faker;
-                $definition .= ',' . PHP_EOL;
+                $definition .= '$faker->'.$faker;
+                $definition .= ','.PHP_EOL;
 
                 $precision = min([65, intval($column->attributes()[0] ?? 10)]);
                 $scale = min([30, max([0, intval($column->attributes()[1] ?? 0)])]);
 
                 $definition = str_replace(
                     "/** {$column->dataType()}_attributes **/",
-                    implode(', ', [$scale, 0, (str_repeat(9, $precision - $scale) . '.' . str_repeat(9, $scale))]),
+                    implode(', ', [$scale, 0, (str_repeat(9, $precision - $scale).'.'.str_repeat(9, $scale))]),
                     $definition
                 );
             } elseif ($column->dataType() === 'json') {
                 $default = $column->defaultValue() ?? "'{}'";
-                $definition .= self::INDENT . "'{$column->name()}' => {$default}," . PHP_EOL;
+                $definition .= self::INDENT."'{$column->name()}' => {$default},".PHP_EOL;
             } else {
-                $definition .= self::INDENT . "'{$column->name()}' => ";
+                $definition .= self::INDENT."'{$column->name()}' => ";
                 $faker = self::fakerData($column->name()) ?? self::fakerDataType($column->dataType());
-                $definition .= '$faker->' . $faker;
-                $definition .= ',' . PHP_EOL;
+                $definition .= '$faker->'.$faker;
+                $definition .= ','.PHP_EOL;
             }
         }
 

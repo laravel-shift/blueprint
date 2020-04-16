@@ -18,7 +18,7 @@ class Rules
 
         if ($column->dataType() === 'id' && Str::endsWith($column->name(), '_id')) {
             [$prefix, $field] = explode('_', $column->name());
-            $rules = array_merge($rules, ['integer', 'exists:' . Str::plural($prefix) . ',' . $field]);
+            $rules = array_merge($rules, ['integer', 'exists:'.Str::plural($prefix).','.$field]);
         }
 
         if (in_array($column->dataType(), [
@@ -36,7 +36,7 @@ class Rules
             'unsignedInteger',
             'unsignedMediumInteger',
             'unsignedSmallInteger',
-            'unsignedTinyInteger'
+            'unsignedTinyInteger',
         ])) {
             array_push($rules, 'integer');
 
@@ -59,7 +59,7 @@ class Rules
         }
 
         if (in_array($column->dataType(), ['enum', 'set'])) {
-            array_push($rules, 'in:' . implode(',', $column->attributes()));
+            array_push($rules, 'in:'.implode(',', $column->attributes()));
         }
 
         if (in_array($column->dataType(), ['date', 'datetime', 'datetimetz'])) {
@@ -68,12 +68,12 @@ class Rules
 
         if ($column->attributes()) {
             if (in_array($column->dataType(), ['string', 'char'])) {
-                array_push($rules, 'max:' . implode($column->attributes()));
+                array_push($rules, 'max:'.implode($column->attributes()));
             }
         }
 
         if (in_array('unique', $column->modifiers())) {
-            array_push($rules, 'unique:' . $context . ',' . $column->name());
+            array_push($rules, 'unique:'.$context.','.$column->name());
         }
 
         return $rules;

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Blueprint\Models\Statements;
 
 use Illuminate\Support\Str;
@@ -27,7 +26,7 @@ class QueryStatement
         $this->operation = $operation;
         $this->clauses = $clauses;
 
-        if ($operation === 'all' && !empty($clauses)) {
+        if ($operation === 'all' && ! empty($clauses)) {
             $this->model = Str::studly(Str::singular($clauses[0]));
         }
     }
@@ -53,9 +52,9 @@ class QueryStatement
 
         if ($this->operation() === 'all') {
             if (is_null($this->model())) {
-                return '$' . Str::lower(Str::plural($model)) . ' = ' . $model . '::all();';
+                return '$'.Str::lower(Str::plural($model)).' = '.$model.'::all();';
             } else {
-                return '$' . Str::lower($this->clauses()[0]) . ' = ' . $this->model() . '::all();';
+                return '$'.Str::lower($this->clauses()[0]).' = '.$this->model().'::all();';
             }
         }
 
@@ -68,31 +67,31 @@ class QueryStatement
             }
 
             if ($method === 'where') {
-                $methods[] = $method . '(' . "'{$column}', $" . str_replace('.', '->', $argument) . ')';
+                $methods[] = $method.'('."'{$column}', $".str_replace('.', '->', $argument).')';
             } elseif ($method === 'pluck') {
                 $pluck_field = $argument;
                 $methods[] = "pluck('{$column}')";
             } elseif ($method === 'order') {
                 $methods[] = "orderBy('{$column}')";
             } else {
-                $methods[] = $method . '(' . $argument . ')';
+                $methods[] = $method.'('.$argument.')';
             }
         }
 
         if ($this->operation() === 'pluck') {
             $variable_name = $this->pluckName($pluck_field);
         } elseif ($this->operation() === 'count') {
-            $variable_name = Str::lower($model) . '_count';
+            $variable_name = Str::lower($model).'_count';
         } else {
             $variable_name = Str::lower(Str::plural($model));
         }
 
-        $code = '$' . $variable_name . ' = ' . $model . '::';
+        $code = '$'.$variable_name.' = '.$model.'::';
 
         $code .= implode('->', $methods);
 
         if (in_array($this->operation(), ['get', 'count'])) {
-            $code .= '->' . $this->operation() . '()';
+            $code .= '->'.$this->operation().'()';
         }
 
         $code .= ';';
@@ -118,7 +117,7 @@ class QueryStatement
             return Str::lower(Str::plural(str_replace('.', '_', $field)));
         }
 
-        return Str::lower('Post' . '_' . Str::plural($field));
+        return Str::lower('Post'.'_'.Str::plural($field));
     }
 
     private function determineModel(string $prefix)

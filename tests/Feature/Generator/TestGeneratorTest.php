@@ -98,7 +98,7 @@ class TestGeneratorTest extends TestCase
             'User' => [
                 'email' => 'string',
                 'password' => 'string',
-            ]
+            ],
         ];
         $tree = $this->blueprint->analyze($tokens);
 

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Blueprint;
 
 class FileMixins
@@ -10,8 +9,8 @@ class FileMixins
     public function stub()
     {
         return function ($path) {
-            if (!isset($this->stubs[$path])) {
-                $this->stubs[$path] = $this->get(STUBS_PATH . DIRECTORY_SEPARATOR . $path);
+            if (! isset($this->stubs[$path])) {
+                $this->stubs[$path] = $this->get(STUBS_PATH.DIRECTORY_SEPARATOR.$path);
             }
 
             return $this->stubs[$path];

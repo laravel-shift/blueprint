@@ -3,7 +3,6 @@
 namespace Blueprint\Generators\Statements;
 
 use Blueprint\Contracts\Generator;
-use Blueprint\Models\Controller;
 use Blueprint\Models\Model;
 use Blueprint\Models\Statements\ResourceStatement;
 use Illuminate\Support\Str;

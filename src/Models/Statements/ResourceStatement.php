@@ -31,7 +31,7 @@ class ResourceStatement
     public function name(): string
     {
         if ($this->collection()) {
-            return  Str::studly(Str::singular($this->reference)) . 'Collection';
+            return  Str::studly(Str::singular($this->reference)).'Collection';
         }
 
         return  Str::studly(Str::singular($this->reference));
@@ -54,13 +54,13 @@ class ResourceStatement
 
     public function output(): string
     {
-        $code = 'return new ' . $this->name();
+        $code = 'return new '.$this->name();
 
-        if (!$this->collection()) {
+        if (! $this->collection()) {
             $code .= 'Resource';
         }
 
-        $code .= '($' . $this->reference();
+        $code .= '($'.$this->reference();
 
         if ($this->paginate()) {
             $code .= '->paginate()';

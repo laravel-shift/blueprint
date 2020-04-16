@@ -18,12 +18,12 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
      */
     public function boot()
     {
-        if (!defined('STUBS_PATH')) {
-            define('STUBS_PATH', dirname(__DIR__) . '/stubs');
+        if (! defined('STUBS_PATH')) {
+            define('STUBS_PATH', dirname(__DIR__).'/stubs');
         }
 
         $this->publishes([
-            __DIR__ . '/../config/blueprint.php' => config_path('blueprint.php'),
+            __DIR__.'/../config/blueprint.php' => config_path('blueprint.php'),
         ]);
     }
 
@@ -35,7 +35,7 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
     public function register()
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/blueprint.php', 'blueprint'
+            __DIR__.'/../config/blueprint.php', 'blueprint'
         );
 
         File::mixin(new FileMixins());

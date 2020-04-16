@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Blueprint\Models\Statements;
 
 class SessionStatement
@@ -33,9 +32,9 @@ class SessionStatement
 
     public function output()
     {
-        $code = '$request->session()->' . $this->operation() . '(';
-        $code .= "'" . $this->reference() . "', ";
-        $code .= '$' . str_replace('.', '->', $this->reference());
+        $code = '$request->session()->'.$this->operation().'(';
+        $code .= "'".$this->reference()."', ";
+        $code .= '$'.str_replace('.', '->', $this->reference());
         $code .= ');';
 
         return $code;

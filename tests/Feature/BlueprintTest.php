@@ -56,10 +56,10 @@ class BlueprintTest extends TestCase
             'controllers' => [
                 'UserController' => [
                     'index' => [
-                        'action' => 'detail'
+                        'action' => 'detail',
                     ],
                     'create' => [
-                        'action' => 'additional detail'
+                        'action' => 'additional detail',
                     ],
                 ],
                 'RoleController' => [
@@ -89,9 +89,9 @@ class BlueprintTest extends TestCase
             ],
             'controllers' => [
                 'Context' => [
-                    'resource' => 'all'
-                ]
-            ]
+                    'resource' => 'all',
+                ],
+            ],
         ], $this->subject->parse($blueprint));
     }
 
@@ -138,9 +138,9 @@ class BlueprintTest extends TestCase
             ],
             'controllers' => [
                 'Context' => [
-                    'resource' => 'all'
-                ]
-            ]
+                    'resource' => 'all',
+                ],
+            ],
         ], $this->subject->parse($blueprint));
     }
 
@@ -217,7 +217,7 @@ class BlueprintTest extends TestCase
 
         $this->assertEquals([
             'models' => [],
-            'controllers' => []
+            'controllers' => [],
         ],
             $this->subject->analyze($tokens));
     }
@@ -238,7 +238,7 @@ class BlueprintTest extends TestCase
         $this->assertEquals([
             'models' => [],
             'controllers' => [],
-            'mock' => 'lexer'
+            'mock' => 'lexer',
         ], $this->subject->analyze($tokens));
     }
 
@@ -254,7 +254,7 @@ class BlueprintTest extends TestCase
             ->andReturn([
                 'created' => ['one/new.php'],
                 'updated' => ['one/existing.php'],
-                'deleted' => ['one/trashed.php']
+                'deleted' => ['one/trashed.php'],
             ]);
 
         $generatorTwo = \Mockery::mock(Generator::class);
@@ -263,7 +263,7 @@ class BlueprintTest extends TestCase
             ->andReturn([
                 'created' => ['two/new.php'],
                 'updated' => ['two/existing.php'],
-                'deleted' => ['two/trashed.php']
+                'deleted' => ['two/trashed.php'],
             ]);
 
         $this->subject->registerGenerator($generatorOne);

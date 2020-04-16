@@ -163,7 +163,7 @@ class RulesTest extends TestCase
         return [
             ['string'],
             ['char'],
-            ['text']
+            ['text'],
         ];
     }
 
@@ -212,7 +212,7 @@ class RulesTest extends TestCase
         return [
             ['test_id', 'tests'],
             ['user_id', 'users'],
-            ['sheep_id', 'sheep']
+            ['sheep_id', 'sheep'],
         ];
     }
 }

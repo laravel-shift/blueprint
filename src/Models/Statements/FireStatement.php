@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Blueprint\Models\Statements;
 
 class FireStatement
@@ -39,19 +38,18 @@ class FireStatement
         return preg_match('/^[a-z0-9.]+$/', $this->event) === 1;
     }
 
-
     public function output()
     {
         $code = 'event(';
 
         if ($this->isNamedEvent()) {
-            $code .= "'" . $this->event() . "'";
+            $code .= "'".$this->event()."'";
 
             if ($this->data()) {
-                $code .= ', [' . $this->buildParameters($this->data()) . ']';
+                $code .= ', ['.$this->buildParameters($this->data()).']';
             }
         } else {
-            $code .= 'new ' . $this->event() . '(';
+            $code .= 'new '.$this->event().'(';
             if ($this->data()) {
                 $code .= $this->buildParameters($this->data());
             }
@@ -67,7 +65,7 @@ class FireStatement
     private function buildParameters(array $data)
     {
         $parameters = array_map(function ($parameter) {
-            return '$' . $parameter;
+            return '$'.$parameter;
         }, $data);
 
         return implode(', ', $parameters);
