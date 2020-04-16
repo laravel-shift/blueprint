@@ -26,6 +26,11 @@ class Subscription extends Model
     ];
 
 
+    public function teams()
+    {
+        return $this->belongsToMany(\App\Team::class);
+    }
+
     public function orders()
     {
         return $this->hasMany(\App\Order::class);
