@@ -25,9 +25,8 @@ class RouteGenerator implements Generator
         $routes = '';
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree['controllers'] as $controller) {
-            $routes .= PHP_EOL . PHP_EOL . $this->buildRoutes($controller);
+            $routes .= $this->buildRoutes($controller);
         }
-        $routes .= PHP_EOL;
 
         $path = 'routes/web.php';
         $this->files->append($path, $routes);
@@ -55,9 +54,7 @@ class RouteGenerator implements Generator
                     $routes .= sprintf("->only('%s')", implode("', '", $resource_methods));
                 }
             }
-
-
-            $routes .= ';' . PHP_EOL;
+            $routes .= ';'. PHP_EOL;
         }
 
         $methods = array_diff($methods, Controller::$resourceMethods);
@@ -66,6 +63,6 @@ class RouteGenerator implements Generator
             $routes .= PHP_EOL;
         }
 
-        return trim($routes);
+        return $routes;
     }
 }
