@@ -38,6 +38,10 @@ class Blueprint
             return $matches[1] . 'resource: all';
         }, $content);
 
+        $content = preg_replace_callback('/^(\s+)uuid(: true)?$/mi', function ($matches) {
+            return $matches[1] . 'id: uuid primary';
+        }, $content);
+
         return Yaml::parse($content);
     }
 

@@ -138,6 +138,7 @@ class MigrationGeneratorTest extends TestCase
             ['definitions/optimize.bp', 'database/migrations/timestamp_create_optimizes_table.php', 'migrations/optimize.php'],
             ['definitions/model-key-constraints.bp', 'database/migrations/timestamp_create_orders_table.php', 'migrations/model-key-constraints.php'],
             ['definitions/disable-auto-columns.bp', 'database/migrations/timestamp_create_states_table.php', 'migrations/disable-auto-columns.php'],
+            ['definitions/uuid-shorthand.bp', 'database/migrations/timestamp_create_people_table.php', 'migrations/uuid-shorthand.php'],
         ];
     }
 }

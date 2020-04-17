@@ -98,6 +98,23 @@ class BlueprintTest extends TestCase
     /**
      * @test
      */
+    public function it_parses_uuid_shorthand()
+    {
+        $blueprint = $this->fixture('definitions/uuid-shorthand.bp');
+
+        $this->assertEquals([
+            'models' => [
+                'Person' => [
+                    'id' => 'uuid primary',
+                    'timestamps' => 'timestamps',
+                ],
+            ]
+        ], $this->subject->parse($blueprint));
+    }
+
+    /**
+     * @test
+     */
     public function it_parses_shorthands_with_timezones()
     {
         $blueprint = $this->fixture('definitions/with-timezones.bp');

@@ -1,0 +1,4 @@
+models:
+  Person:
+    uuid
+    timestamps
