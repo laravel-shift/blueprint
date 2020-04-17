@@ -207,7 +207,7 @@ class ControllerGenerator implements Generator
         /** @var \Blueprint\Models\Model $model */
         $model = $this->modelForContext($model_name);
 
-        if (isset($this->models[Str::studly($model_name)])) {
+        if (isset($model)) {
             return $model->fullyQualifiedClassName();
         }
 
@@ -221,7 +221,7 @@ class ControllerGenerator implements Generator
         }
 
         $matches = array_filter(array_keys($this->models), function ($key) use ($context) {
-            return Str::endsWith($key, '/'.Str::studly($context));
+            return Str::endsWith(preg_replace('/.+\\\\/', '', $key), Str::studly($context));
         });
 
         if (count($matches) === 1) {
