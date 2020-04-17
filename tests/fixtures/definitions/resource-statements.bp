@@ -1,0 +1,17 @@
+models:
+  User:
+    name: string
+    email: string
+    password: string
+    remember_token: remembertoken
+
+controllers:
+  User:
+    index:
+      resource: paginate:users
+    store:
+      resource: user
+    show:
+      resource: user
+    all:
+      resource: collection:users

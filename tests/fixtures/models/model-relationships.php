@@ -25,6 +25,13 @@ class Subscription extends Model
         'user_id' => 'integer',
     ];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function teams()
+    {
+        return $this->belongsToMany(\App\Team::class);
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

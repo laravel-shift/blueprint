@@ -12,6 +12,7 @@ class ModelLexer implements Lexer
         'belongsto' => 'belongsTo',
         'hasone' => 'hasOne',
         'hasmany' => 'hasMany',
+        'belongstomany' => 'belongsToMany'
     ];
 
     private static $dataTypes = [
@@ -117,6 +118,13 @@ class ModelLexer implements Lexer
     {
         $model = new Model($name);
 
+        if (isset($columns['id'])) {
+            if ($columns['id'] === false) {
+                $model->disablePrimaryKey();
+                unset($columns['id']);
+            }
+        }
+
         if (isset($columns['timestamps'])) {
             if ($columns['timestamps'] === false) {
                 $model->disableTimestamps();
@@ -148,7 +156,7 @@ class ModelLexer implements Lexer
             unset($columns['relationships']);
         }
 
-        if (!isset($columns['id'])) {
+        if (!isset($columns['id']) && $model->usesPrimaryKey()) {
             $column = $this->buildColumn('id', 'id');
             $model->addColumn($column);
         }
@@ -174,7 +182,7 @@ class ModelLexer implements Lexer
         $data_type = 'string';
         $modifiers = [];
 
-        $tokens = explode(' ', $definition);
+        $tokens = preg_split('#".*?"(*SKIP)(*F)|\s+#', $definition);
         foreach ($tokens as $token) {
             $parts = explode(':', $token);
             $value = $parts[0];

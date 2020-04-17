@@ -12,8 +12,24 @@ class MigrationGenerator implements Generator
 {
     const INDENT = '            ';
 
+    const NULLABLE_TYPES = [
+        'morphs',
+        'uuidMorphs',
+    ];
+
+    const UNSIGNABLE_TYPES = [
+      'bigInteger',
+      'decimal',
+      'integer',
+      'mediumInteger',
+      'smallInteger',
+      'tinyInteger',
+    ];
+
     /** @var \Illuminate\Contracts\Filesystem\Filesystem */
     private $files;
+
+    private $pivotTables = [];
 
     public function __construct($files)
     {
@@ -34,6 +50,26 @@ class MigrationGenerator implements Generator
             $this->files->put($path, $this->populateStub($stub, $model));
 
             $output['created'][] = $path;
+
+            if (!empty($modelPivots = $model->pivotTables())) {
+                foreach ($modelPivots as $pivotSegments) {
+                    $pivotTable = $this->getPivotTableName($pivotSegments);
+                    if (!isset($this->pivotTables[$pivotTable])) {
+                        $this->pivotTables[$pivotTable] = [
+                            'tableName' => $pivotTable,
+                            'segments' => $pivotSegments
+                        ];
+                    }
+                }
+            }
+        }
+
+        if (!empty($this->pivotTables)) {
+            foreach ($this->pivotTables as $pivotTable) {
+                $path = $this->getPivotTablePath($pivotTable['tableName'], $sequential_timestamp->addSecond());
+                $this->files->put($path, $this->populatePivotStub($stub, $pivotTable['segments']));
+                $output['created'][] = $path;
+            }
         }
 
         return $output;
@@ -48,6 +84,15 @@ class MigrationGenerator implements Generator
         return $stub;
     }
 
+    protected function populatePivotStub(string $stub, array $segments)
+    {
+        $stub = str_replace('DummyClass', $this->getPivotClassName($segments), $stub);
+        $stub = str_replace('DummyTable', $this->getPivotTableName($segments), $stub);
+        $stub = str_replace('// definition...', $this->buildPivotTableDefinition($segments), $stub);
+
+        return $stub;
+    }
+
     protected function buildDefinition(Model $model)
     {
         $definition = '';
@@ -55,12 +100,19 @@ class MigrationGenerator implements Generator
         /** @var \Blueprint\Models\Column $column */
         foreach ($model->columns() as $column) {
             $dataType = $column->dataType();
-            if ($column->name() === 'id' && $dataType !== 'uuid') {
+
+            if ($column->name() === 'id' && $dataType === 'id') {
                 $dataType = 'bigIncrements';
-            } elseif ($column->dataType() === 'id') {
+            } elseif ($dataType === 'id') {
                 $dataType = 'unsignedBigInteger';
-            } elseif ($column->dataType() === 'uuid') {
-                $dataType = 'uuid';
+            }
+
+            if (in_array($dataType, self::UNSIGNABLE_TYPES) && in_array('unsigned', $column->modifiers())) {
+                $dataType = 'unsigned' . ucfirst($dataType);
+            }
+
+            if (in_array($dataType, self::NULLABLE_TYPES) && in_array('nullable', $column->modifiers())) {
+                $dataType = 'nullable' . ucfirst($dataType);
             }
 
             if ($dataType === 'bigIncrements' && $this->isLaravel7orNewer()) {
@@ -88,6 +140,10 @@ class MigrationGenerator implements Generator
                     } else {
                         $definition .= '->' . key($modifier) . '(' . current($modifier) . ')';
                     }
+                } elseif ($modifier === 'unsigned' && Str::startsWith($dataType, 'unsigned')) {
+                    continue;
+                } elseif ($modifier === 'nullable' && Str::startsWith($dataType, 'nullable')) {
+                    continue;
                 } else {
                     $definition .= '->' . $modifier . '()';
                 }
@@ -107,6 +163,18 @@ class MigrationGenerator implements Generator
         return trim($definition);
     }
 
+    protected function buildPivotTableDefinition(array $segments, $dataType = 'bigIncrements')
+    {
+        $definition = '';
+
+        foreach ($segments as $segment) {
+            $column = $segment . '_id';
+            $definition .= self::INDENT . '$table->' . $dataType . "('{$column}');" . PHP_EOL;
+        }
+
+        return trim($definition);
+    }
+
     protected function getClassName(Model $model)
     {
         return 'Create' . Str::studly($model->tableName()) . 'Table';
@@ -117,8 +185,27 @@ class MigrationGenerator implements Generator
         return 'database/migrations/' . $timestamp->format('Y_m_d_His') . '_create_' . $model->tableName() . '_table.php';
     }
 
+    protected function getPivotTablePath($tableName, Carbon $timestamp)
+    {
+        return 'database/migrations/' . $timestamp->format('Y_m_d_His') . '_create_' . $tableName . '_table.php';
+    }
+
     protected function isLaravel7orNewer()
     {
         return version_compare(App::version(), '7.0.0', '>=');
+    }
+
+    protected function getPivotClassName(array $segments)
+    {
+        return 'Create' . Str::studly($this->getPivotTableName($segments)) . 'PivotTable';
+    }
+
+    protected function getPivotTableName(array $segments)
+    {
+        $segments = array_map(function ($name) {
+            return Str::snake($name);
+        }, $segments);
+        sort($segments);
+        return strtolower(implode('_', $segments));
     }
 }

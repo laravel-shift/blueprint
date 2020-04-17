@@ -40,7 +40,7 @@ class RouteGenerator implements Generator
         $routes = '';
         $methods = array_keys($controller->methods());
 
-        $className = $controller->className();
+        $className = str_replace('App\Http\Controllers\\', '', $controller->fullyQualifiedClassName());
         $slug = Str::kebab($controller->prefix());
 
         $resource_methods = array_intersect($methods, Controller::$resourceMethods);

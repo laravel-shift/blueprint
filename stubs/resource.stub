@@ -1,0 +1,19 @@
+<?php
+
+namespace DummyNamespace;
+
+use DummyImport;
+
+class DummyClass extends DummyParent
+{
+    /**
+     * Transform the DummyItem into an array.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function toArray($request)
+    {
+        // data...
+    }
+}

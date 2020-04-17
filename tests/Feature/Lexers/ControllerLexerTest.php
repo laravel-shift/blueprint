@@ -108,7 +108,7 @@ class ControllerLexerTest extends TestCase
     /**
      * @test
      */
-    public function it_returns_a_resource_controller()
+    public function it_returns_a_web_resource_controller()
     {
         $tokens = [
             'controllers' => [
@@ -197,7 +197,74 @@ class ControllerLexerTest extends TestCase
     /**
      * @test
      */
-    public function it_returns_a_limited_resource_controller()
+    public function it_returns_an_api_resource_controller()
+    {
+        $tokens = [
+            'controllers' => [
+                'Comment' => [
+                    'resource' => 'api'
+                ]
+            ]
+        ];
+
+        $this->statementLexer->expects('analyze')
+            ->with([
+                'query' => 'all:comments',
+                'resource' => 'collection:comments'
+            ])
+            ->andReturn(['api-index-statements']);
+        $this->statementLexer->expects('analyze')
+            ->with([
+                'validate' => 'comment',
+                'save' => 'comment',
+                'resource' => 'comment'
+            ])
+            ->andReturn(['api-store-statements']);
+        $this->statementLexer->expects('analyze')
+            ->with([
+                'resource' => 'comment'
+            ])
+            ->andReturn(['api-show-statements']);
+        $this->statementLexer->expects('analyze')
+            ->with([
+                'validate' => 'comment',
+                'update' => 'comment',
+                'resource' => 'comment'
+            ])
+            ->andReturn(['api-update-statements']);
+        $this->statementLexer->expects('analyze')
+            ->with([
+                'delete' => 'comment',
+                'respond' => 200
+            ])
+            ->andReturn(['api-destroy-statements']);
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual['controllers']);
+
+        $controller = $actual['controllers']['Comment'];
+        $this->assertEquals('CommentController', $controller->className());
+
+        $methods = $controller->methods();
+        $this->assertCount(5, $methods);
+
+        $this->assertCount(1, $methods['index']);
+        $this->assertEquals('api-index-statements', $methods['index'][0]);
+        $this->assertCount(1, $methods['store']);
+        $this->assertEquals('api-store-statements', $methods['store'][0]);
+        $this->assertCount(1, $methods['show']);
+        $this->assertEquals('api-show-statements', $methods['show'][0]);
+        $this->assertCount(1, $methods['update']);
+        $this->assertEquals('api-update-statements', $methods['update'][0]);
+        $this->assertCount(1, $methods['destroy']);
+        $this->assertEquals('api-destroy-statements', $methods['destroy'][0]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_specific_resource_controller()
     {
         $tokens = [
             'controllers' => [
@@ -207,7 +274,7 @@ class ControllerLexerTest extends TestCase
             ]
         ];
 
-        $this->statementLexer->shouldReceive('analyze')
+        $this->statementLexer->expects('analyze')
             ->with([
                 'query' => 'all:users',
                 'render' => 'user.index with users'
@@ -254,5 +321,62 @@ class ControllerLexerTest extends TestCase
         $this->assertEquals('update-statements', $methods['update'][0]);
         $this->assertCount(1, $methods['destroy']);
         $this->assertEquals('destroy-statements', $methods['destroy'][0]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_resource_controller_with_overrides()
+    {
+        $tokens = [
+            'controllers' => [
+                'User' => [
+                    'resource' => 'index, show',
+                    'index' => [
+                        'query' => 'all',
+                        'respond' => 'users',
+                    ],
+                    'custom' => [
+                        'statement' => 'expression',
+                    ],
+                ]
+            ]
+        ];
+
+        $this->statementLexer->shouldReceive('analyze')
+            ->with([
+                'query' => 'all',
+                'respond' => 'users'
+            ])
+            ->andReturn(['custom-index-statements']);
+
+        $this->statementLexer->shouldReceive('analyze')
+            ->with([
+                'render' => 'user.show with:user'
+            ])
+            ->andReturn(['show-statements']);
+
+        $this->statementLexer->shouldReceive('analyze')
+            ->with([
+                'statement' => 'expression'
+            ])
+            ->andReturn(['custom-statements']);
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual['controllers']);
+
+        $controller = $actual['controllers']['User'];
+        $this->assertEquals('UserController', $controller->className());
+
+        $methods = $controller->methods();
+        $this->assertCount(3, $methods);
+
+        $this->assertCount(1, $methods['index']);
+        $this->assertEquals('custom-index-statements', $methods['index'][0]);
+        $this->assertCount(1, $methods['show']);
+        $this->assertEquals('show-statements', $methods['show'][0]);
+        $this->assertCount(1, $methods['custom']);
+        $this->assertEquals('custom-statements', $methods['custom'][0]);
     }
 }

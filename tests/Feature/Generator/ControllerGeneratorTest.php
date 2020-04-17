@@ -27,6 +27,7 @@ class ControllerGeneratorTest extends TestCase
         $this->subject = new ControllerGenerator($this->files);
 
         $this->blueprint = new Blueprint();
+        $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
         $this->blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new StatementLexer()));
         $this->blueprint->registerGenerator($this->subject);
     }
@@ -66,7 +67,6 @@ class ControllerGeneratorTest extends TestCase
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
-
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
@@ -107,6 +107,7 @@ class ControllerGeneratorTest extends TestCase
             ['definitions/crazy-eloquent.bp', 'app/Http/Controllers/PostController.php', 'controllers/crazy-eloquent.php'],
             ['definitions/nested-components.bp', 'app/Http/Controllers/Admin/UserController.php', 'controllers/nested-components.php'],
             ['definitions/respond-statements.bp', 'app/Http/Controllers/Api/PostController.php', 'controllers/respond-statements.php'],
+            ['definitions/resource-statements.bp', 'app/Http/Controllers/UserController.php', 'controllers/resource-statements.php'],
         ];
     }
 }

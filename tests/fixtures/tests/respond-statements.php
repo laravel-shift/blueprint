@@ -4,6 +4,8 @@ namespace Tests\Feature\Http\Controllers\Api;
 
 use App\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use JMac\Testing\Traits\AdditionalAssertions;
 use Tests\TestCase;
 
 /**
@@ -11,7 +13,7 @@ use Tests\TestCase;
  */
 class PostControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use AdditionalAssertions, RefreshDatabase, WithFaker;
 
     /**
      * @test
@@ -30,9 +32,25 @@ class PostControllerTest extends TestCase
     /**
      * @test
      */
+    public function store_uses_form_request_validation()
+    {
+        $this->assertActionUsesFormRequest(
+            \App\Http\Controllers\Api\PostController::class,
+            'store',
+            \App\Http\Requests\Api\PostStoreRequest::class
+        );
+    }
+
+    /**
+     * @test
+     */
     public function store_responds_with()
     {
-        $response = $this->post(route('post.store'));
+        $title = $this->faker->sentence(4);
+
+        $response = $this->post(route('post.store'), [
+            'title' => $title,
+        ]);
 
         $response->assertNoContent();
     }

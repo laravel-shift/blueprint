@@ -10,6 +10,7 @@ use Blueprint\Models\Statements\FireStatement;
 use Blueprint\Models\Statements\QueryStatement;
 use Blueprint\Models\Statements\RedirectStatement;
 use Blueprint\Models\Statements\RenderStatement;
+use Blueprint\Models\Statements\ResourceStatement;
 use Blueprint\Models\Statements\RespondStatement;
 use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
@@ -47,6 +48,9 @@ class StatementLexer implements Lexer
                     break;
                 case 'respond':
                     $statements[] = $this->analyzeRespond($statement);
+                    break;
+                case 'resource':
+                    $statements[] = $this->analyzeResource($statement);
                     break;
                 case 'save':
                 case 'update':
@@ -161,5 +165,18 @@ class StatementLexer implements Lexer
         }
 
         return new QueryStatement('get', $this->extractTokens($statement));
+    }
+
+    private function analyzeResource($statement)
+    {
+        $reference = $statement;
+        $collection = null;
+
+        if (Str::contains($statement, ':')) {
+            $collection = Str::before($reference, ':');
+            $reference = Str::after($reference, ':');
+        }
+
+        return new ResourceStatement($reference, !is_null($collection), $collection === 'paginate');
     }
 }

@@ -8,10 +8,12 @@ class Model
 {
     private $name;
     private $namespace;
+    private $primaryKey = 'id';
     private $timestamps = 'timestamps';
     private $softDeletes = false;
     private $columns = [];
     private $relationships = [];
+    private $pivotTables = [];
 
     /**
      * @param $name
@@ -73,7 +75,17 @@ class Model
 
     public function primaryKey()
     {
-        return 'id';
+        return $this->primaryKey;
+    }
+
+    public function usesPrimaryKey()
+    {
+        return $this->primaryKey !== false;
+    }
+
+    public function disablePrimaryKey()
+    {
+        $this->primaryKey = false;
     }
 
     public function tableName()
@@ -132,6 +144,22 @@ class Model
             $this->relationships[$type] = [];
         }
 
+        if ($type === 'belongsToMany') {
+            $this->addPivotTable($reference);
+        }
+
         $this->relationships[$type][] = $reference;
+    }
+
+    public function addPivotTable(string $reference)
+    {
+        $segments = [$this->name(), strtolower($reference)];
+        sort($segments);
+        $this->pivotTables[] = $segments;
+    }
+
+    public function pivotTables(): array
+    {
+        return $this->pivotTables;
     }
 }

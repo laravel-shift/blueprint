@@ -9,6 +9,7 @@ use Blueprint\Models\Statements\FireStatement;
 use Blueprint\Models\Statements\QueryStatement;
 use Blueprint\Models\Statements\RedirectStatement;
 use Blueprint\Models\Statements\RenderStatement;
+use Blueprint\Models\Statements\ResourceStatement;
 use Blueprint\Models\Statements\RespondStatement;
 use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
@@ -463,6 +464,66 @@ class StatementLexerTest extends TestCase
         $this->assertEquals('exists', $actual[0]->operation());
         $this->assertSame(['where:title'], $actual[0]->clauses());
         $this->assertNull($actual[0]->model());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_resource_statement()
+    {
+        $tokens = [
+            'resource' => 'user',
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(ResourceStatement::class, $actual[0]);
+
+        $this->assertEquals('User', $actual[0]->name());
+        $this->assertEquals('user', $actual[0]->reference());
+        $this->assertFalse($actual[0]->collection());
+        $this->assertFalse($actual[0]->paginate());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_resource_collection_statement()
+    {
+        $tokens = [
+            'resource' => 'collection:users',
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(ResourceStatement::class, $actual[0]);
+
+        $this->assertEquals('UserCollection', $actual[0]->name());
+        $this->assertEquals('users', $actual[0]->reference());
+        $this->assertTrue($actual[0]->collection());
+        $this->assertFalse($actual[0]->paginate());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_resource_collection_statement_with_pagination()
+    {
+        $tokens = [
+            'resource' => 'paginate:users',
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(ResourceStatement::class, $actual[0]);
+
+        $this->assertEquals('UserCollection', $actual[0]->name());
+        $this->assertEquals('users', $actual[0]->reference());
+        $this->assertTrue($actual[0]->collection());
+        $this->assertTrue($actual[0]->paginate());
     }
 
     public function sessionTokensProvider()
