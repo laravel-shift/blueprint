@@ -156,12 +156,6 @@ class TestGenerator implements Generator
                     $this->addTestAssertionsTrait($controller);
 
                     $class = $this->buildFormRequestName($controller, $name);
-//                    dd([
-//                        $class,
-                    ////                        $controller,
-                    ////                        $controller->namespace(),
-                    ////                        $controller->fullyQualifiedClassName()
-//                    ]);
                     $test_case = $this->buildFormRequestTestCase($controller->fullyQualifiedClassName(), $name, config('blueprint.namespace') . '\\Http\\Requests\\' . $class) . PHP_EOL . PHP_EOL . $test_case;
 
                     if ($statement->data()) {
