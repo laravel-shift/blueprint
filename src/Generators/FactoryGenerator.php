@@ -111,11 +111,11 @@ class FactoryGenerator implements Generator
             }
 
             if (
-                !Str::contains($definition,'optional') &&
-                !in_array($column->dataType(),['id', 'uuid'],true) &&
-                in_array('nullable',$column->modifiers(),true)
-            ){
-                $definition = str_replace('$faker->','$faker->optional()->',$definition);
+                !Str::contains($definition, 'optional') &&
+                !in_array($column->dataType(), ['id', 'uuid'], true) &&
+                in_array('nullable', $column->modifiers(), true)
+            ) {
+                $definition = str_replace('$faker->', '$faker->optional()->', $definition);
             }
         }
 
