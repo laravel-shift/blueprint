@@ -158,9 +158,9 @@ class TestGenerator implements Generator
                     $class = $this->buildFormRequestName($controller, $name);
 //                    dd([
 //                        $class,
-////                        $controller,
-////                        $controller->namespace(),
-////                        $controller->fullyQualifiedClassName()
+                    ////                        $controller,
+                    ////                        $controller->namespace(),
+                    ////                        $controller->fullyQualifiedClassName()
 //                    ]);
                     $test_case = $this->buildFormRequestTestCase($controller->fullyQualifiedClassName(), $name, config('blueprint.namespace') . '\\Http\\Requests\\' . $class) . PHP_EOL . PHP_EOL . $test_case;
 
