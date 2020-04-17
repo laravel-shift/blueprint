@@ -12,6 +12,7 @@ class ModelLexer implements Lexer
         'belongsto' => 'belongsTo',
         'hasone' => 'hasOne',
         'hasmany' => 'hasMany',
+        'belongstomany' => 'belongsToMany'
     ];
 
     private static $dataTypes = [

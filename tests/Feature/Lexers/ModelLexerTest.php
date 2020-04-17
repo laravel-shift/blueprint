@@ -26,7 +26,7 @@ class ModelLexerTest extends TestCase
     {
         $this->assertEquals([
             'models' => [],
-            'cache' => []
+            'cache' => [],
         ], $this->subject->analyze([]));
     }
 
@@ -39,11 +39,11 @@ class ModelLexerTest extends TestCase
             'models' => [
                 'ModelOne' => [
                     'id' => 'id',
-                    'name' => 'string nullable'
+                    'name' => 'string nullable',
                 ],
                 'ModelTwo' => [
                     'count' => 'integer',
-                    'timestamps' => 'timestamps'
+                    'timestamps' => 'timestamps',
                 ],
                 'ModelThree' => [
                     'id' => 'increments',
@@ -104,8 +104,8 @@ class ModelLexerTest extends TestCase
         $tokens = [
             'models' => [
                 'Model' => [
-                    'title' => 'string nullable'
-                ]
+                    'title' => 'string nullable',
+                ],
             ],
         ];
 
@@ -140,7 +140,7 @@ class ModelLexerTest extends TestCase
             'models' => [
                 'Model' => [
                     'id' => false,
-                ]
+                ],
             ],
         ];
 
@@ -165,7 +165,7 @@ class ModelLexerTest extends TestCase
             'models' => [
                 'Model' => [
                     'timestamps' => false,
-                ]
+                ],
             ],
         ];
 
@@ -188,8 +188,8 @@ class ModelLexerTest extends TestCase
         $tokens = [
             'models' => [
                 'Model' => [
-                    'title' => 'nullable'
-                ]
+                    'title' => 'nullable',
+                ],
             ],
         ];
 
@@ -225,8 +225,8 @@ class ModelLexerTest extends TestCase
                 'Model' => [
                     'sequence' => 'unsignedbiginteger autoincrement',
                     'content' => 'longtext',
-                    'saved_at' => 'timestamptz usecurrent'
-                ]
+                    'saved_at' => 'timestamptz usecurrent',
+                ],
             ],
         ];
 
@@ -260,7 +260,6 @@ class ModelLexerTest extends TestCase
         $this->assertEquals(['useCurrent'], $columns['saved_at']->modifiers());
     }
 
-
     /**
      * @test
      * @dataProvider dataTypeAttributesDataProvider
@@ -270,8 +269,8 @@ class ModelLexerTest extends TestCase
         $tokens = [
             'models' => [
                 'Model' => [
-                    'column' => $definition
-                ]
+                    'column' => $definition,
+                ],
             ],
         ];
 
@@ -305,8 +304,8 @@ class ModelLexerTest extends TestCase
         $tokens = [
             'models' => [
                 'Model' => [
-                    'column' => $definition . ' nullable'
-                ]
+                    'column' => $definition.' nullable',
+                ],
             ],
         ];
 
@@ -339,8 +338,8 @@ class ModelLexerTest extends TestCase
         $tokens = [
             'models' => [
                 'Model' => [
-                    'column' => 'string:100 unique charset:utf8'
-                ]
+                    'column' => 'string:100 unique charset:utf8',
+                ],
             ],
         ];
 
@@ -352,7 +351,6 @@ class ModelLexerTest extends TestCase
         $this->assertEquals(['100'], $actual->attributes());
     }
 
-
     /**
      * @test
      */
@@ -361,8 +359,8 @@ class ModelLexerTest extends TestCase
         $tokens = [
             'models' => [
                 'Model' => [
-                    'softdeletes' => 'softdeletes'
-                ]
+                    'softdeletes' => 'softdeletes',
+                ],
             ],
         ];
 
@@ -392,19 +390,19 @@ class ModelLexerTest extends TestCase
             'models' => [
                 'NewModel' => [
                     'id' => 'id',
-                    'name' => 'string nullable'
+                    'name' => 'string nullable',
                 ],
             ],
             'cache' => [
                 'CachedModelOne' => [
                     'count' => 'integer',
-                    'timestamps' => 'timestamps'
+                    'timestamps' => 'timestamps',
                 ],
                 'CachedModelTwo' => [
                     'id' => 'id',
-                    'name' => 'string nullable'
+                    'name' => 'string nullable',
                 ],
-            ]
+            ],
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -470,10 +468,11 @@ class ModelLexerTest extends TestCase
                     'title' => 'string',
                     'price' => 'float',
                     'relationships' => [
+                        'belongsToMany' => 'Team',
                         'hasmany' => 'Order',
                         'hasOne' => 'Duration, Transaction:tid',
                     ],
-                ]
+                ],
             ],
         ];
 
@@ -493,9 +492,10 @@ class ModelLexerTest extends TestCase
         $this->assertArrayHasKey('price', $columns);
 
         $relationships = $model->relationships();
-        $this->assertCount(3, $relationships);
+        $this->assertCount(4, $relationships);
         $this->assertEquals(['user:different_id'], $relationships['belongsTo']);
         $this->assertEquals(['Order'], $relationships['hasMany']);
+        $this->assertEquals(['Team'], $relationships['belongsToMany']);
         $this->assertEquals(['Duration', 'Transaction:tid'], $relationships['hasOne']);
     }
 
@@ -518,7 +518,7 @@ class ModelLexerTest extends TestCase
         return [
             ['default:5', 'default', 5],
             ['default:0.00', 'default', 0.00],
-            ["default:string", 'default', 'string'],
+            ['default:string', 'default', 'string'],
             ["default:'empty'", 'default', "'empty'"],
             ['default:""', 'default', '""'],
             ['charset:utf8', 'charset', 'utf8'],
