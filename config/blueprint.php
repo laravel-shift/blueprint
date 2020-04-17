@@ -56,4 +56,5 @@ return [
     */
     'generate_phpdocs' => false,
 
+    'fake_nullables' => true,
 ];

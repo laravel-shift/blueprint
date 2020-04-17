@@ -2,9 +2,10 @@
 
 namespace Blueprint\Generators;
 
-use Blueprint\Contracts\Generator;
 use Blueprint\Models\Model;
 use Illuminate\Support\Str;
+use Blueprint\Models\Column;
+use Blueprint\Contracts\Generator;
 
 class FactoryGenerator implements Generator
 {
@@ -31,7 +32,7 @@ class FactoryGenerator implements Generator
             if (!$this->files->exists(dirname($path))) {
                 $this->files->makeDirectory(dirname($path), 0755, true);
             }
-            
+
             $this->files->put($path, $this->populateStub($stub, $model));
 
             $output['created'][] = $path;
@@ -63,8 +64,10 @@ class FactoryGenerator implements Generator
     {
         $definition = '';
 
+        $fillable = $this->fillableColumns($model->columns());
+
         /** @var \Blueprint\Models\Column $column */
-        foreach ($model->columns() as $column) {
+        foreach ($fillable as $column) {
             if ($column->name() === 'id') {
                 continue;
             }
@@ -76,7 +79,7 @@ class FactoryGenerator implements Generator
                 $definition .= self::INDENT . "'{$column->name()}' => ";
                 $definition .= sprintf('factory(%s::class)', '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);
                 $definition .= ',' . PHP_EOL;
-            } elseif (in_array($column->dataType(), ['enum', 'set']) and !empty($column->attributes())) {
+            } elseif (in_array($column->dataType(), ['enum', 'set']) && !empty($column->attributes())) {
                 $definition .= self::INDENT . "'{$column->name()}' => ";
                 $faker = $this->fakerData($column->name()) ?? $this->fakerDataType($column->dataType());
                 $definition .= '$faker->' . $faker;
@@ -112,6 +115,17 @@ class FactoryGenerator implements Generator
         }
 
         return trim($definition);
+    }
+
+    private function fillableColumns(array $columns): array
+    {
+        if (config('blueprint.fake_nullables')) {
+            return $columns;
+        }
+
+        return array_filter($columns, function (Column $column) {
+            return !in_array('nullable', $column->modifiers());
+        });
     }
 
     public static function fakerData(string $name)

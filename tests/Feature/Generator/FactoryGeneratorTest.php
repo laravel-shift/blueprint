@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Generators;
 
+use Tests\TestCase;
 use Blueprint\Blueprint;
 use Blueprint\Generators\FactoryGenerator;
-use Tests\TestCase;
 
 /**
  * @see FactoryGenerator
@@ -70,6 +70,30 @@ class FactoryGeneratorTest extends TestCase
     /**
      * @test
      */
+    public function output_ignores_nullables_if_fake_nullables_configuration_is_set_to_false()
+    {
+        $this->app['config']->set('blueprint.fake_nullables', false);
+
+        $this->files->expects('stub')
+            ->with('factory.stub')
+            ->andReturn(file_get_contents('stubs/factory.stub'));
+
+        $this->files->expects('exists')
+            ->with('database/factories')
+            ->andReturnTrue();
+
+        $this->files->expects('put')
+            ->with('database/factories/OrderFactory.php', $this->fixture('factories/fake-nullables.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/model-key-constraints.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['database/factories/OrderFactory.php']], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
     public function output_respects_configuration()
     {
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
@@ -124,7 +148,7 @@ class FactoryGeneratorTest extends TestCase
             ['definitions/team.bp', 'database/factories/TeamFactory.php', 'factories/team.php'],
             ['definitions/unconventional.bp', 'database/factories/TeamFactory.php', 'factories/unconventional.php'],
             ['definitions/model-modifiers.bp', 'database/factories/ModifierFactory.php', 'factories/model-modifiers.php'],
-            ['definitions/model-key-constraints.bp', 'database/factories/OrderFactory.php', 'factories/model-key-constraints.php']
+            ['definitions/model-key-constraints.bp', 'database/factories/OrderFactory.php', 'factories/model-key-constraints.php'],
         ];
     }
 }
