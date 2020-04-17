@@ -47,7 +47,7 @@ class EloquentStatementTest extends TestCase
     {
         $subject = new EloquentStatement('save', 'Post');
 
-        $this->assertEquals('$post = Post::create($request->all());', $subject->output('', 'store'));
+        $this->assertEquals('$post = Post::create($request->validated());', $subject->output('', 'store'));
     }
 
     /**

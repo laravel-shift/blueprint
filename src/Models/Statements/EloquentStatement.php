@@ -43,7 +43,7 @@ class EloquentStatement
                 $code = "$" . Str::lower($model);
                 $code .= ' = ';
                 $code .= $model;
-                $code .= '::create($request->all());';
+                $code .= '::create($request->validated());';
             } else {
                 $code = "$" . Str::lower($model) . '->save();';
             }
