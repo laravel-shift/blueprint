@@ -3,12 +3,16 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int $id
+ * @property int $post_id
+ * @property int $author_id
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ */
 class Comment extends Model
 {
-    use SoftDeletes;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -16,6 +20,7 @@ class Comment extends Model
      */
     protected $fillable = [
         'post_id',
+        'author_id',
     ];
 
     /**
@@ -26,11 +31,23 @@ class Comment extends Model
     protected $casts = [
         'id' => 'integer',
         'post_id' => 'integer',
+        'author_id' => 'integer',
     ];
 
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function post()
     {
         return $this->belongsTo(\App\Post::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function author()
+    {
+        return $this->belongsTo(\App\User::class);
     }
 }

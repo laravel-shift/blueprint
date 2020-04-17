@@ -31,17 +31,11 @@ class Team extends Model
     ];
 
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function owner()
     {
         return $this->belongsTo(\App\Owner::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function manager()
     {
         return $this->belongsTo(\App\User::class);

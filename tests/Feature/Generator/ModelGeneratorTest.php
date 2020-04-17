@@ -108,9 +108,6 @@ class ModelGeneratorTest extends TestCase
         $this->files->expects('stub')
             ->with('model/method.stub')
             ->andReturn(file_get_contents('stubs/model/method.stub'));
-        $this->files->expects('stub')
-            ->with('model/method-comment.stub')
-            ->andReturn(file_get_contents('stubs/model/method-comment.stub'));
 
         $this->files->expects('exists')
             ->with('app')
@@ -148,10 +145,6 @@ class ModelGeneratorTest extends TestCase
         $this->files->expects('stub')
             ->with('model/method.stub')
             ->andReturn(file_get_contents('stubs/model/method.stub'));
-
-        $this->files->expects('stub')
-            ->with('model/method-comment.stub')
-            ->andReturn(file_get_contents('stubs/model/method-comment.stub'));
 
         $this->files->expects('exists')
             ->with('src/path/Models')
@@ -230,6 +223,7 @@ class ModelGeneratorTest extends TestCase
         return [
             ['definitions/readme-example.bp', 'app/Post.php', 'models/readme-example-phpdoc.php'],
             ['definitions/soft-deletes.bp', 'app/Comment.php', 'models/soft-deletes-phpdoc.php'],
+            ['definitions/relationships.bp', 'app/Comment.php', 'models/relationships-phpdoc.php'],
             ['definitions/disable-auto-columns.bp', 'app/State.php', 'models/disable-auto-columns-phpdoc.php'],
         ];
     }

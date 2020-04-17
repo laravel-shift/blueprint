@@ -121,7 +121,11 @@ class ModelGenerator implements Generator
     {
         $methods = '';
         $template = $this->files->stub('model/method.stub');
-        $commentTemplate = $this->files->stub('model/method-comment.stub');
+        $commentTemplate = '';
+
+        if (config('blueprint.generate_phpdocs')) {
+            $commentTemplate = $this->files->stub('model/method-comment.stub');
+        }
 
         foreach ($model->relationships() as $type => $references) {
             foreach ($references as $reference) {
