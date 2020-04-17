@@ -207,7 +207,7 @@ class ControllerGenerator implements Generator
         /** @var \Blueprint\Models\Model $model */
         $model = $this->modelForContext($model_name);
 
-        if (isset($this->models[Str::studly($model_name)])) {
+        if (isset($model)) {
             return $model->fullyQualifiedClassName();
         }
 
