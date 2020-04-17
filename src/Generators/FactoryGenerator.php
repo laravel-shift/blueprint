@@ -109,6 +109,14 @@ class FactoryGenerator implements Generator
                 $definition .= '$faker->' . $faker;
                 $definition .= ',' . PHP_EOL;
             }
+
+            if (
+                !Str::contains($definition,'optional') &&
+                !in_array($column->dataType(),['id', 'uuid'],true) &&
+                in_array('nullable',$column->modifiers(),true)
+            ){
+                $definition = str_replace('$faker->','$faker->optional()->',$definition);
+            }
         }
 
         return trim($definition);

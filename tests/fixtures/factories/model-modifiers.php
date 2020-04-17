@@ -7,7 +7,7 @@ use Faker\Generator as Faker;
 
 $factory->define(Modifier::class, function (Faker $faker) {
     return [
-        'title' => $faker->sentence(4),
+        'title' => $faker->optional()->sentence(4),
         'name' => $faker->name,
         'content' => $faker->paragraphs(3, true),
         'amount' => $faker->randomFloat(3, 0, 999999.999),
