@@ -121,6 +121,11 @@ class ModelGenerator implements Generator
     {
         $methods = '';
         $template = $this->files->stub('model/method.stub');
+        $commentTemplate = '';
+
+        if (config('blueprint.generate_phpdocs')) {
+            $commentTemplate = $this->files->stub('model/method-comment.stub');
+        }
 
         foreach ($model->relationships() as $type => $references) {
             foreach ($references as $reference) {
@@ -138,7 +143,10 @@ class ModelGenerator implements Generator
                 $method_name = $type === 'hasMany' || $type === 'belongsToMany' ? Str::plural($name) : $name;
                 $method = str_replace('DummyName', Str::camel($method_name), $template);
                 $method = str_replace('null', $relationship, $method);
-                $methods .= PHP_EOL . $method;
+
+                $phpDoc = str_replace('DummyReturn', '\Illuminate\Database\Eloquent\Relations\\' . Str::ucfirst($type), $commentTemplate);
+
+                $methods .= PHP_EOL . $phpDoc . $method;
             }
         }
 
