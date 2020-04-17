@@ -155,7 +155,7 @@ class TestGenerator implements Generator
                 } elseif ($statement instanceof ValidateStatement) {
                     $this->addTestAssertionsTrait($controller);
 
-                    $class = $controller->name() . Str::studly($name) . 'Request';
+                    $class = $this->buildFormRequestName($controller, $name);
                     $test_case = $this->buildFormRequestTestCase($controller->fullyQualifiedClassName(), $name, config('blueprint.namespace') . '\\Http\\Requests\\' . $class) . PHP_EOL . PHP_EOL . $test_case;
 
                     if ($statement->data()) {
@@ -436,6 +436,15 @@ class TestGenerator implements Generator
         }
 
         return Str::studly($reference);
+    }
+
+    private function buildFormRequestName(Controller $controller, string $name)
+    {
+        if (empty($controller->namespace())) {
+            return $controller->name() . Str::studly($name) . 'Request';
+        }
+
+        return $controller->namespace() .'\\'. $controller->name() . Str::studly($name) . 'Request';
     }
 
     private function buildFormRequestTestCase(string $controller, string $action, string $form_request)

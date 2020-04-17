@@ -8,6 +8,7 @@ controllers:
       query: all
       respond: posts
     store:
+      validate: title
       respond: 204
     error:
       respond: 400

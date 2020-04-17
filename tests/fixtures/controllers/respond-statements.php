@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Api\Post;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\PostStoreRequest;
+use App\Post;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -20,10 +21,10 @@ class PostController extends Controller
     }
 
     /**
-     * @param \Illuminate\Http\Request $request
+     * @param \App\Http\Requests\Api\PostStoreRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PostStoreRequest $request)
     {
         return response()->noContent();
     }

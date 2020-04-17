@@ -27,6 +27,7 @@ class ControllerGeneratorTest extends TestCase
         $this->subject = new ControllerGenerator($this->files);
 
         $this->blueprint = new Blueprint();
+        $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
         $this->blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new StatementLexer()));
         $this->blueprint->registerGenerator($this->subject);
     }
@@ -66,7 +67,6 @@ class ControllerGeneratorTest extends TestCase
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
-
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
