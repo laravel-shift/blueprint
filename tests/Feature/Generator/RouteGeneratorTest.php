@@ -63,6 +63,7 @@ class RouteGeneratorTest extends TestCase
             ['definitions/readme-example.bp', 'routes/readme-example.php'],
             ['definitions/cruddy.bp', 'routes/cruddy.php'],
             ['definitions/non-cruddy.bp', 'routes/non-cruddy.php'],
+            ['definitions/respond-statements.bp', 'routes/respond-statements.php'],
         ];
     }
 }

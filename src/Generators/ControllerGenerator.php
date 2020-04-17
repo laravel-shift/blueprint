@@ -4,6 +4,7 @@ namespace Blueprint\Generators;
 
 use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
+use Blueprint\Models\Model;
 use Blueprint\Models\Controller;
 use Blueprint\Models\Statements\DispatchStatement;
 use Blueprint\Models\Statements\EloquentStatement;
@@ -27,6 +28,8 @@ class ControllerGenerator implements Generator
 
     private $imports = [];
 
+    private $models = [];
+
     public function __construct($files)
     {
         $this->files = $files;
@@ -37,6 +40,8 @@ class ControllerGenerator implements Generator
         $output = [];
 
         $stub = $this->files->stub('controller/class.stub');
+
+        $this->registerModels($tree);
 
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree['controllers'] as $controller) {
@@ -198,6 +203,34 @@ class ControllerGenerator implements Generator
         // TODO: get model_name from tree.
         // If not found, assume parallel namespace as controller.
         // Use respond-statement.php as test case.
+
+        /** @var \Blueprint\Models\Model $model */
+        $model = $this->modelForContext($model_name);
+
+        if (isset($this->models[Str::studly($model_name)])) {
+            return $model->fullyQualifiedClassName();
+        }
+
         return config('blueprint.namespace') . '\\' . ($sub_namespace ? $sub_namespace . '\\' : '') . $model_name;
+    }
+
+    private function modelForContext(string $context)
+    {
+        if (isset($this->models[Str::studly($context)])) {
+            return $this->models[Str::studly($context)];
+        }
+
+        $matches = array_filter(array_keys($this->models), function ($key) use ($context) {
+            return Str::endsWith($key, '/'.Str::studly($context));
+        });
+
+        if (count($matches) === 1) {
+            return $this->models[$matches[0]];
+        }
+    }
+
+    private function registerModels(array $tree)
+    {
+        $this->models = array_merge($tree['cache'] ?? [], $tree['models'] ?? []);
     }
 }
