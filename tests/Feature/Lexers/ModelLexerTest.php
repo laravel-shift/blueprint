@@ -523,6 +523,7 @@ class ModelLexerTest extends TestCase
             ['default:""', 'default', '""'],
             ['charset:utf8', 'charset', 'utf8'],
             ['collation:utf8_unicode', 'collation', 'utf8_unicode'],
+            ['default:"space between"', 'default', '"space between"'],
         ];
     }
 }
