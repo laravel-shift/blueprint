@@ -45,4 +45,9 @@ class Column
                 return $key === 'default';
             });
     }
+
+    public function isNullable()
+    {
+        return in_array('nullable', $this->modifiers);
+    }
 }
