@@ -107,6 +107,9 @@ class FactoryGenerator implements Generator
                 $default = $column->defaultValue() ?? "'{}'";
                 $definition .= self::INDENT . "'{$column->name()}' => {$default}," . PHP_EOL;
             } elseif ($column->dataType() === 'morphs') {
+                if ($column->isNullable()) {
+                    continue;
+                }
                 $definition .= sprintf('%s%s => $faker->%s,%s', self::INDENT, "'{$column->name()}_id'",  self::fakerDataType('id'), PHP_EOL);
                 $definition .= sprintf('%s%s => $faker->%s,%s', self::INDENT, "'{$column->name()}_type'",  self::fakerDataType('string'), PHP_EOL);
             } else {
