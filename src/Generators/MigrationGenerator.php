@@ -111,7 +111,7 @@ class MigrationGenerator implements Generator
                 $dataType = 'unsigned' . ucfirst($dataType);
             }
 
-            if (in_array($dataType, self::NULLABLE_TYPES) && in_array('nullable', $column->modifiers())) {
+            if (in_array($dataType, self::NULLABLE_TYPES) && $column->isNullable()) {
                 $dataType = 'nullable' . ucfirst($dataType);
             }
 
