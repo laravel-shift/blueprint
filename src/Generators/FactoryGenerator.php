@@ -2,10 +2,10 @@
 
 namespace Blueprint\Generators;
 
+use Blueprint\Contracts\Generator;
+use Blueprint\Models\Column;
 use Blueprint\Models\Model;
 use Illuminate\Support\Str;
-use Blueprint\Models\Column;
-use Blueprint\Contracts\Generator;
 
 class FactoryGenerator implements Generator
 {
@@ -110,8 +110,8 @@ class FactoryGenerator implements Generator
                 if ($column->isNullable()) {
                     continue;
                 }
-                $definition .= sprintf('%s%s => $faker->%s,%s', self::INDENT, "'{$column->name()}_id'",  self::fakerDataType('id'), PHP_EOL);
-                $definition .= sprintf('%s%s => $faker->%s,%s', self::INDENT, "'{$column->name()}_type'",  self::fakerDataType('string'), PHP_EOL);
+                $definition .= sprintf('%s%s => $faker->%s,%s', self::INDENT, "'{$column->name()}_id'", self::fakerDataType('id'), PHP_EOL);
+                $definition .= sprintf('%s%s => $faker->%s,%s', self::INDENT, "'{$column->name()}_type'", self::fakerDataType('string'), PHP_EOL);
             } else {
                 $definition .= self::INDENT . "'{$column->name()}' => ";
                 $faker = self::fakerData($column->name()) ?? self::fakerDataType($column->dataType());
