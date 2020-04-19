@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Translators;
 
+use Tests\TestCase;
 use Blueprint\Models\Column;
 use Blueprint\Translators\Rules;
-use Tests\TestCase;
 
 /**
  * @see Rules
@@ -158,12 +158,22 @@ class RulesTest extends TestCase
         $this->assertContains('unique:connection.table,column', Rules::fromColumn('connection.table', $column));
     }
 
+    /**
+     * @test
+     */
+    public function forColumn_return_json_rule_for_the_json_type()
+    {
+        $column = new Column('column', 'json');
+
+        $this->assertContains('json', Rules::fromColumn('context', $column));
+    }
+
     public function stringDataTypesProvider()
     {
         return [
             ['string'],
             ['char'],
-            ['text']
+            ['text'],
         ];
     }
 
@@ -212,7 +222,7 @@ class RulesTest extends TestCase
         return [
             ['test_id', 'tests'],
             ['user_id', 'users'],
-            ['sheep_id', 'sheep']
+            ['sheep_id', 'sheep'],
         ];
     }
 }
