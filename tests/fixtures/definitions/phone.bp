@@ -5,3 +5,5 @@ models:
     phone_number: text
     type: enum:home,cell
     status: set:archived,deleted
+    foo: morphs
+    bar: morphs nullable
