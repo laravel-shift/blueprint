@@ -2,8 +2,6 @@
 
 namespace Tests\Unit\Models;
 
-
-
 use Blueprint\Models\Column;
 use PHPUnit\Framework\TestCase;
 
