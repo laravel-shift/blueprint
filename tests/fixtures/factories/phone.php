@@ -12,5 +12,7 @@ $factory->define(Phone::class, function (Faker $faker) {
         'phone_number' => $faker->phoneNumber,
         'type' => $faker->randomElement(["home","cell"]),
         'status' => $faker->randomElement(["archived","deleted"]),
+        'foo_id' => $faker->randomDigitNotNull,
+        'foo_type' => $faker->word,
     ];
 });
