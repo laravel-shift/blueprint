@@ -2,8 +2,8 @@
 
 namespace Blueprint\Translators;
 
-use Blueprint\Models\Column;
 use Illuminate\Support\Str;
+use Blueprint\Models\Column;
 
 class Rules
 {
@@ -36,13 +36,17 @@ class Rules
             'unsignedInteger',
             'unsignedMediumInteger',
             'unsignedSmallInteger',
-            'unsignedTinyInteger'
+            'unsignedTinyInteger',
         ])) {
             array_push($rules, 'integer');
 
             if (Str::startsWith($column->dataType(), 'unsigned')) {
                 array_push($rules, 'gt:0');
             }
+        }
+
+        if (in_array($column->dataType(), ['json'])) {
+            array_push($rules, 'json');
         }
 
         if (in_array($column->dataType(), [
