@@ -6,4 +6,4 @@ models:
     type: enum:home,cell
     status: set:archived,deleted
     foo: morphs
-    nullable: morphs nullable
+    bar: morphs nullable
