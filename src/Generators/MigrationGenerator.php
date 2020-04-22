@@ -163,7 +163,7 @@ class MigrationGenerator implements Generator
         return trim($definition);
     }
 
-    protected function buildPivotTableDefinition(array $segments, $dataType = 'bigInteger')
+    protected function buildPivotTableDefinition(array $segments, $dataType = 'unsignedBigInteger')
     {
         $definition = '';
 
@@ -187,7 +187,7 @@ class MigrationGenerator implements Generator
 
     protected function getPivotTablePath($tableName, Carbon $timestamp)
     {
-        return 'database/migrations/' . $timestamp->format('Y_m_d_His') . '_create_' . $tableName . '_pivot_table.php';
+        return 'database/migrations/' . $timestamp->format('Y_m_d_His') . '_create_' . $tableName . '_table.php';
     }
 
     protected function isLaravel7orNewer()
@@ -197,7 +197,7 @@ class MigrationGenerator implements Generator
 
     protected function getPivotClassName(array $segments)
     {
-        return 'Create' . Str::studly($this->getPivotTableName($segments)) . 'PivotTable';
+        return 'Create' . Str::studly($this->getPivotTableName($segments)) . 'Table';
     }
 
     protected function getPivotTableName(array $segments)
