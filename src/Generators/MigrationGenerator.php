@@ -163,12 +163,12 @@ class MigrationGenerator implements Generator
         return trim($definition);
     }
 
-    protected function buildPivotTableDefinition(array $segments, $dataType = 'bigIncrements')
+    protected function buildPivotTableDefinition(array $segments, $dataType = 'bigInteger')
     {
         $definition = '';
 
         foreach ($segments as $segment) {
-            $column = $segment . '_id';
+            $column = strtolower($segment) . '_id';
             $definition .= self::INDENT . '$table->' . $dataType . "('{$column}');" . PHP_EOL;
         }
 
@@ -187,7 +187,7 @@ class MigrationGenerator implements Generator
 
     protected function getPivotTablePath($tableName, Carbon $timestamp)
     {
-        return 'database/migrations/' . $timestamp->format('Y_m_d_His') . '_create_' . $tableName . '_table.php';
+        return 'database/migrations/' . $timestamp->format('Y_m_d_His') . '_create_' . $tableName . '_pivot_table.php';
     }
 
     protected function isLaravel7orNewer()
