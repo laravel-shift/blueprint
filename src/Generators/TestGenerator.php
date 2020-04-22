@@ -280,7 +280,11 @@ class TestGenerator implements Generator
                     $assertion = sprintf('$response->assertRedirect(route(\'%s\'', $statement->route());
 
                     if ($statement->data()) {
-                        $assertion .= ', [' . $this->buildParameters($this->data()) . ']';
+                        $parameters = array_map(function ($parameter) {
+                            return '$' . $parameter;
+                        }, $statement->data());
+
+                        $assertion .= ', [' . implode(', ', $parameters) . ']';
                     } elseif (Str::contains($statement->route(), '.')) {
                         [$model, $action] = explode('.', $statement->route());
                         if (in_array($action, ['edit', 'update', 'show', 'destroy'])) {
