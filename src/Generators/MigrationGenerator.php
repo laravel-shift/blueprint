@@ -163,12 +163,12 @@ class MigrationGenerator implements Generator
         return trim($definition);
     }
 
-    protected function buildPivotTableDefinition(array $segments, $dataType = 'bigIncrements')
+    protected function buildPivotTableDefinition(array $segments, $dataType = 'unsignedBigInteger')
     {
         $definition = '';
 
         foreach ($segments as $segment) {
-            $column = $segment . '_id';
+            $column = strtolower($segment) . '_id';
             $definition .= self::INDENT . '$table->' . $dataType . "('{$column}');" . PHP_EOL;
         }
 
@@ -197,7 +197,7 @@ class MigrationGenerator implements Generator
 
     protected function getPivotClassName(array $segments)
     {
-        return 'Create' . Str::studly($this->getPivotTableName($segments)) . 'PivotTable';
+        return 'Create' . Str::studly($this->getPivotTableName($segments)) . 'Table';
     }
 
     protected function getPivotTableName(array $segments)
