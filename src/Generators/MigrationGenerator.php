@@ -18,18 +18,16 @@ class MigrationGenerator implements Generator
     ];
 
     const UNSIGNABLE_TYPES = [
-      'bigInteger',
-      'decimal',
-      'integer',
-      'mediumInteger',
-      'smallInteger',
-      'tinyInteger',
+        'bigInteger',
+        'decimal',
+        'integer',
+        'mediumInteger',
+        'smallInteger',
+        'tinyInteger',
     ];
 
     /** @var \Illuminate\Contracts\Filesystem\Filesystem */
     private $files;
-
-    private $pivotTables = [];
 
     public function __construct($files)
     {
@@ -39,6 +37,7 @@ class MigrationGenerator implements Generator
     public function output(array $tree): array
     {
         $output = [];
+        $created_pivot_tables = [];
 
         $stub = $this->files->stub('migration.stub');
 
@@ -51,24 +50,18 @@ class MigrationGenerator implements Generator
 
             $output['created'][] = $path;
 
-            if (!empty($modelPivots = $model->pivotTables())) {
-                foreach ($modelPivots as $pivotSegments) {
+            if (!empty($model->pivotTables())) {
+                foreach ($model->pivotTables() as $pivotSegments) {
                     $pivotTable = $this->getPivotTableName($pivotSegments);
-                    if (!isset($this->pivotTables[$pivotTable])) {
-                        $this->pivotTables[$pivotTable] = [
-                            'tableName' => $pivotTable,
-                            'segments' => $pivotSegments
-                        ];
+                    if (isset($created_pivot_tables[$pivotTable])) {
+                        continue;
                     }
-                }
-            }
-        }
 
-        if (!empty($this->pivotTables)) {
-            foreach ($this->pivotTables as $pivotTable) {
-                $path = $this->getPivotTablePath($pivotTable['tableName'], $sequential_timestamp->addSecond());
-                $this->files->put($path, $this->populatePivotStub($stub, $pivotTable['segments']));
-                $output['created'][] = $path;
+                    $path = $this->getPivotTablePath($pivotTable, $sequential_timestamp);
+                    $this->files->put($path, $this->populatePivotStub($stub, $pivotSegments));
+                    $created_pivot_tables[] = $pivotTable;
+                    $output['created'][] = $path;
+                }
             }
         }
 
