@@ -57,7 +57,7 @@ class MigrationGenerator implements Generator
                         continue;
                     }
 
-                    $path = $this->getPivotTablePath($pivotTable, $sequential_timestamp);
+                    $path = $this->getPivotTablePath($pivotTable, $sequential_timestamp->addSecond());
                     $this->files->put($path, $this->populatePivotStub($stub, $pivotSegments));
                     $created_pivot_tables[] = $pivotTable;
                     $output['created'][] = $path;
@@ -156,13 +156,22 @@ class MigrationGenerator implements Generator
         return trim($definition);
     }
 
-    protected function buildPivotTableDefinition(array $segments, $dataType = 'unsignedBigInteger')
+    protected function buildPivotTableDefinition(array $segments, $dataType = 'foreignId')
     {
         $definition = '';
 
         foreach ($segments as $segment) {
-            $column = strtolower($segment) . '_id';
-            $definition .= self::INDENT . '$table->' . $dataType . "('{$column}');" . PHP_EOL;
+            $column = Str::lower($segment);
+            $foreignColumn = 'id';
+            $foreignTable = Str::plural($column);
+            $localeColumn = Str::singular($column) . '_' . $foreignColumn;
+
+            if ($this->isLaravel7orNewer()) {
+                $definition .= self::INDENT . '$table->' . $dataType . "('{$localeColumn}')->constrained('{$foreignTable}', '{$foreignColumn}');" . PHP_EOL;
+            } else {
+                $definition .= self::INDENT . '$table->unsignedBigInteger' . "('{$localeColumn}');" . PHP_EOL;
+                $definition .= self::INDENT . '$table->foreign' . "('{$localeColumn}')->references('{$foreignColumn}')->on('{$foreignTable}');" . PHP_EOL;
+            }
         }
 
         return trim($definition);
