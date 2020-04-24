@@ -128,8 +128,8 @@ class MigrationGenerator implements Generator
 
             foreach ($column->modifiers() as $modifier) {
                 if (is_array($modifier)) {
-                    if (key($modifier) === 'foreign') {
-                        $foreign = self::INDENT .  $this->buildConstraint($column->name(), Str::lower(Str::plural(current($modifier))), 'id', 'cascade') . PHP_EOL;
+                    if (key($modifier) === 'foreign' && config('blueprint.use_constraints')) {
+                        $foreign = $this->buildConstraint($column->name(), Str::lower(Str::plural(current($modifier))), 'id', 'cascade');
                     } else {
                         $definition .= '->' . key($modifier) . '(' . current($modifier) . ')';
                     }
@@ -166,35 +166,38 @@ class MigrationGenerator implements Generator
             $on = Str::plural($column);
             $foreign = Str::singular($column) . '_' . $references;
 
-            $definition .= self::INDENT . '$table->' . $dataType . "('{$foreign}');" . PHP_EOL;
-            $definition .= $this->buildConstraint($foreign, $on, $references, null, $dataType);
+            if (!$this->isLaravel7orNewer()) {
+                $definition .= self::INDENT . '$table->' . $dataType . "('{$foreign}');" . PHP_EOL;
+            }
+
+            if (config('blueprint.use_constraints')) {
+                $definition .= $this->buildConstraint($foreign, $on, $references);
+            }
         }
 
         return trim($definition);
     }
 
-    protected function buildConstraint(string $foreign, string $on, string $references = 'id', ?string $onDelete = null, string $dataType = 'unsignedBigInteger')
+    protected function buildConstraint(string $foreign, string $on, string $references = 'id', ?string $onDelete = null)
     {
         $definition = '';
         $onDeleteDefinition = '';
 
-        if (config('blueprint.use_constraints')) {
-            if ($onDelete !== null) {
-                $onDelete = Str::lower($onDelete);
+        if ($onDelete !== null) {
+            $onDelete = Str::lower($onDelete);
 
-                if (in_array($onDelete, ['cascade', 'set null', 'restrict'])) {
-                    $onDeleteDefinition = "->onDelete('{$onDelete}')";
-                }
-            }
-
-            if ($this->isLaravel7orNewer()) {
-                $definition .= self::INDENT . '$table->foreignId' . "('{$foreign}')->constrained('{$on}', '{$references}')'{$onDeleteDefinition};" . PHP_EOL;
-            } else {
-                $definition .= self::INDENT . '$table->foreign' . "('{$foreign}')->references('{$references}')->on('{$on}'){$onDeleteDefinition};" . PHP_EOL;
+            if (in_array($onDelete, ['cascade', 'set null', 'restrict'])) {
+                $onDeleteDefinition = "->onDelete('{$onDelete}')";
             }
         }
 
-        return trim($definition);
+        if ($this->isLaravel7orNewer()) {
+            $definition .= self::INDENT . '$table->foreignId' . "('{$foreign}')->constrained('{$on}', '{$references}'){$onDeleteDefinition};" . PHP_EOL;
+        } else {
+            $definition .= self::INDENT . '$table->foreign' . "('{$foreign}')->references('{$references}')->on('{$on}'){$onDeleteDefinition};" . PHP_EOL;
+        }
+
+        return $definition;
     }
 
     protected function getClassName(Model $model)
