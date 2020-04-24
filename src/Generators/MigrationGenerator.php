@@ -166,11 +166,15 @@ class MigrationGenerator implements Generator
             $foreignTable = Str::plural($column);
             $localeColumn = Str::singular($column) . '_' . $foreignColumn;
 
-            if ($this->isLaravel7orNewer()) {
-                $definition .= self::INDENT . '$table->' . $dataType . "('{$localeColumn}')->constrained('{$foreignTable}', '{$foreignColumn}');" . PHP_EOL;
+            if (config('blueprint.use_constraints')) {
+                if ($this->isLaravel7orNewer()) {
+                    $definition .= self::INDENT . '$table->' . $dataType . "('{$localeColumn}')->constrained('{$foreignTable}', '{$foreignColumn}');" . PHP_EOL;
+                } else {
+                    $definition .= self::INDENT . '$table->unsignedBigInteger' . "('{$localeColumn}');" . PHP_EOL;
+                    $definition .= self::INDENT . '$table->foreign' . "('{$localeColumn}')->references('{$foreignColumn}')->on('{$foreignTable}');" . PHP_EOL;
+                }
             } else {
-                $definition .= self::INDENT . '$table->unsignedBigInteger' . "('{$localeColumn}');" . PHP_EOL;
-                $definition .= self::INDENT . '$table->foreign' . "('{$localeColumn}')->references('{$foreignColumn}')->on('{$foreignTable}');" . PHP_EOL;
+                $definition .= self::INDENT . '$table->' . $dataType . "('{$localeColumn}');" . PHP_EOL;
             }
         }
 

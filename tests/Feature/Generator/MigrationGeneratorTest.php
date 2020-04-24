@@ -3,6 +3,7 @@
 namespace Tests\Feature\Generators;
 
 use Blueprint\Blueprint;
+use Illuminate\Support\Facades\Config;
 use Blueprint\Generators\MigrationGenerator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
@@ -149,8 +150,16 @@ class MigrationGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with($model_migration, $this->fixture('migrations/belongs-to-many.php'));
 
+        Config::set('blueprint.use_constraints', false);
         $this->files->expects('put')
             ->with($pivot_migration, $this->fixture('migrations/belongs-to-many-pivot.php'));
+
+        Config::set('blueprint.use_constraints', true);
+        $this->files->expects('put')
+            ->with($pivot_migration, $this->fixture('migrations/belongs-to-many-pivot-key-constraints.php'));
+
+        $this->files->expects('put')
+            ->with($pivot_migration, $this->fixture('migrations/belongs-to-many-pivot-key-constraints-laravel-7.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('definitions/belongs-to-many.bp'));
         $tree = $this->blueprint->analyze($tokens);
