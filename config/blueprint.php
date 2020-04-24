@@ -66,7 +66,7 @@ return [
     | to be more structured and readable.
     |
     */
-    'use_constraints' => true,
+    'use_constraints' => false,
 
     'fake_nullables' => true,
 ];

@@ -57,7 +57,7 @@ class MigrationGenerator implements Generator
                         continue;
                     }
 
-                    $path = $this->getPivotTablePath($pivotTable, $sequential_timestamp->addSecond());
+                    $path = $this->getPivotTablePath($pivotTable, $sequential_timestamp);
                     $this->files->put($path, $this->populatePivotStub($stub, $pivotSegments));
                     $created_pivot_tables[] = $pivotTable;
                     $output['created'][] = $path;
@@ -129,7 +129,7 @@ class MigrationGenerator implements Generator
             foreach ($column->modifiers() as $modifier) {
                 if (is_array($modifier)) {
                     if (key($modifier) === 'foreign') {
-                        $foreign = self::INDENT . '$table->foreign(' . "'{$column->name()}')->references('id')->on('" . Str::lower(Str::plural(current($modifier))) . "')->onDelete('cascade');" . PHP_EOL;
+                        $foreign = $this->buildConstraint($column->name(), Str::lower(Str::plural(current($modifier))), 'id', 'cascade');
                     } else {
                         $definition .= '->' . key($modifier) . '(' . current($modifier) . ')';
                     }
@@ -156,26 +156,44 @@ class MigrationGenerator implements Generator
         return trim($definition);
     }
 
-    protected function buildPivotTableDefinition(array $segments, $dataType = 'foreignId')
+    protected function buildPivotTableDefinition(array $segments, $dataType = 'unsignedBigInteger')
     {
         $definition = '';
 
         foreach ($segments as $segment) {
             $column = Str::lower($segment);
-            $foreignColumn = 'id';
-            $foreignTable = Str::plural($column);
-            $localeColumn = Str::singular($column) . '_' . $foreignColumn;
+            $references = 'id';
+            $on = Str::plural($column);
+            $foreign = Str::singular($column) . '_' . $references;
 
-            if (config('blueprint.use_constraints')) {
-                if ($this->isLaravel7orNewer()) {
-                    $definition .= self::INDENT . '$table->' . $dataType . "('{$localeColumn}')->constrained('{$foreignTable}', '{$foreignColumn}');" . PHP_EOL;
-                } else {
-                    $definition .= self::INDENT . '$table->unsignedBigInteger' . "('{$localeColumn}');" . PHP_EOL;
-                    $definition .= self::INDENT . '$table->foreign' . "('{$localeColumn}')->references('{$foreignColumn}')->on('{$foreignTable}');" . PHP_EOL;
+            $definition .= $this->buildConstraint($foreign, $on, $references, $dataType);
+        }
+
+        return trim($definition);
+    }
+
+    protected function buildConstraint(string $foreign, string $on, string $references = 'id', string $dataType = 'unsignedBigInteger', ?string $onDelete = null)
+    {
+        $definition = '';
+        $onDeleteDefinition = '';
+
+        if (config('blueprint.use_constraints')) {
+            if ($onDelete !== null) {
+                $onDelete = Str::lower($onDelete);
+
+                if (in_array($onDelete, ['cascade', 'set null', 'restrict'])) {
+                    $onDeleteDefinition = '->onDelete(' . $onDelete . ')';
                 }
-            } else {
-                $definition .= self::INDENT . '$table->' . $dataType . "('{$localeColumn}');" . PHP_EOL;
             }
+
+            if ($this->isLaravel7orNewer()) {
+                $definition .= self::INDENT . '$table->foreignId' . "('{$foreign}')->constrained('{$on}', '{$references}')'{$onDeleteDefinition};" . PHP_EOL;
+            } else {
+                $definition .= self::INDENT . '$table->' . $dataType . "('{$foreign}');" . PHP_EOL;
+                $definition .= self::INDENT . '$table->foreign' . "('{$foreign}')->references('{$references}')->on('{$on}'){$onDeleteDefinition};" . PHP_EOL;
+            }
+        } else {
+            $definition .= self::INDENT . '$table->' . $dataType . "('{$foreign}');" . PHP_EOL;
         }
 
         return trim($definition);
