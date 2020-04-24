@@ -129,7 +129,7 @@ class MigrationGenerator implements Generator
             foreach ($column->modifiers() as $modifier) {
                 if (is_array($modifier)) {
                     if (key($modifier) === 'foreign') {
-                        $foreign = $this->buildConstraint($column->name(), Str::lower(Str::plural(current($modifier))), 'id', 'cascade');
+                        $foreign = self::INDENT .  $this->buildConstraint($column->name(), Str::lower(Str::plural(current($modifier))), 'id', 'cascade') . PHP_EOL;
                     } else {
                         $definition .= '->' . key($modifier) . '(' . current($modifier) . ')';
                     }
@@ -166,13 +166,14 @@ class MigrationGenerator implements Generator
             $on = Str::plural($column);
             $foreign = Str::singular($column) . '_' . $references;
 
-            $definition .= $this->buildConstraint($foreign, $on, $references, $dataType);
+            $definition .= self::INDENT . '$table->' . $dataType . "('{$foreign}');" . PHP_EOL;
+            $definition .= $this->buildConstraint($foreign, $on, $references, null, $dataType);
         }
 
         return trim($definition);
     }
 
-    protected function buildConstraint(string $foreign, string $on, string $references = 'id', string $dataType = 'unsignedBigInteger', ?string $onDelete = null)
+    protected function buildConstraint(string $foreign, string $on, string $references = 'id', ?string $onDelete = null, string $dataType = 'unsignedBigInteger')
     {
         $definition = '';
         $onDeleteDefinition = '';
@@ -182,18 +183,15 @@ class MigrationGenerator implements Generator
                 $onDelete = Str::lower($onDelete);
 
                 if (in_array($onDelete, ['cascade', 'set null', 'restrict'])) {
-                    $onDeleteDefinition = '->onDelete(' . $onDelete . ')';
+                    $onDeleteDefinition = "->onDelete('{$onDelete}')";
                 }
             }
 
             if ($this->isLaravel7orNewer()) {
                 $definition .= self::INDENT . '$table->foreignId' . "('{$foreign}')->constrained('{$on}', '{$references}')'{$onDeleteDefinition};" . PHP_EOL;
             } else {
-                $definition .= self::INDENT . '$table->' . $dataType . "('{$foreign}');" . PHP_EOL;
                 $definition .= self::INDENT . '$table->foreign' . "('{$foreign}')->references('{$references}')->on('{$on}'){$onDeleteDefinition};" . PHP_EOL;
             }
-        } else {
-            $definition .= self::INDENT . '$table->' . $dataType . "('{$foreign}');" . PHP_EOL;
         }
 
         return trim($definition);
