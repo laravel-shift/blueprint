@@ -493,7 +493,7 @@ END;
                 return 'post';
             case 'update':
                 return 'put';
-            case 'delete':
+            case 'destroy':
                 return 'delete';
             default:
                 return 'get';
