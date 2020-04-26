@@ -106,10 +106,6 @@ class TestGenerator implements Generator
             $context = Str::singular($controller->prefix());
             $variable = Str::camel($context);
 
-            if (in_array($name, ['edit', 'update', 'show', 'destroy'])) {
-                $setup['data'][] = sprintf('$%s = factory(%s::class)->create();', $variable, $model);
-            }
-
             foreach ($statements as $statement) {
                 if ($statement instanceof SendStatement) {
                     $this->addImport($controller, 'Illuminate\\Support\\Facades\\Mail');
