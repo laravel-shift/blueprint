@@ -335,7 +335,6 @@ class TestGenerator implements Generator
                         $setup['data'][] = sprintf('$%s = factory(%s::class)->create();', $variable, $model);
                     } elseif ($statement->operation() === 'delete') {
                         $tested_bits |= self::TESTS_DELETE;
-                        $setup['data'][] = sprintf('$%s = factory(%s::class)->create();', $variable, $model);
                         $assertions['generic'][] = sprintf('$this->assertDeleted($%s);', $variable);
                     }
                 } elseif ($statement instanceof QueryStatement) {
