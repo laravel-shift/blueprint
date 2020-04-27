@@ -216,6 +216,77 @@ class BlueprintTest extends TestCase
     /**
      * @test
      */
+    public function it_parses_the_readme_example_with_carriage_return_and_line_feed()
+    {
+        // NOTE: This test gives a false positive on MacOS.
+        // It must pass on Mac (OS 9 and below) and Windows OS for confidence.
+        $blueprint = $this->fixture('definitions/readme-example.bp');
+
+        $LF = "\n"; // Line Feed: Unix
+        $CR = "\r"; // Carriage Return: Mac (OS 9 and below)
+        $CRLF = "\r\n"; // Carriage Return and Line Feed: Windows
+
+        $blueprintCR = str_replace($LF, $CR, $blueprint);
+        $blueprintCRLF = str_replace($LF, $CRLF, $blueprint);
+
+        $this->assertEquals([
+            'models' => [
+                'Post' => [
+                    'title' => 'string:400',
+                    'content' => 'longtext',
+                    'published_at' => 'nullable timestamp',
+                ],
+            ],
+            'controllers' => [
+                'Post' => [
+                    'index' => [
+                        'query' => 'all:posts',
+                        'render' => 'post.index with:posts',
+                    ],
+                    'store' => [
+                        'validate' => 'title, content',
+                        'save' => 'post',
+                        'send' => 'ReviewNotification to:post.author with:post',
+                        'dispatch' => 'SyncMedia with:post',
+                        'fire' => 'NewPost with:post',
+                        'flash' => 'post.title',
+                        'redirect' => 'post.index',
+                    ],
+                ],
+            ],
+        ], $this->subject->parse($blueprintCR));
+
+        $this->assertEquals([
+            'models' => [
+                'Post' => [
+                    'title' => 'string:400',
+                    'content' => 'longtext',
+                    'published_at' => 'nullable timestamp',
+                ],
+            ],
+            'controllers' => [
+                'Post' => [
+                    'index' => [
+                        'query' => 'all:posts',
+                        'render' => 'post.index with:posts',
+                    ],
+                    'store' => [
+                        'validate' => 'title, content',
+                        'save' => 'post',
+                        'send' => 'ReviewNotification to:post.author with:post',
+                        'dispatch' => 'SyncMedia with:post',
+                        'fire' => 'NewPost with:post',
+                        'flash' => 'post.title',
+                        'redirect' => 'post.index',
+                    ],
+                ],
+            ],
+        ], $this->subject->parse($blueprintCRLF));
+    }
+
+    /**
+     * @test
+     */
     public function it_throws_a_custom_error_when_parsing_fails()
     {
         $this->expectException(ParseException::class);

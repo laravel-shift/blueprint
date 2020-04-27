@@ -26,20 +26,22 @@ class Blueprint
 
     public function parse($content)
     {
+        $content = str_replace(["\r\n", "\r"], "\n", $content);
+
         $content = preg_replace_callback('/^(\s+)(id|timestamps(Tz)?|softDeletes(Tz)?)$/mi', function ($matches) {
-            return $matches[1] . strtolower($matches[2]) . ': ' . $matches[2];
+            return $matches[1].strtolower($matches[2]).': '.$matches[2];
         }, $content);
 
         $content = preg_replace_callback('/^(\s+)(id|timestamps(Tz)?|softDeletes(Tz)?): true$/mi', function ($matches) {
-            return $matches[1] . strtolower($matches[2]) . ': ' . $matches[2];
+            return $matches[1].strtolower($matches[2]).': '.$matches[2];
         }, $content);
 
         $content = preg_replace_callback('/^(\s+)resource(: true)?$/mi', function ($matches) {
-            return $matches[1] . 'resource: all';
+            return $matches[1].'resource: all';
         }, $content);
 
         $content = preg_replace_callback('/^(\s+)uuid(: true)?$/mi', function ($matches) {
-            return $matches[1] . 'id: uuid primary';
+            return $matches[1].'id: uuid primary';
         }, $content);
 
         return Yaml::parse($content);
