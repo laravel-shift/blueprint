@@ -15,4 +15,6 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4.1.5
         with:
           commit_message: apply php-cs-fixer changes
+          commit_user_name: ${{ github.actor }}
+          commit_user_email: ${{ github.actor }}@users.noreply.github.com
           branch: ${{ github.head_ref }}
