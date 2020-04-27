@@ -11,15 +11,12 @@ class Blueprint
 {
     private $lexers = [];
     private $generators = [];
-
-    public static function relativeNamespace(string $fullyQualifiedClassName)
-    {
+    public static function relativeNamespace(string $fullyQualifiedClassName){
         $namespace = config('blueprint.namespace').'\\';
         $reference = ltrim($fullyQualifiedClassName, '\\');
-        if (Str::startsWith($reference, $namespace)) {
+        if(Str::startsWith($reference, $namespace)) {
             return Str::after($reference, $namespace);
         }
-
         return $reference;
     }
 
