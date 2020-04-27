@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Blueprint\Lexers;
 
 use Blueprint\Contracts\Lexer;
@@ -114,7 +113,7 @@ class StatementLexer implements Lexer
         [$object, $with] = $this->extractTokens($statement, 2);
 
         $data = [];
-        if (!empty($with)) {
+        if (! empty($with)) {
             $data = preg_split('/,([ \t]+)?/', substr($with, 5));
         }
 
@@ -132,7 +131,7 @@ class StatementLexer implements Lexer
 
         $data = [];
 
-        if (!empty($with)) {
+        if (! empty($with)) {
             $data = preg_split('/,([ \t]+)?/', substr($with, 5));
         }
 
@@ -177,6 +176,6 @@ class StatementLexer implements Lexer
             $reference = Str::after($reference, ':');
         }
 
-        return new ResourceStatement($reference, !is_null($collection), $collection === 'paginate');
+        return new ResourceStatement($reference, ! is_null($collection), $collection === 'paginate');
     }
 }

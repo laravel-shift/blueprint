@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Blueprint\Models;
 
 use Illuminate\Support\Str;
@@ -42,7 +41,7 @@ class Controller
 
     public function className(): string
     {
-        return $this->name() . (Str::endsWith($this->name(), 'Controller') ? '' : 'Controller');
+        return $this->name().(Str::endsWith($this->name(), 'Controller') ? '' : 'Controller');
     }
 
     public function namespace()
@@ -59,11 +58,11 @@ class Controller
         $fqn = config('blueprint.namespace');
 
         if (config('blueprint.controllers_namespace')) {
-            $fqn .= '\\' . config('blueprint.controllers_namespace');
+            $fqn .= '\\'.config('blueprint.controllers_namespace');
         }
 
         if ($this->namespace) {
-            $fqn .= '\\' . $this->namespace;
+            $fqn .= '\\'.$this->namespace;
         }
 
         return $fqn;
@@ -71,7 +70,7 @@ class Controller
 
     public function fullyQualifiedClassName()
     {
-        return $this->fullyQualifiedNamespace() . '\\' . $this->className();
+        return $this->fullyQualifiedNamespace().'\\'.$this->className();
     }
 
     public function methods(): array

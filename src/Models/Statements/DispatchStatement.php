@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Blueprint\Models\Statements;
 
 class DispatchStatement
@@ -36,7 +35,7 @@ class DispatchStatement
 
     public function output()
     {
-        $code = $this->job() . '::dispatch(';
+        $code = $this->job().'::dispatch(';
 
         if ($this->data()) {
             $code .= $this->buildParameters($this->data());
@@ -50,7 +49,7 @@ class DispatchStatement
     private function buildParameters(array $data)
     {
         $parameters = array_map(function ($parameter) {
-            return '$' . $parameter;
+            return '$'.$parameter;
         }, $data);
 
         return implode(', ', $parameters);

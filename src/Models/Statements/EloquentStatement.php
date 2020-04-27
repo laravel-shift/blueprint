@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Blueprint\Models\Statements;
 
 use Illuminate\Support\Str;
@@ -40,12 +39,12 @@ class EloquentStatement
 
         if ($this->operation() == 'save') {
             if ($context === 'store') {
-                $code = "$" . Str::lower($model);
+                $code = '$'.Str::lower($model);
                 $code .= ' = ';
                 $code .= $model;
                 $code .= '::create($request->all());';
             } else {
-                $code = "$" . Str::lower($model) . '->save();';
+                $code = '$'.Str::lower($model).'->save();';
             }
         }
 
@@ -54,19 +53,19 @@ class EloquentStatement
                 $model = $this->extractModel();
             }
 
-            $code = "$" . Str::lower($model);
+            $code = '$'.Str::lower($model);
             $code .= ' = ';
             $code .= $model;
-            $code .= '::find($' . $this->columnName($this->reference()) . ');';
+            $code .= '::find($'.$this->columnName($this->reference()).');';
         }
 
         if ($this->operation() === 'delete') {
             if ($this->usesQualifiedReference()) {
                 $code = $this->extractModel();
-                $code .= '::destroy($' . str_replace('.', '->', $this->reference()) . ');';
+                $code .= '::destroy($'.str_replace('.', '->', $this->reference()).');';
             } else {
                 // TODO: only for certain contexts or no matter what given simple reference?
-                $code = "$" . Str::lower($model) . '->delete();';
+                $code = '$'.Str::lower($model).'->delete();';
             }
         }
 

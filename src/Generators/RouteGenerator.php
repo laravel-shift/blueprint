@@ -25,7 +25,7 @@ class RouteGenerator implements Generator
         $routes = '';
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree['controllers'] as $controller) {
-            $routes .= PHP_EOL . PHP_EOL . $this->buildRoutes($controller);
+            $routes .= PHP_EOL.PHP_EOL.$this->buildRoutes($controller);
         }
         $routes .= PHP_EOL;
 
@@ -56,8 +56,7 @@ class RouteGenerator implements Generator
                 }
             }
 
-
-            $routes .= ';' . PHP_EOL;
+            $routes .= ';'.PHP_EOL;
         }
 
         $methods = array_diff($methods, Controller::$resourceMethods);

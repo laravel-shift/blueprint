@@ -27,7 +27,7 @@ class ViewGenerator implements Generator
         foreach ($tree['controllers'] as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
-                    if (!$statement instanceof RenderStatement) {
+                    if (! $statement instanceof RenderStatement) {
                         continue;
                     }
 
@@ -38,7 +38,7 @@ class ViewGenerator implements Generator
                         continue;
                     }
 
-                    if (!$this->files->exists(dirname($path))) {
+                    if (! $this->files->exists(dirname($path))) {
                         $this->files->makeDirectory(dirname($path), 0755, true);
                     }
 
@@ -54,7 +54,7 @@ class ViewGenerator implements Generator
 
     protected function getPath(string $view)
     {
-        return 'resources/views/' . str_replace('.', DIRECTORY_SEPARATOR, $view) . '.blade.php';
+        return 'resources/views/'.str_replace('.', DIRECTORY_SEPARATOR, $view).'.blade.php';
     }
 
     protected function populateStub(string $stub, RenderStatement $renderStatement)

@@ -182,7 +182,6 @@ class FormRequestGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['src/path/Http/Requests/PostStoreRequest.php']], $this->subject->output($tree));
     }
 
-
     /**
      * @test
      */
@@ -208,7 +207,7 @@ class FormRequestGeneratorTest extends TestCase
             'User' => [
                 'email' => 'string',
                 'password' => 'string',
-            ]
+            ],
         ];
         $tree = $this->blueprint->analyze($tokens);
 

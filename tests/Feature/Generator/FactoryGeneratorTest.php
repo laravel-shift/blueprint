@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Generators;
 
-use Tests\TestCase;
 use Blueprint\Blueprint;
 use Blueprint\Generators\FactoryGenerator;
+use Tests\TestCase;
 
 /**
  * @see FactoryGenerator

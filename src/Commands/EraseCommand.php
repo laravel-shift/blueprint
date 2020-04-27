@@ -23,7 +23,7 @@ class EraseCommand extends Command
      */
     protected $description = 'Erase components created from last Blueprint build';
 
-    /** @var Filesystem $files */
+    /** @var Filesystem */
     protected $files;
 
     /**
@@ -60,7 +60,7 @@ class EraseCommand extends Command
             }
 
             collect($files)->each(function ($file) {
-                $this->line('- ' . $file);
+                $this->line('- '.$file);
             });
 
             $this->line('');

@@ -60,7 +60,7 @@ class BuilderTest extends TestCase
         ];
         $draft = 'draft blueprint content';
         $tokens = [
-            'models' => [1, 2, 3]
+            'models' => [1, 2, 3],
         ];
         $registry = ['registry'];
         $generated = ['created' => [1, 2], 'updated' => [3]];
@@ -82,7 +82,7 @@ class BuilderTest extends TestCase
             ->with([
                 'created' => [1, 2],
                 'updated' => [3],
-                'models' => [4, 5, 6, 1, 2, 3]
+                'models' => [4, 5, 6, 1, 2, 3],
             ])
             ->andReturn('cacheable blueprint content');
 

@@ -12,7 +12,7 @@ class ModelLexer implements Lexer
         'belongsto' => 'belongsTo',
         'hasone' => 'hasOne',
         'hasmany' => 'hasMany',
-        'belongstomany' => 'belongsToMany'
+        'belongstomany' => 'belongsToMany',
     ];
 
     private static $dataTypes = [
@@ -99,13 +99,13 @@ class ModelLexer implements Lexer
             'cache' => [],
         ];
 
-        if (!empty($tokens['models'])) {
+        if (! empty($tokens['models'])) {
             foreach ($tokens['models'] as $name => $definition) {
                 $registry['models'][$name] = $this->buildModel($name, $definition);
             }
         }
 
-        if (!empty($tokens['cache'])) {
+        if (! empty($tokens['cache'])) {
             foreach ($tokens['cache'] as $name => $definition) {
                 $registry['cache'][$name] = $this->buildModel($name, $definition);
             }
@@ -156,7 +156,7 @@ class ModelLexer implements Lexer
             unset($columns['relationships']);
         }
 
-        if (!isset($columns['id']) && $model->usesPrimaryKey()) {
+        if (! isset($columns['id']) && $model->usesPrimaryKey()) {
             $column = $this->buildColumn('id', 'id');
             $model->addColumn($column);
         }
@@ -167,7 +167,7 @@ class ModelLexer implements Lexer
 
             if ($column->name() !== 'id' && in_array($column->dataType(), ['id', 'uuid'])) {
                 if ($column->attributes()) {
-                    $model->addRelationship('belongsTo', $column->attributes()[0] . ':' . $column->name());
+                    $model->addRelationship('belongsTo', $column->attributes()[0].':'.$column->name());
                 } else {
                     $model->addRelationship('belongsTo', $column->name());
                 }
@@ -195,7 +195,7 @@ class ModelLexer implements Lexer
             } elseif (isset(self::$dataTypes[strtolower($value)])) {
                 $attributes = $parts[1] ?? null;
                 $data_type = self::$dataTypes[strtolower($value)];
-                if (!empty($attributes)) {
+                if (! empty($attributes)) {
                     $attributes = explode(',', $attributes);
                 }
             }

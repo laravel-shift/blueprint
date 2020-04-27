@@ -24,7 +24,7 @@ class TraceCommand extends Command
      */
     protected $description = 'Create definitions for existing models to reference in new drafts';
 
-    /** @var Filesystem $files */
+    /** @var Filesystem */
     protected $files;
 
     /**
@@ -72,7 +72,7 @@ class TraceCommand extends Command
 
         $this->files->put('.blueprint', $blueprint->dump($cache));
 
-        $this->info('Traced ' . count($definitions) . ' ' . Str::plural('model', count($definitions)));
+        $this->info('Traced '.count($definitions).' '.Str::plural('model', count($definitions)));
     }
 
     private function appClasses()
@@ -80,30 +80,30 @@ class TraceCommand extends Command
         $dir = config('blueprint.app_path');
 
         if (config('blueprint.models_namespace')) {
-            $dir .= DIRECTORY_SEPARATOR . str_replace('\\', '/', config('blueprint.models_namespace'));
+            $dir .= DIRECTORY_SEPARATOR.str_replace('\\', '/', config('blueprint.models_namespace'));
         }
 
-        if (!$this->files->exists($dir)) {
+        if (! $this->files->exists($dir)) {
             return [];
         }
 
         return array_map(function (\SplFIleInfo $file) {
             return str_replace(
-                [config('blueprint.app_path') . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR],
-                [config('blueprint.namespace') . '\\', '\\'],
-                $file->getPath() . DIRECTORY_SEPARATOR . $file->getBasename('.php')
+                [config('blueprint.app_path').DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR],
+                [config('blueprint.namespace').'\\', '\\'],
+                $file->getPath().DIRECTORY_SEPARATOR.$file->getBasename('.php')
             );
         }, $this->files->allFiles($dir));
     }
 
     private function loadModel(string $class)
     {
-        if (!class_exists($class)) {
+        if (! class_exists($class)) {
             return null;
         }
 
         $reflectionClass = new \ReflectionClass($class);
-        if (!$reflectionClass->isSubclassOf(\Illuminate\Database\Eloquent\Model::class)) {
+        if (! $reflectionClass->isSubclassOf(\Illuminate\Database\Eloquent\Model::class)) {
             return null;
         }
 
@@ -112,7 +112,7 @@ class TraceCommand extends Command
 
     private function extractColumns(Model $model)
     {
-        $table = $model->getConnection()->getTablePrefix() . $model->getTable();
+        $table = $model->getConnection()->getTablePrefix().$model->getTable();
         $schema = $model->getConnection()->getDoctrineSchemaManager();
 
         $database = null;
@@ -143,14 +143,14 @@ class TraceCommand extends Command
 
         if (in_array($type, ['decimal', 'float'])) {
             if ($column->getPrecision()) {
-                $type .= ':' . $column->getPrecision();
+                $type .= ':'.$column->getPrecision();
             }
             if ($column->getScale()) {
-                $type .= ',' . $column->getScale();
+                $type .= ','.$column->getScale();
             }
         } elseif ($type === 'string' && $column->getLength()) {
             if ($column->getLength() !== 255) {
-                $type .= ':' . $column->getLength();
+                $type .= ':'.$column->getLength();
             }
         } elseif ($type === 'text') {
             if ($column->getLength() > 65535) {
@@ -166,7 +166,7 @@ class TraceCommand extends Command
             $attributes[] = 'unsigned';
         }
 
-        if (!$column->getNotnull()) {
+        if (! $column->getNotnull()) {
             $attributes[] = 'nullable';
         }
 
@@ -174,8 +174,8 @@ class TraceCommand extends Command
             $attributes[] = 'autoincrement';
         }
 
-        if (!is_null($column->getDefault())) {
-            $attributes[] = 'default:' . $column->getDefault();
+        if (! is_null($column->getDefault())) {
+            $attributes[] = 'default:'.$column->getDefault();
         }
 
         return implode(' ', $attributes);

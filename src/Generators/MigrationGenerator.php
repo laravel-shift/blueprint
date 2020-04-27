@@ -50,7 +50,7 @@ class MigrationGenerator implements Generator
 
             $output['created'][] = $path;
 
-            if (!empty($model->pivotTables())) {
+            if (! empty($model->pivotTables())) {
                 foreach ($model->pivotTables() as $pivotSegments) {
                     $pivotTable = $this->getPivotTableName($pivotSegments);
                     if (isset($created_pivot_tables[$pivotTable])) {
@@ -101,20 +101,20 @@ class MigrationGenerator implements Generator
             }
 
             if (in_array($dataType, self::UNSIGNABLE_TYPES) && in_array('unsigned', $column->modifiers())) {
-                $dataType = 'unsigned' . ucfirst($dataType);
+                $dataType = 'unsigned'.ucfirst($dataType);
             }
 
             if (in_array($dataType, self::NULLABLE_TYPES) && $column->isNullable()) {
-                $dataType = 'nullable' . ucfirst($dataType);
+                $dataType = 'nullable'.ucfirst($dataType);
             }
 
             if ($dataType === 'bigIncrements' && $this->isLaravel7orNewer()) {
-                $definition .= self::INDENT . '$table->id(';
+                $definition .= self::INDENT.'$table->id(';
             } else {
-                $definition .= self::INDENT . '$table->' . $dataType . "('{$column->name()}'";
+                $definition .= self::INDENT.'$table->'.$dataType."('{$column->name()}'";
             }
 
-            if (!empty($column->attributes()) && !in_array($column->dataType(), ['id', 'uuid'])) {
+            if (! empty($column->attributes()) && ! in_array($column->dataType(), ['id', 'uuid'])) {
                 $definition .= ', ';
                 if (in_array($column->dataType(), ['set', 'enum'])) {
                     $definition .= json_encode($column->attributes());
@@ -129,28 +129,28 @@ class MigrationGenerator implements Generator
             foreach ($column->modifiers() as $modifier) {
                 if (is_array($modifier)) {
                     if (key($modifier) === 'foreign') {
-                        $foreign = self::INDENT . '$table->foreign(' . "'{$column->name()}')->references('id')->on('" . Str::lower(Str::plural(current($modifier))) . "')->onDelete('cascade');" . PHP_EOL;
+                        $foreign = self::INDENT.'$table->foreign('."'{$column->name()}')->references('id')->on('".Str::lower(Str::plural(current($modifier)))."')->onDelete('cascade');".PHP_EOL;
                     } else {
-                        $definition .= '->' . key($modifier) . '(' . current($modifier) . ')';
+                        $definition .= '->'.key($modifier).'('.current($modifier).')';
                     }
                 } elseif ($modifier === 'unsigned' && Str::startsWith($dataType, 'unsigned')) {
                     continue;
                 } elseif ($modifier === 'nullable' && Str::startsWith($dataType, 'nullable')) {
                     continue;
                 } else {
-                    $definition .= '->' . $modifier . '()';
+                    $definition .= '->'.$modifier.'()';
                 }
             }
 
-            $definition .= ';' . PHP_EOL . $foreign;
+            $definition .= ';'.PHP_EOL.$foreign;
         }
 
         if ($model->usesSoftDeletes()) {
-            $definition .= self::INDENT . '$table->' . $model->softDeletesDataType() . '();' . PHP_EOL;
+            $definition .= self::INDENT.'$table->'.$model->softDeletesDataType().'();'.PHP_EOL;
         }
 
         if ($model->usesTimestamps()) {
-            $definition .= self::INDENT . '$table->' . $model->timestampsDataType() . '();' . PHP_EOL;
+            $definition .= self::INDENT.'$table->'.$model->timestampsDataType().'();'.PHP_EOL;
         }
 
         return trim($definition);
@@ -161,8 +161,8 @@ class MigrationGenerator implements Generator
         $definition = '';
 
         foreach ($segments as $segment) {
-            $column = strtolower($segment) . '_id';
-            $definition .= self::INDENT . '$table->' . $dataType . "('{$column}');" . PHP_EOL;
+            $column = strtolower($segment).'_id';
+            $definition .= self::INDENT.'$table->'.$dataType."('{$column}');".PHP_EOL;
         }
 
         return trim($definition);
@@ -170,17 +170,17 @@ class MigrationGenerator implements Generator
 
     protected function getClassName(Model $model)
     {
-        return 'Create' . Str::studly($model->tableName()) . 'Table';
+        return 'Create'.Str::studly($model->tableName()).'Table';
     }
 
     protected function getPath(Model $model, Carbon $timestamp)
     {
-        return 'database/migrations/' . $timestamp->format('Y_m_d_His') . '_create_' . $model->tableName() . '_table.php';
+        return 'database/migrations/'.$timestamp->format('Y_m_d_His').'_create_'.$model->tableName().'_table.php';
     }
 
     protected function getPivotTablePath($tableName, Carbon $timestamp)
     {
-        return 'database/migrations/' . $timestamp->format('Y_m_d_His') . '_create_' . $tableName . '_table.php';
+        return 'database/migrations/'.$timestamp->format('Y_m_d_His').'_create_'.$tableName.'_table.php';
     }
 
     protected function isLaravel7orNewer()
@@ -190,7 +190,7 @@ class MigrationGenerator implements Generator
 
     protected function getPivotClassName(array $segments)
     {
-        return 'Create' . Str::studly($this->getPivotTableName($segments)) . 'Table';
+        return 'Create'.Str::studly($this->getPivotTableName($segments)).'Table';
     }
 
     protected function getPivotTableName(array $segments)
@@ -199,6 +199,7 @@ class MigrationGenerator implements Generator
             return Str::snake($name);
         }, $segments);
         sort($segments);
+
         return strtolower(implode('_', $segments));
     }
 }
