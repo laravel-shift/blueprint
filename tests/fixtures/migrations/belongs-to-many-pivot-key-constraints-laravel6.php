@@ -14,8 +14,10 @@ class CreateDiaryJourneyTable extends Migration
     public function up()
     {
         Schema::create('diary_journey', function (Blueprint $table) {
-            $table->foreignId('diary_id');
-            $table->foreignId('journey_id');
+            $table->unsignedBigInteger('diary_id');
+            $table->foreign('diary_id')->references('id')->on('diaries')->onDelete('cascade');
+            $table->unsignedBigInteger('journey_id');
+            $table->foreign('journey_id')->references('id')->on('journeys')->onDelete('cascade');
         });
     }
 

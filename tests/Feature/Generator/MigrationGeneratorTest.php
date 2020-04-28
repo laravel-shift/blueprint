@@ -3,7 +3,6 @@
 namespace Tests\Feature\Generators;
 
 use Blueprint\Blueprint;
-use Illuminate\Support\Facades\Config;
 use Blueprint\Generators\MigrationGenerator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
@@ -53,8 +52,6 @@ class MigrationGeneratorTest extends TestCase
      */
     public function output_writes_migration_for_model_tree($definition, $path, $migration)
     {
-        $this->app->config->set('blueprint.use_constraints', true);
-
         $this->files->expects('stub')
             ->with('migration.stub')
             ->andReturn(file_get_contents('stubs/migration.stub'));
@@ -102,10 +99,10 @@ class MigrationGeneratorTest extends TestCase
     /**
      * @test
      */
-    public function output_uses_proper_data_type_for_id_column()
+    public function output_uses_proper_data_type_for_id_columns_in_laravel6()
     {
         $app = \Mockery::mock();
-        $app->expects('version')
+        $app->shouldReceive('version')
             ->withNoArgs()
             ->andReturn('6.0.0');
         App::swap($app);
@@ -133,8 +130,34 @@ class MigrationGeneratorTest extends TestCase
      */
     public function output_also_creates_pivot_table_migration()
     {
+        $this->files->expects('stub')
+            ->with('migration.stub')
+            ->andReturn(file_get_contents('stubs/migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_journeys_table.php');
+        $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_diary_journey_table.php');
+
+        $this->files->expects('put')
+            ->with($model_migration, $this->fixture('migrations/belongs-to-many.php'));
+        $this->files->expects('put')
+            ->with($pivot_migration, $this->fixture('migrations/belongs-to-many-pivot.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/belongs-to-many.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function output_also_creates_pivot_table_migration_laravel6()
+    {
         $app = \Mockery::mock();
-        $app->expects('version')
+        $app->shouldReceive('version')
             ->withNoArgs()
             ->andReturn('6.0.0');
         App::swap($app);
@@ -150,10 +173,10 @@ class MigrationGeneratorTest extends TestCase
         $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_diary_journey_table.php');
 
         $this->files->expects('put')
-            ->with($model_migration, $this->fixture('migrations/belongs-to-many.php'));
+            ->with($model_migration, $this->fixture('migrations/belongs-to-many-laravel6.php'));
 
         $this->files->expects('put')
-            ->with($pivot_migration, $this->fixture('migrations/belongs-to-many-pivot.php'));
+            ->with($pivot_migration, $this->fixture('migrations/belongs-to-many-pivot-laravel6.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('definitions/belongs-to-many.bp'));
         $tree = $this->blueprint->analyze($tokens);
@@ -168,8 +191,38 @@ class MigrationGeneratorTest extends TestCase
     {
         $this->app->config->set('blueprint.use_constraints', true);
 
+        $this->files->expects('stub')
+            ->with('migration.stub')
+            ->andReturn(file_get_contents('stubs/migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_journeys_table.php');
+        $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_diary_journey_table.php');
+
+        $this->files->expects('put')
+            ->with($model_migration, $this->fixture('migrations/belongs-to-many-key-constraints.php'));
+
+        $this->files->expects('put')
+            ->with($pivot_migration, $this->fixture('migrations/belongs-to-many-pivot-key-constraints.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/belongs-to-many.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
+    }
+
+
+    /**
+     * @test
+     */
+    public function output_also_creates_constraints_for_pivot_table_migration_laravel6()
+    {
+        $this->app->config->set('blueprint.use_constraints', true);
+
         $app = \Mockery::mock();
-        $app->expects('version')
+        $app->shouldReceive('version')
             ->withNoArgs()
             ->andReturn('6.0.0');
         App::swap($app);
@@ -185,47 +238,15 @@ class MigrationGeneratorTest extends TestCase
         $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_diary_journey_table.php');
 
         $this->files->expects('put')
-            ->with($model_migration, $this->fixture('migrations/belongs-to-many.php'));
-
+            ->with($model_migration, $this->fixture('migrations/belongs-to-many-key-constraints-laravel6.php'));
         $this->files->expects('put')
-            ->with($pivot_migration, $this->fixture('migrations/belongs-to-many-pivot-key-constraints.php'));
+            ->with($pivot_migration, $this->fixture('migrations/belongs-to-many-pivot-key-constraints-laravel6.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('definitions/belongs-to-many.bp'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
     }
-
-    /**
-     * @test
-     */
-    public function output_also_creates_laravel_7_constraints_for_pivot_table_migration()
-    {
-        $this->app->config->set('blueprint.use_constraints', true);
-        $this->files->expects('version')->withNoArgs()->andReturn('7.0.0');
-
-        $this->files->expects('stub')
-            ->with('migration.stub')
-            ->andReturn(file_get_contents('stubs/migration.stub'));
-
-        $now = Carbon::now();
-        Carbon::setTestNow($now);
-
-        $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_journeys_table.php');
-        $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_diary_journey_table.php');
-
-        $this->files->expects('put')
-            ->with($model_migration, $this->fixture('migrations/belongs-to-many-laravel-7.php'));
-
-        $this->files->expects('put')
-            ->with($pivot_migration, $this->fixture('migrations/belongs-to-many-pivot-key-constraints-laravel-7.php'));
-
-        $tokens = $this->blueprint->parse($this->fixture('definitions/belongs-to-many.bp'));
-        $tree = $this->blueprint->analyze($tokens);
-
-        $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
-    }
-
 
     public function modelTreeDataProvider()
     {
@@ -241,6 +262,7 @@ class MigrationGeneratorTest extends TestCase
             ['definitions/model-key-constraints.bp', 'database/migrations/timestamp_create_orders_table.php', 'migrations/model-key-constraints.php'],
             ['definitions/disable-auto-columns.bp', 'database/migrations/timestamp_create_states_table.php', 'migrations/disable-auto-columns.php'],
             ['definitions/uuid-shorthand.bp', 'database/migrations/timestamp_create_people_table.php', 'migrations/uuid-shorthand.php'],
+            ['definitions/unconventional-foreign-key.bp', 'database/migrations/timestamp_create_states_table.php', 'migrations/unconventional-foreign-key.php'],
         ];
     }
 }

@@ -83,12 +83,12 @@ class FactoryGeneratorTest extends TestCase
             ->andReturnTrue();
 
         $this->files->expects('put')
-            ->with('database/factories/OrderFactory.php', $this->fixture('factories/fake-nullables.php'));
+            ->with('database/factories/PostFactory.php', $this->fixture('factories/fake-nullables.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/model-key-constraints.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('definitions/readme-example.bp'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['database/factories/OrderFactory.php']], $this->subject->output($tree));
+        $this->assertEquals(['created' => ['database/factories/PostFactory.php']], $this->subject->output($tree));
     }
 
     /**
@@ -149,6 +149,7 @@ class FactoryGeneratorTest extends TestCase
             ['definitions/unconventional.bp', 'database/factories/TeamFactory.php', 'factories/unconventional.php'],
             ['definitions/model-modifiers.bp', 'database/factories/ModifierFactory.php', 'factories/model-modifiers.php'],
             ['definitions/model-key-constraints.bp', 'database/factories/OrderFactory.php', 'factories/model-key-constraints.php'],
+//            ['definitions/unconventional-foreign-key.bp', 'database/factories/StateFactory.php', 'factories/unconventional-foreign-key.php'],
         ];
     }
 }

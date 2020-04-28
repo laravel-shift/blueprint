@@ -1,0 +1,4 @@
+models:
+  State:
+    name: string
+    country_code: string foreign:countries.code
