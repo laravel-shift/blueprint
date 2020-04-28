@@ -39,7 +39,7 @@ class Column
 
     public function isForeignKey()
     {
-        return collect($this->modifiers())->filter(function($modifier) {
+        return collect($this->modifiers())->filter(function ($modifier) {
             return (is_array($modifier) && key($modifier) === 'foreign') || $modifier === 'foreign';
         })->flatten()->first();
     }
