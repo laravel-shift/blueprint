@@ -79,7 +79,7 @@ class TestGenerator implements Generator
         $stub = str_replace('// test cases...', $this->buildTestCases($controller), $stub);
         $stub = str_replace('// imports...', $this->buildImports($controller), $stub);
 
-        return $stub;
+        return str_replace(["\r\n","\r"], "\n", $stub);
     }
 
     protected function buildTestCases(Controller $controller)

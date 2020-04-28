@@ -54,11 +54,13 @@ class ViewGenerator implements Generator
 
     protected function getPath(string $view)
     {
-        return 'resources/views/' . str_replace('.', DIRECTORY_SEPARATOR, $view) . '.blade.php';
+        return 'resources/views/' . str_replace('.', '/', $view) . '.blade.php';
     }
 
     protected function populateStub(string $stub, RenderStatement $renderStatement)
     {
-        return str_replace('DummyView', $renderStatement->view(), $stub);
+        $result = str_replace('DummyView', $renderStatement->view(), $stub);
+
+        return str_replace(["\r\n","\r"], "\n", $result);
     }
 }

@@ -72,7 +72,7 @@ class ControllerGenerator implements Generator
         $stub = str_replace('// methods...', $this->buildMethods($controller), $stub);
         $stub = str_replace('// imports...', $this->buildImports($controller), $stub);
 
-        return $stub;
+        return str_replace(["\r\n","\r"], "\n", $stub);
     }
 
     private function buildMethods(Controller $controller)

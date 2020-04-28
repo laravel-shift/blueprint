@@ -57,7 +57,7 @@ class FactoryGenerator implements Generator
         $stub = str_replace('DummyClass', $model->name(), $stub);
         $stub = str_replace('// definition...', $this->buildDefinition($model), $stub);
 
-        return $stub;
+        return str_replace(["\r\n","\r"], "\n", $stub);
     }
 
     protected function buildDefinition(Model $model)

@@ -62,7 +62,7 @@ class JobGenerator implements Generator
         $stub = str_replace('DummyClass', $dispatchStatement->job(), $stub);
         $stub = str_replace('// properties...', $this->buildConstructor($dispatchStatement), $stub);
 
-        return $stub;
+        return str_replace(["\r\n","\r"], "\n", $stub);
     }
 
     private function buildConstructor(DispatchStatement $dispatchStatement)
@@ -81,7 +81,7 @@ class JobGenerator implements Generator
         $stub .= str_replace('__construct()', '__construct(' . $this->buildParameters($dispatchStatement->data()) . ')', $constructor);
         $stub = str_replace('//', $this->buildAssignments($dispatchStatement->data()), $stub);
 
-        return $stub;
+        return str_replace(["\r\n","\r"], "\n", $stub);
     }
 
     private function buildProperties(array $data)

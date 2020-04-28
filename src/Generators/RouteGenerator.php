@@ -29,6 +29,8 @@ class RouteGenerator implements Generator
         }
         $routes .= PHP_EOL;
 
+        $routes = str_replace(["\r\n","\r"], "\n", $routes);
+
         $path = 'routes/web.php';
         $this->files->append($path, $routes);
 

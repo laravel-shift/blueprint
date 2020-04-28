@@ -74,7 +74,7 @@ class ResourceGenerator implements Generator
         $stub = str_replace('DummyItem', $resource->collection() ? 'resource collection' : 'resource', $stub);
         $stub = str_replace('// data...', $this->buildData($resource), $stub);
 
-        return $stub;
+        return str_replace(["\r\n","\r"], "\n", $stub);
     }
 
     private function buildData(ResourceStatement $resource)

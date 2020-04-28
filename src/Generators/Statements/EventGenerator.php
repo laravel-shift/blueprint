@@ -66,7 +66,7 @@ class EventGenerator implements Generator
         $stub = str_replace('DummyClass', $fireStatement->event(), $stub);
         $stub = str_replace('// properties...', $this->buildConstructor($fireStatement), $stub);
 
-        return $stub;
+        return str_replace(["\r\n","\r"], "\n", $stub);
     }
 
     private function buildConstructor(FireStatement $fireStatement)
@@ -85,7 +85,7 @@ class EventGenerator implements Generator
         $stub .= str_replace('__construct()', '__construct(' . $this->buildParameters($fireStatement->data()) . ')', $constructor);
         $stub = str_replace('//', $this->buildAssignments($fireStatement->data()), $stub);
 
-        return $stub;
+        return str_replace(["\r\n","\r"], "\n", $stub);
     }
 
     private function buildProperties(array $data)

@@ -16,6 +16,13 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
     public function fixture(string $path)
     {
-        return file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . ltrim($path, DIRECTORY_SEPARATOR));
+        $buffer = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . ltrim($path, DIRECTORY_SEPARATOR));
+        return str_replace(["\r\n","\r"], "\n", $buffer);
+    }
+
+    public function stubs(string $path)
+    {
+        $buffer = file_get_contents($path);
+        return str_replace(["\r\n","\r"], "\n", $buffer);
     }
 }

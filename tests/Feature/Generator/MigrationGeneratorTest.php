@@ -39,7 +39,7 @@ class MigrationGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('migration.stub')
-            ->andReturn(file_get_contents('stubs/migration.stub'));
+            ->andReturn($this->stubs('stubs/migration.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -54,7 +54,7 @@ class MigrationGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('migration.stub')
-            ->andReturn(file_get_contents('stubs/migration.stub'));
+            ->andReturn($this->stubs('stubs/migration.stub'));
 
         $now = Carbon::now();
         Carbon::setTestNow($now);
@@ -77,7 +77,7 @@ class MigrationGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('migration.stub')
-            ->andReturn(file_get_contents('stubs/migration.stub'));
+            ->andReturn($this->stubs('stubs/migration.stub'));
 
         $now = Carbon::now();
         Carbon::setTestNow($now);
@@ -109,7 +109,7 @@ class MigrationGeneratorTest extends TestCase
 
         $this->files->expects('stub')
             ->with('migration.stub')
-            ->andReturn(file_get_contents('stubs/migration.stub'));
+            ->andReturn($this->stubs('stubs/migration.stub'));
 
         $now = Carbon::now();
         Carbon::setTestNow($now);
@@ -138,7 +138,7 @@ class MigrationGeneratorTest extends TestCase
 
         $this->files->expects('stub')
             ->with('migration.stub')
-            ->andReturn(file_get_contents('stubs/migration.stub'));
+            ->andReturn($this->stubs('stubs/migration.stub'));
 
         $now = Carbon::now();
         Carbon::setTestNow($now);

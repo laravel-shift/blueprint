@@ -39,7 +39,7 @@ class ResourceGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('resource.stub')
-            ->andReturn(file_get_contents('stubs/resource.stub'));
+            ->andReturn($this->stubs('stubs/resource.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -53,7 +53,7 @@ class ResourceGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('resource.stub')
-            ->andReturn(file_get_contents('stubs/resource.stub'));
+            ->andReturn($this->stubs('stubs/resource.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -68,7 +68,7 @@ class ResourceGeneratorTest extends TestCase
      */
     public function output_writes_resources_for_render_statements()
     {
-        $template = file_get_contents('stubs/resource.stub');
+        $template = $this->stubs('stubs/resource.stub');
         $this->files->expects('stub')
             ->with('resource.stub')
             ->andReturn($template);

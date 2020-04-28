@@ -74,7 +74,7 @@ class MigrationGenerator implements Generator
         $stub = str_replace('DummyTable', $model->tableName(), $stub);
         $stub = str_replace('// definition...', $this->buildDefinition($model), $stub);
 
-        return $stub;
+        return str_replace(["\r\n","\r"], "\n", $stub);
     }
 
     protected function populatePivotStub(string $stub, array $segments)
@@ -83,7 +83,7 @@ class MigrationGenerator implements Generator
         $stub = str_replace('DummyTable', $this->getPivotTableName($segments), $stub);
         $stub = str_replace('// definition...', $this->buildPivotTableDefinition($segments), $stub);
 
-        return $stub;
+        return str_replace(["\r\n","\r"], "\n", $stub);
     }
 
     protected function buildDefinition(Model $model)

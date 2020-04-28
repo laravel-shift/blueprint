@@ -37,7 +37,7 @@ class FactoryGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('factory.stub')
-            ->andReturn(file_get_contents('stubs/factory.stub'));
+            ->andReturn($this->stubs('stubs/factory.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -52,7 +52,7 @@ class FactoryGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('factory.stub')
-            ->andReturn(file_get_contents('stubs/factory.stub'));
+            ->andReturn($this->stubs('stubs/factory.stub'));
 
         $this->files->expects('exists')
             ->with('database/factories')
@@ -76,7 +76,7 @@ class FactoryGeneratorTest extends TestCase
 
         $this->files->expects('stub')
             ->with('factory.stub')
-            ->andReturn(file_get_contents('stubs/factory.stub'));
+            ->andReturn($this->stubs('stubs/factory.stub'));
 
         $this->files->expects('exists')
             ->with('database/factories')
@@ -101,7 +101,7 @@ class FactoryGeneratorTest extends TestCase
 
         $this->files->expects('stub')
             ->with('factory.stub')
-            ->andReturn(file_get_contents('stubs/factory.stub'));
+            ->andReturn($this->stubs('stubs/factory.stub'));
 
         $this->files->expects('exists')
             ->with('database/factories')
@@ -123,7 +123,7 @@ class FactoryGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('factory.stub')
-            ->andReturn(file_get_contents('stubs/factory.stub'));
+            ->andReturn($this->stubs('stubs/factory.stub'));
 
         $this->files->expects('exists')
             ->with('database/factories/Admin')

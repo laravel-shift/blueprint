@@ -38,7 +38,7 @@ class JobGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('job.stub')
-            ->andReturn(file_get_contents('stubs/job.stub'));
+            ->andReturn($this->stubs('stubs/job.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -52,7 +52,7 @@ class JobGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('job.stub')
-            ->andReturn(file_get_contents('stubs/job.stub'));
+            ->andReturn($this->stubs('stubs/job.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -69,11 +69,11 @@ class JobGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('job.stub')
-            ->andReturn(file_get_contents('stubs/job.stub'));
+            ->andReturn($this->stubs('stubs/job.stub'));
 
         $this->files->expects('stub')
             ->with('partials/constructor.stub')
-            ->andReturn(file_get_contents('stubs/partials/constructor.stub'));
+            ->andReturn($this->stubs('stubs/partials/constructor.stub'));
 
         $this->files->shouldReceive('exists')
             ->twice()
@@ -106,7 +106,7 @@ class JobGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('job.stub')
-            ->andReturn(file_get_contents('stubs/job.stub'));
+            ->andReturn($this->stubs('stubs/job.stub'));
 
         $this->files->expects('exists')
             ->with('app/Jobs/CreateUser.php')
@@ -131,7 +131,7 @@ class JobGeneratorTest extends TestCase
 
         $this->files->expects('stub')
             ->with('job.stub')
-            ->andReturn(file_get_contents('stubs/job.stub'));
+            ->andReturn($this->stubs('stubs/job.stub'));
 
         $this->files->expects('exists')
             ->with('src/path/Jobs')

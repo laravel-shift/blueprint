@@ -34,7 +34,7 @@ class ModelGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('model/class.stub')
-            ->andReturn(file_get_contents('stubs/model/class.stub'));
+            ->andReturn($this->stubs('stubs/model/class.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -49,35 +49,35 @@ class ModelGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('model/class.stub')
-            ->andReturn(file_get_contents('stubs/model/class.stub'));
+            ->andReturn($this->stubs('stubs/model/class.stub'));
 
         $this->files->expects('stub')
             ->with('model/fillable.stub')
-            ->andReturn(file_get_contents('stubs/model/fillable.stub'));
+            ->andReturn($this->stubs('stubs/model/fillable.stub'));
 
         if ($definition === 'definitions/nested-components.bp') {
             $this->files->expects('stub')
                 ->with('model/hidden.stub')
-                ->andReturn(file_get_contents('stubs/model/hidden.stub'));
+                ->andReturn($this->stubs('stubs/model/hidden.stub'));
         }
 
         $this->files->expects('stub')
             ->with('model/casts.stub')
-            ->andReturn(file_get_contents('stubs/model/casts.stub'));
+            ->andReturn($this->stubs('stubs/model/casts.stub'));
 
         if ($definition === 'definitions/readme-example.bp') {
             $this->files->expects('stub')
                 ->with('model/dates.stub')
-                ->andReturn(file_get_contents('stubs/model/dates.stub'));
+                ->andReturn($this->stubs('stubs/model/dates.stub'));
         }
 
         $this->files->shouldReceive('stub')
             ->with('model/method.stub')
-            ->andReturn(file_get_contents('stubs/model/method.stub'));
+            ->andReturn($this->stubs('stubs/model/method.stub'));
 
         $this->files->shouldReceive('stub')
             ->with('model/method-comment.stub')
-            ->andReturn(file_get_contents('stubs/model/method-comment.stub'));
+            ->andReturn($this->stubs('stubs/model/method-comment.stub'));
 
         $this->files->expects('exists')
             ->with(dirname($path))
@@ -98,16 +98,16 @@ class ModelGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('model/class.stub')
-            ->andReturn(file_get_contents('stubs/model/class.stub'));
+            ->andReturn($this->stubs('stubs/model/class.stub'));
         $this->files->expects('stub')
             ->with('model/fillable.stub')
-            ->andReturn(file_get_contents('stubs/model/fillable.stub'));
+            ->andReturn($this->stubs('stubs/model/fillable.stub'));
         $this->files->expects('stub')
             ->with('model/casts.stub')
-            ->andReturn(file_get_contents('stubs/model/casts.stub'));
+            ->andReturn($this->stubs('stubs/model/casts.stub'));
         $this->files->expects('stub')
             ->with('model/method.stub')
-            ->andReturn(file_get_contents('stubs/model/method.stub'));
+            ->andReturn($this->stubs('stubs/model/method.stub'));
 
         $this->files->expects('exists')
             ->with('app')
@@ -132,19 +132,19 @@ class ModelGeneratorTest extends TestCase
 
         $this->files->expects('stub')
             ->with('model/class.stub')
-            ->andReturn(file_get_contents('stubs/model/class.stub'));
+            ->andReturn($this->stubs('stubs/model/class.stub'));
 
         $this->files->expects('stub')
             ->with('model/fillable.stub')
-            ->andReturn(file_get_contents('stubs/model/fillable.stub'));
+            ->andReturn($this->stubs('stubs/model/fillable.stub'));
 
         $this->files->expects('stub')
             ->with('model/casts.stub')
-            ->andReturn(file_get_contents('stubs/model/casts.stub'));
+            ->andReturn($this->stubs('stubs/model/casts.stub'));
 
         $this->files->expects('stub')
             ->with('model/method.stub')
-            ->andReturn(file_get_contents('stubs/model/method.stub'));
+            ->andReturn($this->stubs('stubs/model/method.stub'));
 
         $this->files->expects('exists')
             ->with('src/path/Models')
@@ -170,29 +170,29 @@ class ModelGeneratorTest extends TestCase
 
         $this->files->expects('stub')
             ->with('model/class.stub')
-            ->andReturn(file_get_contents('stubs/model/class.stub'));
+            ->andReturn($this->stubs('stubs/model/class.stub'));
 
         $this->files->expects('stub')
             ->with('model/fillable.stub')
-            ->andReturn(file_get_contents('stubs/model/fillable.stub'));
+            ->andReturn($this->stubs('stubs/model/fillable.stub'));
 
         $this->files->expects('stub')
             ->with('model/casts.stub')
-            ->andReturn(file_get_contents('stubs/model/casts.stub'));
+            ->andReturn($this->stubs('stubs/model/casts.stub'));
 
         if ($definition === 'definitions/readme-example.bp') {
             $this->files->expects('stub')
                 ->with('model/dates.stub')
-                ->andReturn(file_get_contents('stubs/model/dates.stub'));
+                ->andReturn($this->stubs('stubs/model/dates.stub'));
         }
 
         $this->files->shouldReceive('stub')
             ->with('model/method.stub')
-            ->andReturn(file_get_contents('stubs/model/method.stub'));
+            ->andReturn($this->stubs('stubs/model/method.stub'));
 
         $this->files->shouldReceive('stub')
             ->with('model/method-comment.stub')
-            ->andReturn(file_get_contents('stubs/model/method-comment.stub'));
+            ->andReturn($this->stubs('stubs/model/method-comment.stub'));
 
         $this->files->expects('exists')
             ->with(dirname($path))

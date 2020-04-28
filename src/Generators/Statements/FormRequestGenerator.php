@@ -73,7 +73,7 @@ class FormRequestGenerator implements Generator
         $stub = str_replace('DummyClass', $name, $stub);
         $stub = str_replace('// rules...', $this->buildRules($context, $validateStatement), $stub);
 
-        return $stub;
+        return str_replace(["\r\n","\r"], "\n", $stub);
     }
 
     private function buildRules(string $context, ValidateStatement $validateStatement)

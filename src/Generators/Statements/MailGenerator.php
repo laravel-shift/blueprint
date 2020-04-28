@@ -62,7 +62,7 @@ class MailGenerator implements Generator
         $stub = str_replace('DummyClass', $sendStatement->mail(), $stub);
         $stub = str_replace('// properties...', $this->buildConstructor($sendStatement), $stub);
 
-        return $stub;
+        return str_replace(["\r\n","\r"], "\n", $stub);
     }
 
     private function buildConstructor(SendStatement $sendStatement)
@@ -81,7 +81,7 @@ class MailGenerator implements Generator
         $stub .= str_replace('__construct()', '__construct(' . $this->buildParameters($sendStatement->data()) . ')', $constructor);
         $stub = str_replace('//', $this->buildAssignments($sendStatement->data()), $stub);
 
-        return $stub;
+        return str_replace(["\r\n","\r"], "\n", $stub);
     }
 
     private function buildProperties(array $data)

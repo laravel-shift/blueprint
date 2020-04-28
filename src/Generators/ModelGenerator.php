@@ -53,7 +53,7 @@ class ModelGenerator implements Generator
         $stub = str_replace('// ...', trim($body), $stub);
         $stub = $this->addTraits($model, $stub);
 
-        return $stub;
+        return str_replace(["\r\n","\r"], "\n", $stub);
     }
 
     private function buildClassPhpDoc(Model $model)
@@ -239,13 +239,13 @@ class ModelGenerator implements Generator
     private function addTraits(Model $model, $stub)
     {
         if (!$model->usesSoftDeletes()) {
-            return $stub;
+            return str_replace(["\r\n","\r"], "\n", $stub);
         }
 
         $stub = str_replace('use Illuminate\\Database\\Eloquent\\Model;', 'use Illuminate\\Database\\Eloquent\\Model;' . PHP_EOL . 'use Illuminate\\Database\\Eloquent\\SoftDeletes;', $stub);
         $stub = preg_replace('/^\\{$/m', '{' . PHP_EOL . '    use SoftDeletes;' . PHP_EOL, $stub);
 
-        return $stub;
+        return str_replace(["\r\n","\r"], "\n", $stub);
     }
 
     private function phpDataType(string $dataType)
