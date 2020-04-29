@@ -126,9 +126,9 @@ class PostControllerTest extends TestCase
      */
     public function update_saves_and_redirects()
     {
+        $post = factory(Post::class)->create();
         $title = $this->faker->sentence(4);
         $content = $this->faker->paragraphs(3, true);
-        $post = factory(Post::class)->create();
 
         $response = $this->put(route('post.update', $post), [
             'title' => $title,

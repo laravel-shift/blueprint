@@ -19,19 +19,15 @@ controllers:
       redirect: posts.index
 
     show:
-      find: post.id
       render: posts.show with:post
 
     edit:
-      find: post.id
       render: posts.edit with:post
 
     update:
       validate: title, content
-      find: post.id
       save: post
       redirect: posts.index
 
     destroy:
-      find: post.id
       delete: post
