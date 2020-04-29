@@ -157,7 +157,7 @@ class ModelGenerator implements Generator
     {
         $path = str_replace('\\', '/', Blueprint::relativeNamespace($model->fullyQualifiedClassName()));
 
-        return config('blueprint.app_path') . '/' . $path . '.php';
+        return Blueprint::appPath() . '/' . $path . '.php';
     }
 
     private function fillableColumns(array $columns)

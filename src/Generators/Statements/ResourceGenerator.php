@@ -2,6 +2,7 @@
 
 namespace Blueprint\Generators\Statements;
 
+use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Controller;
 use Blueprint\Models\Model;
@@ -61,7 +62,7 @@ class ResourceGenerator implements Generator
 
     protected function getPath(string $name)
     {
-        return config('blueprint.app_path').'/Http/Resources/'.$name.'.php';
+        return Blueprint::appPath().'/Http/Resources/'.$name.'.php';
     }
 
     protected function populateStub(string $stub, ResourceStatement $resource)

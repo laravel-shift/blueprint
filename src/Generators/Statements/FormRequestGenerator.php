@@ -2,6 +2,7 @@
 
 namespace Blueprint\Generators\Statements;
 
+use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Controller;
 use Blueprint\Models\Statements\ValidateStatement;
@@ -64,7 +65,7 @@ class FormRequestGenerator implements Generator
 
     protected function getPath(Controller $controller, string $name)
     {
-        return config('blueprint.app_path') . '/Http/Requests/' . ($controller->namespace() ? $controller->namespace() . '/' : '') . $name . '.php';
+        return Blueprint::appPath() . '/Http/Requests/' . ($controller->namespace() ? $controller->namespace() . '/' : '') . $name . '.php';
     }
 
     protected function populateStub(string $stub, string $name, $context, ValidateStatement $validateStatement, Controller $controller)
