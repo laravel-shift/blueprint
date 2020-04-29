@@ -106,6 +106,10 @@ class TestGenerator implements Generator
             $context = Str::singular($controller->prefix());
             $variable = Str::camel($context);
 
+            if (in_array($name, ['edit', 'update', 'show', 'destroy'])) {
+                $setup['data'][] = sprintf('$%s = factory(%s::class)->create();', $variable, $model);
+            }
+
             foreach ($statements as $statement) {
                 if ($statement instanceof SendStatement) {
                     $this->addImport($controller, 'Illuminate\\Support\\Facades\\Mail');
@@ -335,6 +339,7 @@ class TestGenerator implements Generator
                         $setup['data'][] = sprintf('$%s = factory(%s::class)->create();', $variable, $model);
                     } elseif ($statement->operation() === 'delete') {
                         $tested_bits |= self::TESTS_DELETE;
+                        $setup['data'][] = sprintf('$%s = factory(%s::class)->create();', $variable, $model);
                         $assertions['generic'][] = sprintf('$this->assertDeleted($%s);', $variable);
                     }
                 } elseif ($statement instanceof QueryStatement) {
@@ -344,6 +349,10 @@ class TestGenerator implements Generator
 
                     $this->addImport($controller, config('blueprint.namespace') . '\\' . $this->determineModel($controller->prefix(), $statement->model()));
                 }
+            }
+
+            foreach ($setup as $key => $value) {
+                $setup[$key] = array_unique($value);
             }
 
             $call = sprintf('$response = $this->%s(route(\'%s.%s\'', $this->httpMethodForAction($name), Str::lower($context), $name);
