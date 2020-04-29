@@ -2,13 +2,12 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\Order;
+use App\Post;
 use Faker\Generator as Faker;
 
-$factory->define(Order::class, function (Faker $faker) {
+$factory->define(Post::class, function (Faker $faker) {
     return [
-        'user_id' => factory(\App\User::class),
-        'subscription_id' => factory(\App\Subscription::class),
-        'meta' => '[]',
+        'title' => $faker->sentence(4),
+        'content' => $faker->paragraphs(3, true),
     ];
 });

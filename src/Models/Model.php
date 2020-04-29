@@ -153,7 +153,7 @@ class Model
 
     public function addPivotTable(string $reference)
     {
-        $segments = [$this->name(), strtolower($reference)];
+        $segments = [$this->name(), $reference];
         sort($segments);
         $this->pivotTables[] = $segments;
     }

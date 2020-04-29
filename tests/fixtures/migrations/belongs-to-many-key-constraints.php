@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDiaryJourneyTable extends Migration
+class CreateJourneysTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class CreateDiaryJourneyTable extends Migration
      */
     public function up()
     {
-        Schema::create('diary_journey', function (Blueprint $table) {
-            $table->foreignId('diary_id');
-            $table->foreignId('journey_id');
+        Schema::create('journeys', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->timestamps();
         });
     }
 
@@ -26,6 +28,6 @@ class CreateDiaryJourneyTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('diary_journey');
+        Schema::dropIfExists('journeys');
     }
 }
