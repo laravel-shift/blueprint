@@ -233,7 +233,7 @@ class ModelGenerator implements Generator
             $output = preg_replace('/^(\s+)[^=]+=>\s+/m', '$1', $output);
         }
 
-        return trim($output);
+        return trim(str_replace("\n", PHP_EOL, $output));
     }
 
     private function addTraits(Model $model, $stub)
