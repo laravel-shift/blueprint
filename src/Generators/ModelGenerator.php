@@ -157,7 +157,7 @@ class ModelGenerator implements Generator
     {
         $path = str_replace('\\', '/', Blueprint::relativeNamespace($model->fullyQualifiedClassName()));
 
-        return config('blueprint.app_path') . '/' . $path . '.php';
+        return Blueprint::appPath() . '/' . $path . '.php';
     }
 
     private function fillableColumns(array $columns)
@@ -233,7 +233,7 @@ class ModelGenerator implements Generator
             $output = preg_replace('/^(\s+)[^=]+=>\s+/m', '$1', $output);
         }
 
-        return trim($output);
+        return trim(str_replace("\n", PHP_EOL, $output));
     }
 
     private function addTraits(Model $model, $stub)
@@ -243,7 +243,7 @@ class ModelGenerator implements Generator
         }
 
         $stub = str_replace('use Illuminate\\Database\\Eloquent\\Model;', 'use Illuminate\\Database\\Eloquent\\Model;' . PHP_EOL . 'use Illuminate\\Database\\Eloquent\\SoftDeletes;', $stub);
-        $stub = preg_replace('/^\\{$/m', '{' . PHP_EOL . '    use SoftDeletes;' . PHP_EOL, $stub);
+        $stub = Str::replaceFirst('{', '{' . PHP_EOL . '    use SoftDeletes;' . PHP_EOL, $stub);
 
         return $stub;
     }

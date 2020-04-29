@@ -2,6 +2,7 @@
 
 namespace Blueprint\Generators\Statements;
 
+use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Statements\SendStatement;
 
@@ -53,7 +54,7 @@ class MailGenerator implements Generator
 
     protected function getPath(string $name)
     {
-        return config('blueprint.app_path') . '/Mail/' . $name . '.php';
+        return Blueprint::appPath() . '/Mail/' . $name . '.php';
     }
 
     protected function populateStub(string $stub, SendStatement $sendStatement)

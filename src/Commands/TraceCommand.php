@@ -77,10 +77,10 @@ class TraceCommand extends Command
 
     private function appClasses()
     {
-        $dir = config('blueprint.app_path');
+        $dir = Blueprint::appPath('app');
 
         if (config('blueprint.models_namespace')) {
-            $dir .= DIRECTORY_SEPARATOR . str_replace('\\', '/', config('blueprint.models_namespace'));
+            $dir .= '/' . str_replace('\\', '/', config('blueprint.models_namespace'));
         }
 
         if (!$this->files->exists($dir)) {
@@ -89,9 +89,9 @@ class TraceCommand extends Command
 
         return array_map(function (\SplFIleInfo $file) {
             return str_replace(
-                [config('blueprint.app_path') . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR],
+                [Blueprint::appPath() . '/', '/'],
                 [config('blueprint.namespace') . '\\', '\\'],
-                $file->getPath() . DIRECTORY_SEPARATOR . $file->getBasename('.php')
+                $file->getPath() . '/' . $file->getBasename('.php')
             );
         }, $this->files->allFiles($dir));
     }

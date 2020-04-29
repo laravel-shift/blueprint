@@ -2,10 +2,10 @@
 
 namespace Blueprint;
 
+use Blueprint\Contracts\Generator;
 use Blueprint\Contracts\Lexer;
 use Illuminate\Support\Str;
 use Symfony\Component\Yaml\Yaml;
-use Blueprint\Contracts\Generator;
 
 class Blueprint
 {
@@ -22,6 +22,11 @@ class Blueprint
         }
 
         return $reference;
+    }
+
+    public static function appPath()
+    {
+        return str_replace('\\', '/', config('blueprint.app_path'));
     }
 
     public function parse($content)

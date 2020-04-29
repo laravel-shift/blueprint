@@ -167,7 +167,7 @@ class ControllerGenerator implements Generator
     {
         $path = str_replace('\\', '/', Blueprint::relativeNamespace($controller->fullyQualifiedClassName()));
 
-        return config('blueprint.app_path') . '/' . $path . '.php';
+        return Blueprint::appPath() . '/' . $path . '.php';
     }
 
     private function addImport(Controller $controller, $class)

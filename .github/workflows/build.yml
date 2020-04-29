@@ -1,7 +1,6 @@
 name: Build
 
 on:
-  push:
   pull_request:
   schedule:
     - cron: "0 0 * * *"
@@ -65,11 +64,6 @@ jobs:
           path: ~/.composer/cache/files
           key: dependencies-os-${{ matrix.os }}-php-${{ matrix.php-version }}-laravel-${{ matrix.laravel-version }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: dependencies-os-${{ matrix.os }}-php-${{ matrix.php-version }}-laravel-${{ matrix.laravel-version }}
-
-      - uses: jasonmccreary/PHP-Lint@fetch-signature
-
-      - name: Validate composer.json and composer.lock
-        run: composer validate
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
