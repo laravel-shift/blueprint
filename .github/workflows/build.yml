@@ -66,11 +66,6 @@ jobs:
           key: dependencies-os-${{ matrix.os }}-php-${{ matrix.php-version }}-laravel-${{ matrix.laravel-version }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: dependencies-os-${{ matrix.os }}-php-${{ matrix.php-version }}-laravel-${{ matrix.laravel-version }}
 
-      - uses: jasonmccreary/PHP-Lint@fetch-signature
-
-      - name: Validate composer.json and composer.lock
-        run: composer validate
-
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
