@@ -102,7 +102,7 @@ class BlueprintCommand extends Command
     {
         if (file_exists('draft.yaml')) {
             return 'draft.yaml';
-        } 
+        }
 
         if (file_exists('draft.yml')) {
             return 'draft.yml';
