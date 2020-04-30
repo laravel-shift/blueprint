@@ -16,7 +16,7 @@ class BlueprintCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'blueprint:build {draft=draft.yaml}';
+    protected $signature = 'blueprint:build {draft?}';
 
     /**
      * The console command description.
@@ -46,7 +46,8 @@ class BlueprintCommand extends Command
      */
     public function handle()
     {
-        $file = $this->argument('draft');
+        $file = $this->argument('draft') ?? $this->defaultDraftFile();
+
         if (!file_exists($file)) {
             $this->error('Draft file could not be found: ' . $file);
         }
@@ -95,5 +96,18 @@ class BlueprintCommand extends Command
         }
 
         return 'info';
+    }
+
+    private function defaultDraftFile()
+    {
+        if (file_exists('draft.yaml')) {
+            return 'draft.yaml';
+        } 
+
+        if (file_exists('draft.yml')) {
+            return 'draft.yml';
+        }
+
+        return null;
     }
 }
