@@ -15,10 +15,11 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('external_id')->nullable()->index();
-            $table->uuid('sub_id');
-            $table->foreign('sub_id')->references('id')->on('subscriptions')->onDelete('cascade');
+            $table->uuid('subscription_id');
+            $table->foreign('journey_id')->references('id')->on('subscriptions')->onDelete('cascade');
             $table->timestamp('expires_at')->nullable()->index();
             $table->json('meta')->default('[]');
             $table->timestamps();

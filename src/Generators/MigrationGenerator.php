@@ -108,41 +108,59 @@ class MigrationGenerator implements Generator
                 $dataType = 'nullable' . ucfirst($dataType);
             }
 
+            $column_definition = self::INDENT;
             if ($dataType === 'bigIncrements' && $this->isLaravel7orNewer()) {
-                $definition .= self::INDENT . '$table->id(';
+                $column_definition .= '$table->id(';
             } else {
-                $definition .= self::INDENT . '$table->' . $dataType . "('{$column->name()}'";
+                $column_definition .= '$table->' . $dataType . "('{$column->name()}'";
             }
 
             if (!empty($column->attributes()) && !in_array($column->dataType(), ['id', 'uuid'])) {
-                $definition .= ', ';
+                $column_definition .= ', ';
                 if (in_array($column->dataType(), ['set', 'enum'])) {
-                    $definition .= json_encode($column->attributes());
+                    $column_definition .= json_encode($column->attributes());
                 } else {
-                    $definition .= implode(', ', $column->attributes());
+                    $column_definition .= implode(', ', $column->attributes());
                 }
             }
-            $definition .= ')';
+            $column_definition .= ')';
+
+            $modifiers = $column->modifiers();
 
             $foreign = '';
+            $foreign_modifier = $column->isForeignKey();
 
-            foreach ($column->modifiers() as $modifier) {
+            if ($this->shouldAddForeignKeyConstraint($column)) {
+                $foreign = $this->buildForeignKey($column->name(), $foreign_modifier === 'foreign' ? null : $foreign_modifier, $column->dataType());
+                if ($column->dataType() === 'id' && $this->isLaravel7orNewer()) {
+                    $column_definition = $foreign;
+                    $foreign = '';
+                }
+
+                // TODO: unset the proper modifier
+                $modifiers = collect($modifiers)->reject(function ($modifier) {
+                    return (is_array($modifier) && key($modifier) === 'foreign') || $modifier === 'foreign';
+                });
+            }
+
+            foreach ($modifiers as $modifier) {
                 if (is_array($modifier)) {
-                    if (key($modifier) === 'foreign') {
-                        $foreign = self::INDENT . '$table->foreign(' . "'{$column->name()}')->references('id')->on('" . Str::lower(Str::plural(current($modifier))) . "')->onDelete('cascade');" . PHP_EOL;
-                    } else {
-                        $definition .= '->' . key($modifier) . '(' . current($modifier) . ')';
-                    }
+                    $column_definition .= '->' . key($modifier) . '(' . current($modifier) . ')';
                 } elseif ($modifier === 'unsigned' && Str::startsWith($dataType, 'unsigned')) {
                     continue;
                 } elseif ($modifier === 'nullable' && Str::startsWith($dataType, 'nullable')) {
                     continue;
                 } else {
-                    $definition .= '->' . $modifier . '()';
+                    $column_definition .= '->' . $modifier . '()';
                 }
             }
 
-            $definition .= ';' . PHP_EOL . $foreign;
+            $column_definition .= ';' . PHP_EOL;
+            if (!empty($foreign)) {
+                $column_definition .= $foreign . ';' . PHP_EOL;
+            }
+
+            $definition .= $column_definition;
         }
 
         if ($model->usesSoftDeletes()) {
@@ -156,16 +174,55 @@ class MigrationGenerator implements Generator
         return trim($definition);
     }
 
-    protected function buildPivotTableDefinition(array $segments, $dataType = 'unsignedBigInteger')
+    protected function buildPivotTableDefinition(array $segments)
     {
         $definition = '';
 
         foreach ($segments as $segment) {
-            $column = strtolower($segment) . '_id';
-            $definition .= self::INDENT . '$table->' . $dataType . "('{$column}');" . PHP_EOL;
+            $column = Str::lower($segment);
+            $references = 'id';
+            $on = Str::plural($column);
+            $foreign = Str::singular($column) . '_' . $references;
+
+            if (!$this->isLaravel7orNewer()) {
+                $definition .= self::INDENT . '$table->unsignedBigInteger(\'' . $foreign . '\');' . PHP_EOL;
+            }
+
+            if (config('blueprint.use_constraints')) {
+                $definition .= $this->buildForeignKey($foreign, $on, 'id') . ';' . PHP_EOL;
+            } elseif ($this->isLaravel7orNewer()) {
+                $definition .= self::INDENT . '$table->foreignId(\'' . $foreign . '\');' . PHP_EOL;
+            }
         }
 
         return trim($definition);
+    }
+
+    protected function buildForeignKey(string $column_name, ?string $on, string $type)
+    {
+        if (is_null($on)) {
+            $table = Str::plural(Str::beforeLast($column_name, '_'));
+            $column = Str::afterLast($column_name, '_');
+        } elseif (Str::contains($on, '.')) {
+            [$table, $column] = explode('.', $on);
+            $table = Str::snake($table);
+        } else {
+            $table = Str::plural($on);
+            $column = Str::afterLast($column_name, '_');
+        }
+
+        if ($this->isLaravel7orNewer() && $type === 'id') {
+            if ($column_name === Str::singular($table) . '_' . $column) {
+                return self::INDENT . '$table->foreignId' . "('{$column_name}')->constrained()->cascadeOnDelete()";
+            }
+            if ($column === 'id') {
+                return self::INDENT . '$table->foreignId' . "('{$column_name}')->constrained('{$table}')->cascadeOnDelete()";
+            }
+
+            return self::INDENT . '$table->foreignId' . "('{$column_name}')->constrained('{$table}', '{$column}')->cascadeOnDelete())";
+        }
+
+        return self::INDENT . '$table->foreign' . "('{$column_name}')->references('{$column}')->on('{$table}')->onDelete('cascade')";
     }
 
     protected function getClassName(Model $model)
@@ -200,5 +257,18 @@ class MigrationGenerator implements Generator
         }, $segments);
         sort($segments);
         return strtolower(implode('_', $segments));
+    }
+
+    private function shouldAddForeignKeyConstraint(\Blueprint\Models\Column $column)
+    {
+        if ($column->name() === 'id') {
+            return false;
+        }
+
+        if ($column->isForeignKey()) {
+            return true;
+        }
+
+        return in_array($column->dataType(), ['id', 'uuid']) && config('blueprint.use_constraints');
     }
 }

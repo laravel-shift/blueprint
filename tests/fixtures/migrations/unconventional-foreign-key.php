@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateJourneysTable extends Migration
+class CreateStatesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateJourneysTable extends Migration
      */
     public function up()
     {
-        Schema::create('journeys', function (Blueprint $table) {
+        Schema::create('states', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->unsignedBigInteger('user_id');
+            $table->string('country_code');
+            $table->foreign('country_code')->references('code')->on('countries')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ class CreateJourneysTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('journeys');
+        Schema::dropIfExists('states');
     }
 }

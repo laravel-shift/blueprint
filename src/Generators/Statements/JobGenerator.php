@@ -2,6 +2,7 @@
 
 namespace Blueprint\Generators\Statements;
 
+use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Statements\DispatchStatement;
 
@@ -53,7 +54,7 @@ class JobGenerator implements Generator
 
     protected function getPath(string $name)
     {
-        return config('blueprint.app_path') . '/Jobs/' . $name . '.php';
+        return Blueprint::appPath() . '/Jobs/' . $name . '.php';
     }
 
     protected function populateStub(string $stub, DispatchStatement $dispatchStatement)

@@ -216,6 +216,51 @@ class BlueprintTest extends TestCase
     /**
      * @test
      */
+    public function it_parses_the_readme_example_with_different_platform_eols()
+    {
+        $definition = $this->fixture('definitions/readme-example.bp');
+
+        $LF = "\n";
+        $CR = "\r";
+        $CRLF = "\r\n";
+
+        $definition_mac_eol = str_replace($LF, $CR, $definition);
+        $definition_windows_eol = str_replace($LF, $CRLF, $definition);
+
+        $expected = [
+            'models' => [
+                'Post' => [
+                    'title' => 'string:400',
+                    'content' => 'longtext',
+                    'published_at' => 'nullable timestamp',
+                ],
+            ],
+            'controllers' => [
+                'Post' => [
+                    'index' => [
+                        'query' => 'all:posts',
+                        'render' => 'post.index with:posts',
+                    ],
+                    'store' => [
+                        'validate' => 'title, content',
+                        'save' => 'post',
+                        'send' => 'ReviewNotification to:post.author with:post',
+                        'dispatch' => 'SyncMedia with:post',
+                        'fire' => 'NewPost with:post',
+                        'flash' => 'post.title',
+                        'redirect' => 'post.index',
+                    ],
+                ],
+            ],
+        ];
+        
+        $this->assertEquals($expected, $this->subject->parse($definition_mac_eol));
+        $this->assertEquals($expected, $this->subject->parse($definition_windows_eol));
+    }
+
+    /**
+     * @test
+     */
     public function it_throws_a_custom_error_when_parsing_fails()
     {
         $this->expectException(ParseException::class);

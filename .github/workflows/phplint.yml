@@ -1,0 +1,16 @@
+name: PHPLint
+
+on: [pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: jasonmccreary/PHP-Lint@fetch-signature
+
+    - name: Validate composer.json and composer.lock
+      run: composer validate

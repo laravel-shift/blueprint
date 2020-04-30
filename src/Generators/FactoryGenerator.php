@@ -73,8 +73,14 @@ class FactoryGenerator implements Generator
             }
 
             if (in_array($column->dataType(), ['id', 'uuid'])) {
-                $name = Str::beforeLast($column->name(), '_id');
-                $class = Str::studly($column->attributes()[0] ?? $name);
+                $foreign = $column->isForeignKey();
+
+                if ($foreign && $foreign !== 'foreign') {
+                    $class = Str::studly(Str::singular($foreign));
+                } else {
+                    $name = Str::beforeLast($column->name(), '_id');
+                    $class = Str::studly($column->attributes()[0] ?? $name);
+                }
 
                 $definition .= self::INDENT . "'{$column->name()}' => ";
                 $definition .= sprintf('factory(%s::class)', '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);

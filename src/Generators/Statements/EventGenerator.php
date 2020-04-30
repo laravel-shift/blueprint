@@ -2,6 +2,7 @@
 
 namespace Blueprint\Generators\Statements;
 
+use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Statements\FireStatement;
 
@@ -57,7 +58,7 @@ class EventGenerator implements Generator
 
     protected function getPath(string $name)
     {
-        return config('blueprint.app_path') . '/Events/' . $name . '.php';
+        return Blueprint::appPath() . '/Events/' . $name . '.php';
     }
 
     protected function populateStub(string $stub, FireStatement $fireStatement)

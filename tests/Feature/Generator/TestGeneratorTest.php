@@ -111,6 +111,7 @@ class TestGeneratorTest extends TestCase
         return [
             ['definitions/readme-example.bp', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/readme-example.php'],
             ['definitions/respond-statements.bp', 'tests/Feature/Http/Controllers/Api/PostControllerTest.php', 'tests/respond-statements.php'],
+            ['definitions/full-crud-example.bp', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/full-crud-example.php'],
         ];
     }
 }

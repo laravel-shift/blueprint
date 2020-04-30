@@ -37,6 +37,13 @@ class Column
         return $this->modifiers;
     }
 
+    public function isForeignKey()
+    {
+        return collect($this->modifiers())->filter(function ($modifier) {
+            return (is_array($modifier) && key($modifier) === 'foreign') || $modifier === 'foreign';
+        })->flatten()->first();
+    }
+
     public function defaultValue()
     {
         return collect($this->modifiers())

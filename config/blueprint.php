@@ -56,5 +56,17 @@ return [
     */
     'generate_phpdocs' => false,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Foreign Key Constraints
+    |--------------------------------------------------------------------------
+    |
+    | Here you may enable foreign key constraints for the migrations. This
+    | will link records in the defined tables together and help the database
+    | to be more structured and readable.
+    |
+    */
+    'use_constraints' => false,
+
     'fake_nullables' => true,
 ];
