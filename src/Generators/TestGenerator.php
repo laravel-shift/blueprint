@@ -371,7 +371,7 @@ class TestGenerator implements Generator
             }
             $call .= ');';
 
-            $body = implode(PHP_EOL . PHP_EOL, array_map([$this, 'buildLines'], array_filter($setup)));
+            $body = implode(PHP_EOL . PHP_EOL, array_map([$this, 'buildLines'], $this->uniqueSetupLines($setup)));
             $body .= PHP_EOL . PHP_EOL;
             $body .= str_pad(' ', 8) . $call;
             $body .= PHP_EOL . PHP_EOL;
@@ -448,7 +448,7 @@ class TestGenerator implements Generator
             return $controller->name() . Str::studly($name) . 'Request';
         }
 
-        return $controller->namespace() .'\\'. $controller->name() . Str::studly($name) . 'Request';
+        return $controller->namespace() . '\\' . $controller->name() . Str::studly($name) . 'Request';
     }
 
     private function buildFormRequestTestCase(string $controller, string $action, string $form_request)
@@ -571,5 +571,14 @@ END;
         }
 
         return [null, $field];
+    }
+
+    private function uniqueSetupLines(array $setup)
+    {
+        return collect($setup)->filter()
+            ->map(function ($lines) {
+                return array_unique($lines);
+            })
+            ->toArray();
     }
 }
