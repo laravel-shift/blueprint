@@ -46,7 +46,7 @@ class BlueprintCommand extends Command
      */
     public function handle()
     {
-        $file = $this->argument('draft') ?? $this->getDraft();
+        $file = $this->argument('draft') ?? $this->defaultDraftFile();
 
         if (!file_exists($file)) {
             $this->error('Draft file could not be found: ' . $file);
@@ -98,13 +98,16 @@ class BlueprintCommand extends Command
         return 'info';
     }
 
-    private function getDraft()
+    private function defaultDraftFile()
     {
         if (file_exists('draft.yaml')) {
-            $draft = 'draft.yaml';
-        } elseif (file_exists('draft.yml')) {
-            $draft = 'draft.yml';
+            return 'draft.yaml';
+        } 
+
+        if (file_exists('draft.yml')) {
+            return 'draft.yml';
         }
-        return $draft;
+
+        return null;
     }
 }
