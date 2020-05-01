@@ -257,12 +257,12 @@ class MigrationGeneratorTest extends TestCase
             ->with('migration.stub')
             ->andReturn(file_get_contents('stubs/migration.stub'));
 
-        $now = Carbon::createFromTimestamp(1588354812);
+        $now = Carbon::now();
         Carbon::setTestNow($now);
 
-        $company_migration = str_replace('timestamp', Carbon::createFromTimestamp(1588354811)->format('Y_m_d_His'), 'database/migrations/timestamp_create_companies_table.php');
-        $people_migration = str_replace('timestamp', Carbon::createFromTimestamp(1588354812)->format('Y_m_d_His'), 'database/migrations/timestamp_create_people_table.php');
-        $pivot_migration = str_replace('timestamp', Carbon::createFromTimestamp(1588354811)->format('Y_m_d_His'), 'database/migrations/timestamp_create_company_person_table.php');
+        $company_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_companies_table.php');
+        $people_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_people_table.php');
+        $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_company_person_table.php');
 
         $this->files->expects('put')
             ->with($company_migration, $this->fixture('migrations/belongs-to-many-duplicated-company.php'));
@@ -274,7 +274,7 @@ class MigrationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('definitions/belongs-to-many-duplicated-pivot.bp'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$company_migration, $pivot_migration, $people_migration]], $this->subject->output($tree));
+        $this->assertEquals(['created' => [$company_migration, $people_migration, $pivot_migration]], $this->subject->output($tree));
     }
 
     /**
@@ -292,12 +292,12 @@ class MigrationGeneratorTest extends TestCase
             ->with('migration.stub')
             ->andReturn(file_get_contents('stubs/migration.stub'));
 
-        $now = Carbon::createFromTimestamp(1588354812);
+        $now = Carbon::now();
         Carbon::setTestNow($now);
 
-        $company_migration = str_replace('timestamp', Carbon::createFromTimestamp(1588354811)->format('Y_m_d_His'), 'database/migrations/timestamp_create_companies_table.php');
-        $people_migration = str_replace('timestamp', Carbon::createFromTimestamp(1588354812)->format('Y_m_d_His'), 'database/migrations/timestamp_create_people_table.php');
-        $pivot_migration = str_replace('timestamp', Carbon::createFromTimestamp(1588354811)->format('Y_m_d_His'), 'database/migrations/timestamp_create_company_person_table.php');
+        $company_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_companies_table.php');
+        $people_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_people_table.php');
+        $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_company_person_table.php');
 
         $this->files->expects('put')
             ->with($company_migration, $this->fixture('migrations/belongs-to-many-duplicated-company-laravel6.php'));
@@ -309,7 +309,7 @@ class MigrationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('definitions/belongs-to-many-duplicated-pivot.bp'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$company_migration, $pivot_migration, $people_migration]], $this->subject->output($tree));
+        $this->assertEquals(['created' => [$company_migration, $people_migration, $pivot_migration]], $this->subject->output($tree));
     }
 
     public function modelTreeDataProvider()

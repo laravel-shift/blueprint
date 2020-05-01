@@ -53,16 +53,16 @@ class MigrationGenerator implements Generator
             if (!empty($model->pivotTables())) {
                 foreach ($model->pivotTables() as $pivotSegments) {
                     $pivotTable = $this->getPivotTableName($pivotSegments);
-                    if (in_array($pivotTable, $created_pivot_tables)) {
-                        continue;
-                    }
-
-                    $path = $this->getPivotTablePath($pivotTable, $sequential_timestamp);
-                    $this->files->put($path, $this->populatePivotStub($stub, $pivotSegments));
-                    $created_pivot_tables[] = $pivotTable;
-                    $output['created'][] = $path;
+                    $created_pivot_tables[$pivotTable] = $pivotSegments;
                 }
             }
+        }
+
+        foreach ($created_pivot_tables as $pivotTable => $pivotSegments) {
+            $path = $this->getPivotTablePath($pivotTable, $sequential_timestamp);
+            $this->files->put($path, $this->populatePivotStub($stub, $pivotSegments));
+            $created_pivot_tables[] = $pivotTable;
+            $output['created'][] = $path;
         }
 
         return $output;
