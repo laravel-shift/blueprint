@@ -1,0 +1,9 @@
+models:
+  Company:
+    name: string
+    relationships:
+      belongsToMany: Person
+  Person:
+    name: string
+    relationships:
+      belongsToMany: Company
