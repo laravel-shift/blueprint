@@ -53,7 +53,7 @@ class MigrationGenerator implements Generator
             if (!empty($model->pivotTables())) {
                 foreach ($model->pivotTables() as $pivotSegments) {
                     $pivotTable = $this->getPivotTableName($pivotSegments);
-                    if (isset($created_pivot_tables[$pivotTable])) {
+                    if (in_array($pivotTable, $created_pivot_tables)) {
                         continue;
                     }
 
