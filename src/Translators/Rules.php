@@ -110,14 +110,13 @@ class Rules
 
     private static function betweenRuleForNumericTypes(Column $column, $numericType)
     {
-        $defaultPrecisionAndScale = [8, 2];
         $parameters = explode(",", Str::between($column->dataType(), "$numericType:", " "));
 
         if (count($parameters) === 1) {
-            [$precision, $scale] = $defaultPrecisionAndScale;
-        } else {
-            [$precision, $scale] = $parameters;
+            return;
         }
+
+        [$precision, $scale] = $parameters;
 
         $max = substr_replace(str_pad("", $precision, '9'), ".", $precision - $scale, 0);
         $min = "-" . $max;

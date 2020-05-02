@@ -171,25 +171,25 @@ class RulesTest extends TestCase
     /**
     * @test
     */
-    public function forColumn_return_default_values_rule_for_decimal()
+    public function forColumn_does_not_return_between_rule_for_decimal_without_precion_and_scale()
     {
         $column = new Column('column', "decimal");
 
-        $this->assertContains("between:-999999.99,999999.99", Rules::fromColumn('context', $column));
+        $this->assertNotContains("between", Rules::fromColumn('context', $column));
     }
 
     /**
     * @test
     */
-    public function forColumn_return_default_values_rule_for_unsigned_decimal()
+    public function forColumn_does_not_return_between_rule_for_unsigned_decimal_without_precion_and_scale()
     {
         $unsignedBeforeDecimalColumn = new Column('column', "unsigned decimal");
 
-        $this->assertContains("between:0,999999.99", Rules::fromColumn('context', $unsignedBeforeDecimalColumn));
+        $this->assertNotContains("between", Rules::fromColumn('context', $unsignedBeforeDecimalColumn));
 
         $unsignedAfterDecimalColumn = new Column('column', "decimal unsigned");
 
-        $this->assertContains("between:0,999999.99", Rules::fromColumn('context', $unsignedAfterDecimalColumn));
+        $this->assertNotContains("between", Rules::fromColumn('context', $unsignedAfterDecimalColumn));
     }
 
     /**
@@ -221,25 +221,25 @@ class RulesTest extends TestCase
     /**
     * @test
     */
-    public function forColumn_return_default_values_rule_for_float()
+    public function forColumn_does_not_return_between_rule_for_float_without_precion_and_scale()
     {
         $column = new Column('column', "float");
 
-        $this->assertContains("between:-999999.99,999999.99", Rules::fromColumn('context', $column));
+        $this->assertNotContains("between", Rules::fromColumn('context', $column));
     }
 
     /**
     * @test
     */
-    public function forColumn_return_default_values_rule_for_unsigned_float()
+    public function forColumn_does_not_return_between_rule_for_unsigned_float_without_precion_and_scale()
     {
         $unsignedBeforeFloatColumn = new Column('column', "unsigned float");
 
-        $this->assertContains("between:0,999999.99", Rules::fromColumn('context', $unsignedBeforeFloatColumn));
+        $this->assertNotContains("between", Rules::fromColumn('context', $unsignedBeforeFloatColumn));
 
         $unsignedAfterFloatColumn = new Column('column', "float unsigned");
 
-        $this->assertContains("between:0,999999.99", Rules::fromColumn('context', $unsignedAfterFloatColumn));
+        $this->assertNotContains("between", Rules::fromColumn('context', $unsignedAfterFloatColumn));
     }
 
     /**
@@ -271,25 +271,25 @@ class RulesTest extends TestCase
     /**
     * @test
     */
-    public function forColumn_return_default_values_rule_for_double()
+    public function forColumn_does_not_return_between_rule_for_double_without_precion_and_scale()
     {
         $column = new Column('column', "double");
 
-        $this->assertContains("between:-999999.99,999999.99", Rules::fromColumn('context', $column));
+        $this->assertNotContains("between", Rules::fromColumn('context', $column));
     }
 
     /**
     * @test
     */
-    public function forColumn_return_default_values_rule_for_unsigned_double()
+    public function forColumn_does_not_return_between_rule_for_unsigned_double_without_precion_and_scale()
     {
         $unsignedBeforeDoubleColumn = new Column('column', "unsigned double");
 
-        $this->assertContains("between:0,999999.99", Rules::fromColumn('context', $unsignedBeforeDoubleColumn));
+        $this->assertNotContains("between", Rules::fromColumn('context', $unsignedBeforeDoubleColumn));
 
         $unsignedAfterDoubleColumn = new Column('column', "double unsigned");
 
-        $this->assertContains("between:0,999999.99", Rules::fromColumn('context', $unsignedAfterDoubleColumn));
+        $this->assertNotContains("between", Rules::fromColumn('context', $unsignedAfterDoubleColumn));
     }
 
     /**
