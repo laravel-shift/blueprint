@@ -210,7 +210,7 @@ class ModelGeneratorTest extends TestCase
     /**
      * @test
      */
-    public function use_guarded_option_generates_models_with_an_empty_array()
+    public function output_generates_models_with_guarded_property_when_config_option_is_set()
     {
         $this->app['config']->set('blueprint.use_guarded', true);
 
