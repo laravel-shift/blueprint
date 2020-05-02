@@ -92,11 +92,15 @@ class ModelGenerator implements Generator
     {
         $properties = '';
 
-        $columns = $this->fillableColumns($model->columns());
-        if (!empty($columns)) {
-            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model/fillable.stub'));
+        if (config('blueprint.use_guarded')) {
+            $properties .= $this->files->stub('model/guarded.stub');
         } else {
-            $properties .= $this->files->stub('model/fillable.stub');
+            $columns = $this->fillableColumns($model->columns());
+            if (!empty($columns)) {
+                $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model/fillable.stub'));
+            } else {
+                $properties .= $this->files->stub('model/fillable.stub');
+            }
         }
 
         $columns = $this->hiddenColumns($model->columns());

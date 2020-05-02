@@ -69,4 +69,15 @@ return [
     'use_constraints' => false,
 
     'fake_nullables' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Models
+    |--------------------------------------------------------------------------
+    |
+    | Here you may choose to use $guarded instead $fillable.
+    |
+    */
+
+    'use_guarded' => false,
 ];

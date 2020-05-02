@@ -197,6 +197,7 @@ class ModelGeneratorTest extends TestCase
         $this->files->expects('exists')
             ->with(dirname($path))
             ->andReturnTrue();
+
         $this->files->expects('put')
             ->with($path, $this->fixture($model));
 
@@ -204,6 +205,42 @@ class ModelGeneratorTest extends TestCase
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function output_generates_models_with_guarded_property_when_config_option_is_set()
+    {
+        $this->app['config']->set('blueprint.use_guarded', true);
+
+        $this->files->expects('stub')
+            ->with('model/class.stub')
+            ->andReturn(file_get_contents('stubs/model/class.stub'));
+
+        $this->files->expects('stub')
+            ->with('model/guarded.stub')
+            ->andReturn(file_get_contents('stubs/model/guarded.stub'));
+
+        $this->files->expects('stub')
+            ->with('model/casts.stub')
+            ->andReturn(file_get_contents('stubs/model/casts.stub'));
+
+        $this->files->shouldReceive('stub')
+            ->with('model/method.stub')
+            ->andReturn(file_get_contents('stubs/model/method.stub'));
+
+        $this->files->expects('exists')
+            ->with(dirname('app/Comment.php'))
+            ->andReturnTrue();
+
+        $this->files->expects('put')
+            ->with('app/Comment.php', $this->fixture('models/model-guarded.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/model-guarded.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['app/Comment.php']], $this->subject->output($tree));
     }
 
     public function modelTreeDataProvider()
