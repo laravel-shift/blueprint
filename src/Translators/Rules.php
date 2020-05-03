@@ -80,6 +80,18 @@ class Rules
             array_push($rules, 'unique:' . $context . ',' . $column->name());
         }
 
+        if (Str::contains($column->dataType(), 'decimal')) {
+            array_push($rules, self::betweenRuleForNumericTypes($column, 'decimal'));
+        }
+
+        if (Str::contains($column->dataType(), 'float')) {
+            array_push($rules, self::betweenRuleForNumericTypes($column, 'float'));
+        }
+
+        if (Str::contains($column->dataType(), 'double')) {
+            array_push($rules, self::betweenRuleForNumericTypes($column, 'double'));
+        }
+
         return $rules;
     }
 
@@ -93,5 +105,33 @@ class Rules
         }
 
         return 'string';
+    }
+
+
+    private static function betweenRuleForNumericTypes(Column $column, $numericType)
+    {
+        $parameters = explode(",", Str::between($column->dataType(), "$numericType:", " "));
+
+        if (count($parameters) === 1) {
+            return;
+        }
+
+        [$precision, $scale] = $parameters;
+
+        $max = substr_replace(str_pad("", $precision, '9'), ".", $precision - $scale, 0);
+        $min = "-" . $max;
+
+        if (intval($scale) === 0) {
+            $min = trim($min, ".");
+            $max = trim($max, ".");
+        }
+
+        if (Str::contains($column->dataType(), 'unsigned')) {
+            $min = '0';
+        }
+
+        $betweenRule = 'between:' . $min . ',' . $max;
+
+        return $betweenRule;
     }
 }
