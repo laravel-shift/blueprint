@@ -7,10 +7,10 @@ return [
     | Application Namespace
     |--------------------------------------------------------------------------
     |
-    | Blueprint assumes a default Laravel application namespace of 'App'.
+    | Blueprint uses the default Laravel application namespace of 'App'.
     | However, you may configure Blueprint to use a custom namespace.
-    | Ultimately this should match the PSR-4 autoload value set
-    | within the composer.json file of your application.
+    | This value should match a PSR-4 autoload configuration value
+    | within the composer.json file of your Laravel application.
     |
     */
     'namespace' => 'App',
@@ -24,7 +24,7 @@ return [
     | Blueprint promotes following Laravel conventions. As such, it generates
     | components under the default namespaces. For example, models are under
     | the `App` namespace. However, you may configure Blueprint to use
-    | a custom namespace when generating these components.
+    | your own custom namespace when generating these components.
     |
     */
     'models_namespace' => '',
@@ -36,10 +36,9 @@ return [
     | Application Path
     |--------------------------------------------------------------------------
     |
-    | Here you may customize the path where Blueprint stores generated
-    | components. By default, Blueprint will store files under the
-    | `app` folder However, you may change the path to store
-    | generated component elsewhere.
+    | By default, Blueprint will save the generated application components
+    | under the files under the `app` folder. However, you may configure
+    | Blueprint  to save these generated component under a custom path.
     |
     */
     'app_path' => 'app',
@@ -61,21 +60,36 @@ return [
     | Foreign Key Constraints
     |--------------------------------------------------------------------------
     |
-    | Here you may enable foreign key constraints for the migrations. This
-    | will link records in the defined tables together and help the database
-    | to be more structured and readable.
+    | Here you may enable Blueprint to always add foreign key constraints
+    | within the generated migration. This will relate these records
+    | together to add structure and integrity to your database.
     |
     */
     'use_constraints' => false,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Fake Nullables
+    |--------------------------------------------------------------------------
+    |
+    | By default, Blueprint will set fake data even for nullable columns
+    | within the generated model factories. However, you may disable
+    | this behavior if you prefer to only set required columns
+    | within your model factories.
+    |
+    */
     'fake_nullables' => true,
 
     /*
     |--------------------------------------------------------------------------
-    | Models
+    | Use Guarded
     |--------------------------------------------------------------------------
     |
-    | Here you may choose to use $guarded instead $fillable.
+    | By default, Blueprint will set the `fillable` property within generated
+    | models with the defined columns. These are set to provide a foundation
+    | for mass assignment protection provided by Laravel. However, you may
+    | configure Blueprint to instead set an empty `guarded` property to
+    | generated "unguarded" models.
     |
     */
 
