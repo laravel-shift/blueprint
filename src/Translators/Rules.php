@@ -49,16 +49,15 @@ class Rules
             array_push($rules, 'json');
         }
 
-        if (in_array($column->dataType(), [
-            'decimal',
-            'double',
-            'float',
-            'unsignedDecimal',
-        ])) {
+        if (in_array($column->dataType(), ['decimal', 'double', 'float', 'unsignedDecimal'])) {
             array_push($rules, 'numeric');
 
-            if (Str::startsWith($column->dataType(), 'unsigned')) {
+            if (Str::startsWith($column->dataType(), 'unsigned') || in_array('unsigned', $column->modifiers())) {
                 array_push($rules, 'gt:0');
+            }
+
+            if (!empty($column->attributes())) {
+                array_push($rules, self::betweenRuleForColumn($column));
             }
         }
 
@@ -80,18 +79,6 @@ class Rules
             array_push($rules, 'unique:' . $context . ',' . $column->name());
         }
 
-        if (Str::contains($column->dataType(), 'decimal')) {
-            array_push($rules, self::betweenRuleForNumericTypes($column, 'decimal'));
-        }
-
-        if (Str::contains($column->dataType(), 'float')) {
-            array_push($rules, self::betweenRuleForNumericTypes($column, 'float'));
-        }
-
-        if (Str::contains($column->dataType(), 'double')) {
-            array_push($rules, self::betweenRuleForNumericTypes($column, 'double'));
-        }
-
         return $rules;
     }
 
@@ -108,30 +95,23 @@ class Rules
     }
 
 
-    private static function betweenRuleForNumericTypes(Column $column, $numericType)
+    private static function betweenRuleForColumn(Column $column)
     {
-        $parameters = explode(",", Str::between($column->dataType(), "$numericType:", " "));
+        $precision = $column->attributes()[0];
+        $scale = $column->attributes()[1] ?? 0;
 
-        if (count($parameters) === 1) {
-            return;
-        }
-
-        [$precision, $scale] = $parameters;
-
-        $max = substr_replace(str_pad("", $precision, '9'), ".", $precision - $scale, 0);
-        $min = "-" . $max;
+        $value = substr_replace(str_pad("", $precision, '9'), ".", $precision - $scale, 0);
 
         if (intval($scale) === 0) {
-            $min = trim($min, ".");
-            $max = trim($max, ".");
+            $value = trim($value, ".");
         }
 
-        if (Str::contains($column->dataType(), 'unsigned')) {
-            $min = '0';
+        if ($precision == $scale) {
+            $value = '0' . $value;
         }
 
-        $betweenRule = 'between:' . $min . ',' . $max;
+        $min = $column->dataType() === 'unsignedDecimal' || in_array('unsigned', $column->modifiers()) ? '0' : '-' . $value;
 
-        return $betweenRule;
+        return 'between:' . $min . ',' . $value;
     }
 }

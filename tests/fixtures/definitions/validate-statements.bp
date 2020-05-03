@@ -2,6 +2,8 @@ models:
   Post:
     title: string:400
     content: longtext
+    rating: decimal:4,2
+    count: decimal:8 unsigned
     published_at: nullable timestamp
 
 controllers:
@@ -11,7 +13,7 @@ controllers:
       render: post.index with:posts
 
     store:
-      validate: title, content
+      validate: title, content, rating, count
       redirect: post.index
 
   Other:

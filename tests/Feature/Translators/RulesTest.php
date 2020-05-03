@@ -194,128 +194,30 @@ class RulesTest extends TestCase
 
     /**
     * @test
-    * @dataProvider numericDataProvider
+     * @dataProvider noBetweenRuleDataProvider
     */
-    public function forColumn_return_between_rule_for_decimal($precision, $scale, $interval)
+    public function forColumn_does_not_return_between_rule_for_double_without_precion_and_scale($column)
     {
-        $column = new Column('column', "decimal:$precision,$scale");
-
-        $this->assertContains("between:$interval", Rules::fromColumn('context', $column));
+        $this->assertNotContains("between", Rules::fromColumn('context', $column));
     }
 
     /**
-    * @test
-    * @dataProvider unsignedNumericDataProvider
-    */
-    public function forColumn_return_between_rule_for_unsigned_decimal($precision, $scale, $interval)
+     * @test
+     * @dataProvider noBetweenRuleDataProvider
+     */
+    public function forColumn_does_not_return_between_rule($column)
     {
-        $unsignedBeforeDecimalColumn = new Column('column', "unsigned decimal:$precision,$scale");
-
-        $this->assertContains("between:$interval", Rules::fromColumn('context', $unsignedBeforeDecimalColumn));
-
-        $unsignedAfterDecimalColumn = new Column('column', "decimal:$precision,$scale unsigned");
-
-        $this->assertContains("between:$interval", Rules::fromColumn('context', $unsignedAfterDecimalColumn));
-    }
-
-    /**
-    * @test
-    */
-    public function forColumn_does_not_return_between_rule_for_float_without_precion_and_scale()
-    {
-        $column = new Column('column', "float");
-
         $this->assertNotContains("between", Rules::fromColumn('context', $column));
     }
 
     /**
     * @test
+    * @dataProvider betweenRuleDataProvider
     */
-    public function forColumn_does_not_return_between_rule_for_unsigned_float_without_precion_and_scale()
+    public function forColumn_returns_between_rule($column, $interval)
     {
-        $unsignedBeforeFloatColumn = new Column('column', "unsigned float");
-
-        $this->assertNotContains("between", Rules::fromColumn('context', $unsignedBeforeFloatColumn));
-
-        $unsignedAfterFloatColumn = new Column('column', "float unsigned");
-
-        $this->assertNotContains("between", Rules::fromColumn('context', $unsignedAfterFloatColumn));
-    }
-
-    /**
-    * @test
-    * @dataProvider numericDataProvider
-    */
-    public function forColumn_return_between_rule_for_float($precision, $scale, $interval)
-    {
-        $column = new Column('column', "float:$precision,$scale");
-
-        $this->assertContains("between:$interval", Rules::fromColumn('context', $column));
-    }
-
-    /**
-    * @test
-    * @dataProvider unsignedNumericDataProvider
-    */
-    public function forColumn_return_between_rule_for_unsigned_float($precision, $scale, $interval)
-    {
-        $unsignedBeforeFloatColumn = new Column('column', "unsigned float:$precision,$scale");
-
-        $this->assertContains("between:$interval", Rules::fromColumn('context', $unsignedBeforeFloatColumn));
-
-        $unsignedAfterFloatColumn = new Column('column', "float:$precision,$scale unsigned");
-
-        $this->assertContains("between:$interval", Rules::fromColumn('context', $unsignedAfterFloatColumn));
-    }
-
-    /**
-    * @test
-    */
-    public function forColumn_does_not_return_between_rule_for_double_without_precion_and_scale()
-    {
-        $column = new Column('column', "double");
-
-        $this->assertNotContains("between", Rules::fromColumn('context', $column));
-    }
-
-    /**
-    * @test
-    */
-    public function forColumn_does_not_return_between_rule_for_unsigned_double_without_precion_and_scale()
-    {
-        $unsignedBeforeDoubleColumn = new Column('column', "unsigned double");
-
-        $this->assertNotContains("between", Rules::fromColumn('context', $unsignedBeforeDoubleColumn));
-
-        $unsignedAfterDoubleColumn = new Column('column', "double unsigned");
-
-        $this->assertNotContains("between", Rules::fromColumn('context', $unsignedAfterDoubleColumn));
-    }
-
-    /**
-    * @test
-    * @dataProvider numericDataProvider
-    */
-    public function forColumn_return_between_rule_for_double($precision, $scale, $interval)
-    {
-        $column = new Column('column', "double:$precision,$scale");
-
-        $this->assertContains("between:$interval", Rules::fromColumn('context', $column));
-    }
-
-    /**
-    * @test
-    * @dataProvider unsignedNumericDataProvider
-    */
-    public function forColumn_return_between_rule_for_unsigned_double($precision, $scale, $interval)
-    {
-        $unsignedBeforeDoubleColumn = new Column('column', "unsigned double:$precision,$scale");
-
-        $this->assertContains("between:$interval", Rules::fromColumn('context', $unsignedBeforeDoubleColumn));
-
-        $unsignedAfterDoubleColumn = new Column('column', "double:$precision,$scale unsigned");
-
-        $this->assertContains("between:$interval", Rules::fromColumn('context', $unsignedAfterDoubleColumn));
+        $fromColumn = Rules::fromColumn('context', $column);
+        $this->assertContains("between:$interval", $fromColumn);
     }
 
     public function stringDataTypesProvider()
@@ -376,35 +278,38 @@ class RulesTest extends TestCase
         ];
     }
 
-    public function numericDataProvider()
+    public function noBetweenRuleDataProvider()
     {
         return [
-            ['10', '0', '-9999999999,9999999999'],
-            ['10', '1', '-999999999.9,999999999.9'],
-            ['10', '2', '-99999999.99,99999999.99'],
-            ['10', '3', '-9999999.999,9999999.999'],
-            ['10', '4', '-999999.9999,999999.9999'],
-            ['10', '5', '-99999.99999,99999.99999'],
-            ['10', '6', '-9999.999999,9999.999999'],
-            ['10', '7', '-999.9999999,999.9999999'],
-            ['10', '8', '-99.99999999,99.99999999'],
-            ['10', '9', '-9.999999999,9.999999999'],
+            [new Column('column', 'float')],
+            [new Column('column', 'double')],
+            [new Column('column', 'decimal')],
+            [new Column('column', 'unsignedDecimal')],
+            [new Column('column', 'float', ['unsigned'])],
+            [new Column('column', 'double', ['unsigned'])],
+            [new Column('column', 'decimal', ['unsigned'])],
         ];
     }
 
-    public function unsignedNumericDataProvider()
+    public function betweenRuleDataProvider()
     {
         return [
-            ['10', '0', '0,9999999999'],
-            ['10', '1', '0,999999999.9'],
-            ['10', '2', '0,99999999.99'],
-            ['10', '3', '0,9999999.999'],
-            ['10', '4', '0,999999.9999'],
-            ['10', '5', '0,99999.99999'],
-            ['10', '6', '0,9999.999999'],
-            ['10', '7', '0,999.9999999'],
-            ['10', '8', '0,99.99999999'],
-            ['10', '9', '0,9.999999999'],
+            [new Column('column', 'double', [], [8, 0]), '-99999999,99999999'],
+            [new Column('column', 'double', [], [10, 1]), '-999999999.9,999999999.9'],
+            [new Column('column', 'double', [], [10, 2]), '-99999999.99,99999999.99'],
+            [new Column('column', 'decimal', [], [10, 3]), '-9999999.999,9999999.999'],
+            [new Column('column', 'decimal', [], [10, 4]), '-999999.9999,999999.9999'],
+            [new Column('column', 'decimal', [], [10, 5]), '-99999.99999,99999.99999'],
+            [new Column('column', 'float', [], [10, 6]), '-9999.999999,9999.999999'],
+            [new Column('column', 'float', [], [10, 7]), '-999.9999999,999.9999999'],
+            [new Column('column', 'float', [], [10, 8]), '-99.99999999,99.99999999'],
+            [new Column('column', 'double', [], [4, 4]), '-0.9999,0.9999'],
+            [new Column('column', 'unsignedDecimal', [], [10, 0]), '0,9999999999'],
+            [new Column('column', 'unsignedDecimal', [], [8, 1]), '0,9999999.9'],
+            [new Column('column', 'unsignedDecimal', [], [6, 2]), '0,9999.99'],
+            [new Column('column', 'decimal', ['unsigned'], [10, 3]), '0,9999999.999'],
+            [new Column('column', 'double', ['unsigned'], [10, 4]), '0,999999.9999'],
+            [new Column('column', 'float', ['unsigned'], [10, 5]), '0,99999.99999'],
         ];
     }
 }
