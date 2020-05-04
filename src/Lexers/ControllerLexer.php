@@ -107,7 +107,6 @@ class ControllerLexer implements Lexer
                 'delete' => '[singular]',
                 'redirect' => '[singular].index',
             ],
-
             'api.index' => [
                 'query' => 'all:[plural]',
                 'resource' => 'collection:[plural]',
