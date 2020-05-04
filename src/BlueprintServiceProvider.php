@@ -24,7 +24,7 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
 
         $this->publishes([
             __DIR__ . '/../config/blueprint.php' => config_path('blueprint.php'),
-        ]);
+        ], 'config');
     }
 
     /**
