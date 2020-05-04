@@ -196,7 +196,7 @@ class FactoryGenerator implements Generator
             'timestamp' => 'dateTime()',
             'integer' => 'randomNumber()',
             'unsignedsmallinteger' => 'randomDigitNotNull',
-            'bigint' => 'randomNumber()',
+            'biginteger' => 'randomNumber()',
             'smallint' => 'randomNumber()',
             'decimal' => 'randomFloat(/** decimal_attributes **/)',
             'float' => 'randomFloat(/** float_attributes **/)',
