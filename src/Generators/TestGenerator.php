@@ -333,7 +333,7 @@ class TestGenerator implements Generator
                             $assertions['sanity'][] = '$this->assertCount(1, $' . $plural . ');';
                             $assertions['sanity'][] = sprintf('$%s = $%s->first();', $variable, $plural);
                         } else {
-                            $assertions['generic'][] = '$this->assertDatabaseHas(' . Str::lower(Str::plural($model)) . ', [ /* ... */ ]);';
+                            $assertions['generic'][] = '$this->assertDatabaseHas(' . Str::camel(Str::plural($model)) . ', [ /* ... */ ]);';
                         }
                     } elseif ($statement->operation() === 'find') {
                         $setup['data'][] = sprintf('$%s = factory(%s::class)->create();', $variable, $model);
@@ -351,7 +351,7 @@ class TestGenerator implements Generator
                 }
             }
 
-            $call = sprintf('$response = $this->%s(route(\'%s.%s\'', $this->httpMethodForAction($name), Str::lower($context), $name);
+            $call = sprintf('$response = $this->%s(route(\'%s.%s\'', $this->httpMethodForAction($name), Str::kebab($context), $name);
 
             if (in_array($name, ['edit', 'update', 'show', 'destroy'])) {
                 $call .= ', $' . Str::camel($context);

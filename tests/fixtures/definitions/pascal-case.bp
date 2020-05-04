@@ -1,0 +1,18 @@
+models:
+  Certificate:
+    name: string
+    certificate_type_id: id
+    reference: string
+    document: string
+    expiry_date: date
+    remarks: nullable text
+  CertificateType:
+    name: string
+    relationships:
+      hasMany: Certificate
+
+controllers:
+  Certificate:
+    resource: api
+  CertificateType:
+    resource: api

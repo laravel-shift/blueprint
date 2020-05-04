@@ -66,7 +66,7 @@ class ControllerLexer implements Lexer
 
                         return str_replace(
                             ['[singular]', '[plural]'],
-                            [Str::lower($model), Str::lower(Str::plural($model))],
+                            [Str::camel($model), Str::camel(Str::plural($model))],
                             $statement
                         );
                     }),

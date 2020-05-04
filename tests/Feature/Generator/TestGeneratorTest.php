@@ -75,6 +75,39 @@ class TestGeneratorTest extends TestCase
     }
 
     /**
+    * @test
+    */
+    public function output_works_for_pascal_case_definition()
+    {
+        $this->files->expects('get')
+            ->with('stubs/test/class.stub')
+            ->andReturn(file_get_contents('stubs/test/class.stub'));
+
+        $this->files->expects('get')
+            ->with('stubs/test/case.stub')
+            ->andReturn(file_get_contents('stubs/test/case.stub'));
+
+        $certificateControllerTest = 'tests/Feature/Http/Controllers/CertificateControllerTest.php';
+        $certificateTypeControllerTest = 'tests/Feature/Http/Controllers/CertificateTypeControllerTest.php';
+
+        $this->files->expects('exists')
+            ->with(dirname($certificateControllerTest))
+            ->andReturnTrue();
+        $this->files->expects('put')
+            ->with($certificateControllerTest, $this->fixture('tests/certificate-pascal-case-example.php'));
+
+        $this->files->expects('exists')
+            ->with(dirname($certificateTypeControllerTest))
+            ->andReturnTrue();
+        $this->files->expects('put')
+            ->with($certificateTypeControllerTest, $this->fixture('tests/certificate-type-pascal-case-example.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/pascal-case.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+        $this->assertEquals(['created' => [$certificateControllerTest, $certificateTypeControllerTest]], $this->subject->output($tree));
+    }
+
+    /**
      * @test
      */
     public function output_generates_test_for_controller_tree_using_cached_model()
