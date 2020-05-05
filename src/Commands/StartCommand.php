@@ -42,7 +42,7 @@ class StartCommand extends Command
      */
     public function handle()
     {
-        if (file_exists($this->defaultDraftFile())) {
+        if ($this->files->exists($this->defaultDraftFile())) {
             $this->error('Draft file already exists');
 
             return;
@@ -57,11 +57,11 @@ class StartCommand extends Command
 
     private function defaultDraftFile()
     {
-        if (file_exists('draft.yaml')) {
+        if ($this->files->exists('draft.yaml')) {
             return 'draft.yaml';
         }
 
-        if (file_exists('draft.yml')) {
+        if ($this->files->exists('draft.yml')) {
             return 'draft.yml';
         }
 

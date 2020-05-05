@@ -14,7 +14,14 @@ class StartCommandTest extends TestCase
      */
     public function it_exits_with_error_if_draft_file_already_exists()
     {
+        $file = \Mockery::mock(Filesystem::class);
         
+        $file->shouldReceive('exists')
+        ->andReturn(true);
+
+        (new StartCommand(new Filesystem))->handle();
+
+        // how to check that it exitted with error?
     }
 
     /**
@@ -26,7 +33,6 @@ class StartCommandTest extends TestCase
         $file->expects('put')
         ->with('draft.yaml');
 
-        // (new StartCommand())->handle();
-        // not sure how to call this method
+        (new StartCommand(new Filesystem))->handle();
     }
 }
