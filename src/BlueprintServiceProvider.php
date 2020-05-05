@@ -4,6 +4,7 @@ namespace Blueprint;
 
 use Blueprint\Commands\BlueprintCommand;
 use Blueprint\Commands\EraseCommand;
+use Blueprint\Commands\NewCommand;
 use Blueprint\Commands\TraceCommand;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\Facades\File;
@@ -40,6 +41,11 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
 
         File::mixin(new FileMixins());
 
+        $this->app->bind('command.blueprint.new',
+            function ($app) {
+                return new NewCommand($app['files']);
+            }
+        );
         $this->app->bind('command.blueprint.build',
             function ($app) {
                 return new BlueprintCommand($app['files']);
@@ -80,6 +86,7 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
         });
 
         $this->commands([
+            'command.blueprint.new',
             'command.blueprint.build',
             'command.blueprint.erase',
             'command.blueprint.trace',
@@ -94,6 +101,7 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
     public function provides()
     {
         return [
+            'command.blueprint.new',
             'command.blueprint.build',
             'command.blueprint.erase',
             'command.blueprint.trace',
