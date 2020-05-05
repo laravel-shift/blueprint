@@ -43,7 +43,7 @@ class StartCommand extends Command
     public function handle()
     {
         if ($this->files->exists('draft.yaml')) {
-            $this->error('Draft file already exists');
+            $this->info('Draft file already exists');
 
             return;
         }
