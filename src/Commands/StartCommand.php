@@ -54,6 +54,6 @@ class StartCommand extends Command
     
         $this->info('Created example draft.yaml file in project root');
 
-        // run blueprint:trace
+        (new TraceCommand(new Filesystem))->handle();
     }
 }

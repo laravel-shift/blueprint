@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use Blueprint\Blueprint;
 use Blueprint\Commands\StartCommand;
+use Blueprint\Commands\TraceCommand;
 use Illuminate\Filesystem\Filesystem;
 use Tests\TestCase;
 
@@ -13,7 +14,7 @@ class StartCommandTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_a_draft_file_if_none_exists()
+    public function it_creates_a_draft_file_if_none_exists_then_runs_trace_command()
     {
         $file = \Mockery::mock(Filesystem::class);
 
@@ -27,7 +28,9 @@ class StartCommandTest extends TestCase
         $file->expects('put')
         ->with('draft.yaml', 'stub');
 
+        $trace = \Mockery::mock(TraceCommand::class);
+        $trace->expects('handle');
+
         (new StartCommand($file))->handle();
-        // $this->info tries to printLn, but errors out because we're not calling the command through a console
     }
 }
