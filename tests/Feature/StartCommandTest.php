@@ -5,6 +5,8 @@ namespace Tests\Unit;
 use Blueprint\Commands\StartCommand;
 use Blueprint\Commands\TraceCommand;
 use Facades\Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Artisan;
+use Symfony\Component\Console\Output\NullOutput;
 use Tests\TestCase;
 
 class StartCommandTest extends TestCase
@@ -25,7 +27,6 @@ class StartCommandTest extends TestCase
         Filesystem::expects('put')
         ->with('draft.yaml', 'stub');
 
-        // $this->artisan('blueprint:start');
-        resolve(StartCommand::class)->handle();
+        Artisan::call('blueprint:start', [], new NullOutput);
     }
 }
