@@ -2,11 +2,8 @@
 
 namespace Tests\Unit;
 
-use Blueprint\Commands\StartCommand;
-use Blueprint\Commands\TraceCommand;
 use Facades\Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Artisan;
-use Symfony\Component\Console\Output\NullOutput;
 use Tests\TestCase;
 
 class StartCommandTest extends TestCase
@@ -28,6 +25,8 @@ class StartCommandTest extends TestCase
         ->with('draft.yaml', 'stub');
 
         Artisan::call('blueprint:start');
+
+        \Mockery::close();
     }
 
     /**
@@ -36,15 +35,22 @@ class StartCommandTest extends TestCase
     public function it_does_not_create_a_draft_file_if_one_exists_already()
     {
         Filesystem::shouldReceive('exists')
-        ->andReturn(true);
+            ->andReturn(true);
 
         Filesystem::shouldNotReceive('put');
 
         Artisan::call('blueprint:start');
+
+        \Mockery::close();
     }
 
     /**
      * @test
      */
-    // public function it_runs_the_trace_command_
+    public function it_always_runs_the_trace_command_after_checking_for_draft_file()
+    {
+        Artisan::shouldReceive('call')->with('blueprint:trace');
+
+        \Mockery::close();
+    }
 }
