@@ -3,8 +3,11 @@
 namespace DummyNamespace;
 
 use Illuminate\Database\Eloquent\Model;
+use Orchid\Screen\AsSource;
+
 /** DummyPHPDocClass **/
 class DummyClass extends Model
 {
+    use AsSource;
     // ...
 }
