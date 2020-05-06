@@ -44,15 +44,15 @@ class StartCommand extends Command
     {
         if ($this->files->exists('draft.yaml')) {
             $this->info('Draft file already exists');
-
-            return;
         }
 
-        $stub = $this->files->stub('draft.stub');
-
-        $this->files->put('draft.yaml', $stub);
+        if(!$this->files->exists('draft.yaml')) {
+            $stub = $this->files->stub('draft.stub');
     
-        $this->info('Created example draft.yaml file in project root');
+            $this->files->put('draft.yaml', $stub);
+        
+            $this->info('Created example draft.yaml file in project root');
+        }
 
         $this->call('blueprint:trace');
     }
