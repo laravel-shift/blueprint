@@ -71,8 +71,8 @@ class ControllerGeneratorTest extends TestCase
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function output_generates_controllers_with_models_with_custom_namespace_correctly()
     {
         $definition = 'definitions/custom-models-namespace.bp';
@@ -98,6 +98,39 @@ class ControllerGeneratorTest extends TestCase
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+    }
+  
+    /**
+     * @test
+     */
+    public function output_works_for_pascal_case_definition()
+    {
+        $this->files->expects('stub')
+            ->with('controller/class.stub')
+            ->andReturn(file_get_contents('stubs/controller/class.stub'));
+        $this->files->expects('stub')
+            ->with('controller/method.stub')
+            ->andReturn(file_get_contents('stubs/controller/method.stub'))
+            ->twice();
+
+        $certificateController = 'app/Http/Controllers/CertificateController.php';
+        $certificateTypeController = 'app/Http/Controllers/CertificateTypeController.php';
+
+        $this->files->expects('exists')
+            ->with(dirname($certificateController))
+            ->andReturnTrue();
+        $this->files->expects('put')
+            ->with($certificateController, $this->fixture('controllers/certificate-controller.php'));
+
+        $this->files->expects('exists')
+            ->with(dirname($certificateTypeController))
+            ->andReturnTrue();
+        $this->files->expects('put')
+            ->with($certificateTypeController, $this->fixture('controllers/certificate-type-controller.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/pascal-case.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+        $this->assertEquals(['created' => [$certificateController, $certificateTypeController]], $this->subject->output($tree));
     }
 
     /**

@@ -92,6 +92,48 @@ class ModelGeneratorTest extends TestCase
     }
 
     /**
+    * @test
+    */
+    public function output_works_for_pascal_case_definition()
+    {
+        $this->files->expects('stub')
+            ->with('model/class.stub')
+            ->andReturn(file_get_contents('stubs/model/class.stub'));
+        $this->files->expects('stub')
+            ->with('model/fillable.stub')
+            ->andReturn(file_get_contents('stubs/model/fillable.stub'))
+            ->twice();
+        $this->files->expects('stub')
+            ->with('model/casts.stub')
+            ->andReturn(file_get_contents('stubs/model/casts.stub'))
+            ->twice();
+        $this->files->expects('stub')
+            ->with('model/method.stub')
+            ->andReturn(file_get_contents('stubs/model/method.stub'))
+            ->twice();
+
+        $certificateModel = 'app/Certificate.php';
+        $certificateTypeModel = 'app/CertificateType.php';
+
+        $this->files->expects('exists')
+            ->with(dirname($certificateModel))
+            ->andReturnTrue();
+        $this->files->expects('put')
+            ->with($certificateModel, $this->fixture('models/certificate-pascal-case-example.php'));
+
+        $this->files->expects('exists')
+            ->with(dirname($certificateTypeModel))
+            ->andReturnTrue();
+        $this->files->expects('put')
+            ->with($certificateTypeModel, $this->fixture('models/certificate-type-pascal-case-example.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/pascal-case.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$certificateModel, $certificateTypeModel]], $this->subject->output($tree));
+    }
+
+    /**
      * @test
      */
     public function output_generates_relationships()

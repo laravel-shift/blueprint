@@ -53,9 +53,9 @@ class QueryStatement
 
         if ($this->operation() === 'all') {
             if (is_null($this->model())) {
-                return '$' . Str::lower(Str::plural($model)) . ' = ' . $model . '::all();';
+                return '$' . Str::camel(Str::plural($model)) . ' = ' . $model . '::all();';
             } else {
-                return '$' . Str::lower($this->clauses()[0]) . ' = ' . $this->model() . '::all();';
+                return '$' . Str::camel($this->clauses()[0]) . ' = ' . $this->model() . '::all();';
             }
         }
 
@@ -82,9 +82,9 @@ class QueryStatement
         if ($this->operation() === 'pluck') {
             $variable_name = $this->pluckName($pluck_field);
         } elseif ($this->operation() === 'count') {
-            $variable_name = Str::lower($model) . '_count';
+            $variable_name = Str::camel($model) . '_count';
         } else {
-            $variable_name = Str::lower(Str::plural($model));
+            $variable_name = Str::camel(Str::plural($model));
         }
 
         $code = '$' . $variable_name . ' = ' . $model . '::';
