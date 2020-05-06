@@ -86,7 +86,7 @@ class ControllerGenerator implements Generator
 
             if (in_array($name, ['edit', 'update', 'show', 'destroy'])) {
                 $context = Str::singular($controller->prefix());
-                $reference = config('blueprint.namespace') . '\\' . $context;
+                $reference = $this->fullyQualifyModelReference($controller->namespace(), Str::camel($context));
                 $variable = '$' . Str::camel($context);
 
                 // TODO: verify controller prefix references a model
