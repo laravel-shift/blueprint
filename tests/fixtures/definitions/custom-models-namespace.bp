@@ -1,0 +1,10 @@
+models:
+  Tag:
+    name: string:50
+    icon: string nullable
+    active: boolean default:true
+    softDeletes
+
+controllers:
+  Tag:
+    resource: api
