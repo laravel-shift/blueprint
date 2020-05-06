@@ -71,6 +71,36 @@ class ControllerGeneratorTest extends TestCase
     }
 
     /**
+    * @test
+    */
+    public function output_generates_controllers_with_models_with_custom_namespace_correctly()
+    {
+        $definition = 'definitions/custom-models-namespace.bp';
+        $path = 'app/Http/Controllers/TagController.php';
+        $controller = 'controllers/custom-models-namespace.php';
+
+        $this->app['config']->set('blueprint.models_namespace', 'Models');
+
+        $this->files->expects('stub')
+            ->with('controller/class.stub')
+            ->andReturn(file_get_contents('stubs/controller/class.stub'));
+        $this->files->expects('stub')
+            ->with('controller/method.stub')
+            ->andReturn(file_get_contents('stubs/controller/method.stub'));
+
+        $this->files->expects('exists')
+            ->with(dirname($path))
+            ->andReturnTrue();
+        $this->files->expects('put')
+            ->with($path, $this->fixture($controller));
+
+        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+    }
+
+    /**
      * @test
      */
     public function output_respects_configuration()

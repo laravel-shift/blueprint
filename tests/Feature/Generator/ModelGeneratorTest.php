@@ -243,6 +243,42 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Comment.php']], $this->subject->output($tree));
     }
 
+    /**
+    * @test
+    */
+    public function output_generates_models_with_custom_namespace_correctly()
+    {
+        $definition = 'definitions/custom-models-namespace.bp';
+        $path = 'app/Models/Tag.php';
+        $model = 'models/custom-models-namespace.php';
+
+        $this->app['config']->set('blueprint.models_namespace', 'Models');
+
+        $this->files->expects('stub')
+            ->with('model/class.stub')
+            ->andReturn(file_get_contents('stubs/model/class.stub'));
+        $this->files->expects('stub')
+            ->with('model/fillable.stub')
+            ->andReturn(file_get_contents('stubs/model/fillable.stub'));
+        $this->files->expects('stub')
+            ->with('model/casts.stub')
+            ->andReturn(file_get_contents('stubs/model/casts.stub'));
+        $this->files->expects('stub')
+            ->with('model/method.stub')
+            ->andReturn(file_get_contents('stubs/model/method.stub'));
+
+        $this->files->expects('exists')
+            ->with('app/Models')
+            ->andReturnTrue();
+        $this->files->expects('put')
+            ->with($path, $this->fixture($model));
+
+        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+    }
+
     public function modelTreeDataProvider()
     {
         return [
