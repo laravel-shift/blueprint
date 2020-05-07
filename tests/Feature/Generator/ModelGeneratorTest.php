@@ -79,6 +79,7 @@ class ModelGeneratorTest extends TestCase
             ->with('model/method-comment.stub')
             ->andReturn(file_get_contents('stubs/model/method-comment.stub'));
 
+
         $this->files->expects('exists')
             ->with(dirname($path))
             ->andReturnTrue();
@@ -166,6 +167,39 @@ class ModelGeneratorTest extends TestCase
     /**
      * @test
      */
+    public function output_generates_disabled_auto_columns()
+    {
+        $this->files->expects('stub')
+            ->with('model/class.stub')
+            ->andReturn(file_get_contents('stubs/model/class.stub'));
+        $this->files->expects('stub')
+            ->with('model/timestamps.stub')
+            ->andReturn(file_get_contents('stubs/model/timestamps.stub'));
+        $this->files->expects('stub')
+            ->with('model/fillable.stub')
+            ->andReturn(file_get_contents('stubs/model/fillable.stub'));
+        $this->files->expects('stub')
+            ->with('model/casts.stub')
+            ->andReturn(file_get_contents('stubs/model/casts.stub'));
+        $this->files->expects('stub')
+            ->with('model/method.stub')
+            ->andReturn(file_get_contents('stubs/model/method.stub'));
+
+        $this->files->expects('exists')
+            ->with('app')
+            ->andReturnTrue();
+        $this->files->expects('put')
+            ->with('app/State.php', $this->fixture('models/disable-auto-columns.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/disable-auto-columns.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['app/State.php']], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
     public function output_respects_configuration()
     {
         $this->app['config']->set('blueprint.app_path', 'src/path');
@@ -213,6 +247,12 @@ class ModelGeneratorTest extends TestCase
         $this->files->expects('stub')
             ->with('model/class.stub')
             ->andReturn(file_get_contents('stubs/model/class.stub'));
+
+        if ($definition === 'definitions/disable-auto-columns.bp') {
+            $this->files->expects('stub')
+                ->with('model/timestamps.stub')
+                ->andReturn(file_get_contents('stubs/model/timestamps.stub'));
+        }
 
         $this->files->expects('stub')
             ->with('model/fillable.stub')

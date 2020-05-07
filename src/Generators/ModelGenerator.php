@@ -92,6 +92,10 @@ class ModelGenerator implements Generator
     {
         $properties = '';
 
+        if (! $model->usesTimestamps()) {
+            $properties .= $this->files->stub('model/timestamps.stub');
+        }
+
         if (config('blueprint.use_guarded')) {
             $properties .= $this->files->stub('model/guarded.stub');
         } else {

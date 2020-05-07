@@ -4,11 +4,6 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * @property string $name
- * @property string $code
- * @property int $country_id
- */
 class State extends Model
 {
     /**
