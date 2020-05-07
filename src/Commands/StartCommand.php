@@ -19,14 +19,13 @@ class StartCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Create example draft.yaml file in project root';
+    protected $description = 'Create a draft.yaml file and load existing models';
 
     /** @var Filesystem $files */
     protected $files;
 
     /**
      * @param Filesystem $files
-     * @param \Illuminate\Contracts\View\Factory $view
      */
     public function __construct(Filesystem $files)
     {
@@ -42,16 +41,10 @@ class StartCommand extends Command
      */
     public function handle()
     {
-        if ($this->files->exists('draft.yaml')) {
-            $this->info('Draft file already exists');
-        }
+        if (!$this->files->exists('draft.yaml')) {
+            $this->files->put('draft.yaml', $this->files->stub('draft.stub'));
 
-        if(!$this->files->exists('draft.yaml')) {
-            $stub = $this->files->stub('draft.stub');
-    
-            $this->files->put('draft.yaml', $stub);
-        
-            $this->info('Created example draft.yaml file in project root');
+            $this->info('Created example draft.yaml');
         }
 
         $this->call('blueprint:trace');
