@@ -131,7 +131,7 @@ class MigrationGenerator implements Generator
             $foreign_modifier = $column->isForeignKey();
 
             if ($this->shouldAddForeignKeyConstraint($column)) {
-                $foreign = $this->buildForeignKey($column->name(), $foreign_modifier === 'foreign' ? null : $foreign_modifier, $column->dataType());
+                $foreign = $this->buildForeignKey($column->name(), $foreign_modifier === 'foreign' ? null : $foreign_modifier, $column->dataType(), $column->attributes());
                 if ($column->dataType() === 'id' && $this->isLaravel7orNewer()) {
                     $column_definition = $foreign;
                     $foreign = '';
@@ -198,7 +198,7 @@ class MigrationGenerator implements Generator
         return trim($definition);
     }
 
-    protected function buildForeignKey(string $column_name, ?string $on, string $type)
+    protected function buildForeignKey(string $column_name, ?string $on, string $type, array $attributes = [])
     {
         if (is_null($on)) {
             $table = Str::plural(Str::beforeLast($column_name, '_'));
@@ -209,6 +209,10 @@ class MigrationGenerator implements Generator
         } else {
             $table = Str::plural($on);
             $column = Str::afterLast($column_name, '_');
+        }
+
+        if ($type === 'id' && !empty($attributes)) {
+            $table = Str::lower(Str::plural($attributes[0]));
         }
 
         if ($this->isLaravel7orNewer() && $type === 'id') {
