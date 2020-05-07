@@ -128,6 +128,62 @@ class MigrationGeneratorTest extends TestCase
     /**
      * @test
      */
+    public function output_creates_constraints_for_unconventional_foreign_reference_migration()
+    {
+        $this->app->config->set('blueprint.use_constraints', true);
+
+        $this->files->expects('stub')
+            ->with('migration.stub')
+            ->andReturn(file_get_contents('stubs/migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_comments_table.php');
+
+        $this->files->expects('put')
+            ->with($model_migration, $this->fixture('migrations/relationships-constraints.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/relationships.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$model_migration]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function output_creates_constraints_for_unconventional_foreign_reference_migration_laravel6()
+    {
+        $this->app->config->set('blueprint.use_constraints', true);
+
+        $app = \Mockery::mock();
+        $app->shouldReceive('version')
+            ->withNoArgs()
+            ->andReturn('6.0.0');
+        App::swap($app);
+
+        $this->files->expects('stub')
+            ->with('migration.stub')
+            ->andReturn(file_get_contents('stubs/migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_comments_table.php');
+
+        $this->files->expects('put')
+            ->with($model_migration, $this->fixture('migrations/relationships-constraints-laravel6.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/relationships.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$model_migration]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
     public function output_also_creates_pivot_table_migration()
     {
         $this->files->expects('stub')
