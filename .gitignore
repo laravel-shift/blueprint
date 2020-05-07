@@ -3,4 +3,3 @@
 .env
 .phpunit.result.cache
 composer.lock
-.idea
