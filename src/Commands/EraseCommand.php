@@ -70,6 +70,8 @@ class EraseCommand extends Command
         unset($generated['updated']);
 
         $this->files->put('.blueprint', $blueprint->dump($generated));
+
+        $this->call('blueprint:trace');
     }
 
     private function outputStyle($action)
