@@ -4,7 +4,7 @@ namespace Blueprint;
 
 use Blueprint\Commands\BlueprintCommand;
 use Blueprint\Commands\EraseCommand;
-use Blueprint\Commands\StartCommand;
+use Blueprint\Commands\NewCommand;
 use Blueprint\Commands\TraceCommand;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\Facades\File;
@@ -56,9 +56,9 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
                 return new TraceCommand($app['files']);
             }
         );
-        $this->app->bind('command.blueprint.start',
+        $this->app->bind('command.blueprint.new',
             function ($app) {
-                return new StartCommand($app['files']);
+                return new NewCommand($app['files']);
             }
         );
 
@@ -89,7 +89,7 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
             'command.blueprint.build',
             'command.blueprint.erase',
             'command.blueprint.trace',
-            'command.blueprint.start',
+            'command.blueprint.new',
         ]);
     }
 
@@ -104,7 +104,7 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
             'command.blueprint.build',
             'command.blueprint.erase',
             'command.blueprint.trace',
-            'command.blueprint.start',
+            'command.blueprint.new',
             Blueprint::class,
         ];
     }

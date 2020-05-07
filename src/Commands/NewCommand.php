@@ -5,14 +5,14 @@ namespace Blueprint\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 
-class StartCommand extends Command
+class NewCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'blueprint:start';
+    protected $signature = 'blueprint:new';
 
     /**
      * The console command description.

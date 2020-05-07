@@ -7,7 +7,7 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Tests\TestCase;
 
 /**
- * @covers \Blueprint\Commands\StartCommand;
+ * @covers \Blueprint\Commands\NewCommand;
  */
 class StartCommandTest extends TestCase
 {
@@ -30,7 +30,7 @@ class StartCommandTest extends TestCase
         $filesystem->shouldReceive('put')
             ->with('draft.yaml', 'stub');
 
-        $this->artisan('blueprint:start')
+        $this->artisan('blueprint:new')
             ->assertExitCode(0);
     }
 
@@ -47,7 +47,7 @@ class StartCommandTest extends TestCase
             ->andReturnTrue();
         $filesystem->shouldNotReceive('put');
 
-        $this->artisan('blueprint:start')
+        $this->artisan('blueprint:new')
             ->assertExitCode(0);
     }
 }
