@@ -53,10 +53,12 @@ class StatementLexer implements Lexer
                     $statements[] = $this->analyzeResource($statement);
                     break;
                 case 'save':
-                case 'update':
                 case 'delete':
                 case 'find':
                     $statements[] = new EloquentStatement($command, $statement);
+                    break;
+                case 'update':
+                    $statements[] = $this->analyzeUpdate($statement);
                     break;
                 case 'flash':
                 case 'store':
@@ -178,5 +180,16 @@ class StatementLexer implements Lexer
         }
 
         return new ResourceStatement($reference, !is_null($collection), $collection === 'paginate');
+    }
+
+    private function analyzeUpdate($statement)
+    {
+        if (!Str::contains($statement, ',')) {
+            return new EloquentStatement('update', $statement);
+        }
+
+        $columns = preg_split('/,([ \t]+)?/', $statement);
+
+        return new EloquentStatement('update', null, $columns);
     }
 }

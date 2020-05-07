@@ -263,6 +263,25 @@ class StatementLexerTest extends TestCase
 
     /**
      * @test
+     */
+    public function it_returns_an_update_eloquent_statement_with_columns()
+    {
+        $tokens = [
+            'update' => 'name, title, age'
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(EloquentStatement::class, $actual[0]);
+
+        $this->assertSame('update', $actual[0]->operation());
+        $this->assertNull($actual[0]->reference());
+        $this->assertSame(['name', 'title', 'age'], $actual[0]->columns());
+    }
+
+    /**
+     * @test
      * @dataProvider sessionTokensProvider
      */
     public function it_returns_a_session_statement($operation, $reference)

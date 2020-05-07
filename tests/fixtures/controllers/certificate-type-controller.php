@@ -50,6 +50,8 @@ class CertificateTypeController extends Controller
      */
     public function update(CertificateTypeUpdateRequest $request, CertificateType $certificateType)
     {
+        $certificateType->update([]);
+
         return new CertificateTypeResource($certificateType);
     }
 
