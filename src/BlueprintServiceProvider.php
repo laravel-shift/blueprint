@@ -2,7 +2,7 @@
 
 namespace Blueprint;
 
-use Blueprint\Commands\BlueprintCommand;
+use Blueprint\Commands\BuildCommand;
 use Blueprint\Commands\EraseCommand;
 use Blueprint\Commands\NewCommand;
 use Blueprint\Commands\TraceCommand;
@@ -43,7 +43,7 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
 
         $this->app->bind('command.blueprint.build',
             function ($app) {
-                return new BlueprintCommand($app['files']);
+                return new BuildCommand($app['files']);
             }
         );
         $this->app->bind('command.blueprint.erase',

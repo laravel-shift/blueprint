@@ -9,7 +9,7 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputArgument;
 
-class BlueprintCommand extends Command
+class BuildCommand extends Command
 {
     /**
      * The name and signature of the console command.
@@ -73,18 +73,8 @@ class BlueprintCommand extends Command
     protected function getArguments()
     {
         return [
-            ['draft', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Which models to include', []],
+            ['draft', InputArgument::OPTIONAL, 'The path to the draft file, default: draft.yaml or draft.yaml', []],
         ];
-    }
-
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    protected function getOptions()
-    {
-        return [];
     }
 
     private function outputStyle($action)

@@ -72,28 +72,6 @@ class EraseCommand extends Command
         $this->files->put('.blueprint', $blueprint->dump($generated));
     }
 
-    /**
-     * Get the console command arguments.
-     *
-     * @return array
-     */
-    protected function getArguments()
-    {
-        return [
-            ['draft', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Which models to include', []],
-        ];
-    }
-
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    protected function getOptions()
-    {
-        return [];
-    }
-
     private function outputStyle($action)
     {
         if ($action === 'created') {
