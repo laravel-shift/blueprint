@@ -50,6 +50,8 @@ class TagController extends Controller
      */
     public function update(TagUpdateRequest $request, Tag $tag)
     {
+        $tag->update([]);
+
         return new TagResource($tag);
     }
 

@@ -53,6 +53,26 @@ class EloquentStatementTest extends TestCase
     /**
      * @test
      */
+    public function output_generates_code_for_update_using_model()
+    {
+        $subject = new EloquentStatement('update', 'post');
+
+        $this->assertEquals('$post->update([]);', $subject->output('', ''));
+    }
+
+    /**
+     * @test
+     */
+    public function output_generates_code_for_update_using_column_list()
+    {
+        $subject = new EloquentStatement('update', null, ['name', 'title', 'age']);
+
+        $this->assertEquals('$user->update([\'name\' => $name, \'title\' => $title, \'age\' => $age]);', $subject->output('User', ''));
+    }
+
+    /**
+     * @test
+     */
     public function output_generates_code_for_delete()
     {
         $subject = new EloquentStatement('delete', 'post');
