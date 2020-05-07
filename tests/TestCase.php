@@ -2,6 +2,8 @@
 
 namespace Tests;
 
+use Blueprint\BlueprintServiceProvider;
+
 class TestCase extends \Orchestra\Testbench\TestCase
 {
     protected function getEnvironmentSetUp($app)
@@ -18,5 +20,12 @@ class TestCase extends \Orchestra\Testbench\TestCase
     public function fixture(string $path)
     {
         return file_get_contents(__DIR__ . '/' . 'fixtures' . '/' . ltrim($path, '/'));
+    }
+
+    protected function getPackageProviders($app)
+    {
+        return [
+            BlueprintServiceProvider::class,
+        ];
     }
 }

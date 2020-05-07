@@ -1,0 +1,13 @@
+models:
+  Post:
+    title: string:400
+    content: longtext
+    published_at: nullable timestamp
+
+controllers:
+  Post:
+    index:
+      query: all
+      render: post.index with:posts
+
+  # ...
