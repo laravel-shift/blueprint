@@ -3,7 +3,7 @@ name: Report a bug
 about: Before reporting a bug, please ensure you are running the latest version of
   Blueprint.
 title: ''
-labels: ''
+labels: bug, pending
 assignees: ''
 
 ---
