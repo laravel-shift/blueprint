@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation issue
+    url: https://github.com/laravel-shift/blueprint-docs
+    about: For documentation issues, open a pull request at the laravel-shift/blueprint-docs repository
+  - name: General question
+    url: https://twitter.com/laravelshift
+    about: If you have a question or need help using Blueprint, ask on Twitter
