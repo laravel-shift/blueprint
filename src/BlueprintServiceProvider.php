@@ -20,8 +20,16 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
     public function boot()
     {
         if (!defined('STUBS_PATH')) {
-            define('STUBS_PATH', dirname(__DIR__) . '/stubs');
+            $stubPath = base_path('stubs/blueprint');
+            if (!File::exists($stubPath)) {
+                $stubPath = dirname(__DIR__) . '/stubs';
+            }
+            define('STUBS_PATH', $stubPath);
         }
+
+        $this->publishes([
+            dirname(__DIR__) . '/stubs' => base_path('stubs/blueprint'),
+        ], 'blueprint-stubs');
 
         $this->publishes([
             __DIR__ . '/../config/blueprint.php' => config_path('blueprint.php'),
@@ -36,27 +44,32 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
     public function register()
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/blueprint.php', 'blueprint'
+            __DIR__ . '/../config/blueprint.php',
+            'blueprint'
         );
 
         File::mixin(new FileMixins());
 
-        $this->app->bind('command.blueprint.build',
+        $this->app->bind(
+            'command.blueprint.build',
             function ($app) {
                 return new BuildCommand($app['files']);
             }
         );
-        $this->app->bind('command.blueprint.erase',
+        $this->app->bind(
+            'command.blueprint.erase',
             function ($app) {
                 return new EraseCommand($app['files']);
             }
         );
-        $this->app->bind('command.blueprint.trace',
+        $this->app->bind(
+            'command.blueprint.trace',
             function ($app) {
                 return new TraceCommand($app['files']);
             }
         );
-        $this->app->bind('command.blueprint.new',
+        $this->app->bind(
+            'command.blueprint.new',
             function ($app) {
                 return new NewCommand($app['files']);
             }
