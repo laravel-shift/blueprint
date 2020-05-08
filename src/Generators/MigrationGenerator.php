@@ -223,7 +223,7 @@ class MigrationGenerator implements Generator
                 return self::INDENT . '$table->foreignId' . "('{$column_name}')->constrained('{$table}')->cascadeOnDelete()";
             }
 
-            return self::INDENT . '$table->foreignId' . "('{$column_name}')->constrained('{$table}', '{$column}')->cascadeOnDelete())";
+            return self::INDENT . '$table->foreignId' . "('{$column_name}')->constrained('{$table}', '{$column}')->cascadeOnDelete()";
         }
 
         return self::INDENT . '$table->foreign' . "('{$column_name}')->references('{$column}')->on('{$table}')->onDelete('cascade')";
