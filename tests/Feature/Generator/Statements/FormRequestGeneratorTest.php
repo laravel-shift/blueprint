@@ -105,6 +105,43 @@ class FormRequestGeneratorTest extends TestCase
     /**
      * @test
      */
+    public function output_writes_form_requests_with_support_for_model_reference_in_validate_statement()
+    {
+        $this->files->expects('stub')
+            ->with('form-request.stub')
+            ->andReturn(file_get_contents('stubs/form-request.stub'));
+
+        $this->files->shouldReceive('exists')
+            ->twice()
+            ->with('app/Http/Requests')
+            ->andReturns(false, false);
+
+        $this->files->expects('makeDirectory')
+            ->twice()
+            ->with('app/Http/Requests', 0755, true)
+            ->andReturns(true, false);
+
+        $this->files->expects('exists')
+            ->with('app/Http/Requests/CertificateStoreRequest.php')
+            ->andReturnFalse();
+        $this->files->expects('put')
+            ->with('app/Http/Requests/CertificateStoreRequest.php', $this->fixture('form-requests/certificate-store.php'));
+
+        $this->files->expects('exists')
+            ->with('app/Http/Requests/CertificateUpdateRequest.php')
+            ->andReturnFalse();
+        $this->files->expects('put')
+            ->with('app/Http/Requests/CertificateUpdateRequest.php', $this->fixture('form-requests/certificate-update.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/model-reference-validate.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['app/Http/Requests/CertificateStoreRequest.php', 'app/Http/Requests/CertificateUpdateRequest.php']], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
     public function it_only_outputs_new_form_requests()
     {
         $this->files->expects('stub')

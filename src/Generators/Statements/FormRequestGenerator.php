@@ -86,9 +86,14 @@ class FormRequestGenerator implements Generator
                 $qualifier = $context;
             }
 
-            $rules = $this->validationRules($qualifier, $column);
+            $validationRules = $this->validationRules($qualifier, $column);
 
-            $output .= self::INDENT . "'{$column}' => '{$rules}'," . PHP_EOL;
+            foreach ($validationRules as $name => $rule) {
+                $formattedRule = implode("|", $rule);
+
+                $output .= self::INDENT . "'{$name}' => '{$formattedRule}'," . PHP_EOL;
+            }
+
             return $output;
         }, ''));
     }
@@ -129,13 +134,32 @@ class FormRequestGenerator implements Generator
         /** @var \Blueprint\Models\Model $model */
         $model = $this->modelForContext($qualifier);
 
-        if (!is_null($model) && $model->hasColumn($column)) {
-            $column = $model->column($column);
+        $rules = [];
 
-            return implode('|', Rules::fromColumn($model->tableName(), $column));
+        if (!is_null($model)) {
+            if ($model->hasColumn($column)) {
+                $modelColumn = $model->column($column);
+
+                $rules[$column] = Rules::fromColumn($model->tableName(), $modelColumn);
+
+                return $rules;
+            } else {
+                /** @var \Blueprint\Models\Model $column */
+                foreach ($model->columns() as $column) {
+                    if ($column->dataType() === 'id') {
+                        continue;
+                    }
+
+                    $rules[$column->name()] = Rules::fromColumn($model->tableName(), $column);
+                }
+
+                return $rules;
+            }
+        } else {
+            $rules[$column] = ['required'];
         }
 
-        return 'required';
+        return $rules;
     }
 
     private function registerModels(array $tree)
