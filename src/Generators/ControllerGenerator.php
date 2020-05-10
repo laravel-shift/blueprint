@@ -39,18 +39,12 @@ class ControllerGenerator implements Generator
     {
         $output = [];
 
-        $stub = $this->files->stub('controller/class.stub');
+        $stub = $this->files->stub('controller.plain.stub');
 
         $this->registerModels($tree);
 
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree['controllers'] as $controller) {
-            $this->addImport($controller, 'Illuminate\\Http\\Request');
-
-            if ($controller->fullyQualifiedNamespace() !== 'App\\Http\\Controllers') {
-                $this->addImport($controller, 'App\\Http\\Controllers\\Controller');
-            }
-
             $path = $this->getPath($controller);
 
             if (!$this->files->exists(dirname($path))) {
@@ -67,9 +61,11 @@ class ControllerGenerator implements Generator
 
     protected function populateStub(string $stub, Controller $controller)
     {
-        $stub = str_replace('DummyNamespace', $controller->fullyQualifiedNamespace(), $stub);
-        $stub = str_replace('DummyClass', $controller->className(), $stub);
-        $stub = str_replace('// methods...', $this->buildMethods($controller), $stub);
+        $stub = str_replace('{{ namespace }}', $controller->fullyQualifiedNamespace(), $stub);
+        $stub = str_replace('{{ class }}', $controller->className(), $stub);
+        $stub = str_replace('{{ rootNamespace }}', config('blueprint.namespace').'\\', $stub);
+        $stub = str_replace('//', $this->buildMethods($controller), $stub);
+        $stub = preg_replace('/(use.*?class)/is', '// imports...'.PHP_EOL.'$0', $stub);
         $stub = str_replace('// imports...', $this->buildImports($controller), $stub);
 
         return $stub;

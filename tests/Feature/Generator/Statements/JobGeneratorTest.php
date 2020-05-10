@@ -37,8 +37,8 @@ class JobGeneratorTest extends TestCase
     public function output_writes_nothing_for_empty_tree()
     {
         $this->files->expects('stub')
-            ->with('job.stub')
-            ->andReturn(file_get_contents('stubs/job.stub'));
+            ->with('job.queued.stub')
+            ->andReturn(file_get_contents('stubs/job.queued.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -51,8 +51,8 @@ class JobGeneratorTest extends TestCase
     public function output_writes_nothing_tree_without_validate_statements()
     {
         $this->files->expects('stub')
-            ->with('job.stub')
-            ->andReturn(file_get_contents('stubs/job.stub'));
+            ->with('job.queued.stub')
+            ->andReturn(file_get_contents('stubs/job.queued.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -68,8 +68,8 @@ class JobGeneratorTest extends TestCase
     public function output_writes_jobs()
     {
         $this->files->expects('stub')
-            ->with('job.stub')
-            ->andReturn(file_get_contents('stubs/job.stub'));
+            ->with('job.queued.stub')
+            ->andReturn(file_get_contents('stubs/job.queued.stub'));
 
         $this->files->expects('stub')
             ->with('partials/constructor.stub')
@@ -105,8 +105,8 @@ class JobGeneratorTest extends TestCase
     public function it_only_outputs_new_jobs()
     {
         $this->files->expects('stub')
-            ->with('job.stub')
-            ->andReturn(file_get_contents('stubs/job.stub'));
+            ->with('job.queued.stub')
+            ->andReturn(file_get_contents('stubs/job.queued.stub'));
 
         $this->files->expects('exists')
             ->with('app/Jobs/CreateUser.php')
@@ -130,8 +130,8 @@ class JobGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.app_path', 'src/path');
 
         $this->files->expects('stub')
-            ->with('job.stub')
-            ->andReturn(file_get_contents('stubs/job.stub'));
+            ->with('job.queued.stub')
+            ->andReturn(file_get_contents('stubs/job.queued.stub'));
 
         $this->files->expects('exists')
             ->with('src/path/Jobs')

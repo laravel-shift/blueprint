@@ -38,8 +38,8 @@ class ControllerGeneratorTest extends TestCase
     public function output_writes_nothing_for_empty_tree()
     {
         $this->files->expects('stub')
-            ->with('controller/class.stub')
-            ->andReturn(file_get_contents('stubs/controller/class.stub'));
+            ->with('controller.plain.stub')
+            ->andReturn(file_get_contents('stubs/controller.plain.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -53,8 +53,8 @@ class ControllerGeneratorTest extends TestCase
     public function output_writes_migration_for_controller_tree($definition, $path, $controller)
     {
         $this->files->expects('stub')
-            ->with('controller/class.stub')
-            ->andReturn(file_get_contents('stubs/controller/class.stub'));
+            ->with('controller.plain.stub')
+            ->andReturn(file_get_contents('stubs/controller.plain.stub'));
         $this->files->expects('stub')
             ->with('controller/method.stub')
             ->andReturn(file_get_contents('stubs/controller/method.stub'));
@@ -82,8 +82,8 @@ class ControllerGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.models_namespace', 'Models');
 
         $this->files->expects('stub')
-            ->with('controller/class.stub')
-            ->andReturn(file_get_contents('stubs/controller/class.stub'));
+            ->with('controller.plain.stub')
+            ->andReturn(file_get_contents('stubs/controller.plain.stub'));
         $this->files->expects('stub')
             ->with('controller/method.stub')
             ->andReturn(file_get_contents('stubs/controller/method.stub'));
@@ -99,15 +99,15 @@ class ControllerGeneratorTest extends TestCase
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
-  
+
     /**
      * @test
      */
     public function output_works_for_pascal_case_definition()
     {
         $this->files->expects('stub')
-            ->with('controller/class.stub')
-            ->andReturn(file_get_contents('stubs/controller/class.stub'));
+            ->with('controller.plain.stub')
+            ->andReturn(file_get_contents('stubs/controller.plain.stub'));
         $this->files->expects('stub')
             ->with('controller/method.stub')
             ->andReturn(file_get_contents('stubs/controller/method.stub'))
@@ -143,8 +143,8 @@ class ControllerGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.controllers_namespace', 'Other\\Http');
 
         $this->files->expects('stub')
-            ->with('controller/class.stub')
-            ->andReturn(file_get_contents('stubs/controller/class.stub'));
+            ->with('controller.plain.stub')
+            ->andReturn(file_get_contents('stubs/controller.plain.stub'));
         $this->files->expects('stub')
             ->with('controller/method.stub')
             ->andReturn(file_get_contents('stubs/controller/method.stub'));

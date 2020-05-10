@@ -7,6 +7,7 @@ use App\Http\Requests\CertificateStoreRequest;
 use App\Http\Requests\CertificateUpdateRequest;
 use App\Http\Resources\Certificate as CertificateResource;
 use App\Http\Resources\CertificateCollection;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class CertificateController extends Controller

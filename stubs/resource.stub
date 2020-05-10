@@ -1,10 +1,10 @@
 <?php
 
-namespace DummyNamespace;
+namespace {{ namespace }};
 
 use DummyImport;
 
-class DummyClass extends DummyParent
+class {{ class }} extends DummyParent
 {
     /**
      * Transform the DummyItem into an array.

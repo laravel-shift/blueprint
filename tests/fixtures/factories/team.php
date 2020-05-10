@@ -2,8 +2,8 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\Team;
 use Faker\Generator as Faker;
+use App\Team;
 
 $factory->define(Team::class, function (Faker $faker) {
     return [

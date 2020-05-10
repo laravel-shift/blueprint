@@ -67,10 +67,10 @@ class ResourceGenerator implements Generator
 
     protected function populateStub(string $stub, ResourceStatement $resource)
     {
-        $stub = str_replace('DummyNamespace', config('blueprint.namespace').'\\Http\\Resources', $stub);
+        $stub = str_replace('{{ namespace }}', config('blueprint.namespace').'\\Http\\Resources', $stub);
         $stub = str_replace('DummyImport', $resource->collection() ? 'Illuminate\\Http\\Resources\\Json\\ResourceCollection' : 'Illuminate\\Http\\Resources\\Json\\JsonResource', $stub);
         $stub = str_replace('DummyParent', $resource->collection() ? 'ResourceCollection' : 'JsonResource', $stub);
-        $stub = str_replace('DummyClass', $resource->name(), $stub);
+        $stub = str_replace('{{ class }}', $resource->name(), $stub);
         $stub = str_replace('DummyParent', $resource->collection() ? 'ResourceCollection' : 'JsonResource', $stub);
         $stub = str_replace('DummyItem', $resource->collection() ? 'resource collection' : 'resource', $stub);
         $stub = str_replace('// data...', $this->buildData($resource), $stub);

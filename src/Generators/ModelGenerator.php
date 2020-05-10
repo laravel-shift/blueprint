@@ -22,7 +22,7 @@ class ModelGenerator implements Generator
     {
         $output = [];
 
-        $stub = $this->files->stub('model/class.stub');
+        $stub = $this->files->stub('model.stub');
 
         /** @var \Blueprint\Models\Model $model */
         foreach ($tree['models'] as $model) {
@@ -42,15 +42,16 @@ class ModelGenerator implements Generator
 
     protected function populateStub(string $stub, Model $model)
     {
-        $stub = str_replace('DummyNamespace', $model->fullyQualifiedNamespace(), $stub);
-        $stub = str_replace('DummyClass', $model->name(), $stub);
+        $stub = str_replace('{{ namespace }}', $model->fullyQualifiedNamespace(), $stub);
+        $stub = str_replace('{{ class }}', $model->name(), $stub);
+        $stub = str_replace(PHP_EOL.'class', '/** DummyPHPDocClass **/'.PHP_EOL.'class', $stub);
         $stub = str_replace('/** DummyPHPDocClass **/', $this->buildClassPhpDoc($model), $stub);
 
         $body = $this->buildProperties($model);
         $body .= PHP_EOL . PHP_EOL;
         $body .= $this->buildRelationships($model);
 
-        $stub = str_replace('// ...', trim($body), $stub);
+        $stub = str_replace('//', trim($body), $stub);
         $stub = $this->addTraits($model, $stub);
 
         return $stub;
@@ -191,7 +192,9 @@ class ModelGenerator implements Generator
         return array_filter(array_map(
             function (Column $column) {
                 return $this->castForColumn($column);
-            }, $columns));
+            },
+            $columns
+        ));
     }
 
     private function dateColumns(array $columns)
@@ -203,7 +206,8 @@ class ModelGenerator implements Generator
             array_filter($columns, function (Column $column) {
                 return stripos($column->dataType(), 'datetime') !== false
                     || stripos($column->dataType(), 'timestamp') !== false;
-            }));
+            })
+        );
     }
 
     private function castForColumn(Column $column)

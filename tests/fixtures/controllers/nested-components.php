@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Admin\User;
 use App\Events\NewUser;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UserStoreRequest;
 use App\Jobs\BuildAccount;
 use App\Mail\InviteNotification;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {

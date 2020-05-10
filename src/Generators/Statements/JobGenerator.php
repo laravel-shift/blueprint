@@ -22,7 +22,7 @@ class JobGenerator implements Generator
     {
         $output = [];
 
-        $stub = $this->files->stub('job.stub');
+        $stub = $this->files->stub('job.queued.stub');
 
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree['controllers'] as $controller) {
@@ -59,9 +59,13 @@ class JobGenerator implements Generator
 
     protected function populateStub(string $stub, DispatchStatement $dispatchStatement)
     {
-        $stub = str_replace('DummyNamespace', config('blueprint.namespace') . '\\Jobs', $stub);
-        $stub = str_replace('DummyClass', $dispatchStatement->job(), $stub);
-        $stub = str_replace('// properties...', $this->buildConstructor($dispatchStatement), $stub);
+        $stub = str_replace('{{ namespace }}', config('blueprint.namespace') . '\\Jobs', $stub);
+        $stub = str_replace('{{ class }}', $dispatchStatement->job(), $stub);
+        $stub = preg_replace(
+            '/\/\*\*.*construct\(\)\r?\n\s*\{\r?\n\s*\/\/\r?\n\s*}/is',
+            $this->buildConstructor($dispatchStatement),
+            $stub
+        );
 
         return $stub;
     }

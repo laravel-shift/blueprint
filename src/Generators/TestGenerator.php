@@ -44,7 +44,7 @@ class TestGenerator implements Generator
     {
         $output = [];
 
-        $stub = $this->files->get(STUBS_PATH . '/test/class.stub');
+        $stub = $this->files->get(STUBS_PATH . '/test.stub');
 
         $this->registerModels($tree);
 
@@ -73,10 +73,33 @@ class TestGenerator implements Generator
 
     protected function populateStub(string $stub, Controller $controller)
     {
-        $stub = str_replace('DummyNamespace', 'Tests\\Feature\\' . Blueprint::relativeNamespace($controller->fullyQualifiedNamespace()), $stub);
+        $stub = str_replace('{{ namespace }}', 'Tests\\Feature\\' . Blueprint::relativeNamespace($controller->fullyQualifiedNamespace()), $stub);
+        $stub = str_replace(PHP_EOL.'class', PHP_EOL.implode(PHP_EOL, ['/**',' * @see DummyController',' */']).PHP_EOL.'class', $stub);
         $stub = str_replace('DummyController', '\\' . $controller->fullyQualifiedClassName(), $stub);
-        $stub = str_replace('DummyClass', $controller->className() . 'Test', $stub);
+        $stub = str_replace('{{ class }}', $controller->className() . 'Test', $stub);
+        $stub = str_replace(
+            implode(PHP_EOL, [
+                '    /**',
+                '     * A basic feature test example.',
+                '     *',
+                '     * @return void',
+                '     */',
+                '    public function testExample()',
+                '    {',
+                '        $response = $this->get(\'/\');',
+                '',
+                '        $response->assertStatus(200);',
+                '    }',
+            ]),
+            '    // test cases...',
+            $stub
+        );
         $stub = str_replace('// test cases...', $this->buildTestCases($controller), $stub);
+        $stub = str_replace(
+            implode(PHP_EOL, ['use Illuminate\Foundation\Testing\RefreshDatabase;','use Illuminate\Foundation\Testing\WithFaker;','use Tests\TestCase;']),
+            '// imports...',
+            $stub
+        );
         $stub = str_replace('// imports...', $this->buildImports($controller), $stub);
 
         return $stub;

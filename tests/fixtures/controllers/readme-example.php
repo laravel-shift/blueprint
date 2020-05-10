@@ -7,8 +7,9 @@ use App\Http\Requests\PostStoreRequest;
 use App\Jobs\SyncMedia;
 use App\Mail\ReviewNotification;
 use App\Post;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class PostController extends Controller
 {

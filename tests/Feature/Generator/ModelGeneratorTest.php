@@ -33,8 +33,8 @@ class ModelGeneratorTest extends TestCase
     public function output_generates_nothing_for_empty_tree()
     {
         $this->files->expects('stub')
-            ->with('model/class.stub')
-            ->andReturn(file_get_contents('stubs/model/class.stub'));
+            ->with('model.stub')
+            ->andReturn(file_get_contents('stubs/model.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -48,8 +48,8 @@ class ModelGeneratorTest extends TestCase
     public function output_generates_models($definition, $path, $model)
     {
         $this->files->expects('stub')
-            ->with('model/class.stub')
-            ->andReturn(file_get_contents('stubs/model/class.stub'));
+            ->with('model.stub')
+            ->andReturn(file_get_contents('stubs/model.stub'));
 
         $this->files->expects('stub')
             ->with('model/fillable.stub')
@@ -98,8 +98,8 @@ class ModelGeneratorTest extends TestCase
     public function output_works_for_pascal_case_definition()
     {
         $this->files->expects('stub')
-            ->with('model/class.stub')
-            ->andReturn(file_get_contents('stubs/model/class.stub'));
+            ->with('model.stub')
+            ->andReturn(file_get_contents('stubs/model.stub'));
         $this->files->expects('stub')
             ->with('model/fillable.stub')
             ->andReturn(file_get_contents('stubs/model/fillable.stub'))
@@ -140,8 +140,8 @@ class ModelGeneratorTest extends TestCase
     public function output_generates_relationships()
     {
         $this->files->expects('stub')
-            ->with('model/class.stub')
-            ->andReturn(file_get_contents('stubs/model/class.stub'));
+            ->with('model.stub')
+            ->andReturn(file_get_contents('stubs/model.stub'));
         $this->files->expects('stub')
             ->with('model/fillable.stub')
             ->andReturn(file_get_contents('stubs/model/fillable.stub'));
@@ -170,8 +170,8 @@ class ModelGeneratorTest extends TestCase
     public function output_generates_disabled_auto_columns()
     {
         $this->files->expects('stub')
-            ->with('model/class.stub')
-            ->andReturn(file_get_contents('stubs/model/class.stub'));
+            ->with('model.stub')
+            ->andReturn(file_get_contents('stubs/model.stub'));
         $this->files->expects('stub')
             ->with('model/timestamps.stub')
             ->andReturn(file_get_contents('stubs/model/timestamps.stub'));
@@ -207,8 +207,8 @@ class ModelGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.models_namespace', 'Models');
 
         $this->files->expects('stub')
-            ->with('model/class.stub')
-            ->andReturn(file_get_contents('stubs/model/class.stub'));
+            ->with('model.stub')
+            ->andReturn(file_get_contents('stubs/model.stub'));
 
         $this->files->expects('stub')
             ->with('model/fillable.stub')
@@ -245,8 +245,8 @@ class ModelGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.generate_phpdocs', true);
 
         $this->files->expects('stub')
-            ->with('model/class.stub')
-            ->andReturn(file_get_contents('stubs/model/class.stub'));
+            ->with('model.stub')
+            ->andReturn(file_get_contents('stubs/model.stub'));
 
         if ($definition === 'definitions/disable-auto-columns.bp') {
             $this->files->expects('stub')
@@ -297,8 +297,8 @@ class ModelGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.use_guarded', true);
 
         $this->files->expects('stub')
-            ->with('model/class.stub')
-            ->andReturn(file_get_contents('stubs/model/class.stub'));
+            ->with('model.stub')
+            ->andReturn(file_get_contents('stubs/model.stub'));
 
         $this->files->expects('stub')
             ->with('model/guarded.stub')
@@ -337,8 +337,8 @@ class ModelGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.models_namespace', 'Models');
 
         $this->files->expects('stub')
-            ->with('model/class.stub')
-            ->andReturn(file_get_contents('stubs/model/class.stub'));
+            ->with('model.stub')
+            ->andReturn(file_get_contents('stubs/model.stub'));
         $this->files->expects('stub')
             ->with('model/fillable.stub')
             ->andReturn(file_get_contents('stubs/model/fillable.stub'));

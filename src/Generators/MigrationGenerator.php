@@ -39,7 +39,7 @@ class MigrationGenerator implements Generator
         $output = [];
         $created_pivot_tables = [];
 
-        $stub = $this->files->stub('migration.stub');
+        $stub = $this->files->stub('migration.create.stub');
 
         $sequential_timestamp = \Carbon\Carbon::now()->subSeconds(count($tree['models']));
 
@@ -70,18 +70,18 @@ class MigrationGenerator implements Generator
 
     protected function populateStub(string $stub, Model $model)
     {
-        $stub = str_replace('DummyClass', $this->getClassName($model), $stub);
-        $stub = str_replace('DummyTable', $model->tableName(), $stub);
-        $stub = str_replace('// definition...', $this->buildDefinition($model), $stub);
+        $stub = str_replace('{{ class }}', $this->getClassName($model), $stub);
+        $stub = str_replace('{{ table }}', $model->tableName(), $stub);
+        $stub = preg_replace('/\$table->id\(\);.*?\$table->timestamps\(\);/is', $this->buildDefinition($model), $stub);
 
         return $stub;
     }
 
     protected function populatePivotStub(string $stub, array $segments)
     {
-        $stub = str_replace('DummyClass', $this->getPivotClassName($segments), $stub);
-        $stub = str_replace('DummyTable', $this->getPivotTableName($segments), $stub);
-        $stub = str_replace('// definition...', $this->buildPivotTableDefinition($segments), $stub);
+        $stub = str_replace('{{ class }}', $this->getPivotClassName($segments), $stub);
+        $stub = str_replace('{{ table }}', $this->getPivotTableName($segments), $stub);
+        $stub = preg_replace('/\$table->id\(\);.*?\$table->timestamps\(\);/is', $this->buildPivotTableDefinition($segments), $stub);
 
         return $stub;
     }

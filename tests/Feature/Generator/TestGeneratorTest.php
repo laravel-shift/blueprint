@@ -38,8 +38,8 @@ class TestGeneratorTest extends TestCase
     public function output_writes_nothing_for_empty_tree()
     {
         $this->files->expects('get')
-            ->with('stubs/test/class.stub')
-            ->andReturn(file_get_contents('stubs/test/class.stub'));
+            ->with('stubs/test.stub')
+            ->andReturn(file_get_contents('stubs/test.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -53,8 +53,8 @@ class TestGeneratorTest extends TestCase
     public function output_generates_test_for_controller_tree($definition, $path, $test)
     {
         $this->files->expects('get')
-            ->with('stubs/test/class.stub')
-            ->andReturn(file_get_contents('stubs/test/class.stub'));
+            ->with('stubs/test.stub')
+            ->andReturn(file_get_contents('stubs/test.stub'));
 
         $this->files->expects('get')
             ->with('stubs/test/case.stub')
@@ -80,8 +80,8 @@ class TestGeneratorTest extends TestCase
     public function output_works_for_pascal_case_definition()
     {
         $this->files->expects('get')
-            ->with('stubs/test/class.stub')
-            ->andReturn(file_get_contents('stubs/test/class.stub'));
+            ->with('stubs/test.stub')
+            ->andReturn(file_get_contents('stubs/test.stub'));
 
         $this->files->expects('get')
             ->with('stubs/test/case.stub')
@@ -113,8 +113,8 @@ class TestGeneratorTest extends TestCase
     public function output_generates_test_for_controller_tree_using_cached_model()
     {
         $this->files->expects('get')
-            ->with('stubs/test/class.stub')
-            ->andReturn(file_get_contents('stubs/test/class.stub'));
+            ->with('stubs/test.stub')
+            ->andReturn(file_get_contents('stubs/test.stub'));
 
         $this->files->expects('get')
             ->with('stubs/test/case.stub')

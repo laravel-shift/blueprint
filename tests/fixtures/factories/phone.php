@@ -2,8 +2,8 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\Phone;
 use Faker\Generator as Faker;
+use App\Phone;
 
 $factory->define(Phone::class, function (Faker $faker) {
     return [

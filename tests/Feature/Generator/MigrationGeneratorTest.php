@@ -38,8 +38,8 @@ class MigrationGeneratorTest extends TestCase
     public function output_writes_nothing_for_empty_tree()
     {
         $this->files->expects('stub')
-            ->with('migration.stub')
-            ->andReturn(file_get_contents('stubs/migration.stub'));
+            ->with('migration.create.stub')
+            ->andReturn(file_get_contents('stubs/migration.create.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -53,8 +53,8 @@ class MigrationGeneratorTest extends TestCase
     public function output_writes_migration_for_model_tree($definition, $path, $migration)
     {
         $this->files->expects('stub')
-            ->with('migration.stub')
-            ->andReturn(file_get_contents('stubs/migration.stub'));
+            ->with('migration.create.stub')
+            ->andReturn(file_get_contents('stubs/migration.create.stub'));
 
         $now = Carbon::now();
         Carbon::setTestNow($now);
@@ -76,8 +76,8 @@ class MigrationGeneratorTest extends TestCase
     public function output_uses_past_timestamp_for_multiple_migrations()
     {
         $this->files->expects('stub')
-            ->with('migration.stub')
-            ->andReturn(file_get_contents('stubs/migration.stub'));
+            ->with('migration.create.stub')
+            ->andReturn(file_get_contents('stubs/migration.create.stub'));
 
         $now = Carbon::now();
         Carbon::setTestNow($now);
@@ -108,8 +108,8 @@ class MigrationGeneratorTest extends TestCase
         App::swap($app);
 
         $this->files->expects('stub')
-            ->with('migration.stub')
-            ->andReturn(file_get_contents('stubs/migration.stub'));
+            ->with('migration.create.stub')
+            ->andReturn(file_get_contents('stubs/migration.create.stub'));
 
         $now = Carbon::now();
         Carbon::setTestNow($now);
@@ -133,8 +133,8 @@ class MigrationGeneratorTest extends TestCase
         $this->app->config->set('blueprint.use_constraints', true);
 
         $this->files->expects('stub')
-            ->with('migration.stub')
-            ->andReturn(file_get_contents('stubs/migration.stub'));
+            ->with('migration.create.stub')
+            ->andReturn(file_get_contents('stubs/migration.create.stub'));
 
         $now = Carbon::now();
         Carbon::setTestNow($now);
@@ -164,8 +164,8 @@ class MigrationGeneratorTest extends TestCase
         App::swap($app);
 
         $this->files->expects('stub')
-            ->with('migration.stub')
-            ->andReturn(file_get_contents('stubs/migration.stub'));
+            ->with('migration.create.stub')
+            ->andReturn(file_get_contents('stubs/migration.create.stub'));
 
         $now = Carbon::now();
         Carbon::setTestNow($now);
@@ -187,8 +187,8 @@ class MigrationGeneratorTest extends TestCase
     public function output_also_creates_pivot_table_migration()
     {
         $this->files->expects('stub')
-            ->with('migration.stub')
-            ->andReturn(file_get_contents('stubs/migration.stub'));
+            ->with('migration.create.stub')
+            ->andReturn(file_get_contents('stubs/migration.create.stub'));
 
         $now = Carbon::now();
         Carbon::setTestNow($now);
@@ -219,8 +219,8 @@ class MigrationGeneratorTest extends TestCase
         App::swap($app);
 
         $this->files->expects('stub')
-            ->with('migration.stub')
-            ->andReturn(file_get_contents('stubs/migration.stub'));
+            ->with('migration.create.stub')
+            ->andReturn(file_get_contents('stubs/migration.create.stub'));
 
         $now = Carbon::now();
         Carbon::setTestNow($now);
@@ -248,8 +248,8 @@ class MigrationGeneratorTest extends TestCase
         $this->app->config->set('blueprint.use_constraints', true);
 
         $this->files->expects('stub')
-            ->with('migration.stub')
-            ->andReturn(file_get_contents('stubs/migration.stub'));
+            ->with('migration.create.stub')
+            ->andReturn(file_get_contents('stubs/migration.create.stub'));
 
         $now = Carbon::now();
         Carbon::setTestNow($now);
@@ -284,8 +284,8 @@ class MigrationGeneratorTest extends TestCase
         App::swap($app);
 
         $this->files->expects('stub')
-            ->with('migration.stub')
-            ->andReturn(file_get_contents('stubs/migration.stub'));
+            ->with('migration.create.stub')
+            ->andReturn(file_get_contents('stubs/migration.create.stub'));
 
         $now = Carbon::now();
         Carbon::setTestNow($now);
@@ -310,8 +310,8 @@ class MigrationGeneratorTest extends TestCase
     public function output_does_not_duplicate_pivot_table_migration()
     {
         $this->files->expects('stub')
-            ->with('migration.stub')
-            ->andReturn(file_get_contents('stubs/migration.stub'));
+            ->with('migration.create.stub')
+            ->andReturn(file_get_contents('stubs/migration.create.stub'));
 
         $now = Carbon::now();
         Carbon::setTestNow($now);
@@ -345,8 +345,8 @@ class MigrationGeneratorTest extends TestCase
         App::swap($app);
 
         $this->files->expects('stub')
-            ->with('migration.stub')
-            ->andReturn(file_get_contents('stubs/migration.stub'));
+            ->with('migration.create.stub')
+            ->andReturn(file_get_contents('stubs/migration.create.stub'));
 
         $now = Carbon::now();
         Carbon::setTestNow($now);
