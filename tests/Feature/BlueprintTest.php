@@ -45,6 +45,28 @@ class BlueprintTest extends TestCase
         ], $this->subject->parse($blueprint));
     }
 
+    public function it_parses_seeders()
+    {
+        $blueprint = $this->fixture('definitions/seeders.bp');
+
+        $this->assertEquals([
+            'models' => [
+                'Post' => [
+                    'title' => 'string:400',
+                    'content' => 'longtext',
+                    'published_at' => 'nullable timestamp',
+                ],
+                'Comment' => [
+                    'post_id' => 'id',
+                    'content' => 'longtext',
+                    'approved' => 'boolean',
+                    'user_id' => 'id',
+                ],
+            ],
+            'seeders' => 'Post, Comment'
+        ], $this->subject->parse($blueprint));
+    }
+
     /**
      * @test
      */

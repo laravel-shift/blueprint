@@ -1,0 +1,14 @@
+models:
+  Post:
+    title: string:400
+    content: longtext
+    published_at: nullable timestamp
+
+  Blog\Comment:
+    post_id: id
+    content: longtext
+    approved: boolean
+    user_id: id
+
+seeders: Post, Comment
+
