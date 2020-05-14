@@ -89,7 +89,7 @@ class BlueprintTest extends TestCase
             ],
             'controllers' => [
                 'Context' => [
-                    'resource' => 'all'
+                    'resource' => 'web'
                 ]
             ]
         ], $this->subject->parse($blueprint));
@@ -153,11 +153,6 @@ class BlueprintTest extends TestCase
                     'timestampstz' => 'timestampsTz',
                 ],
             ],
-            'controllers' => [
-                'Context' => [
-                    'resource' => 'all'
-                ]
-            ]
         ], $this->subject->parse($blueprint));
     }
 
@@ -253,7 +248,7 @@ class BlueprintTest extends TestCase
                 ],
             ],
         ];
-        
+
         $this->assertEquals($expected, $this->subject->parse($definition_mac_eol));
         $this->assertEquals($expected, $this->subject->parse($definition_windows_eol));
     }

@@ -41,8 +41,8 @@ class Blueprint
             return $matches[1].strtolower($matches[2]).': '.$matches[2];
         }, $content);
 
-        $content = preg_replace_callback('/^(\s+)resource(: true)?$/mi', function ($matches) {
-            return $matches[1].'resource: all';
+        $content = preg_replace_callback('/^(\s+)resource?$/mi', function ($matches) {
+            return $matches[1].'resource: web';
         }, $content);
 
         $content = preg_replace_callback('/^(\s+)uuid(: true)?$/mi', function ($matches) {

@@ -113,7 +113,7 @@ class ControllerLexerTest extends TestCase
         $tokens = [
             'controllers' => [
                 'Comment' => [
-                    'resource' => 'all'
+                    'resource' => 'web'
                 ]
             ]
         ];

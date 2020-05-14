@@ -137,7 +137,7 @@ class ControllerLexer implements Lexer
             return ['api.index', 'api.store', 'api.show', 'api.update', 'api.destroy'];
         }
 
-        if ($type === 'all') {
+        if ($type === 'web') {
             return ['index', 'create', 'store', 'show', 'edit', 'update', 'destroy'];
         }
 
