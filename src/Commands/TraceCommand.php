@@ -77,7 +77,7 @@ class TraceCommand extends Command
 
     private function appClasses()
     {
-        $dir = Blueprint::appPath('app');
+        $dir = Blueprint::appPath();
 
         if (config('blueprint.models_namespace')) {
             $dir .= '/' . str_replace('\\', '/', config('blueprint.models_namespace'));
