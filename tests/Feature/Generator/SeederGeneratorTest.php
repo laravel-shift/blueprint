@@ -33,6 +33,7 @@ class SeederGeneratorTest extends TestCase
         $this->subject = new SeederGenerator($this->files);
 
         $this->blueprint = new Blueprint();
+        $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
         $this->blueprint->registerLexer(new \Blueprint\Lexers\SeederLexer());
         $this->blueprint->registerGenerator($this->subject);
     }
@@ -50,7 +51,7 @@ class SeederGeneratorTest extends TestCase
     /**
      * @test
      */
-    public function output_generates_seeder()
+    public function output_generates_seeders()
     {
         $this->files->expects('stub')
             ->with('seeder.stub')
@@ -63,6 +64,28 @@ class SeederGeneratorTest extends TestCase
 
         $tokens = $this->blueprint->parse($this->fixture('definitions/seeders.bp'));
         $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['database/seeds/PostSeeder.php', 'database/seeds/CommentSeeder.php']], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function output_generates_seeders_from_traced_models()
+    {
+        $this->files->expects('stub')
+            ->with('seeder.stub')
+            ->andReturn(file_get_contents('stubs/seeder.stub'));
+
+        $this->files->expects('put')
+            ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/PostSeeder.php'));
+        $this->files->expects('put')
+            ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/seeders.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+        $tree['cache'] = $tree['models'];
+        unset($tree['models']);
 
         $this->assertEquals(['created' => ['database/seeds/PostSeeder.php', 'database/seeds/CommentSeeder.php']], $this->subject->output($tree));
     }

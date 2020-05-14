@@ -5,11 +5,14 @@ namespace Blueprint\Generators;
 
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Model;
+use Illuminate\Support\Str;
 
 class SeederGenerator implements Generator
 {
     /** @var \Illuminate\Contracts\Filesystem\Filesystem */
     private $files;
+
+    private $models = [];
 
     public function __construct($files)
     {
@@ -24,6 +27,8 @@ class SeederGenerator implements Generator
 
         $output = [];
         $stub = $this->files->stub('seeder.stub');
+
+        $this->registerModels($tree);
 
         foreach ($tree['seeders'] as $model) {
             $path = $this->getPath($model);
@@ -55,6 +60,33 @@ class SeederGenerator implements Generator
 
     private function build(string $model)
     {
-        return sprintf('factory(\App\%s::class, 5)->create();', $model);
+        return sprintf('factory(\\%s::class, 5)->create();', $this->fqcnForContext($model));
+    }
+
+    private function registerModels(array $tree)
+    {
+        $this->models = array_merge($tree['cache'] ?? [], $tree['models'] ?? []);
+    }
+
+    private function fqcnForContext(string $context)
+    {
+        if (isset($this->models[$context])) {
+            return $this->models[$context]->fullyQualifiedClassName();
+        }
+
+        $matches = array_filter(array_keys($this->models), function ($key) use ($context) {
+            return Str::endsWith($key, '\\' . Str::studly($context));
+        });
+
+        if (count($matches) === 1) {
+            return $this->models[current($matches)]->fullyQualifiedClassName();
+        }
+
+        $fqn = config('blueprint.namespace');
+        if (config('blueprint.models_namespace')) {
+            $fqn .= '\\' . config('blueprint.models_namespace');
+        }
+
+        return $fqn . '\\' . $context;
     }
 }

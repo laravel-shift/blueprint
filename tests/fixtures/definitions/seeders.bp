@@ -4,7 +4,7 @@ models:
     content: longtext
     published_at: nullable timestamp
 
-  Comment:
+  Blog\Comment:
     post_id: id
     content: longtext
     approved: boolean
