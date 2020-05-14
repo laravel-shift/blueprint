@@ -42,10 +42,6 @@ class SeederGeneratorTest extends TestCase
      */
     public function output_generates_nothing_for_empty_tree()
     {
-//        $this->files->expects('stub')
-//            ->with('migration.stub')
-//            ->andReturn(file_get_contents('stubs/migration.stub'));
-
         $this->files->shouldNotHaveReceived('put');
 
         $this->assertEquals([], $this->subject->output(['seeders' => []]));
