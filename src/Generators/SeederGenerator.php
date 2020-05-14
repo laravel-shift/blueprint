@@ -3,7 +3,6 @@
 
 namespace Blueprint\Generators;
 
-
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Model;
 

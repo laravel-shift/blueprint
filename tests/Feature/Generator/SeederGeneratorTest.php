@@ -70,5 +70,4 @@ class SeederGeneratorTest extends TestCase
 
         $this->assertEquals(['created' => ['database/seeds/PostSeeder.php', 'database/seeds/CommentSeeder.php']], $this->subject->output($tree));
     }
-
 }
