@@ -12,6 +12,9 @@ class ModelLexer implements Lexer
         'belongsto' => 'belongsTo',
         'hasone' => 'hasOne',
         'hasmany' => 'hasMany',
+        'morphone' => 'morphOne',
+        'morphmany' => 'morphMany',
+        'morphto' => 'morphTo',
         'belongstomany' => 'belongsToMany'
     ];
 
