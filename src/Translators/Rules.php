@@ -17,8 +17,15 @@ class Rules
         }
 
         if ($column->dataType() === 'id' && Str::endsWith($column->name(), '_id')) {
-            [$prefix, $field] = explode('_', $column->name());
-            $rules = array_merge($rules, ['integer', 'exists:' . Str::plural($prefix) . ',' . $field]);
+            $parts = explode('_', $column->name());
+
+            $prefix = "";
+            $field = end($parts);
+            for ($i = 0; $i < count($parts) - 1; $i++) {
+                $prefix .= "_" . $parts[$i];
+            }
+
+            $rules = array_merge($rules, ['integer', 'exists:' . Str::plural(trim($prefix, "_")) . ',' . $field]);
         }
 
         if (in_array($column->dataType(), [

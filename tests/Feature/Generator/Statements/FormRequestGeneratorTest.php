@@ -219,7 +219,6 @@ class FormRequestGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['src/path/Http/Requests/PostStoreRequest.php']], $this->subject->output($tree));
     }
 
-
     /**
      * @test
      */
