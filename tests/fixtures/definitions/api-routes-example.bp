@@ -1,0 +1,12 @@
+models:
+  Certificate:
+    name: string
+    certificate_type_id: id
+    reference: string
+    document: string
+    expiry_date: date
+    remarks: text nullable
+
+controllers:
+  Certificate:
+    resource: api

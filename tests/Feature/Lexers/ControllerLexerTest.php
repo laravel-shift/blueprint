@@ -245,6 +245,7 @@ class ControllerLexerTest extends TestCase
 
         $controller = $actual['controllers']['Comment'];
         $this->assertEquals('CommentController', $controller->className());
+        $this->assertTrue($controller->isApiResource());
 
         $methods = $controller->methods();
         $this->assertCount(5, $methods);

@@ -23,13 +23,17 @@ class RouteGenerator implements Generator
         }
 
         $routes = '';
+        $path = 'routes/web.php';
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree['controllers'] as $controller) {
             $routes .= PHP_EOL . PHP_EOL . $this->buildRoutes($controller);
+
+            if ($controller->isApiResource()) {
+                $path = 'routes/api.php';
+            }
         }
         $routes .= PHP_EOL;
 
-        $path = 'routes/web.php';
         $this->files->append($path, $routes);
 
         return ['updated' => [$path]];
@@ -45,9 +49,14 @@ class RouteGenerator implements Generator
 
         $resource_methods = array_intersect($methods, Controller::$resourceMethods);
         if (count($resource_methods)) {
-            $routes .= sprintf("Route::resource('%s', '%s')", $slug, $className);
+            $routes .= $controller->isApiResource()
+                ? sprintf("Route::apiResource('%s', '%s')", $slug, $className)
+                : sprintf("Route::resource('%s', '%s')", $slug, $className);
 
-            $missing_methods = array_diff(Controller::$resourceMethods, $resource_methods);
+            $missing_methods = $controller->isApiResource()
+                ? array_diff(Controller::$apiResourceMethods, $resource_methods)
+                : array_diff(Controller::$resourceMethods, $resource_methods);
+
             if (count($missing_methods)) {
                 if (count($missing_methods) < 4) {
                     $routes .= sprintf("->except('%s')", implode("', '", $missing_methods));
@@ -55,7 +64,6 @@ class RouteGenerator implements Generator
                     $routes .= sprintf("->only('%s')", implode("', '", $resource_methods));
                 }
             }
-
 
             $routes .= ';' . PHP_EOL;
         }
