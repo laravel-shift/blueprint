@@ -152,6 +152,10 @@ class ModelLexer implements Lexer
                 foreach ($columns['relationships'] as $type => $relationships) {
                     foreach (explode(',', $relationships) as $reference) {
                         $model->addRelationship(self::$relationships[strtolower($type)], trim($reference));
+
+                        if ($type === 'morphTo') {
+                            $model->setMorphTo(trim($reference));
+                        }
                     }
                 }
             }
