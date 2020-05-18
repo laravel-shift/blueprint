@@ -1,0 +1,4 @@
+models:
+  Cart:
+    name: string
+    user_id: id foreign nullable
