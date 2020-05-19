@@ -131,7 +131,14 @@ class MigrationGenerator implements Generator
             $foreign_modifier = $column->isForeignKey();
 
             if ($this->shouldAddForeignKeyConstraint($column)) {
-                $foreign = $this->buildForeignKey($column->name(), $foreign_modifier === 'foreign' ? null : $foreign_modifier, $column->dataType(), $column->attributes());
+                $foreign = $this->buildForeignKey(
+                    $column->name(),
+                    $foreign_modifier === 'foreign' ? null : $foreign_modifier,
+                    $column->dataType(),
+                    $column->attributes(),
+                    $column->modifiers()
+                );
+
                 if ($column->dataType() === 'id' && $this->isLaravel7orNewer()) {
                     $column_definition = $foreign;
                     $foreign = '';
@@ -139,7 +146,9 @@ class MigrationGenerator implements Generator
 
                 // TODO: unset the proper modifier
                 $modifiers = collect($modifiers)->reject(function ($modifier) {
-                    return (is_array($modifier) && key($modifier) === 'foreign') || $modifier === 'foreign';
+                    return ((is_array($modifier) && key($modifier) === 'foreign')
+                        || $modifier === 'foreign'
+                        || ($modifier === 'nullable' && $this->isLaravel7orNewer()));
                 });
             }
 
@@ -198,7 +207,7 @@ class MigrationGenerator implements Generator
         return trim($definition);
     }
 
-    protected function buildForeignKey(string $column_name, ?string $on, string $type, array $attributes = [])
+    protected function buildForeignKey(string $column_name, ?string $on, string $type, array $attributes = [], array $modifiers = [])
     {
         if (is_null($on)) {
             $table = Str::plural(Str::beforeLast($column_name, '_'));
@@ -216,14 +225,18 @@ class MigrationGenerator implements Generator
         }
 
         if ($this->isLaravel7orNewer() && $type === 'id') {
+            $prefix = in_array('nullable', $modifiers)
+                ? '$table->foreignId' . "('{$column_name}')->nullable()"
+                : '$table->foreignId' . "('{$column_name}')";
+
             if ($column_name === Str::singular($table) . '_' . $column) {
-                return self::INDENT . '$table->foreignId' . "('{$column_name}')->constrained()->cascadeOnDelete()";
+                return self::INDENT . "{$prefix}->constrained()->cascadeOnDelete()";
             }
             if ($column === 'id') {
-                return self::INDENT . '$table->foreignId' . "('{$column_name}')->constrained('{$table}')->cascadeOnDelete()";
+                return self::INDENT . "{$prefix}->constrained('{$table}')->cascadeOnDelete()";
             }
 
-            return self::INDENT . '$table->foreignId' . "('{$column_name}')->constrained('{$table}', '{$column}')->cascadeOnDelete()";
+            return self::INDENT . "{$prefix}->constrained('{$table}', '{$column}')->cascadeOnDelete()";
         }
 
         return self::INDENT . '$table->foreign' . "('{$column_name}')->references('{$column}')->on('{$table}')->onDelete('cascade')";
