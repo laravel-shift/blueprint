@@ -57,6 +57,24 @@ class RouteGeneratorTest extends TestCase
         $this->assertEquals(['updated' => [$path]], $this->subject->output($tree));
     }
 
+    /**
+     * @test
+     */
+    public function output_writes_migration_for_route_tree_api_routes()
+    {
+        $definition = "definitions/api-routes-example.bp";
+        $routes = "routes/api-routes.php";
+        $path = 'routes/api.php';
+
+        $this->files->expects('append')
+            ->with($path, $this->fixture($routes));
+
+        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['updated' => [$path]], $this->subject->output($tree));
+    }
+
     public function controllerTreeDataProvider()
     {
         return [

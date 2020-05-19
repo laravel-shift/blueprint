@@ -10,6 +10,9 @@ class Controller
     /** @var array */
     public static $resourceMethods = ['index', 'create', 'store', 'edit', 'update', 'show', 'destroy'];
 
+    /** @var array  */
+    public static $apiResourceMethods = ['index', 'store', 'update', 'show', 'destroy'];
+
     /**
      * @var string
      */
@@ -24,6 +27,11 @@ class Controller
      * @var array
      */
     private $methods = [];
+
+    /**
+     * @var bool
+     */
+    private $apiResource = false;
 
     /**
      * Controller constructor.
@@ -91,5 +99,21 @@ class Controller
         }
 
         return $this->name();
+    }
+
+    /**
+     * @param bool $apiResource
+     */
+    public function setApiResource(bool $apiResource)
+    {
+        $this->apiResource = $apiResource;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isApiResource(): bool
+    {
+        return $this->apiResource;
     }
 }

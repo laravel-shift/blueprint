@@ -305,8 +305,8 @@ class MigrationGeneratorTest extends TestCase
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function output_does_not_duplicate_pivot_table_migration()
     {
         $this->files->expects('stub')
@@ -334,8 +334,8 @@ class MigrationGeneratorTest extends TestCase
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function output_does_not_duplicate_pivot_table_migration_laravel6()
     {
         $app = \Mockery::mock();
@@ -369,8 +369,62 @@ class MigrationGeneratorTest extends TestCase
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
+    public function output_creates_foreign_keys_with_nullable_chained_correctly()
+    {
+        $this->files->expects('stub')
+            ->with('migration.stub')
+            ->andReturn(file_get_contents('stubs/migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_carts_table.php');
+
+        $this->files
+            ->expects('put')
+            ->with($model_migration, $this->fixture('migrations/nullable-chaining.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/nullable-chaining.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$model_migration]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function output_creates_foreign_keys_with_nullable_chained_correctly_laravel6()
+    {
+        $app = \Mockery::mock();
+        $app->shouldReceive('version')
+            ->withNoArgs()
+            ->andReturn('6.0.0');
+        App::swap($app);
+
+        $this->files->expects('stub')
+            ->with('migration.stub')
+            ->andReturn(file_get_contents('stubs/migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_carts_table.php');
+
+        $this->files
+            ->expects('put')
+            ->with($model_migration, $this->fixture('migrations/nullable-chaining-laravel6.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/nullable-chaining.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$model_migration]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
     public function output_works_with_polymorphic_relationships()
     {
         $this->files->expects('stub')
@@ -398,8 +452,8 @@ class MigrationGeneratorTest extends TestCase
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function output_works_with_polymorphic_relationships_laravel6()
     {
         $app = \Mockery::mock();

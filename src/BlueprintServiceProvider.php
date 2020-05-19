@@ -65,11 +65,13 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
         $this->app->singleton(Blueprint::class, function ($app) {
             $blueprint = new Blueprint();
             $blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
+            $blueprint->registerLexer(new \Blueprint\Lexers\SeederLexer());
             $blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new \Blueprint\Lexers\StatementLexer()));
 
             $blueprint->registerGenerator(new \Blueprint\Generators\MigrationGenerator($app['files']));
             $blueprint->registerGenerator(new \Blueprint\Generators\ModelGenerator($app['files']));
             $blueprint->registerGenerator(new \Blueprint\Generators\FactoryGenerator($app['files']));
+            $blueprint->registerGenerator(new \Blueprint\Generators\SeederGenerator($app['files']));
 
             $blueprint->registerGenerator(new \Blueprint\Generators\ControllerGenerator($app['files']));
             $blueprint->registerGenerator(new \Blueprint\Generators\Statements\EventGenerator($app['files']));

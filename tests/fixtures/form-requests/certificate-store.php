@@ -25,6 +25,7 @@ class CertificateStoreRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
+            'certificate_type_id' => 'required|integer|exists:certificate_types,id',
             'reference' => 'required|string',
             'document' => 'required|string',
             'expiry_date' => 'required|date',

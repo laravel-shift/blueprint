@@ -36,6 +36,7 @@ class ControllerLexer implements Lexer
                 unset($original['resource']);
                 // this gives the ability to both use a shorthand and override some methods
                 $definition = array_merge($definition, $original);
+                $controller->setApiResource(true);
             }
 
             foreach ($definition as $method => $body) {
