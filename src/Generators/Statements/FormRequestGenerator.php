@@ -146,7 +146,7 @@ class FormRequestGenerator implements Generator
             } else {
                 /** @var \Blueprint\Models\Model $column */
                 foreach ($model->columns() as $column) {
-                    if ($column->dataType() === 'id') {
+                    if ($column->name() === 'id') {
                         continue;
                     }
 
