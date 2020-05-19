@@ -43,17 +43,16 @@ class CertificateControllerTest extends TestCase
      */
     public function store_saves()
     {
-        $certificate = $this->faker->word;
+        $certificate = factory(Certificate::class)->make();
 
-        $response = $this->post(route('certificate.store'), [
-            'certificate' => $certificate,
-        ]);
+        $response = $this->post(route('certificate.store'), $certificate->toArray());
+
+        $response->assertCreated();
 
         $certificates = Certificate::query()
-            ->where('certificate', $certificate)
+            ->where('id', $response['data']['id'])
             ->get();
         $this->assertCount(1, $certificates);
-        $certificate = $certificates->first();
     }
 
 
@@ -86,11 +85,11 @@ class CertificateControllerTest extends TestCase
     public function update_behaves_as_expected()
     {
         $certificate = factory(Certificate::class)->create();
-        $certificate = $this->faker->word;
+        $update = factory(Certificate::class)->make();
 
-        $response = $this->put(route('certificate.update', $certificate), [
-            'certificate' => $certificate,
-        ]);
+        $response = $this->put(route('certificate.update', $certificate), $update->toArray());
+
+        $response->assertOk();
     }
 
 
