@@ -17,7 +17,7 @@ class Rules
         }
 
         if ($column->dataType() === 'id' && Str::endsWith($column->name(), '_id')) {
-            $rules = array_merge($rules, ['integer', 'exists:' . Str::plural(Str::beforeLast($column->name, '_id')) . ',id']);
+            $rules = array_merge($rules, ['integer', 'exists:' . Str::plural(Str::beforeLast($column->name(), '_id')) . ',id']);
         }
 
         if (in_array($column->dataType(), [
