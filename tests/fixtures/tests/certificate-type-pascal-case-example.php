@@ -23,6 +23,8 @@ class CertificateTypeControllerTest extends TestCase
         $certificateTypes = factory(CertificateType::class, 3)->create();
 
         $response = $this->get(route('certificate-type.index'));
+
+        $response->assertOk();
     }
 
 
@@ -64,6 +66,8 @@ class CertificateTypeControllerTest extends TestCase
         $certificateType = factory(CertificateType::class)->create();
 
         $response = $this->get(route('certificate-type.show', $certificateType));
+
+        $response->assertOk();
     }
 
 

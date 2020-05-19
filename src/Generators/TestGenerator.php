@@ -405,7 +405,7 @@ class TestGenerator implements Generator
                 $call .= PHP_EOL;
                 $call .= PHP_EOL;
                 $call .= sprintf('%s$response->assertCreated();', $indent);
-            } elseif ($name === 'update' && $controller->isApiResource()) {
+            } elseif (in_array($name, ['update', 'index', 'show']) && $controller->isApiResource()) {
                 $indent = str_pad(' ', 8);
                 $call .= PHP_EOL;
                 $call .= PHP_EOL;
