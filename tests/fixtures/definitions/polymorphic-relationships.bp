@@ -1,0 +1,15 @@
+models:
+  Post:
+    name: string:400
+    relationships:
+      morphMany: Image
+
+  User:
+    name: string:400
+    relationships:
+      morphMany: Image
+
+  Image:
+    url: string:400
+    relationships:
+      morphTo: Imageable

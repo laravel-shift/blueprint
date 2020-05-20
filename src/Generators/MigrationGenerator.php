@@ -176,6 +176,11 @@ class MigrationGenerator implements Generator
             $definition .= self::INDENT . '$table->' . $model->softDeletesDataType() . '();' . PHP_EOL;
         }
 
+        if ($model->morphTo()) {
+            $definition .= self::INDENT . sprintf('$table->unsignedBigInteger(\'%s\');', Str::lower($model->morphTo() . "_id")) . PHP_EOL;
+            $definition .= self::INDENT . sprintf('$table->string(\'%s\');', Str::lower($model->morphTo() . "_type")) . PHP_EOL;
+        }
+
         if ($model->usesTimestamps()) {
             $definition .= self::INDENT . '$table->' . $model->timestampsDataType() . '();' . PHP_EOL;
         }

@@ -146,9 +146,21 @@ class ModelGenerator implements Generator
 
                 $name = Str::beforeLast($name, '_id');
                 $class = Str::studly($class ?? $name);
-                $relationship = sprintf("\$this->%s(%s::class)", $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);
 
-                $method_name = $type === 'hasMany' || $type === 'belongsToMany' ? Str::plural($name) : $name;
+                if ($type === 'morphTo') {
+                    $relationship = sprintf('$this->%s()', $type);
+                } elseif ($type === 'morphMany' || $type === 'morphOne') {
+                    $relation = Str::of($name)->lower()->singular() . 'able';
+                    $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $class, $relation);
+                } else {
+                    $relationship = sprintf('$this->%s(%s::class)', $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);
+                }
+
+                if ($type === 'morphTo') {
+                    $method_name = Str::lower($class);
+                } else {
+                    $method_name = in_array($type, ['hasMany', 'belongsToMany', 'morphMany']) ? Str::plural($name) : $name;
+                }
                 $method = str_replace('DummyName', Str::camel($method_name), $template);
                 $method = str_replace('null', $relationship, $method);
 

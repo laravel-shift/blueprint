@@ -93,8 +93,8 @@ class ModelGeneratorTest extends TestCase
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function output_works_for_pascal_case_definition()
     {
         $this->files->expects('stub')
@@ -162,6 +162,51 @@ class ModelGeneratorTest extends TestCase
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['app/Subscription.php']], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function output_generates_polymorphic_relationships()
+    {
+        $this->files->expects('stub')
+            ->with('model/class.stub')
+            ->andReturn(file_get_contents('stubs/model/class.stub'));
+        $this->files->expects('stub')
+            ->times(3)
+            ->with('model/fillable.stub')
+            ->andReturn(file_get_contents('stubs/model/fillable.stub'));
+        $this->files->expects('stub')
+            ->times(3)
+            ->with('model/casts.stub')
+            ->andReturn(file_get_contents('stubs/model/casts.stub'));
+        $this->files->expects('stub')
+            ->times(3)
+            ->with('model/method.stub')
+            ->andReturn(file_get_contents('stubs/model/method.stub'));
+
+        $this->files->expects('exists')
+            ->with('app')
+            ->andReturnTrue();
+        $this->files->expects('put')
+            ->with('app/Post.php', $this->fixture('models/post-polymorphic-relationship.php'));
+
+        $this->files->expects('exists')
+            ->with('app')
+            ->andReturnTrue();
+        $this->files->expects('put')
+            ->with('app/User.php', $this->fixture('models/user-polymorphic-relationship.php'));
+
+        $this->files->expects('exists')
+            ->with('app')
+            ->andReturnTrue();
+        $this->files->expects('put')
+            ->with('app/Image.php', $this->fixture('models/image-polymorphic-relationship.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/polymorphic-relationships.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['app/Post.php', 'app/User.php', 'app/Image.php']], $this->subject->output($tree));
     }
 
     /**
@@ -326,8 +371,8 @@ class ModelGeneratorTest extends TestCase
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function output_generates_models_with_custom_namespace_correctly()
     {
         $definition = 'definitions/custom-models-namespace.bp';

@@ -305,8 +305,8 @@ class MigrationGeneratorTest extends TestCase
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function output_does_not_duplicate_pivot_table_migration()
     {
         $this->files->expects('stub')
@@ -334,8 +334,8 @@ class MigrationGeneratorTest extends TestCase
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function output_does_not_duplicate_pivot_table_migration_laravel6()
     {
         $app = \Mockery::mock();
@@ -420,6 +420,70 @@ class MigrationGeneratorTest extends TestCase
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$model_migration]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function output_works_with_polymorphic_relationships()
+    {
+        $this->files->expects('stub')
+            ->with('migration.stub')
+            ->andReturn(file_get_contents('stubs/migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $post_migration = str_replace('timestamp', $now->copy()->subSeconds(2)->format('Y_m_d_His'), 'database/migrations/timestamp_create_posts_table.php');
+        $user_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_users_table.php');
+        $image_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_images_table.php');
+
+        $this->files->expects('put')
+            ->with($post_migration, $this->fixture('migrations/polymorphic_relationships_posts_table.php'));
+        $this->files->expects('put')
+            ->with($user_migration, $this->fixture('migrations/polymorphic_relationships_users_table.php'));
+        $this->files->expects('put')
+            ->with($image_migration, $this->fixture('migrations/polymorphic_relationships_images_table.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/polymorphic-relationships.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$post_migration, $user_migration, $image_migration]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function output_works_with_polymorphic_relationships_laravel6()
+    {
+        $app = \Mockery::mock();
+        $app->shouldReceive('version')
+            ->withNoArgs()
+            ->andReturn('6.0.0');
+        App::swap($app);
+
+        $this->files->expects('stub')
+            ->with('migration.stub')
+            ->andReturn(file_get_contents('stubs/migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $post_migration = str_replace('timestamp', $now->copy()->subSeconds(2)->format('Y_m_d_His'), 'database/migrations/timestamp_create_posts_table.php');
+        $user_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_users_table.php');
+        $image_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_images_table.php');
+
+        $this->files->expects('put')
+            ->with($post_migration, $this->fixture('migrations/polymorphic_relationships_posts_table_laravel6.php'));
+        $this->files->expects('put')
+            ->with($user_migration, $this->fixture('migrations/polymorphic_relationships_users_table_laravel6.php'));
+        $this->files->expects('put')
+            ->with($image_migration, $this->fixture('migrations/polymorphic_relationships_images_table_laravel6.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/polymorphic-relationships.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$post_migration, $user_migration, $image_migration]], $this->subject->output($tree));
     }
 
     public function modelTreeDataProvider()

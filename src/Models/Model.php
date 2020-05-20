@@ -11,6 +11,7 @@ class Model
     private $primaryKey = 'id';
     private $timestamps = 'timestamps';
     private $softDeletes = false;
+    private $morphTo;
     private $columns = [];
     private $relationships = [];
     private $pivotTables = [];
@@ -161,5 +162,15 @@ class Model
     public function pivotTables(): array
     {
         return $this->pivotTables;
+    }
+
+    public function setMorphTo(string $reference)
+    {
+        $this->morphTo = $reference;
+    }
+
+    public function morphTo(): ?string
+    {
+        return $this->morphTo;
     }
 }

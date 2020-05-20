@@ -499,6 +499,42 @@ class ModelLexerTest extends TestCase
         $this->assertEquals(['Duration', 'Transaction:tid'], $relationships['hasOne']);
     }
 
+    /**
+     * @test
+     */
+    public function it_enables_morphable_and_set_its_reference()
+    {
+        $tokens = [
+            'models' => [
+                'Model' => [
+                    'relationships' => [
+                        'morphTo' => 'Morphable',
+                    ]
+                ],
+            ],
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertIsArray($actual['models']);
+        $this->assertCount(1, $actual['models']);
+
+        $model = $actual['models']['Model'];
+        $this->assertEquals('Model', $model->name());
+        $this->assertEquals('Morphable', $model->morphTo());
+        $this->assertTrue($model->usesTimestamps());
+
+        $columns = $model->columns();
+        $this->assertCount(1, $columns);
+        $this->assertEquals('id', $columns['id']->name());
+        $this->assertEquals('id', $columns['id']->dataType());
+        $this->assertEquals([], $columns['id']->modifiers());
+
+        $relationships = $model->relationships();
+        $this->assertCount(1, $relationships);
+        $this->assertEquals(['Morphable'], $relationships['morphTo']);
+    }
+
     public function dataTypeAttributesDataProvider()
     {
         return [
