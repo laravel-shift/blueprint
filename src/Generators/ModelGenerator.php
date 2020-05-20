@@ -145,9 +145,18 @@ class ModelGenerator implements Generator
                 }
 
                 $name = Str::beforeLast($name, '_id');
-                $class = Str::studly($class ?? $name);
-                $relationship = sprintf("\$this->%s(%s::class)", $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);
+                $relationShipClass = Str::studly($class ?? $name);
 
+                $relationship = "";
+                if (!is_null($class) && $type === 'belongsToMany') {
+                    if (preg_match("/^[A-Z]/", $name)) {
+                        $relationship = sprintf("\$this->%s(%s::class)->using(%s::class)", $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $relationShipClass, '\\' . $model->fullyQualifiedNamespace() . '\\' . $name);
+                    } else {
+                        $relationship = sprintf("\$this->%s(%s::class, '${name}')", $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $relationShipClass);
+                    }
+                } else {
+                    $relationship = sprintf("\$this->%s(%s::class)", $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $relationShipClass);
+                }
                 $method_name = $type === 'hasMany' || $type === 'belongsToMany' ? Str::plural($name) : $name;
                 $method = str_replace('DummyName', Str::camel($method_name), $template);
                 $method = str_replace('null', $relationship, $method);

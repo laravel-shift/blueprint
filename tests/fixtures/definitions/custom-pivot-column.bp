@@ -1,0 +1,6 @@
+models:
+  User:
+    name: string
+    remember_token: remembertoken
+    relationships:
+      belongsToMany: Account:test
