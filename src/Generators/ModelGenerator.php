@@ -148,12 +148,12 @@ class ModelGenerator implements Generator
                 $class = Str::studly($class ?? $name);
 
                 if ($type === 'morphTo') {
-                    $relationship = sprintf("\$this->%s()", $type);
+                    $relationship = sprintf('$this->%s()', $type);
                 } elseif ($type === 'morphMany' || $type === 'morphOne') {
                     $relation = Str::of($name)->lower()->singular() . 'able';
-                    $relationship = sprintf("\$this->%s(%s::class, '%s')", $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $class, $relation);
+                    $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $class, $relation);
                 } else {
-                    $relationship = sprintf("\$this->%s(%s::class)", $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);
+                    $relationship = sprintf('$this->%s(%s::class)', $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);
                 }
 
                 if ($type === 'morphTo') {
