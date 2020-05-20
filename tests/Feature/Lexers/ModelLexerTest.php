@@ -500,8 +500,8 @@ class ModelLexerTest extends TestCase
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function it_enables_morphable_and_set_its_reference()
     {
         $tokens = [
