@@ -159,7 +159,7 @@ class ModelGenerator implements Generator
                 if ($type === 'morphTo') {
                     $method_name = Str::lower($class);
                 } else {
-                    $method_name = $type === 'hasMany' || $type === 'belongsToMany' || $type === 'morphMany' ? Str::plural($name) : $name;
+                    $method_name = in_array($type, ['hasMany', 'belongsToMany', 'morphMany']) ? Str::plural($name) : $name;
                 }
                 $method = str_replace('DummyName', Str::camel($method_name), $template);
                 $method = str_replace('null', $relationship, $method);
