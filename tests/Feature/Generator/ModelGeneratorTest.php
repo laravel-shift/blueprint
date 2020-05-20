@@ -93,8 +93,8 @@ class ModelGeneratorTest extends TestCase
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function output_works_for_pascal_case_definition()
     {
         $this->files->expects('stub')
@@ -165,8 +165,8 @@ class ModelGeneratorTest extends TestCase
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function output_generates_polymorphic_relationships()
     {
         $this->files->expects('stub')
@@ -371,8 +371,8 @@ class ModelGeneratorTest extends TestCase
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function output_generates_models_with_custom_namespace_correctly()
     {
         $definition = 'definitions/custom-models-namespace.bp';
