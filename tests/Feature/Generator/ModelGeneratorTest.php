@@ -425,6 +425,7 @@ class ModelGeneratorTest extends TestCase
             ['definitions/soft-deletes.bp', 'app/Comment.php', 'models/soft-deletes-phpdoc.php'],
             ['definitions/relationships.bp', 'app/Comment.php', 'models/relationships-phpdoc.php'],
             ['definitions/disable-auto-columns.bp', 'app/State.php', 'models/disable-auto-columns-phpdoc.php'],
+            ['definitions/foreign-key-shorthand.bp', 'app/Comment.php', 'models/foreign-key-shorthand-phpdoc.php'],
         ];
     }
 }

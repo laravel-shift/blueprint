@@ -73,6 +73,29 @@ class MigrationGeneratorTest extends TestCase
     /**
      * @test
      */
+    public function output_writes_migration_for_foreign_shorthand()
+    {
+        $this->files->expects('stub')
+            ->with('migration.stub')
+            ->andReturn(file_get_contents('stubs/migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $timestamp_path = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_comments_table.php');
+
+        $this->files->expects('put')
+            ->with($timestamp_path, $this->fixture('migrations/foreign-key-shorthand.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/foreign-key-shorthand.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
     public function output_uses_past_timestamp_for_multiple_migrations()
     {
         $this->files->expects('stub')
@@ -268,7 +291,6 @@ class MigrationGeneratorTest extends TestCase
 
         $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
     }
-
 
     /**
      * @test

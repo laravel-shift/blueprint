@@ -5,6 +5,7 @@ namespace Blueprint\Lexers;
 use Blueprint\Contracts\Lexer;
 use Blueprint\Models\Column;
 use Blueprint\Models\Model;
+use Illuminate\Support\Str;
 
 class ModelLexer implements Lexer
 {
@@ -172,12 +173,27 @@ class ModelLexer implements Lexer
             $column = $this->buildColumn($name, $definition);
             $model->addColumn($column);
 
-            if ($column->name() !== 'id' && in_array($column->dataType(), ['id', 'uuid'])) {
-                if ($column->attributes()) {
-                    $model->addRelationship('belongsTo', $column->attributes()[0] . ':' . $column->name());
-                } else {
-                    $model->addRelationship('belongsTo', $column->name());
+            $foreign = collect($column->modifiers())->filter(function ($modifier) {
+                return (is_array($modifier) && key($modifier) === 'foreign') || $modifier === 'foreign';
+            })->flatten()->first();
+
+            if ($column->name() !== 'id' && (in_array($column->dataType(), ['id', 'uuid']) || $foreign)) {
+                $reference = $column->name();
+
+                if ($foreign && $foreign !== 'foreign') {
+                    $table = $foreign;
+                    $key = 'id';
+
+                    if (Str::contains($foreign, '.')) {
+                        [$table, $key] = explode('.', $foreign);
+                    }
+
+                    $reference = Str::singular($table) . ($key === 'id' ? '' : '.' . $key) . ':' . $column->name();
+                } elseif ($column->attributes()) {
+                    $reference = $column->attributes()[0] . ':' . $column->name();
                 }
+
+                $model->addRelationship('belongsTo', $reference);
             }
         }
 
@@ -186,10 +202,10 @@ class ModelLexer implements Lexer
 
     private function buildColumn(string $name, string $definition)
     {
-        $data_type = 'string';
+        $data_type = null;
         $modifiers = [];
 
-        $tokens = preg_split('#".*?"(*SKIP)(*F)|\s+#', $definition);
+        $tokens = preg_split('#".*?"(*SKIP)(*FAIL)|\s+#', $definition);
         foreach ($tokens as $token) {
             $parts = explode(':', $token);
             $value = $parts[0];
@@ -215,6 +231,14 @@ class ModelLexer implements Lexer
                     $modifiers[] = [self::$modifiers[strtolower($value)] => $modifierAttributes];
                 }
             }
+        }
+
+        if (is_null($data_type)) {
+            $is_foreign_key = collect($modifiers)->contains(function ($modifier) {
+                return (is_array($modifier) && key($modifier) === 'foreign') || $modifier === 'foreign';
+            });
+
+            $data_type = $is_foreign_key ? 'id' : 'string';
         }
 
         return new Column($name, $data_type, $modifiers, $attributes ?? []);
