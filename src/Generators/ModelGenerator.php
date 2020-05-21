@@ -137,29 +137,46 @@ class ModelGenerator implements Generator
 
         foreach ($model->relationships() as $type => $references) {
             foreach ($references as $reference) {
+                $key = null;
+                $class = null;
+
+                $column_name = $reference;
+                $method_name = Str::beforeLast($reference, '_id');
+
                 if (Str::contains($reference, ':')) {
-                    [$class, $name] = explode(':', $reference);
-                } else {
-                    $name = $reference;
-                    $class = null;
+                    [$foreign_reference, $column_name] = explode(':', $reference);
+                    $method_name = Str::beforeLast($column_name, '_id');
+
+                    if (Str::contains($foreign_reference, '.')) {
+                        [$class, $key] = explode('.', $foreign_reference);
+
+                        if ($key === 'id') {
+                            $key = null;
+                        } else {
+                            $method_name = Str::lower($class);
+                        }
+                    } else {
+                        $class = $foreign_reference;
+                    }
                 }
 
-                $name = Str::beforeLast($name, '_id');
-                $class = Str::studly($class ?? $name);
+                $class = Str::studly($class ?? $method_name);
 
                 if ($type === 'morphTo') {
                     $relationship = sprintf('$this->%s()', $type);
                 } elseif ($type === 'morphMany' || $type === 'morphOne') {
-                    $relation = Str::of($name)->lower()->singular() . 'able';
+                    $relation = Str::lower(Str::singular($column_name)) . 'able';
                     $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $class, $relation);
+                } elseif (!is_null($key)) {
+                    $relationship = sprintf('$this->%s(%s::class, \'%s\', \'%s\')', $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $class, $column_name, $key);
                 } else {
                     $relationship = sprintf('$this->%s(%s::class)', $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);
                 }
 
                 if ($type === 'morphTo') {
                     $method_name = Str::lower($class);
-                } else {
-                    $method_name = in_array($type, ['hasMany', 'belongsToMany', 'morphMany']) ? Str::plural($name) : $name;
+                } elseif (in_array($type, ['hasMany', 'belongsToMany', 'morphMany'])) {
+                    $method_name = Str::plural($column_name);
                 }
                 $method = str_replace('DummyName', Str::camel($method_name), $template);
                 $method = str_replace('null', $relationship, $method);

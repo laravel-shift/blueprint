@@ -5,6 +5,7 @@ namespace Blueprint\Lexers;
 use Blueprint\Contracts\Lexer;
 use Blueprint\Models\Column;
 use Blueprint\Models\Model;
+use Illuminate\Support\Str;
 
 class ModelLexer implements Lexer
 {
@@ -172,12 +173,27 @@ class ModelLexer implements Lexer
             $column = $this->buildColumn($name, $definition);
             $model->addColumn($column);
 
-            if ($column->name() !== 'id' && in_array($column->dataType(), ['id', 'uuid'])) {
-                if ($column->attributes()) {
-                    $model->addRelationship('belongsTo', $column->attributes()[0] . ':' . $column->name());
-                } else {
-                    $model->addRelationship('belongsTo', $column->name());
+            $foreign = collect($column->modifiers())->filter(function ($modifier) {
+                return (is_array($modifier) && key($modifier) === 'foreign') || $modifier === 'foreign';
+            })->flatten()->first();
+
+            if ($column->name() !== 'id' && (in_array($column->dataType(), ['id', 'uuid']) || $foreign)) {
+                $reference = $column->name();
+
+                if ($foreign && $foreign !== 'foreign') {
+                    $table = $foreign;
+                    $key = 'id';
+
+                    if (Str::contains($foreign, '.')) {
+                        [$table, $key] = explode('.', $foreign);
+                    }
+
+                    $reference = Str::singular($table) . ($key === 'id' ? '' : '.' . $key) . ':' . $column->name();
+                } elseif ($column->attributes()) {
+                    $reference = $column->attributes()[0] . ':' . $column->name();
                 }
+
+                $model->addRelationship('belongsTo', $reference);
             }
         }
 
