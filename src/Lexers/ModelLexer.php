@@ -186,7 +186,7 @@ class ModelLexer implements Lexer
 
     private function buildColumn(string $name, string $definition)
     {
-        $data_type = 'string';
+        $data_type = null;
         $modifiers = [];
 
         $tokens = preg_split('#".*?"(*SKIP)(*F)|\s+#', $definition);
@@ -215,6 +215,14 @@ class ModelLexer implements Lexer
                     $modifiers[] = [self::$modifiers[strtolower($value)] => $modifierAttributes];
                 }
             }
+        }
+
+        if (is_null($data_type)) {
+            $is_foreign_key = collect($modifiers)->contains(function ($modifier) {
+                return (is_array($modifier) && key($modifier) === 'foreign') || $modifier === 'foreign';
+            });
+
+            $data_type = $is_foreign_key ? 'id' : 'string';
         }
 
         return new Column($name, $data_type, $modifiers, $attributes ?? []);

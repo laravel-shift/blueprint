@@ -384,6 +384,43 @@ class ModelLexerTest extends TestCase
     /**
      * @test
      */
+    public function it_converts_foreign_shorthand_to_id()
+    {
+        $tokens = [
+            'models' => [
+                'Model' => [
+                    'post_id' => 'foreign',
+                    'author_id' => 'foreign:user',
+                ],
+            ],
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertIsArray($actual['models']);
+        $this->assertCount(1, $actual['models']);
+
+        $model = $actual['models']['Model'];
+        $this->assertEquals('Model', $model->name());
+        $this->assertTrue($model->usesTimestamps());
+        $this->assertFalse($model->usesSoftDeletes());
+
+        $columns = $model->columns();
+        $this->assertCount(3, $columns);
+        $this->assertEquals('id', $columns['id']->name());
+        $this->assertEquals('id', $columns['id']->dataType());
+        $this->assertEquals([], $columns['id']->modifiers());
+        $this->assertEquals('post_id', $columns['post_id']->name());
+        $this->assertEquals('id', $columns['post_id']->dataType());
+        $this->assertEquals(['foreign'], $columns['post_id']->modifiers());
+        $this->assertEquals('author_id', $columns['author_id']->name());
+        $this->assertEquals('id', $columns['author_id']->dataType());
+        $this->assertEquals([['foreign' => 'user']], $columns['author_id']->modifiers());
+    }
+
+    /**
+     * @test
+     */
     public function it_returns_traced_models()
     {
         $tokens = [
