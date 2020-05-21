@@ -149,7 +149,7 @@ class FactoryGeneratorTest extends TestCase
             ['definitions/unconventional.bp', 'database/factories/TeamFactory.php', 'factories/unconventional.php'],
             ['definitions/model-modifiers.bp', 'database/factories/ModifierFactory.php', 'factories/model-modifiers.php'],
             ['definitions/model-key-constraints.bp', 'database/factories/OrderFactory.php', 'factories/model-key-constraints.php'],
-//            ['definitions/unconventional-foreign-key.bp', 'database/factories/StateFactory.php', 'factories/unconventional-foreign-key.php'],
+            ['definitions/unconventional-foreign-key.bp', 'database/factories/StateFactory.php', 'factories/unconventional-foreign-key.php'],
         ];
     }
 }

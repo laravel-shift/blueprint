@@ -72,15 +72,41 @@ class FactoryGenerator implements Generator
                 continue;
             }
 
-            if (in_array($column->dataType(), ['id', 'uuid'])) {
-                $foreign = $column->isForeignKey();
+            $foreign = $column->isForeignKey();
+            if ($foreign) {
+                $table = Str::beforeLast($column->name(), '_id');
+                $key = 'id';
 
-                if ($foreign && $foreign !== 'foreign') {
-                    $class = Str::studly(Str::singular($foreign));
-                } else {
-                    $name = Str::beforeLast($column->name(), '_id');
-                    $class = Str::studly($column->attributes()[0] ?? $name);
+                if (Str::contains($foreign, '.')) {
+                    [$table, $key] = explode('.', $foreign);
+                } elseif ($foreign !== 'foreign') {
+                    $table = $foreign;
+
+                    if (Str::startsWith($column->name(), $foreign . '_')) {
+                        $key = Str::after($column->name(), $foreign . '_');
+                    } elseif (Str::startsWith($column->name(), Str::snake(Str::singular($foreign)) . '_')) {
+                        $key = Str::after($column->name(), Str::snake(Str::singular($foreign)) . '_');
+                    } elseif (!Str::endsWith($column->name(), '_id')) {
+                        $key = $column->name();
+                    }
                 }
+
+                $class = Str::studly(Str::singular($table));
+
+                if ($key === 'id') {
+                    $definition .= self::INDENT . "'{$column->name()}' => ";
+                    $definition .= sprintf('factory(%s::class)', '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);
+                    $definition .= ',' . PHP_EOL;
+                } else {
+                    $definition .= self::INDENT . "'{$column->name()}' => function () {";
+                    $definition .= PHP_EOL;
+                    $definition .= self::INDENT . '    ' . sprintf('return factory(%s::class)->create()->%s;', '\\' . $model->fullyQualifiedNamespace() . '\\' . $class, $key);
+                    $definition .= PHP_EOL;
+                    $definition .= self::INDENT . '},' . PHP_EOL;
+                }
+            } elseif (in_array($column->dataType(), ['id', 'uuid'])) {
+                $name = Str::beforeLast($column->name(), '_id');
+                $class = Str::studly($column->attributes()[0] ?? $name);
 
                 $definition .= self::INDENT . "'{$column->name()}' => ";
                 $definition .= sprintf('factory(%s::class)', '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);

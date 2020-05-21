@@ -1,4 +1,7 @@
 models:
   State:
     name: string
-    country_code: string foreign:countries.code
+    countries_id: id foreign:countries
+    country_code: string foreign:countries
+    ccid: string foreign:countries
+    c_code: string foreign:countries.code
