@@ -523,6 +523,7 @@ class MigrationGeneratorTest extends TestCase
             ['definitions/disable-auto-columns.bp', 'database/migrations/timestamp_create_states_table.php', 'migrations/disable-auto-columns.php'],
             ['definitions/uuid-shorthand.bp', 'database/migrations/timestamp_create_people_table.php', 'migrations/uuid-shorthand.php'],
             ['definitions/unconventional-foreign-key.bp', 'database/migrations/timestamp_create_states_table.php', 'migrations/unconventional-foreign-key.php'],
+            ['definitions/resource-statements.bp', 'database/migrations/timestamp_create_users_table.php', 'migrations/resource-statements.php'],
         ];
     }
 }

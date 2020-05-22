@@ -48,7 +48,7 @@ class FactoryGeneratorTest extends TestCase
      * @test
      * @dataProvider modelTreeDataProvider
      */
-    public function output_writes_migration_for_model_tree($definition, $path, $migration)
+    public function output_writes_factory_for_model_tree($definition, $path, $factory)
     {
         $this->files->expects('stub')
             ->with('factory.stub')
@@ -59,7 +59,7 @@ class FactoryGeneratorTest extends TestCase
             ->andReturnTrue();
 
         $this->files->expects('put')
-            ->with($path, $this->fixture($migration));
+            ->with($path, $this->fixture($factory));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
@@ -151,6 +151,7 @@ class FactoryGeneratorTest extends TestCase
             ['definitions/model-key-constraints.bp', 'database/factories/OrderFactory.php', 'factories/model-key-constraints.php'],
             ['definitions/unconventional-foreign-key.bp', 'database/factories/StateFactory.php', 'factories/unconventional-foreign-key.php'],
             ['definitions/foreign-key-shorthand.bp', 'database/factories/CommentFactory.php', 'factories/foreign-key-shorthand.php'],
+            ['definitions/resource-statements.bp', 'database/factories/UserFactory.php', 'factories/resource-statements.php'],
         ];
     }
 }
