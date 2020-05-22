@@ -429,6 +429,4 @@ class ControllerLexerTest extends TestCase
         $this->assertCount(5, $controller->methods());
         $this->assertTrue($controller->isApiResource());
     }
-
-
 }
