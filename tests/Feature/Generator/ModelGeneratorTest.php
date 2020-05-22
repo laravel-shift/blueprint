@@ -55,7 +55,7 @@ class ModelGeneratorTest extends TestCase
             ->with('model/fillable.stub')
             ->andReturn(file_get_contents('stubs/model/fillable.stub'));
 
-        if ($definition === 'definitions/nested-components.bp') {
+        if (in_array($definition, ['definitions/nested-components.bp','definitions/resource-statements.bp'])) {
             $this->files->expects('stub')
                 ->with('model/hidden.stub')
                 ->andReturn(file_get_contents('stubs/model/hidden.stub'));
@@ -415,6 +415,7 @@ class ModelGeneratorTest extends TestCase
             ['definitions/relationships.bp', 'app/Comment.php', 'models/relationships.php'],
             ['definitions/unconventional.bp', 'app/Team.php', 'models/unconventional.php'],
             ['definitions/nested-components.bp', 'app/Admin/User.php', 'models/nested-components.php'],
+            ['definitions/resource-statements.bp', 'app/User.php', 'models/resource-statements.php'],
         ];
     }
 

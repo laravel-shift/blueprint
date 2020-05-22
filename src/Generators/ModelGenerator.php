@@ -204,6 +204,7 @@ class ModelGenerator implements Generator
             'deleted_at',
             'created_at',
             'updated_at',
+            'remember_token',
         ]);
     }
 

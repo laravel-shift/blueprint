@@ -14,6 +14,8 @@ class FactoryGenerator implements Generator
     /** @var \Illuminate\Contracts\Filesystem\Filesystem */
     private $files;
 
+    private $imports = [];
+
     public function __construct($files)
     {
         $this->files = $files;
@@ -27,6 +29,9 @@ class FactoryGenerator implements Generator
 
         /** @var \Blueprint\Models\Model $model */
         foreach ($tree['models'] as $model) {
+            $this->addImport($model, 'Faker\Generator as Faker');
+            $this->addImport($model, $model->fullyQualifiedClassName());
+
             $path = $this->getPath($model);
 
             if (!$this->files->exists(dirname($path))) {
@@ -53,9 +58,9 @@ class FactoryGenerator implements Generator
 
     protected function populateStub(string $stub, Model $model)
     {
-        $stub = str_replace('DummyModel', $model->fullyQualifiedClassName(), $stub);
         $stub = str_replace('DummyClass', $model->name(), $stub);
         $stub = str_replace('// definition...', $this->buildDefinition($model), $stub);
+        $stub = str_replace('// imports...', $this->buildImports($model), $stub);
 
         return $stub;
     }
@@ -144,6 +149,11 @@ class FactoryGenerator implements Generator
                 }
                 $definition .= sprintf('%s%s => $faker->%s,%s', self::INDENT, "'{$column->name()}_id'", self::fakerDataType('id'), PHP_EOL);
                 $definition .= sprintf('%s%s => $faker->%s,%s', self::INDENT, "'{$column->name()}_type'", self::fakerDataType('string'), PHP_EOL);
+            } elseif ($column->dataType() === 'rememberToken') {
+                $this->addImport($model, 'Illuminate\Support\Str');
+                $definition .= self::INDENT . "'{$column->name()}' => ";
+                $definition .= 'Str::random(10)';
+                $definition .= ',' . PHP_EOL;
             } else {
                 $definition .= self::INDENT . "'{$column->name()}' => ";
                 $faker = self::fakerData($column->name()) ?? self::fakerDataType($column->dataType());
@@ -153,6 +163,21 @@ class FactoryGenerator implements Generator
         }
 
         return trim($definition);
+    }
+
+    private function addImport(Model $model, $class)
+    {
+        $this->imports[$model->name()][] = $class;
+    }
+
+    private function buildImports(Model $model)
+    {
+        $imports = array_unique($this->imports[$model->name()]);
+        sort($imports);
+
+        return implode(PHP_EOL, array_map(function ($class) {
+            return 'use ' . $class . ';';
+        }, $imports));
     }
 
     private function fillableColumns(array $columns): array

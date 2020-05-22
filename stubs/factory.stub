@@ -2,8 +2,7 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use DummyModel;
-use Faker\Generator as Faker;
+// imports...
 
 $factory->define(DummyClass::class, function (Faker $faker) {
     return [
