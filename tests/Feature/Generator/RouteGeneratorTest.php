@@ -34,7 +34,7 @@ class RouteGeneratorTest extends TestCase
     /**
      * @test
      */
-    public function output_writes_nothing_for_empty_tree()
+    public function output_generates_nothing_for_empty_tree()
     {
         $this->files->shouldNotHaveReceived('append');
 
@@ -45,7 +45,7 @@ class RouteGeneratorTest extends TestCase
      * @test
      * @dataProvider controllerTreeDataProvider
      */
-    public function output_writes_migration_for_route_tree($definition, $routes)
+    public function output_generates_web_routes($definition, $routes)
     {
         $path = 'routes/web.php';
         $this->files->expects('append')
@@ -60,19 +60,31 @@ class RouteGeneratorTest extends TestCase
     /**
      * @test
      */
-    public function output_writes_migration_for_route_tree_api_routes()
+    public function output_generates_api_routes()
     {
-        $definition = "definitions/api-routes-example.bp";
-        $routes = "routes/api-routes.php";
-        $path = 'routes/api.php';
-
         $this->files->expects('append')
-            ->with($path, $this->fixture($routes));
+            ->with('routes/api.php', $this->fixture('routes/api-routes.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tokens = $this->blueprint->parse($this->fixture('definitions/api-routes-example.bp'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['updated' => [$path]], $this->subject->output($tree));
+        $this->assertEquals(['updated' => ['routes/api.php']], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function output_generates_routes_for_mixed_resources()
+    {
+        $this->files->expects('append')
+            ->with('routes/api.php', $this->fixture('routes/multiple-resource-controllers-api.php'));
+        $this->files->expects('append')
+            ->with('routes/web.php', $this->fixture('routes/multiple-resource-controllers-web.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/multiple-resource-controllers.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['updated' => ['routes/api.php', 'routes/web.php']], $this->subject->output($tree));
     }
 
     public function controllerTreeDataProvider()

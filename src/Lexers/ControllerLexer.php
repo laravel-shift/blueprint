@@ -29,14 +29,16 @@ class ControllerLexer implements Lexer
         foreach ($tokens['controllers'] as $name => $definition) {
             $controller = new Controller($name);
 
-            if ($this->isResource($definition)) {
-                $original = $definition;
-                $definition = $this->generateResourceTokens($controller, $this->methodsForResource($definition['resource']));
-                // unset shorthand
-                unset($original['resource']);
-                // this gives the ability to both use a shorthand and override some methods
-                $definition = array_merge($definition, $original);
-                $controller->setApiResource(true);
+            if (isset($definition['resource'])) {
+                $resource_definition = $this->generateResourceTokens($controller, $this->methodsForResource($definition['resource']));
+
+                if ($definition['resource'] === 'api') {
+                    $controller->setApiResource(true);
+                }
+
+                unset($definition['resource']);
+
+                $definition = array_merge($resource_definition, $definition);
             }
 
             foreach ($definition as $method => $body) {
@@ -47,11 +49,6 @@ class ControllerLexer implements Lexer
         }
 
         return $registry;
-    }
-
-    private function isResource(array $definition)
-    {
-        return isset($definition['resource']) && is_string($definition['resource']);
     }
 
     private function generateResourceTokens(Controller $controller, array $methods)

@@ -22,21 +22,22 @@ class RouteGenerator implements Generator
             return [];
         }
 
-        $routes = '';
-        $path = 'routes/web.php';
+        $routes = ['api' => '', 'web' => ''];
+
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree['controllers'] as $controller) {
-            $routes .= PHP_EOL . PHP_EOL . $this->buildRoutes($controller);
-
-            if ($controller->isApiResource()) {
-                $path = 'routes/api.php';
-            }
+            $type = $controller->isApiResource() ? 'api' : 'web';
+            $routes[$type] .= PHP_EOL . PHP_EOL . $this->buildRoutes($controller);
         }
-        $routes .= PHP_EOL;
 
-        $this->files->append($path, $routes);
+        $paths = [];
+        foreach (array_filter($routes) as $type => $definitions) {
+            $path = 'routes/' . $type . '.php';
+            $this->files->append($path, $definitions . PHP_EOL);
+            $paths[] = $path;
+        }
 
-        return ['updated' => [$path]];
+        return ['updated' => $paths];
     }
 
     protected function buildRoutes(Controller $controller)
