@@ -30,6 +30,7 @@ class FactoryGenerator implements Generator
         /** @var \Blueprint\Models\Model $model */
         foreach ($tree['models'] as $model) {
             $this->addImport($model, 'Faker\Generator as Faker');
+            $this->addImport($model, $model->fullyQualifiedClassName());
 
             $path = $this->getPath($model);
 
@@ -171,8 +172,6 @@ class FactoryGenerator implements Generator
 
     private function buildImports(Model $model)
     {
-        $this->addImport($model, $model->fullyQualifiedClassName());
-
         $imports = array_unique($this->imports[$model->name()]);
         sort($imports);
 
