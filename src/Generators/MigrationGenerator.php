@@ -17,6 +17,11 @@ class MigrationGenerator implements Generator
         'uuidMorphs',
     ];
 
+    const ON_DELETE_CLAUSES = [
+        'cascade' => "->onDelete('cascade')",
+        'set_null' => "->onDelete('SET NULL')",
+    ];
+
     const UNSIGNABLE_TYPES = [
         'bigInteger',
         'decimal',
@@ -146,7 +151,9 @@ class MigrationGenerator implements Generator
 
                 // TODO: unset the proper modifier
                 $modifiers = collect($modifiers)->reject(function ($modifier) {
-                    return ((is_array($modifier) && key($modifier) === 'foreign')
+                    return (
+                        (is_array($modifier) && key($modifier) === 'foreign')
+                        || (is_array($modifier) && key($modifier) === 'onDelete')
                         || $modifier === 'foreign'
                         || ($modifier === 'nullable' && $this->isLaravel7orNewer()));
                 });
@@ -229,22 +236,42 @@ class MigrationGenerator implements Generator
             $table = Str::lower(Str::plural($attributes[0]));
         }
 
+        $on_delete_clause = collect($modifiers)->filter(function ($modifier) {
+            return (is_array($modifier) && key($modifier) === 'onDelete');
+        })->flatten()->first(function ($clause) {
+            return in_array($clause, array_keys(self::ON_DELETE_CLAUSES), true);
+        }, 'cascade');
+
+        $on_delete_suffix = self::ON_DELETE_CLAUSES[$on_delete_clause];
+
         if ($this->isLaravel7orNewer() && $type === 'id') {
             $prefix = in_array('nullable', $modifiers)
                 ? '$table->foreignId' . "('{$column_name}')->nullable()"
                 : '$table->foreignId' . "('{$column_name}')";
 
-            if ($column_name === Str::singular($table) . '_' . $column) {
-                return self::INDENT . "{$prefix}->constrained()->cascadeOnDelete()";
-            }
-            if ($column === 'id') {
-                return self::INDENT . "{$prefix}->constrained('{$table}')->cascadeOnDelete()";
-            }
+            if ($on_delete_clause==='cascade') {
+                $on_delete_suffix = '->cascadeOnDelete()';
+                if ($column_name === Str::singular($table) . '_' . $column) {
+                    return self::INDENT . "{$prefix}->constrained(){$on_delete_suffix}";
+                }
+                if ($column === 'id') {
+                    return self::INDENT . "{$prefix}->constrained('{$table}'){$on_delete_suffix}";
+                }
 
-            return self::INDENT . "{$prefix}->constrained('{$table}', '{$column}')->cascadeOnDelete()";
+                return self::INDENT . "{$prefix}->constrained('{$table}', '{$column}'){$on_delete_suffix}";
+            } elseif ($on_delete_clause==='set_null') {
+                if ($column_name === Str::singular($table) . '_' . $column) {
+                    return self::INDENT . "{$prefix}->constrained(){$on_delete_suffix}";
+                }
+                if ($column === 'id') {
+                    return self::INDENT . "{$prefix}->constrained('{$table}'){$on_delete_suffix}";
+                }
+
+                return self::INDENT . "{$prefix}->constrained('{$table}', '{$column}'){$on_delete_suffix}";
+            }
         }
 
-        return self::INDENT . '$table->foreign' . "('{$column_name}')->references('{$column}')->on('{$table}')->onDelete('cascade')";
+        return self::INDENT . '$table->foreign' . "('{$column_name}')->references('{$column}')->on('{$table}'){$on_delete_suffix}";
     }
 
     protected function getClassName(Model $model)

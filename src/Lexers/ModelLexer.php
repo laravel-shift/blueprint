@@ -94,6 +94,7 @@ class ModelLexer implements Lexer
         'index' => 'index',
         'primary' => 'primary',
         'foreign' => 'foreign',
+        'ondelete' => 'onDelete',
     ];
 
     public function analyze(array $tokens): array
