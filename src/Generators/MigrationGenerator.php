@@ -236,11 +236,7 @@ class MigrationGenerator implements Generator
             $table = Str::lower(Str::plural($attributes[0]));
         }
 
-        $on_delete_clause = collect($modifiers)->filter(function ($modifier) {
-            return (is_array($modifier) && key($modifier) === 'onDelete');
-        })->flatten()->first(function ($clause) {
-            return in_array($clause, array_keys(self::ON_DELETE_CLAUSES), true);
-        }, 'cascade');
+        $on_delete_clause = config('blueprint.on_delete', 'cascade');
 
         $on_delete_suffix = self::ON_DELETE_CLAUSES[$on_delete_clause];
 

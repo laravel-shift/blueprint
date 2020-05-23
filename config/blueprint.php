@@ -94,4 +94,24 @@ return [
     */
 
     'use_guarded' => false,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Foreign Key ON DELETE action
+    |--------------------------------------------------------------------------
+    |
+    | By default, Blueprint will set the `ON DELETE` action to 'cascade'.
+    |
+    | restrict / no action:
+    |   - No action is performed with the child data when the parent data is deleted.
+    | cascade:
+    |   - The child data is either deleted when the parent data is deleted.
+    | set null:
+    |   - The child data is set to NULL when the parent data is deleted.
+    |
+    | Supported: 'cascade', 'set_null', 'restrict', 'no_action'
+    |
+    */
+
+    'on_delete' => 'cascade',
 ];
