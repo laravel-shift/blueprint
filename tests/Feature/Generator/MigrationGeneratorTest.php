@@ -453,7 +453,7 @@ class MigrationGeneratorTest extends TestCase
      */
     public function output_creates_foreign_keys_with_nullable_chained_correctly()
     {
-        $this->app->config->set('blueprint.on_delete', 'set_null');
+        $this->app->config->set('blueprint.on_delete', 'null');
 
         $this->files->expects('stub')
             ->with('migration.stub')
@@ -479,7 +479,7 @@ class MigrationGeneratorTest extends TestCase
      */
     public function output_creates_foreign_keys_with_nullable_chained_correctly_laravel6()
     {
-        $this->app->config->set('blueprint.on_delete', 'set_null');
+        $this->app->config->set('blueprint.on_delete', 'null');
 
         $app = \Mockery::mock();
         $app->shouldReceive('version')
@@ -501,6 +501,60 @@ class MigrationGeneratorTest extends TestCase
             ->with($model_migration, $this->fixture('migrations/nullable-chaining-laravel6.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('definitions/nullable-chaining.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$model_migration]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function output_creates_foreign_keys_with_on_delete()
+    {
+        $this->files->expects('stub')
+            ->with('migration.stub')
+            ->andReturn(file_get_contents('stubs/migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_comments_table.php');
+
+        $this->files
+            ->expects('put')
+            ->with($model_migration, $this->fixture('migrations/foreign-key-on-delete.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/foreign-key-on-delete.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$model_migration]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function output_creates_foreign_keys_with_on_delete_laravel6()
+    {
+        $app = \Mockery::mock();
+        $app->shouldReceive('version')
+            ->withNoArgs()
+            ->andReturn('6.0.0');
+        App::swap($app);
+
+        $this->files->expects('stub')
+            ->with('migration.stub')
+            ->andReturn(file_get_contents('stubs/migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_comments_table.php');
+
+        $this->files
+            ->expects('put')
+            ->with($model_migration, $this->fixture('migrations/foreign-key-on-delete-laravel6.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/foreign-key-on-delete.bp'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$model_migration]], $this->subject->output($tree));

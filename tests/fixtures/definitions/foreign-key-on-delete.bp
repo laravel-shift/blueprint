@@ -1,0 +1,6 @@
+models:
+  Comment:
+    site_id: foreign
+    post_id: foreign onDelete:null
+    author_id: foreign:user ondelete:restrict
+    approver_id: foreign:user ondelete:no_action
