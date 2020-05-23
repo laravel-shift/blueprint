@@ -204,7 +204,7 @@ class MigrationGenerator implements Generator
         $definition = '';
 
         foreach ($segments as $segment) {
-            $column = Str::lower($segment);
+            $column = Str::before(Str::lower($segment), ':');
             $references = 'id';
             $on = Str::plural($column);
             $foreign = Str::singular($column) . '_' . $references;
@@ -292,10 +292,22 @@ class MigrationGenerator implements Generator
 
     protected function getPivotTableName(array $segments)
     {
+        $isCustom = collect($segments)
+            ->filter(function ($segment) {
+                return Str::contains($segment, ':');
+            })->first();
+
+        if ($isCustom) {
+            $table = Str::after($isCustom, ':');
+
+            return $table;
+        }
+
         $segments = array_map(function ($name) {
             return Str::snake($name);
         }, $segments);
         sort($segments);
+
         return strtolower(implode('_', $segments));
     }
 

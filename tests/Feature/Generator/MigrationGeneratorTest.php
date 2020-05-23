@@ -393,6 +393,64 @@ class MigrationGeneratorTest extends TestCase
     /**
      * @test
      */
+    public function output_also_creates_pivot_table_migration_with_custom_name()
+    {
+        $this->files->expects('stub')
+            ->with('migration.stub')
+            ->andReturn(file_get_contents('stubs/migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_users_table.php');
+        $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_test_table.php');
+
+        $this->files->expects('put')
+            ->with($model_migration, $this->fixture('migrations/custom-pivot-table-name-user.php'));
+        $this->files->expects('put')
+            ->with($pivot_migration, $this->fixture('migrations/custom-pivot-table-name-test.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/custom-pivot-table-name.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function output_also_creates_pivot_table_migration_with_custom_name_laravel6()
+    {
+        $app = \Mockery::mock();
+        $app->shouldReceive('version')
+            ->withNoArgs()
+            ->andReturn('6.0.0');
+        App::swap($app);
+
+        $this->files->expects('stub')
+            ->with('migration.stub')
+            ->andReturn(file_get_contents('stubs/migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_users_table.php');
+        $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_test_table.php');
+
+        $this->files->expects('put')
+            ->with($model_migration, $this->fixture('migrations/custom-pivot-table-name-user-laravel6.php'));
+        $this->files->expects('put')
+            ->with($pivot_migration, $this->fixture('migrations/custom-pivot-table-name-test-laravel6.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/custom-pivot-table-name.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
     public function output_creates_foreign_keys_with_nullable_chained_correctly()
     {
         $this->app->config->set('blueprint.on_delete', 'set_null');

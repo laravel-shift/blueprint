@@ -406,6 +406,39 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
+    /**
+     * @test
+     */
+    public function output_generates_models_with_custom_pivot_columns()
+    {
+        $this->files->expects('stub')
+            ->with('model/class.stub')
+            ->andReturn(file_get_contents('stubs/model/class.stub'));
+        $this->files->expects('stub')
+            ->with('model/fillable.stub')
+            ->andReturn(file_get_contents('stubs/model/fillable.stub'));
+        $this->files->expects('stub')
+            ->with('model/casts.stub')
+            ->andReturn(file_get_contents('stubs/model/casts.stub'));
+        $this->files->expects('stub')
+            ->with('model/method.stub')
+            ->andReturn(file_get_contents('stubs/model/method.stub'));
+        $this->files->expects('stub')
+            ->with('model/hidden.stub')
+            ->andReturn(file_get_contents('stubs/model/hidden.stub'));
+
+        $this->files->expects('exists')
+            ->with('app')
+            ->andReturnTrue();
+        $this->files->expects('put')
+            ->with('app/User.php', $this->fixture('models/custom-pivot-table-name.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('definitions/custom-pivot-table-name.bp'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['app/User.php']], $this->subject->output($tree));
+    }
+
     public function modelTreeDataProvider()
     {
         return [
