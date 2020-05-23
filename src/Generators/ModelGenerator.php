@@ -160,21 +160,23 @@ class ModelGenerator implements Generator
                     }
                 }
 
-                $class = Str::studly($class ?? $method_name);
+                $relationshipClass = Str::studly($class ?? $method_name);
 
                 if ($type === 'morphTo') {
                     $relationship = sprintf('$this->%s()', $type);
                 } elseif ($type === 'morphMany' || $type === 'morphOne') {
                     $relation = Str::lower(Str::singular($column_name)) . 'able';
-                    $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $class, $relation);
+                    $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $relationshipClass, $relation);
                 } elseif (!is_null($key)) {
-                    $relationship = sprintf('$this->%s(%s::class, \'%s\', \'%s\')', $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $class, $column_name, $key);
+                    $relationship = sprintf('$this->%s(%s::class, \'%s\', \'%s\')', $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $relationshipClass, $column_name, $key);
+                } elseif (!is_null($class) && $type === 'belongsToMany') {
+                    $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $relationshipClass, $method_name);
                 } else {
-                    $relationship = sprintf('$this->%s(%s::class)', $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);
+                    $relationship = sprintf('$this->%s(%s::class)', $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $relationshipClass);
                 }
 
                 if ($type === 'morphTo') {
-                    $method_name = Str::lower($class);
+                    $method_name = Str::lower($relationshipClass);
                 } elseif (in_array($type, ['hasMany', 'belongsToMany', 'morphMany'])) {
                     $method_name = Str::plural($column_name);
                 }
