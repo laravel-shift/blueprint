@@ -79,6 +79,7 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
             $blueprint->registerGenerator(new \Blueprint\Generators\Statements\ResourceGenerator($app['files']));
             $blueprint->registerGenerator(new \Blueprint\Generators\Statements\JobGenerator($app['files']));
             $blueprint->registerGenerator(new \Blueprint\Generators\Statements\MailGenerator($app['files']));
+            $blueprint->registerGenerator(new \Blueprint\Generators\Statements\NotificationGenerator($app['files']));
             $blueprint->registerGenerator(new \Blueprint\Generators\Statements\ViewGenerator($app['files']));
             $blueprint->registerGenerator(new \Blueprint\Generators\RouteGenerator($app['files']));
 

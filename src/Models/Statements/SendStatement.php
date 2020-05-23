@@ -20,11 +20,17 @@ class SendStatement
      */
     private $data;
 
-    public function __construct(string $mail, string $to = null, array $data = [])
+    /**
+     * @var string
+     */
+    private $type;
+
+    public function __construct(string $mail, string $to = null, array $data = [], string $type)
     {
         $this->mail = $mail;
         $this->data = $data;
         $this->to = $to;
+        $this->type = $type;
     }
 
     public function mail()
@@ -37,6 +43,11 @@ class SendStatement
         return $this->to;
     }
 
+    public function type()
+    {
+        return $this->type;
+    }
+
     /**
      * @return array
      */
@@ -47,6 +58,11 @@ class SendStatement
 
     public function output()
     {
+        return $this->type() === 'mail' ? $this->mailOutput() : $this->notificationOutput();
+    }
+
+    private function mailOutput()
+    {
         $code = 'Mail::';
 
         if ($this->to()) {
@@ -54,6 +70,23 @@ class SendStatement
         }
 
         $code .= 'send(new ' . $this->mail() . '(';
+
+        if ($this->data()) {
+            $code .= $this->buildParameters($this->data());
+        }
+
+        $code .= '));';
+
+        return $code;
+    }
+
+    private function notificationOutput()
+    {
+        $code = 'Notification::';
+
+        if ($this->to()) {
+            $code .= 'send($' . str_replace('.', '->', $this->to()) . ', new ' . $this->mail() . '(';
+        }
 
         if ($this->data()) {
             $code .= $this->buildParameters($this->data());

@@ -13,7 +13,7 @@ controllers:
     store:
       validate: title, content
       save: post
-      send: ReviewMail to:post.author with:post
+      send: ReviewNotification to:post.author with:post
       dispatch: SyncMedia with:post
       fire: NewPost with:post
       flash: post.title

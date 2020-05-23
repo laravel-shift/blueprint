@@ -112,46 +112,89 @@ class TestGenerator implements Generator
 
             foreach ($statements as $statement) {
                 if ($statement instanceof SendStatement) {
-                    $this->addImport($controller, 'Illuminate\\Support\\Facades\\Mail');
-                    $this->addImport($controller, config('blueprint.namespace') . '\\Mail\\' . $statement->mail());
+                    if ($statement->type() === 'notification') {
+                        $this->addImport($controller, 'Illuminate\\Support\\Facades\\Notification');
+                        $this->addImport($controller, config('blueprint.namespace') . '\\Notification\\' . $statement->mail());
 
-                    $setup['mock'][] = 'Mail::fake();';
+                        $setup['mock'][] = 'Notification::fake();';
 
-                    $assertion = sprintf('Mail::assertSent(%s::class', $statement->mail());
+                        $assertion = sprintf('Notification::assertSent(%s::class', $statement->mail());
 
-                    if ($statement->data() || $statement->to()) {
-                        $conditions = [];
-                        $variables = [];
-                        $assertion .= ', function ($mail)';
+                        if ($statement->data() || $statement->to()) {
+                            $conditions = [];
+                            $variables = [];
+                            $assertion .= ', function ($notification)';
 
-                        if ($statement->to()) {
-                            $conditions[] = '$mail->hasTo($' . str_replace('.', '->', $statement->to()) . ')';
-                        }
-
-                        foreach ($statement->data() as $data) {
-                            if (Str::studly(Str::singular($data)) === $context) {
-                                $variables[] .= '$' . $data;
-                                $conditions[] .= sprintf('$mail->%s->is($%s)', $data, $data);
-                            } else {
-                                [$model, $property] = explode('.', $data);
-                                $variables[] .= '$' . $model;
-                                $conditions[] .= sprintf('$mail->%s == $%s', $property ?? $model, str_replace('.', '->', $data()));
+                            if ($statement->to()) {
+                                $conditions[] = '$notification->hasTo($' . str_replace('.', '->', $statement->to()) . ')';
                             }
+
+                            foreach ($statement->data() as $data) {
+                                if (Str::studly(Str::singular($data)) === $context) {
+                                    $variables[] .= '$' . $data;
+                                    $conditions[] .= sprintf('$notification->%s->is($%s)', $data, $data);
+                                } else {
+                                    [$model, $property] = explode('.', $data);
+                                    $variables[] .= '$' . $model;
+                                    $conditions[] .= sprintf('$notification->%s == $%s', $property ?? $model, str_replace('.', '->', $data()));
+                                }
+                            }
+
+                            if ($variables) {
+                                $assertion .= ' use (' . implode(', ', array_unique($variables)) . ')';
+                            }
+
+                            $assertion .= ' {' . PHP_EOL;
+                            $assertion .= str_pad(' ', 12);
+                            $assertion .= 'return ' . implode(' && ', $conditions) . ';';
+                            $assertion .= PHP_EOL . str_pad(' ', 8) . '}';
                         }
 
-                        if ($variables) {
-                            $assertion .= ' use (' . implode(', ', array_unique($variables)) . ')';
+                        $assertion .= ');';
+
+                        $assertions['mock'][] = $assertion;
+                    } else {
+                        $this->addImport($controller, 'Illuminate\\Support\\Facades\\Mail');
+                        $this->addImport($controller, config('blueprint.namespace') . '\\Mail\\' . $statement->mail());
+
+                        $setup['mock'][] = 'Mail::fake();';
+
+                        $assertion = sprintf('Mail::assertSent(%s::class', $statement->mail());
+
+                        if ($statement->data() || $statement->to()) {
+                            $conditions = [];
+                            $variables = [];
+                            $assertion .= ', function ($mail)';
+
+                            if ($statement->to()) {
+                                $conditions[] = '$mail->hasTo($' . str_replace('.', '->', $statement->to()) . ')';
+                            }
+
+                            foreach ($statement->data() as $data) {
+                                if (Str::studly(Str::singular($data)) === $context) {
+                                    $variables[] .= '$' . $data;
+                                    $conditions[] .= sprintf('$mail->%s->is($%s)', $data, $data);
+                                } else {
+                                    [$model, $property] = explode('.', $data);
+                                    $variables[] .= '$' . $model;
+                                    $conditions[] .= sprintf('$mail->%s == $%s', $property ?? $model, str_replace('.', '->', $data()));
+                                }
+                            }
+
+                            if ($variables) {
+                                $assertion .= ' use (' . implode(', ', array_unique($variables)) . ')';
+                            }
+
+                            $assertion .= ' {' . PHP_EOL;
+                            $assertion .= str_pad(' ', 12);
+                            $assertion .= 'return ' . implode(' && ', $conditions) . ';';
+                            $assertion .= PHP_EOL . str_pad(' ', 8) . '}';
                         }
 
-                        $assertion .= ' {' . PHP_EOL;
-                        $assertion .= str_pad(' ', 12);
-                        $assertion .= 'return ' . implode(' && ', $conditions) . ';';
-                        $assertion .= PHP_EOL . str_pad(' ', 8) . '}';
+                        $assertion .= ');';
+
+                        $assertions['mock'][] = $assertion;
                     }
-
-                    $assertion .= ');';
-
-                    $assertions['mock'][] = $assertion;
                 } elseif ($statement instanceof ValidateStatement) {
                     $this->addTestAssertionsTrait($controller);
 
