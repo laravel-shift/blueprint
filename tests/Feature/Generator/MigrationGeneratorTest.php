@@ -406,11 +406,11 @@ class MigrationGeneratorTest extends TestCase
         $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_test_table.php');
 
         $this->files->expects('put')
-            ->with($model_migration, $this->fixture('migrations/custom-pivot-column-user.php'));
+            ->with($model_migration, $this->fixture('migrations/custom-pivot-table-name-user.php'));
         $this->files->expects('put')
-            ->with($pivot_migration, $this->fixture('migrations/custom-pivot-column-test.php'));
+            ->with($pivot_migration, $this->fixture('migrations/custom-pivot-table-name-test.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/custom-pivot-column.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('definitions/custom-pivot-table-name.bp'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
@@ -438,11 +438,11 @@ class MigrationGeneratorTest extends TestCase
         $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_test_table.php');
 
         $this->files->expects('put')
-            ->with($model_migration, $this->fixture('migrations/custom-pivot-column-user-laravel6.php'));
+            ->with($model_migration, $this->fixture('migrations/custom-pivot-table-name-user-laravel6.php'));
         $this->files->expects('put')
-            ->with($pivot_migration, $this->fixture('migrations/custom-pivot-column-test-laravel6.php'));
+            ->with($pivot_migration, $this->fixture('migrations/custom-pivot-table-name-test-laravel6.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/custom-pivot-column.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('definitions/custom-pivot-table-name.bp'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));

@@ -34,7 +34,7 @@ class User extends Model
     ];
 
 
-    public function tests()
+    public function accounts()
     {
         return $this->belongsToMany(\App\Account::class, 'test');
     }

@@ -431,9 +431,9 @@ class ModelGeneratorTest extends TestCase
             ->with('app')
             ->andReturnTrue();
         $this->files->expects('put')
-            ->with('app/User.php', $this->fixture('models/custom-pivot-column.php'));
+            ->with('app/User.php', $this->fixture('models/custom-pivot-table-name.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/custom-pivot-column.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('definitions/custom-pivot-table-name.bp'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['app/User.php']], $this->subject->output($tree));
