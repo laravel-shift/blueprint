@@ -199,15 +199,19 @@ class MigrationGenerator implements Generator
             $references = 'id';
             $on = Str::plural($column);
             $foreign = Str::singular($column) . '_' . $references;
+            $table = $foreign;
+            if (Str::contains($foreign, ':')) {
+                [, $table] = explode(':', $foreign);
+            }
 
             if (!$this->isLaravel7orNewer()) {
-                $definition .= self::INDENT . '$table->unsignedBigInteger(\'' . $foreign . '\');' . PHP_EOL;
+                $definition .= self::INDENT . '$table->unsignedBigInteger(\'' . $table . '\');' . PHP_EOL;
             }
 
             if (config('blueprint.use_constraints')) {
-                $definition .= $this->buildForeignKey($foreign, $on, 'id') . ';' . PHP_EOL;
+                $definition .= $this->buildForeignKey($table, $on, 'id') . ';' . PHP_EOL;
             } elseif ($this->isLaravel7orNewer()) {
-                $definition .= self::INDENT . '$table->foreignId(\'' . $foreign . '\');' . PHP_EOL;
+                $definition .= self::INDENT . '$table->foreignId(\'' . $table . '\');' . PHP_EOL;
             }
         }
 
@@ -277,9 +281,16 @@ class MigrationGenerator implements Generator
     protected function getPivotTableName(array $segments)
     {
         $segments = array_map(function ($name) {
-            return Str::snake($name);
+            $table = $name;
+
+            if (Str::contains($name, ':')) {
+                [,$table] = explode(':', $name);
+            }
+
+            return Str::snake($table);
         }, $segments);
         sort($segments);
+
         return strtolower(implode('_', $segments));
     }
 
