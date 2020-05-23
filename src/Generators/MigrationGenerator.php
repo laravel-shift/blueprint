@@ -17,6 +17,13 @@ class MigrationGenerator implements Generator
         'uuidMorphs',
     ];
 
+    const ON_DELETE_CLAUSES = [
+        'cascade' => "->onDelete('cascade')",
+        'restrict' => "->onDelete('restrict')",
+        'set_null' => "->onDelete('set null')",
+        'no_action' => "->onDelete('no action')",
+    ];
+
     const UNSIGNABLE_TYPES = [
         'bigInteger',
         'decimal',
@@ -148,7 +155,9 @@ class MigrationGenerator implements Generator
 
                 // TODO: unset the proper modifier
                 $modifiers = collect($modifiers)->reject(function ($modifier) {
-                    return ((is_array($modifier) && key($modifier) === 'foreign')
+                    return (
+                        (is_array($modifier) && key($modifier) === 'foreign')
+                        || (is_array($modifier) && key($modifier) === 'onDelete')
                         || $modifier === 'foreign'
                         || ($modifier === 'nullable' && $this->isLaravel7orNewer()));
                 });
@@ -231,22 +240,29 @@ class MigrationGenerator implements Generator
             $table = Str::lower(Str::plural($attributes[0]));
         }
 
+        $on_delete_clause = config('blueprint.on_delete', 'cascade');
+
+        $on_delete_suffix = self::ON_DELETE_CLAUSES[$on_delete_clause];
+
         if ($this->isLaravel7orNewer() && $type === 'id') {
             $prefix = in_array('nullable', $modifiers)
                 ? '$table->foreignId' . "('{$column_name}')->nullable()"
                 : '$table->foreignId' . "('{$column_name}')";
 
+            if ($on_delete_clause === 'cascade') {
+                $on_delete_suffix = '->cascadeOnDelete()';
+            }
             if ($column_name === Str::singular($table) . '_' . $column) {
-                return self::INDENT . "{$prefix}->constrained()->cascadeOnDelete()";
+                return self::INDENT . "{$prefix}->constrained(){$on_delete_suffix}";
             }
             if ($column === 'id') {
-                return self::INDENT . "{$prefix}->constrained('{$table}')->cascadeOnDelete()";
+                return self::INDENT . "{$prefix}->constrained('{$table}'){$on_delete_suffix}";
             }
 
-            return self::INDENT . "{$prefix}->constrained('{$table}', '{$column}')->cascadeOnDelete()";
+            return self::INDENT . "{$prefix}->constrained('{$table}', '{$column}'){$on_delete_suffix}";
         }
 
-        return self::INDENT . '$table->foreign' . "('{$column_name}')->references('{$column}')->on('{$table}')->onDelete('cascade')";
+        return self::INDENT . '$table->foreign' . "('{$column_name}')->references('{$column}')->on('{$table}'){$on_delete_suffix}";
     }
 
     protected function getClassName(Model $model)

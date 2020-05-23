@@ -395,6 +395,8 @@ class MigrationGeneratorTest extends TestCase
      */
     public function output_creates_foreign_keys_with_nullable_chained_correctly()
     {
+        $this->app->config->set('blueprint.on_delete', 'set_null');
+
         $this->files->expects('stub')
             ->with('migration.stub')
             ->andReturn(file_get_contents('stubs/migration.stub'));
@@ -419,6 +421,8 @@ class MigrationGeneratorTest extends TestCase
      */
     public function output_creates_foreign_keys_with_nullable_chained_correctly_laravel6()
     {
+        $this->app->config->set('blueprint.on_delete', 'set_null');
+
         $app = \Mockery::mock();
         $app->shouldReceive('version')
             ->withNoArgs()
