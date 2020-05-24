@@ -31,8 +31,10 @@ class ControllerLexer implements Lexer
 
             if (isset($definition['resource'])) {
                 $resource_definition = $this->generateResourceTokens($controller, $this->methodsForResource($definition['resource']));
+                
+                // Checks if resource is prefixed with API
 
-                if ($definition['resource'] === 'api') {
+                if (Str::startsWith(Str::lower($definition['resource']),'api') {
                     $controller->setApiResource(true);
                 }
 
