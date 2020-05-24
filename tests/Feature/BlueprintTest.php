@@ -357,6 +357,34 @@ class BlueprintTest extends TestCase
 
     /**
      * @test
+     */
+    public function generate_uses_swapped_generator_and_returns_generated_files()
+    {
+        $generatorOne = \Mockery::mock(Generator::class);
+        $tree = ['branch' => ['code', 'attributes']];
+        $generatorOne->expects('output')->never();
+
+        $generatorSwap = \Mockery::mock(Generator::class);
+        $generatorSwap->expects('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['swapped/new.php'],
+                'updated' => ['swapped/existing.php'],
+                'deleted' => ['swapped/trashed.php']
+            ]);
+
+        $this->subject->registerGenerator($generatorOne);
+        $this->subject->swapGenerator(get_class($generatorOne), $generatorSwap);
+
+        $this->assertEquals([
+            'created' => ['swapped/new.php'],
+            'updated' => ['swapped/existing.php'],
+            'deleted' => ['swapped/trashed.php'],
+        ], $this->subject->generate($tree));
+    }
+
+    /**
+     * @test
      * @dataProvider namespacesDataProvider
      */
     public function relative_namespace_removes_namespace_prefix_from_reference($namespace, $expected, $reference)
