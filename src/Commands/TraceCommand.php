@@ -103,9 +103,10 @@ class TraceCommand extends Command
         }
 
         $reflectionClass = new \ReflectionClass($class);
-        if (!$reflectionClass->isSubclassOf(\Illuminate\Database\Eloquent\Model::class)) {
+        if (!$reflectionClass->isSubclassOf(\Illuminate\Database\Eloquent\Model::class) || $reflectionClass->isSubclassOf('Jenssegers\Mongodb\Eloquent\Model')) {
             return null;
         }
+
 
         return $this->laravel->make($class);
     }
