@@ -34,7 +34,7 @@ class ControllerLexer implements Lexer
                 
                 // Checks if resource is prefixed with API
 
-                if (Str::startsWith(Str::lower($definition['resource']),'api') {
+                if (Str::startsWith(Str::lower($definition['resource']),'api')) {
                     $controller->setApiResource(true);
                 }
 
