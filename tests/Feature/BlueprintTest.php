@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Contracts\Lexer;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Tests\TestCase;
 
@@ -352,6 +353,34 @@ class BlueprintTest extends TestCase
             'created' => ['one/new.php', 'two/new.php'],
             'updated' => ['one/existing.php', 'two/existing.php'],
             'deleted' => ['one/trashed.php', 'two/trashed.php'],
+        ], $this->subject->generate($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function generate_uses_swapped_generator_and_returns_generated_files()
+    {
+        $generatorOne = \Mockery::mock(Generator::class);
+        $tree = ['branch' => ['code', 'attributes']];
+        $generatorOne->expects('output')->never();
+
+        $generatorSwap = \Mockery::mock(Generator::class);
+        $generatorSwap->expects('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['swapped/new.php'],
+                'updated' => ['swapped/existing.php'],
+                'deleted' => ['swapped/trashed.php']
+            ]);
+
+        $this->subject->registerGenerator($generatorOne);
+        $this->subject->swapGenerator(get_class($generatorOne), $generatorSwap);
+
+        $this->assertEquals([
+            'created' => ['swapped/new.php'],
+            'updated' => ['swapped/existing.php'],
+            'deleted' => ['swapped/trashed.php'],
         ], $this->subject->generate($tree));
     }
 
