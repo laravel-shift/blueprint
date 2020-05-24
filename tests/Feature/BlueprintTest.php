@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Contracts\Lexer;
-use Illuminate\Support\Facades\Log;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Tests\TestCase;
 

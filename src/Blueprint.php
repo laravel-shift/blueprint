@@ -94,7 +94,7 @@ class Blueprint
 
     public function swapGenerator(string $concrete, Generator $generator)
     {
-        foreach($this->generators as $key => $registeredGenerator) {
+        foreach ($this->generators as $key => $registeredGenerator) {
             if (get_class($registeredGenerator) === $concrete) {
                 unset($this->generators[$key]);
             }
