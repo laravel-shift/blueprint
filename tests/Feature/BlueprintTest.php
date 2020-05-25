@@ -30,7 +30,7 @@ class BlueprintTest extends TestCase
      */
     public function it_parses_models()
     {
-        $blueprint = $this->fixture('definitions/models-only-draft.yaml');
+        $blueprint = $this->fixture('drafts/models-only.yaml');
 
         $this->assertEquals([
             'models' => [
@@ -47,7 +47,7 @@ class BlueprintTest extends TestCase
 
     public function it_parses_seeders()
     {
-        $blueprint = $this->fixture('definitions/seeders-draft.yaml');
+        $blueprint = $this->fixture('drafts/seeders.yaml');
 
         $this->assertEquals([
             'models' => [
@@ -72,7 +72,7 @@ class BlueprintTest extends TestCase
      */
     public function it_parses_controllers()
     {
-        $blueprint = $this->fixture('definitions/controllers-only-draft.yaml');
+        $blueprint = $this->fixture('drafts/controllers-only.yaml');
 
         $this->assertEquals([
             'controllers' => [
@@ -99,7 +99,7 @@ class BlueprintTest extends TestCase
      */
     public function it_parses_shorthands()
     {
-        $blueprint = $this->fixture('definitions/shorthands-draft.yaml');
+        $blueprint = $this->fixture('drafts/shorthands.yaml');
 
         $this->assertEquals([
             'models' => [
@@ -122,7 +122,7 @@ class BlueprintTest extends TestCase
      */
     public function it_parses_uuid_shorthand()
     {
-        $blueprint = $this->fixture('definitions/uuid-shorthand-draft.yaml');
+        $blueprint = $this->fixture('drafts/uuid-shorthand.yaml');
 
         $this->assertEquals([
             'models' => [
@@ -139,7 +139,7 @@ class BlueprintTest extends TestCase
      */
     public function it_parses_shorthands_with_timezones()
     {
-        $blueprint = $this->fixture('definitions/with-timezones-draft.yaml');
+        $blueprint = $this->fixture('drafts/with-timezones.yaml');
 
         $this->assertEquals([
             'models' => [
@@ -156,7 +156,7 @@ class BlueprintTest extends TestCase
      */
     public function it_parses_longhands()
     {
-        $blueprint = $this->fixture('definitions/longhands-draft.yaml');
+        $blueprint = $this->fixture('drafts/longhands.yaml');
 
         $this->assertEquals([
             'models' => [
@@ -183,7 +183,7 @@ class BlueprintTest extends TestCase
      */
     public function it_parses_resource_shorthands()
     {
-        $blueprint = $this->fixture('definitions/with-timezones-draft.yaml');
+        $blueprint = $this->fixture('drafts/with-timezones.yaml');
 
         $this->assertEquals([
             'models' => [
@@ -200,7 +200,7 @@ class BlueprintTest extends TestCase
      */
     public function it_parses_the_readme_example()
     {
-        $blueprint = $this->fixture('definitions/readme-example-draft.yaml');
+        $blueprint = $this->fixture('drafts/readme-example.yaml');
 
         $this->assertEquals([
             'models' => [
@@ -235,7 +235,7 @@ class BlueprintTest extends TestCase
      */
     public function it_parses_the_readme_example_with_different_platform_eols()
     {
-        $definition = $this->fixture('definitions/readme-example-draft.yaml');
+        $definition = $this->fixture('drafts/readme-example.yaml');
 
         $LF = "\n";
         $CR = "\r";
@@ -282,7 +282,7 @@ class BlueprintTest extends TestCase
     {
         $this->expectException(ParseException::class);
 
-        $blueprint = $this->fixture('definitions/invalid-draft.yaml');
+        $blueprint = $this->fixture('drafts/invalid.yaml');
 
         $this->subject->parse($blueprint);
     }

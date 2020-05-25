@@ -85,7 +85,7 @@ class FactoryGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with('database/factories/PostFactory.php', $this->fixture('factories/fake-nullables.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/readme-example-draft.yaml'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['database/factories/PostFactory.php']], $this->subject->output($tree));
@@ -110,7 +110,7 @@ class FactoryGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with('database/factories/PostFactory.php', $this->fixture('factories/post-configured.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/post-draft.yaml'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/post.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['database/factories/PostFactory.php']], $this->subject->output($tree));
@@ -134,7 +134,7 @@ class FactoryGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with('database/factories/Admin/UserFactory.php', $this->fixture('factories/nested-components.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/nested-components-draft.yaml'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/nested-components.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['database/factories/Admin/UserFactory.php']], $this->subject->output($tree));
@@ -143,15 +143,15 @@ class FactoryGeneratorTest extends TestCase
     public function modelTreeDataProvider()
     {
         return [
-            ['definitions/phone-draft.yaml', 'database/factories/PhoneFactory.php', 'factories/phone.php'],
-            ['definitions/post-draft.yaml', 'database/factories/PostFactory.php', 'factories/post.php'],
-            ['definitions/team-draft.yaml', 'database/factories/TeamFactory.php', 'factories/team.php'],
-            ['definitions/unconventional-draft.yaml', 'database/factories/TeamFactory.php', 'factories/unconventional.php'],
-            ['definitions/model-modifiers-draft.yaml', 'database/factories/ModifierFactory.php', 'factories/model-modifiers.php'],
-            ['definitions/model-key-constraints-draft.yaml', 'database/factories/OrderFactory.php', 'factories/model-key-constraints.php'],
-            ['definitions/unconventional-foreign-key-draft.yaml', 'database/factories/StateFactory.php', 'factories/unconventional-foreign-key.php'],
-            ['definitions/foreign-key-shorthand-draft.yaml', 'database/factories/CommentFactory.php', 'factories/foreign-key-shorthand.php'],
-            ['definitions/resource-statements-draft.yaml', 'database/factories/UserFactory.php', 'factories/resource-statements.php'],
+            ['drafts/phone.yaml', 'database/factories/PhoneFactory.php', 'factories/phone.php'],
+            ['drafts/post.yaml', 'database/factories/PostFactory.php', 'factories/post.php'],
+            ['drafts/team.yaml', 'database/factories/TeamFactory.php', 'factories/team.php'],
+            ['drafts/unconventional.yaml', 'database/factories/TeamFactory.php', 'factories/unconventional.php'],
+            ['drafts/model-modifiers.yaml', 'database/factories/ModifierFactory.php', 'factories/model-modifiers.php'],
+            ['drafts/model-key-constraints.yaml', 'database/factories/OrderFactory.php', 'factories/model-key-constraints.php'],
+            ['drafts/unconventional-foreign-key.yaml', 'database/factories/StateFactory.php', 'factories/unconventional-foreign-key.php'],
+            ['drafts/foreign-key-shorthand.yaml', 'database/factories/CommentFactory.php', 'factories/foreign-key-shorthand.php'],
+            ['drafts/resource-statements.yaml', 'database/factories/UserFactory.php', 'factories/resource-statements.php'],
         ];
     }
 }
