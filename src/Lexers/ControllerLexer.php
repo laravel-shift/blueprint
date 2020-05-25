@@ -33,7 +33,7 @@ class ControllerLexer implements Lexer
                 $resource_methods = $this->methodsForResource($definition['resource']);
                 $resource_definition = $this->generateResourceTokens($controller, $resource_methods);
 
-                if ($this->hasAPIResourceMethods($resource_methods)) {
+                if ($this->hasOnlyApiResourceMethods($resource_methods)) {
                     $controller->setApiResource(true);
                 }
 
@@ -143,7 +143,7 @@ class ControllerLexer implements Lexer
         return array_map('trim', explode(',', strtolower($type)));
     }
 
-    private function hasAPIResourceMethods(array $methods)
+    private function hasOnlyApiResourceMethods(array $methods)
     {
         return collect($methods)->every(function ($item, $key) {
             return Str::startsWith($item, 'api.');
