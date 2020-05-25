@@ -26,10 +26,10 @@ controllers:
     resource
 
   File:
-    resource: api
+    resource: api.store, api.show, api.update
 
   Category:
-    resource
+    resource: index, api.destroy
 
   Gallery:
     resource: api
