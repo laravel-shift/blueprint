@@ -56,7 +56,7 @@ class EventGeneratorTest extends TestCase
 
         $this->files->shouldNotHaveReceived('put');
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/render-statements.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/render-statements.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([], $this->subject->output($tree));
@@ -93,7 +93,7 @@ class EventGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with('app/Events/UserDeleted.php', $this->fixture('events/user-deleted.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/fire-statements.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/fire-statements.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['app/Events/UserCreated.php', 'app/Events/UserDeleted.php']], $this->subject->output($tree));
@@ -115,7 +115,7 @@ class EventGeneratorTest extends TestCase
             ->with('app/Events/UserDeleted.php')
             ->andReturnTrue();
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/fire-statements.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/fire-statements.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([], $this->subject->output($tree));
@@ -144,7 +144,7 @@ class EventGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with('src/path/Events/NewPost.php', $this->fixture('events/event-configured.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/readme-example.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['src/path/Events/NewPost.php']], $this->subject->output($tree));

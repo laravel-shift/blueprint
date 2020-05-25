@@ -75,7 +75,7 @@ class ControllerGeneratorTest extends TestCase
      */
     public function output_generates_controllers_with_models_with_custom_namespace_correctly()
     {
-        $definition = 'definitions/custom-models-namespace.bp';
+        $definition = 'drafts/custom-models-namespace.yaml';
         $path = 'app/Http/Controllers/TagController.php';
         $controller = 'controllers/custom-models-namespace.php';
 
@@ -99,7 +99,7 @@ class ControllerGeneratorTest extends TestCase
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
-  
+
     /**
      * @test
      */
@@ -128,7 +128,7 @@ class ControllerGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with($certificateTypeController, $this->fixture('controllers/certificate-type-controller.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/pascal-case.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/pascal-case.yaml'));
         $tree = $this->blueprint->analyze($tokens);
         $this->assertEquals(['created' => [$certificateController, $certificateTypeController]], $this->subject->output($tree));
     }
@@ -157,7 +157,7 @@ class ControllerGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with('src/path/Other/Http/UserController.php', $this->fixture('controllers/controller-configured.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/simple-controller.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/simple-controller.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['src/path/Other/Http/UserController.php']], $this->subject->output($tree));
@@ -166,11 +166,11 @@ class ControllerGeneratorTest extends TestCase
     public function controllerTreeDataProvider()
     {
         return [
-            ['definitions/readme-example.bp', 'app/Http/Controllers/PostController.php', 'controllers/readme-example.php'],
-            ['definitions/crazy-eloquent.bp', 'app/Http/Controllers/PostController.php', 'controllers/crazy-eloquent.php'],
-            ['definitions/nested-components.bp', 'app/Http/Controllers/Admin/UserController.php', 'controllers/nested-components.php'],
-            ['definitions/respond-statements.bp', 'app/Http/Controllers/Api/PostController.php', 'controllers/respond-statements.php'],
-            ['definitions/resource-statements.bp', 'app/Http/Controllers/UserController.php', 'controllers/resource-statements.php'],
+            ['drafts/readme-example.yaml', 'app/Http/Controllers/PostController.php', 'controllers/readme-example.php'],
+            ['drafts/crazy-eloquent.yaml', 'app/Http/Controllers/PostController.php', 'controllers/crazy-eloquent.php'],
+            ['drafts/nested-components.yaml', 'app/Http/Controllers/Admin/UserController.php', 'controllers/nested-components.php'],
+            ['drafts/respond-statements.yaml', 'app/Http/Controllers/Api/PostController.php', 'controllers/respond-statements.php'],
+            ['drafts/resource-statements.yaml', 'app/Http/Controllers/UserController.php', 'controllers/resource-statements.php'],
         ];
     }
 }

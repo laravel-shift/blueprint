@@ -57,7 +57,7 @@ class ResourceGeneratorTest extends TestCase
 
         $this->files->shouldNotHaveReceived('put');
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/controllers-only.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/controllers-only.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([], $this->subject->output($tree));
@@ -94,7 +94,7 @@ class ResourceGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with('app/Http/Resources/UserCollection.php', $this->fixture('resources/user-collection.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/resource-statements.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/resource-statements.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['app/Http/Resources/UserCollection.php', 'app/Http/Resources/User.php']], $this->subject->output($tree));

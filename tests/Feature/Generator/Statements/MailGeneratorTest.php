@@ -56,7 +56,7 @@ class MailGeneratorTest extends TestCase
 
         $this->files->shouldNotHaveReceived('put');
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/render-statements.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/render-statements.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([], $this->subject->output($tree));
@@ -93,7 +93,7 @@ class MailGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with('app/Mail/PublishedPost.php', $this->fixture('mailables/published-post.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/send-statements.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/send-statements.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['app/Mail/ReviewPost.php', 'app/Mail/PublishedPost.php']], $this->subject->output($tree));
@@ -115,7 +115,7 @@ class MailGeneratorTest extends TestCase
             ->with('app/Mail/PublishedPost.php')
             ->andReturnTrue();
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/send-statements.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/send-statements.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([], $this->subject->output($tree));
@@ -144,7 +144,7 @@ class MailGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with('src/path/Mail/ReviewNotification.php', $this->fixture('mailables/mail-configured.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/readme-example.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['src/path/Mail/ReviewNotification.php']], $this->subject->output($tree));
