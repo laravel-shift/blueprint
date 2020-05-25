@@ -102,7 +102,7 @@ class TestGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with($certificateTypeControllerTest, $this->fixture('tests/certificate-type-pascal-case-example.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/pascal-case.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('definitions/pascal-case-draft.yaml'));
         $tree = $this->blueprint->analyze($tokens);
         $this->assertEquals(['created' => [$certificateControllerTest, $certificateTypeControllerTest]], $this->subject->output($tree));
     }
@@ -127,7 +127,7 @@ class TestGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with('tests/Feature/Http/Controllers/UserControllerTest.php', $this->fixture('tests/reference-cache.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/reference-cache.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('definitions/reference-cache-draft.yaml'));
         $tokens['cache'] = [
             'User' => [
                 'email' => 'string',
@@ -142,9 +142,9 @@ class TestGeneratorTest extends TestCase
     public function controllerTreeDataProvider()
     {
         return [
-            ['definitions/readme-example.bp', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/readme-example.php'],
-            ['definitions/respond-statements.bp', 'tests/Feature/Http/Controllers/Api/PostControllerTest.php', 'tests/respond-statements.php'],
-            ['definitions/full-crud-example.bp', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/full-crud-example.php'],
+            ['definitions/readme-example-draft.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/readme-example.php'],
+            ['definitions/respond-statements-draft.yaml', 'tests/Feature/Http/Controllers/Api/PostControllerTest.php', 'tests/respond-statements.php'],
+            ['definitions/full-crud-example-draft.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/full-crud-example.php'],
         ];
     }
 }
