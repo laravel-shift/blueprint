@@ -50,7 +50,7 @@ class BuildCommand extends Command
         $file = $this->argument('draft') ?? $this->defaultDraftFile();
 
         if (!file_exists($file)) {
-            $this->error('Draft file could not be found: ' . $file);
+            $this->error('Draft file could not be found: ' . ($file ?: 'draft.yaml'));
             exit(1);
         }
 
