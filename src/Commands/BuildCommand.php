@@ -42,7 +42,7 @@ class BuildCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
     public function handle()
     {
@@ -50,6 +50,7 @@ class BuildCommand extends Command
 
         if (!file_exists($file)) {
             $this->error('Draft file could not be found: ' . $file);
+            exit(1);
         }
 
         $blueprint = resolve(Blueprint::class);
