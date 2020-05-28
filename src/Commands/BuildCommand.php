@@ -80,13 +80,14 @@ class BuildCommand extends Command
 
     private function outputStyle($action)
     {
-        if ($action === 'deleted') {
-            return 'error';
-        } elseif ($action === 'updated') {
-            return 'comment';
+        switch ($action) {
+            case 'deleted':
+                return 'error';
+            case 'updated':
+                return 'comment';
+            default:
+                return 'info';
         }
-
-        return 'info';
     }
 
     private function defaultDraftFile()
