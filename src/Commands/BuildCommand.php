@@ -32,7 +32,6 @@ class BuildCommand extends Command
 
     /**
      * @param Filesystem $files
-     * @param \Illuminate\Contracts\View\Factory $view
      */
     public function __construct(Filesystem $files)
     {
