@@ -17,7 +17,7 @@ class BuildCommand extends Command
      * @var string
      */
     protected $signature = 'blueprint:build 
-                            {draft? : The path to the draft file, default: draft.yaml or draft.yaml }
+                            {draft? : The path to the draft file, default: draft.yaml or draft.yml }
                             ';
 
     /**
