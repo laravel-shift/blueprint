@@ -16,7 +16,9 @@ class BuildCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'blueprint:build {draft?}';
+    protected $signature = 'blueprint:build 
+                            {draft? : The path to the draft file, default: draft.yaml or draft.yaml }
+                            ';
 
     /**
      * The console command description.
@@ -30,7 +32,6 @@ class BuildCommand extends Command
 
     /**
      * @param Filesystem $files
-     * @param \Illuminate\Contracts\View\Factory $view
      */
     public function __construct(Filesystem $files)
     {
@@ -42,14 +43,15 @@ class BuildCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
     public function handle()
     {
         $file = $this->argument('draft') ?? $this->defaultDraftFile();
 
         if (!file_exists($file)) {
-            $this->error('Draft file could not be found: ' . $file);
+            $this->error('Draft file could not be found: ' . ($file ?: 'draft.yaml'));
+            exit(1);
         }
 
         $blueprint = resolve(Blueprint::class);
