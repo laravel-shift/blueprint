@@ -20,7 +20,7 @@ class MigrationGenerator implements Generator
     const ON_DELETE_CLAUSES = [
         'cascade' => "->onDelete('cascade')",
         'restrict' => "->onDelete('restrict')",
-        'set_null' => "->onDelete('set null')",
+        'null' => "->onDelete('set null')",
         'no_action' => "->onDelete('no action')",
     ];
 
@@ -240,8 +240,8 @@ class MigrationGenerator implements Generator
             $table = Str::lower(Str::plural($attributes[0]));
         }
 
-        $on_delete_clause = config('blueprint.on_delete', 'cascade');
-
+        $on_delete_clause = collect($modifiers)->firstWhere('onDelete');
+        $on_delete_clause = $on_delete_clause ? $on_delete_clause['onDelete'] : config('blueprint.on_delete', 'cascade');
         $on_delete_suffix = self::ON_DELETE_CLAUSES[$on_delete_clause];
 
         if ($this->isLaravel7orNewer() && $type === 'id') {

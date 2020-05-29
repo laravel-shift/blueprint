@@ -56,7 +56,7 @@ class NotificationGeneratorTest extends TestCase
 
         $this->files->shouldNotHaveReceived('put');
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/render-statements.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/render-statements.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([], $this->subject->output($tree));
@@ -97,7 +97,7 @@ class NotificationGeneratorTest extends TestCase
 
 
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/send-statements-notification.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/send-statements-notification.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['app/Notification/ReviewPostNotification.php', 'app/Notification/PublishedPostNotification.php']], $this->subject->output($tree));
@@ -119,7 +119,7 @@ class NotificationGeneratorTest extends TestCase
             ->with('app/Notification/PublishedPostNotification.php')
             ->andReturnTrue();
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/send-statements-notification.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/send-statements-notification.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([], $this->subject->output($tree));
@@ -148,7 +148,7 @@ class NotificationGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with('src/path/Notification/ReviewNotification.php', $this->fixture('notifications/notification-configured.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/readme-example-notification.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example-notification.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['src/path/Notification/ReviewNotification.php']], $this->subject->output($tree));

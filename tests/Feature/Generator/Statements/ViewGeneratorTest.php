@@ -56,7 +56,7 @@ class ViewGeneratorTest extends TestCase
 
         $this->files->shouldNotHaveReceived('put');
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/controllers-only.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/controllers-only.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([], $this->subject->output($tree));
@@ -99,7 +99,7 @@ class ViewGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with('resources/views/post/show.blade.php', str_replace('DummyView', 'post.show', $template));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/render-statements.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/render-statements.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['resources/views/user/index.blade.php', 'resources/views/user/create.blade.php', 'resources/views/post/show.blade.php']], $this->subject->output($tree));
@@ -124,7 +124,7 @@ class ViewGeneratorTest extends TestCase
             ->with('resources/views/post/show.blade.php')
             ->andReturnTrue();
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/render-statements.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/render-statements.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([], $this->subject->output($tree));

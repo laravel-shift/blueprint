@@ -202,7 +202,7 @@ class ControllerLexerTest extends TestCase
         $tokens = [
             'controllers' => [
                 'Comment' => [
-                    'resource' => 'api'
+                    'resource' => 'api.index, api.store, api.show, api.update'
                 ]
             ]
         ];
@@ -232,12 +232,6 @@ class ControllerLexerTest extends TestCase
                 'resource' => 'comment'
             ])
             ->andReturn(['api-update-statements']);
-        $this->statementLexer->expects('analyze')
-            ->with([
-                'delete' => 'comment',
-                'respond' => 200
-            ])
-            ->andReturn(['api-destroy-statements']);
 
         $actual = $this->subject->analyze($tokens);
 
@@ -248,7 +242,7 @@ class ControllerLexerTest extends TestCase
         $this->assertTrue($controller->isApiResource());
 
         $methods = $controller->methods();
-        $this->assertCount(5, $methods);
+        $this->assertCount(4, $methods);
 
         $this->assertCount(1, $methods['index']);
         $this->assertEquals('api-index-statements', $methods['index'][0]);
@@ -258,8 +252,6 @@ class ControllerLexerTest extends TestCase
         $this->assertEquals('api-show-statements', $methods['show'][0]);
         $this->assertCount(1, $methods['update']);
         $this->assertEquals('api-update-statements', $methods['update'][0]);
-        $this->assertCount(1, $methods['destroy']);
-        $this->assertEquals('api-destroy-statements', $methods['destroy'][0]);
     }
 
     /**

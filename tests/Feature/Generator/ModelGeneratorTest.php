@@ -55,7 +55,7 @@ class ModelGeneratorTest extends TestCase
             ->with('model/fillable.stub')
             ->andReturn(file_get_contents('stubs/model/fillable.stub'));
 
-        if (in_array($definition, ['definitions/nested-components.bp','definitions/resource-statements.bp'])) {
+        if (in_array($definition, ['drafts/nested-components.yaml','drafts/resource-statements.yaml'])) {
             $this->files->expects('stub')
                 ->with('model/hidden.stub')
                 ->andReturn(file_get_contents('stubs/model/hidden.stub'));
@@ -65,7 +65,7 @@ class ModelGeneratorTest extends TestCase
             ->with('model/casts.stub')
             ->andReturn(file_get_contents('stubs/model/casts.stub'));
 
-        if ($definition === 'definitions/readme-example.bp') {
+        if ($definition === 'drafts/readme-example.yaml') {
             $this->files->expects('stub')
                 ->with('model/dates.stub')
                 ->andReturn(file_get_contents('stubs/model/dates.stub'));
@@ -128,7 +128,7 @@ class ModelGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with($certificateTypeModel, $this->fixture('models/certificate-type-pascal-case-example.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/pascal-case.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/pascal-case.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$certificateModel, $certificateTypeModel]], $this->subject->output($tree));
@@ -158,7 +158,7 @@ class ModelGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with('app/Subscription.php', $this->fixture('models/model-relationships.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/model-relationships.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/model-relationships.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['app/Subscription.php']], $this->subject->output($tree));
@@ -203,7 +203,7 @@ class ModelGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with('app/Image.php', $this->fixture('models/image-polymorphic-relationship.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/polymorphic-relationships.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/polymorphic-relationships.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['app/Post.php', 'app/User.php', 'app/Image.php']], $this->subject->output($tree));
@@ -236,7 +236,7 @@ class ModelGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with('app/State.php', $this->fixture('models/disable-auto-columns.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/disable-auto-columns.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/disable-auto-columns.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['app/State.php']], $this->subject->output($tree));
@@ -275,7 +275,7 @@ class ModelGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with('src/path/Models/Comment.php', $this->fixture('models/model-configured.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/relationships.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/relationships.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['src/path/Models/Comment.php']], $this->subject->output($tree));
@@ -293,7 +293,7 @@ class ModelGeneratorTest extends TestCase
             ->with('model/class.stub')
             ->andReturn(file_get_contents('stubs/model/class.stub'));
 
-        if ($definition === 'definitions/disable-auto-columns.bp') {
+        if ($definition === 'drafts/disable-auto-columns.yaml') {
             $this->files->expects('stub')
                 ->with('model/timestamps.stub')
                 ->andReturn(file_get_contents('stubs/model/timestamps.stub'));
@@ -307,7 +307,7 @@ class ModelGeneratorTest extends TestCase
             ->with('model/casts.stub')
             ->andReturn(file_get_contents('stubs/model/casts.stub'));
 
-        if ($definition === 'definitions/readme-example.bp') {
+        if ($definition === 'drafts/readme-example.yaml') {
             $this->files->expects('stub')
                 ->with('model/dates.stub')
                 ->andReturn(file_get_contents('stubs/model/dates.stub'));
@@ -364,7 +364,7 @@ class ModelGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with('app/Comment.php', $this->fixture('models/model-guarded.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/model-guarded.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/model-guarded.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['app/Comment.php']], $this->subject->output($tree));
@@ -375,7 +375,7 @@ class ModelGeneratorTest extends TestCase
      */
     public function output_generates_models_with_custom_namespace_correctly()
     {
-        $definition = 'definitions/custom-models-namespace.bp';
+        $definition = 'drafts/custom-models-namespace.yaml';
         $path = 'app/Models/Tag.php';
         $model = 'models/custom-models-namespace.php';
 
@@ -433,7 +433,7 @@ class ModelGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with('app/User.php', $this->fixture('models/custom-pivot-table-name.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/custom-pivot-table-name.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/custom-pivot-table-name.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['app/User.php']], $this->subject->output($tree));
@@ -442,24 +442,24 @@ class ModelGeneratorTest extends TestCase
     public function modelTreeDataProvider()
     {
         return [
-            ['definitions/readme-example.bp', 'app/Post.php', 'models/readme-example.php'],
-            ['definitions/with-timezones.bp', 'app/Comment.php', 'models/comment.php'],
-            ['definitions/soft-deletes.bp', 'app/Comment.php', 'models/soft-deletes.php'],
-            ['definitions/relationships.bp', 'app/Comment.php', 'models/relationships.php'],
-            ['definitions/unconventional.bp', 'app/Team.php', 'models/unconventional.php'],
-            ['definitions/nested-components.bp', 'app/Admin/User.php', 'models/nested-components.php'],
-            ['definitions/resource-statements.bp', 'app/User.php', 'models/resource-statements.php'],
+            ['drafts/readme-example.yaml', 'app/Post.php', 'models/readme-example.php'],
+            ['drafts/with-timezones.yaml', 'app/Comment.php', 'models/comment.php'],
+            ['drafts/soft-deletes.yaml', 'app/Comment.php', 'models/soft-deletes.php'],
+            ['drafts/relationships.yaml', 'app/Comment.php', 'models/relationships.php'],
+            ['drafts/unconventional.yaml', 'app/Team.php', 'models/unconventional.php'],
+            ['drafts/nested-components.yaml', 'app/Admin/User.php', 'models/nested-components.php'],
+            ['drafts/resource-statements.yaml', 'app/User.php', 'models/resource-statements.php'],
         ];
     }
 
     public function docBlockModelsDataProvider()
     {
         return [
-            ['definitions/readme-example.bp', 'app/Post.php', 'models/readme-example-phpdoc.php'],
-            ['definitions/soft-deletes.bp', 'app/Comment.php', 'models/soft-deletes-phpdoc.php'],
-            ['definitions/relationships.bp', 'app/Comment.php', 'models/relationships-phpdoc.php'],
-            ['definitions/disable-auto-columns.bp', 'app/State.php', 'models/disable-auto-columns-phpdoc.php'],
-            ['definitions/foreign-key-shorthand.bp', 'app/Comment.php', 'models/foreign-key-shorthand-phpdoc.php'],
+            ['drafts/readme-example.yaml', 'app/Post.php', 'models/readme-example-phpdoc.php'],
+            ['drafts/soft-deletes.yaml', 'app/Comment.php', 'models/soft-deletes-phpdoc.php'],
+            ['drafts/relationships.yaml', 'app/Comment.php', 'models/relationships-phpdoc.php'],
+            ['drafts/disable-auto-columns.yaml', 'app/State.php', 'models/disable-auto-columns-phpdoc.php'],
+            ['drafts/foreign-key-shorthand.yaml', 'app/Comment.php', 'models/foreign-key-shorthand-phpdoc.php'],
         ];
     }
 }

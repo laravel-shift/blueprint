@@ -62,7 +62,7 @@ class SeederGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/seeders.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['database/seeds/PostSeeder.php', 'database/seeds/CommentSeeder.php']], $this->subject->output($tree));
@@ -82,7 +82,7 @@ class SeederGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/seeders.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
         $tree = $this->blueprint->analyze($tokens);
         $tree['cache'] = $tree['models'];
         unset($tree['models']);

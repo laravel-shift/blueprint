@@ -64,8 +64,15 @@ return [
     | within the generated migration. This will relate these records
     | together to add structure and integrity to your database.
     |
+    | In addition, you may specify the action to perform `ON DELETE`. By
+    | default Blueprint will use `cascade`. However, you may set this
+    | to 'restrict', 'no_action', or 'null' as well as inline
+    | by defining your `foreign` key column with an `onDelete`.
+    |
     */
     'use_constraints' => false,
+
+    'on_delete' => 'cascade',
 
     /*
     |--------------------------------------------------------------------------
@@ -95,23 +102,4 @@ return [
 
     'use_guarded' => false,
 
-    /*
-    |--------------------------------------------------------------------------
-    | Foreign Key ON DELETE action
-    |--------------------------------------------------------------------------
-    |
-    | By default, Blueprint will set the `ON DELETE` action to 'cascade'.
-    |
-    | restrict / no action:
-    |   - No action is performed with the child data when the parent data is deleted.
-    | cascade:
-    |   - The child data is either deleted when the parent data is deleted.
-    | set null:
-    |   - The child data is set to NULL when the parent data is deleted.
-    |
-    | Supported: 'cascade', 'set_null', 'restrict', 'no_action'
-    |
-    */
-
-    'on_delete' => 'cascade',
 ];

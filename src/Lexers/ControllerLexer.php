@@ -30,9 +30,10 @@ class ControllerLexer implements Lexer
             $controller = new Controller($name);
 
             if (isset($definition['resource'])) {
-                $resource_definition = $this->generateResourceTokens($controller, $this->methodsForResource($definition['resource']));
+                $resource_methods = $this->methodsForResource($definition['resource']);
+                $resource_definition = $this->generateResourceTokens($controller, $resource_methods);
 
-                if ($definition['resource'] === 'api') {
+                if ($this->hasOnlyApiResourceMethods($resource_methods)) {
                     $controller->setApiResource(true);
                 }
 
@@ -139,6 +140,13 @@ class ControllerLexer implements Lexer
             return ['index', 'create', 'store', 'show', 'edit', 'update', 'destroy'];
         }
 
-        return array_map('trim', explode(',', $type));
+        return array_map('trim', explode(',', strtolower($type)));
+    }
+
+    private function hasOnlyApiResourceMethods(array $methods)
+    {
+        return collect($methods)->every(function ($item, $key) {
+            return Str::startsWith($item, 'api.');
+        });
     }
 }

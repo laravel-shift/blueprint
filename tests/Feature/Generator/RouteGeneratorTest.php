@@ -65,7 +65,7 @@ class RouteGeneratorTest extends TestCase
         $this->files->expects('append')
             ->with('routes/api.php', $this->fixture('routes/api-routes.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/api-routes-example.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/api-routes-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['updated' => ['routes/api.php']], $this->subject->output($tree));
@@ -81,7 +81,7 @@ class RouteGeneratorTest extends TestCase
         $this->files->expects('append')
             ->with('routes/web.php', $this->fixture('routes/multiple-resource-controllers-web.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('definitions/multiple-resource-controllers.bp'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/multiple-resource-controllers.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['updated' => ['routes/api.php', 'routes/web.php']], $this->subject->output($tree));
@@ -90,10 +90,10 @@ class RouteGeneratorTest extends TestCase
     public function controllerTreeDataProvider()
     {
         return [
-            ['definitions/readme-example.bp', 'routes/readme-example.php'],
-            ['definitions/cruddy.bp', 'routes/cruddy.php'],
-            ['definitions/non-cruddy.bp', 'routes/non-cruddy.php'],
-            ['definitions/respond-statements.bp', 'routes/respond-statements.php'],
+            ['drafts/readme-example.yaml', 'routes/readme-example.php'],
+            ['drafts/cruddy.yaml', 'routes/cruddy.php'],
+            ['drafts/non-cruddy.yaml', 'routes/non-cruddy.php'],
+            ['drafts/respond-statements.yaml', 'routes/respond-statements.php'],
         ];
     }
 }
