@@ -75,8 +75,8 @@ class PostControllerTest extends TestCase
         $response->assertRedirect(route('post.index'));
         $response->assertSessionHas('post.title', $post->title);
 
-        Notification::assertSent(ReviewNotification::class, function ($notification) use ($post) {
-            return $notification->hasTo($post->author) && $notification->post->is($post);
+        Notification::assertSentTo($post->author, ReviewNotification::class, function ($notification) use ($post) {
+            return $notification->post->is($post);
         });
         Queue::assertPushed(SyncMedia::class, function ($job) use ($post) {
             return $job->post->is($post);
