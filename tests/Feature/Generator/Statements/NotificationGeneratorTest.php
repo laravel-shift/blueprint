@@ -3,20 +3,20 @@
 namespace Tests\Feature\Generator\Statements;
 
 use Blueprint\Blueprint;
-use Blueprint\Generators\Statements\MailGenerator;
+use Blueprint\Generators\Statements\NotificationGenerator;
 use Blueprint\Lexers\StatementLexer;
 use Tests\TestCase;
 
 /**
- * @see MailGenerator
+ * @see NotificationGenerator
  */
-class MailGeneratorTest extends TestCase
+class NotificationGeneratorTest extends TestCase
 {
     private $blueprint;
 
     private $files;
 
-    /** @var MailGenerator */
+    /** @var NotificationGenerator */
     private $subject;
 
     protected function setUp(): void
@@ -24,7 +24,7 @@ class MailGeneratorTest extends TestCase
         parent::setUp();
 
         $this->files = \Mockery::mock();
-        $this->subject = new MailGenerator($this->files);
+        $this->subject = new NotificationGenerator($this->files);
 
         $this->blueprint = new Blueprint();
         $this->blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new StatementLexer()));
@@ -37,8 +37,8 @@ class MailGeneratorTest extends TestCase
     public function output_writes_nothing_for_empty_tree()
     {
         $this->files->expects('stub')
-            ->with('mail.stub')
-            ->andReturn(file_get_contents('stubs/mail.stub'));
+            ->with('notification.stub')
+            ->andReturn(file_get_contents('stubs/notification.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -51,8 +51,8 @@ class MailGeneratorTest extends TestCase
     public function output_writes_nothing_tree_without_validate_statements()
     {
         $this->files->expects('stub')
-            ->with('mail.stub')
-            ->andReturn(file_get_contents('stubs/mail.stub'));
+            ->with('notification.stub')
+            ->andReturn(file_get_contents('stubs/notification.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -65,57 +65,61 @@ class MailGeneratorTest extends TestCase
     /**
      * @test
      */
-    public function output_writes_mails()
+    public function output_writes_notifications()
     {
         $this->files->expects('stub')
-            ->with('mail.stub')
-            ->andReturn(file_get_contents('stubs/mail.stub'));
+            ->with('notification.stub')
+            ->andReturn(file_get_contents('stubs/notification.stub'));
 
         $this->files->expects('stub')
             ->with('partials/constructor.stub')
             ->andReturn(file_get_contents('stubs/partials/constructor.stub'));
 
+        // var_dump($this->fixture('notifications/review-post.php'));die();
+
         $this->files->shouldReceive('exists')
             ->twice()
-            ->with('app/Mail')
+            ->with('app/Notification')
             ->andReturns(false, true);
         $this->files->expects('exists')
-            ->with('app/Mail/ReviewPost.php')
+            ->with('app/Notification/ReviewPostNotification.php')
             ->andReturnFalse();
         $this->files->expects('makeDirectory')
-            ->with('app/Mail', 0755, true);
+            ->with('app/Notification', 0755, true);
         $this->files->expects('put')
-            ->with('app/Mail/ReviewPost.php', $this->fixture('mailables/review-post.php'));
+            ->with('app/Notification/ReviewPostNotification.php', $this->fixture('notifications/review-post.php'));
 
         $this->files->expects('exists')
-            ->with('app/Mail/PublishedPost.php')
+            ->with('app/Notification/PublishedPostNotification.php')
             ->andReturnFalse();
         $this->files->expects('put')
-            ->with('app/Mail/PublishedPost.php', $this->fixture('mailables/published-post.php'));
+            ->with('app/Notification/PublishedPostNotification.php', $this->fixture('notifications/published-post.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('drafts/send-statements.yaml'));
+
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/send-statements-notification.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['app/Mail/ReviewPost.php', 'app/Mail/PublishedPost.php']], $this->subject->output($tree));
+        $this->assertEquals(['created' => ['app/Notification/ReviewPostNotification.php', 'app/Notification/PublishedPostNotification.php']], $this->subject->output($tree));
     }
 
     /**
      * @test
      */
-    public function it_only_outputs_new_mails()
+    public function it_only_outputs_new_notifications()
     {
         $this->files->expects('stub')
-            ->with('mail.stub')
-            ->andReturn(file_get_contents('stubs/mail.stub'));
+            ->with('notification.stub')
+            ->andReturn(file_get_contents('stubs/notification.stub'));
 
         $this->files->expects('exists')
-            ->with('app/Mail/ReviewPost.php')
+            ->with('app/Notification/ReviewPostNotification.php')
             ->andReturnTrue();
         $this->files->expects('exists')
-            ->with('app/Mail/PublishedPost.php')
+            ->with('app/Notification/PublishedPostNotification.php')
             ->andReturnTrue();
 
-        $tokens = $this->blueprint->parse($this->fixture('drafts/send-statements.yaml'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/send-statements-notification.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([], $this->subject->output($tree));
@@ -130,23 +134,23 @@ class MailGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.app_path', 'src/path');
 
         $this->files->expects('stub')
-            ->with('mail.stub')
-            ->andReturn(file_get_contents('stubs/mail.stub'));
+            ->with('notification.stub')
+            ->andReturn(file_get_contents('stubs/notification.stub'));
 
         $this->files->expects('exists')
-            ->with('src/path/Mail')
+            ->with('src/path/Notification')
             ->andReturnFalse();
         $this->files->expects('exists')
-            ->with('src/path/Mail/ReviewMail.php')
+            ->with('src/path/Notification/ReviewNotification.php')
             ->andReturnFalse();
         $this->files->expects('makeDirectory')
-            ->with('src/path/Mail', 0755, true);
+            ->with('src/path/Notification', 0755, true);
         $this->files->expects('put')
-            ->with('src/path/Mail/ReviewMail.php', $this->fixture('mailables/mail-configured.php'));
+            ->with('src/path/Notification/ReviewNotification.php', $this->fixture('notifications/notification-configured.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example-notification.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['src/path/Mail/ReviewMail.php']], $this->subject->output($tree));
+        $this->assertEquals(['created' => ['src/path/Notification/ReviewNotification.php']], $this->subject->output($tree));
     }
 }

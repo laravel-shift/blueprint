@@ -102,8 +102,13 @@ class ControllerGenerator implements Generator
             foreach ($statements as $statement) {
                 if ($statement instanceof SendStatement) {
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
-                    $this->addImport($controller, 'Illuminate\\Support\\Facades\\Mail');
-                    $this->addImport($controller, config('blueprint.namespace') . '\\Mail\\' . $statement->mail());
+                    if ($statement->type() === 'notification') {
+                        $this->addImport($controller, 'Illuminate\\Support\\Facades\\Notification');
+                        $this->addImport($controller, config('blueprint.namespace') . '\\Notification\\' . $statement->mail());
+                    } else {
+                        $this->addImport($controller, 'Illuminate\\Support\\Facades\\Mail');
+                        $this->addImport($controller, config('blueprint.namespace') . '\\Mail\\' . $statement->mail());
+                    }
                 } elseif ($statement instanceof ValidateStatement) {
                     $class_name = $controller->name() . Str::studly($name) . 'Request';
 

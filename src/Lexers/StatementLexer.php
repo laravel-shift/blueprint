@@ -38,7 +38,7 @@ class StatementLexer implements Lexer
                     $statements[] = $this->analyzeDispatch($statement);
                     break;
                 case 'send':
-                    $statements[] = $this->analyzeMail($statement);
+                    $statements[] = $this->analyzeSend($statement);
                     break;
                 case 'validate':
                     $statements[] = $this->analyzeValidate($statement);
@@ -103,7 +103,7 @@ class StatementLexer implements Lexer
         return new RespondStatement($statement);
     }
 
-    private function analyzeMail($statement)
+    private function analyzeSend($statement)
     {
         $to = null;
 
@@ -120,7 +120,12 @@ class StatementLexer implements Lexer
             $data = preg_split('/,([ \t]+)?/', substr($with, 5));
         }
 
-        return new SendStatement($object, $to, $data);
+        $type = 'mail';
+        if (Str::endsWith($object, 'Notification')) {
+            $type = 'notification';
+        }
+
+        return new SendStatement($object, $to, $data, $type);
     }
 
     private function analyzeValidate($statement)

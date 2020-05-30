@@ -4,12 +4,12 @@ namespace Tests\Feature\Http\Controllers;
 
 use App\Events\NewPost;
 use App\Jobs\SyncMedia;
-use App\Mail\ReviewMail;
+use App\Notification\ReviewNotification;
 use App\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Queue;
 use JMac\Testing\Traits\AdditionalAssertions;
 use Tests\TestCase;
@@ -56,7 +56,7 @@ class PostControllerTest extends TestCase
         $title = $this->faker->sentence(4);
         $content = $this->faker->paragraphs(3, true);
 
-        Mail::fake();
+        Notification::fake();
         Queue::fake();
         Event::fake();
 
@@ -75,8 +75,8 @@ class PostControllerTest extends TestCase
         $response->assertRedirect(route('post.index'));
         $response->assertSessionHas('post.title', $post->title);
 
-        Mail::assertSent(ReviewMail::class, function ($mail) use ($post) {
-            return $mail->hasTo($post->author) && $mail->post->is($post);
+        Notification::assertSent(ReviewNotification::class, function ($notification) use ($post) {
+            return $notification->hasTo($post->author) && $notification->post->is($post);
         });
         Queue::assertPushed(SyncMedia::class, function ($job) use ($post) {
             return $job->post->is($post);

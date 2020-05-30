@@ -219,7 +219,7 @@ class BlueprintTest extends TestCase
                     'store' => [
                         'validate' => 'title, content',
                         'save' => 'post',
-                        'send' => 'ReviewNotification to:post.author with:post',
+                        'send' => 'ReviewMail to:post.author with:post',
                         'dispatch' => 'SyncMedia with:post',
                         'fire' => 'NewPost with:post',
                         'flash' => 'post.title',
@@ -261,7 +261,7 @@ class BlueprintTest extends TestCase
                     'store' => [
                         'validate' => 'title, content',
                         'save' => 'post',
-                        'send' => 'ReviewNotification to:post.author with:post',
+                        'send' => 'ReviewMail to:post.author with:post',
                         'dispatch' => 'SyncMedia with:post',
                         'fire' => 'NewPost with:post',
                         'flash' => 'post.title',

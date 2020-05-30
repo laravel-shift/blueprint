@@ -6,10 +6,11 @@ use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Statements\SendStatement;
 
-class MailGenerator implements Generator
+class NotificationGenerator implements Generator
 {
     /**
-     * @var \Illuminate\Contracts\Filesystem\Filesystem
+     * @
+ \Illuminate\Contracts\Filesystem\Filesystem
      */
     private $files;
 
@@ -22,7 +23,7 @@ class MailGenerator implements Generator
     {
         $output = [];
 
-        $stub = $this->files->stub('mail.stub');
+        $stub = $this->files->stub('notification.stub');
 
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree['controllers'] as $controller) {
@@ -32,7 +33,7 @@ class MailGenerator implements Generator
                         continue;
                     }
 
-                    if ($statement->type() !== 'mail') {
+                    if ($statement->type() !== 'notification') {
                         continue;
                     }
 
@@ -58,12 +59,12 @@ class MailGenerator implements Generator
 
     protected function getPath(string $name)
     {
-        return Blueprint::appPath() . '/Mail/' . $name . '.php';
+        return Blueprint::appPath() . '/Notification/' . $name . '.php';
     }
 
     protected function populateStub(string $stub, SendStatement $sendStatement)
     {
-        $stub = str_replace('DummyNamespace', config('blueprint.namespace') . '\\Mail', $stub);
+        $stub = str_replace('DummyNamespace', config('blueprint.namespace') . '\\Notification', $stub);
         $stub = str_replace('DummyClass', $sendStatement->mail(), $stub);
         $stub = str_replace('// properties...', $this->buildConstructor($sendStatement), $stub);
 

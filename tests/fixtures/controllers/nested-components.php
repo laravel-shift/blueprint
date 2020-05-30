@@ -7,9 +7,9 @@ use App\Events\NewUser;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UserStoreRequest;
 use App\Jobs\BuildAccount;
-use App\Mail\InviteNotification;
+use App\Notification\InviteNotification;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 
 class UserController extends Controller
 {
@@ -32,7 +32,7 @@ class UserController extends Controller
     {
         $user = User::create($request->all());
 
-        Mail::to($user->name)->send(new InviteNotification($user));
+        Notification::send($user, new InviteNotification($user));
 
         BuildAccount::dispatch($user);
 

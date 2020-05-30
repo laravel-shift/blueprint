@@ -12,7 +12,7 @@ controllers:
     store:
       validate: name
       save: user
-      send: InviteNotification to:user.name with:user
+      send: InviteNotification to:user with:user
       dispatch: BuildAccount with:user
       fire: NewUser with:user
       flash: user.name
