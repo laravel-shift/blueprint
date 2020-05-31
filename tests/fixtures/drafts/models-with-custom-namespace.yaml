@@ -1,0 +1,13 @@
+models:
+  Category:
+    name: string:30
+    image: string
+    parent_id: id:Category nullable
+    active: boolean default:true
+    relationships:
+      hasMany: Category
+    softDeletes
+
+controllers:
+  Category:
+    resource: api
