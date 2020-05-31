@@ -357,8 +357,12 @@ class TestGenerator implements Generator
                 } elseif ($statement instanceof EloquentStatement) {
                     $this->addRefreshDatabaseTrait($controller);
 
+                    $modelNamespace = config('blueprint.models_namespace')
+                        ? config('blueprint.namespace') . '\\' . config('blueprint.models_namespace')
+                        : config('blueprint.namespace');
+
                     $model = $this->determineModel($controller->prefix(), $statement->reference());
-                    $this->addImport($controller, config('blueprint.namespace') . '\\' . $model);
+                    $this->addImport($controller, $modelNamespace . '\\' . $model);
 
                     if ($statement->operation() === 'save') {
                         $tested_bits |= self::TESTS_SAVE;
@@ -390,7 +394,11 @@ class TestGenerator implements Generator
 
                     $setup['data'][] = sprintf('$%s = factory(%s::class, 3)->create();', Str::plural($variable), $model);
 
-                    $this->addImport($controller, config('blueprint.namespace') . '\\' . $this->determineModel($controller->prefix(), $statement->model()));
+                    $modelNamespace = config('blueprint.models_namespace')
+                        ? config('blueprint.namespace') . '\\' . config('blueprint.models_namespace')
+                        : config('blueprint.namespace');
+
+                    $this->addImport($controller, $modelNamespace . '\\' . $this->determineModel($controller->prefix(), $statement->model()));
                 }
             }
 

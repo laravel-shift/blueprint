@@ -139,6 +139,39 @@ class TestGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['tests/Feature/Http/Controllers/UserControllerTest.php']], $this->subject->output($tree));
     }
 
+    /**
+     * @test
+     */
+    public function output_generates_tests_with_models_with_custom_namespace_correctly()
+    {
+        $definition = 'drafts/models-with-custom-namespace.yaml';
+        $path = 'tests/Feature/Http/Controllers/CategoryControllerTest.php';
+        $test = 'tests/models-with-custom-namespace.php';
+
+        $this->app['config']->set('blueprint.models_namespace', 'Models');
+
+        $this->files->expects('get')
+            ->with('stubs/test/class.stub')
+            ->andReturn(file_get_contents('stubs/test/class.stub'));
+
+        $this->files->expects('get')
+            ->with('stubs/test/case.stub')
+            ->andReturn(file_get_contents('stubs/test/case.stub'));
+        $dirname = dirname($path);
+        $this->files->expects('exists')
+            ->with($dirname)
+            ->andReturnFalse();
+        $this->files->expects('makeDirectory')
+        ->with($dirname, 0755, true);
+        $this->files->expects('put')
+            ->with($path, $this->fixture($test));
+
+        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+    }
+
     public function controllerTreeDataProvider()
     {
         return [
