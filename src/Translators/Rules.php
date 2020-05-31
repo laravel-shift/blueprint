@@ -9,7 +9,11 @@ class Rules
 {
     public static function fromColumn(string $context, Column $column)
     {
-        $rules = ['required'];
+        $rules = [];
+
+        if (!in_array('nullable', $column->modifiers())) {
+            array_push($rules, 'required');
+        }
 
         // hack for tests...
         if (in_array($column->dataType(), ['string', 'char', 'text', 'longText'])) {
