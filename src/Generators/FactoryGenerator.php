@@ -249,6 +249,8 @@ class FactoryGenerator implements Generator
             'unsignedsmallinteger' => 'randomDigitNotNull',
             'biginteger' => 'randomNumber()',
             'smallint' => 'randomNumber()',
+            'tinyinteger' => 'randomNumber()',
+            'smallinteger' => 'randomNumber()',
             'decimal' => 'randomFloat(/** decimal_attributes **/)',
             'float' => 'randomFloat(/** float_attributes **/)',
             'longtext' => 'text',

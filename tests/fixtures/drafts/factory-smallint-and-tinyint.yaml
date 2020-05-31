@@ -1,0 +1,4 @@
+models:
+  Model:
+    market_type: tinyInteger
+    deposit: smallInteger unsigned
