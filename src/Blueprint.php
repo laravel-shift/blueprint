@@ -32,6 +32,7 @@ class Blueprint
     public function parse($content)
     {
         $content = str_replace(["\r\n", "\r"], "\n", $content);
+        $content = preg_replace('/^(\s*)-\s*/m', '\1', $content);
 
         $content = preg_replace_callback('/^(\s+)(id|timestamps(Tz)?|softDeletes(Tz)?)$/mi', function ($matches) {
             return $matches[1].strtolower($matches[2]).': '.$matches[2];
