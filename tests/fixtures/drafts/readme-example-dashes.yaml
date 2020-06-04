@@ -1,0 +1,15 @@
+- models:
+  - Post:
+    - title: string:400
+    - content: longtext
+
+- controllers:
+  - Post:
+    - index:
+       - query: all:posts
+       - render: post.index with:posts
+
+    - store:
+      - validate: title, content
+      - save: post
+      - redirect: post.index
