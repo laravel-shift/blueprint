@@ -29,7 +29,7 @@ class CertificateStoreRequest extends FormRequest
             'reference' => 'required|string',
             'document' => 'required|string',
             'expiry_date' => 'required|date',
-            'remarks' => 'required|string',
+            'remarks' => 'string',
         ];
     }
 }
