@@ -126,7 +126,7 @@ class FactoryGenerator implements Generator
                     json_encode($column->attributes()),
                     $definition
                 );
-            } elseif (in_array($column->dataType(), ['decimal', 'float'])) {
+            } elseif (in_array($column->dataType(), ['decimal', 'double', 'float'])) {
                 $definition .= self::INDENT . "'{$column->name()}' => ";
                 $faker = $this->fakerData($column->name()) ?? $this->fakerDataType($column->dataType());
                 $definition .= '$faker->' . $faker;
@@ -235,28 +235,29 @@ class FactoryGenerator implements Generator
     public static function fakerDataType(string $type)
     {
         $fakeableTypes = [
+            'biginteger' => 'randomNumber()',
+            'boolean' => 'boolean',
+            'date' => 'date()',
+            'datetime' => 'dateTime()',
+            'datetimetz' => 'dateTime()',
+            'decimal' => 'randomFloat(/** decimal_attributes **/)',
+            'double' => 'randomFloat(/** double_attributes **/)',
+            'enum' => 'randomElement(/** enum_attributes **/)',
+            'float' => 'randomFloat(/** float_attributes **/)',
+            'guid' => 'uuid',
             'id' => 'randomDigitNotNull',
+            'integer' => 'randomNumber()',
+            'longtext' => 'text',
+            'set' => 'randomElement(/** set_attributes **/)',
+            'smallint' => 'randomNumber()',
+            'smallinteger' => 'randomNumber()',
             'string' => 'word',
             'text' => 'text',
-            'date' => 'date()',
             'time' => 'time()',
-            'guid' => 'uuid',
-            'uuid' => 'uuid',
-            'datetimetz' => 'dateTime()',
-            'datetime' => 'dateTime()',
             'timestamp' => 'dateTime()',
-            'integer' => 'randomNumber()',
-            'unsignedsmallinteger' => 'randomDigitNotNull',
-            'biginteger' => 'randomNumber()',
-            'smallint' => 'randomNumber()',
             'tinyinteger' => 'randomNumber()',
-            'smallinteger' => 'randomNumber()',
-            'decimal' => 'randomFloat(/** decimal_attributes **/)',
-            'float' => 'randomFloat(/** float_attributes **/)',
-            'longtext' => 'text',
-            'boolean' => 'boolean',
-            'set' => 'randomElement(/** set_attributes **/)',
-            'enum' => 'randomElement(/** enum_attributes **/)',
+            'unsignedsmallinteger' => 'randomDigitNotNull',
+            'uuid' => 'uuid',
         ];
 
         return $fakeableTypes[strtolower($type)] ?? null;
