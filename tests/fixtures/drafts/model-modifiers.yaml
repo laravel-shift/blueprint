@@ -5,7 +5,7 @@ models:
     name: string:1000 unique charset:'utf8'
     content: string default:''
     amount: float:9,3
-    total: decimal:10,2
+    total: double:10,2
     overflow: decimal:99,99
     ssn: char:11
     role: enum:user,admin,owner

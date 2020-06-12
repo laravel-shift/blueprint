@@ -126,7 +126,7 @@ class FactoryGenerator implements Generator
                     json_encode($column->attributes()),
                     $definition
                 );
-            } elseif (in_array($column->dataType(), ['decimal', 'float'])) {
+            } elseif (in_array($column->dataType(), ['decimal', 'double', 'float'])) {
                 $definition .= self::INDENT . "'{$column->name()}' => ";
                 $faker = $this->fakerData($column->name()) ?? $this->fakerDataType($column->dataType());
                 $definition .= '$faker->' . $faker;
