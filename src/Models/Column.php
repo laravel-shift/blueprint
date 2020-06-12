@@ -57,4 +57,9 @@ class Column
     {
         return in_array('nullable', $this->modifiers);
     }
+
+    public function isUnsigned()
+    {
+        return in_array('unsigned', $this->modifiers);
+    }
 }

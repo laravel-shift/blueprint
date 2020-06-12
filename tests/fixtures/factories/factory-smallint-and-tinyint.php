@@ -7,7 +7,7 @@ use Faker\Generator as Faker;
 
 $factory->define(Model::class, function (Faker $faker) {
     return [
-        'market_type' => $faker->randomNumber(),
+        'market_type' => $faker->numberBetween(-8, 8),
         'deposit' => $faker->randomNumber(),
     ];
 });
