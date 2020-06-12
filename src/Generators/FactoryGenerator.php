@@ -77,6 +77,10 @@ class FactoryGenerator implements Generator
                 continue;
             }
 
+            if (Str::startsWith($column->dataType(), 'nullable')) {
+                continue;
+            }
+
             $foreign = $column->isForeignKey();
             if ($foreign) {
                 $table = Str::beforeLast($column->name(), '_id');
@@ -109,7 +113,7 @@ class FactoryGenerator implements Generator
                     $definition .= PHP_EOL;
                     $definition .= self::INDENT . '},' . PHP_EOL;
                 }
-            } elseif (in_array($column->dataType(), ['id', 'uuid'])) {
+            } elseif ($column->dataType() === 'id' || ($column->dataType() === 'uuid' && Str::endsWith($column->name(), '_id'))) {
                 $name = Str::beforeLast($column->name(), '_id');
                 $class = Str::studly($column->attributes()[0] ?? $name);
 
@@ -140,7 +144,7 @@ class FactoryGenerator implements Generator
                     implode(', ', [$scale, 0, (str_repeat(9, $precision - $scale) . '.' . str_repeat(9, $scale))]),
                     $definition
                 );
-            } elseif ($column->dataType() === 'json') {
+            } elseif (in_array($column->dataType(), ['json', 'jsonb'])) {
                 $default = $column->defaultValue() ?? "'{}'";
                 $definition .= self::INDENT . "'{$column->name()}' => {$default}," . PHP_EOL;
             } elseif ($column->dataType() === 'morphs') {
@@ -156,7 +160,18 @@ class FactoryGenerator implements Generator
                 $definition .= ',' . PHP_EOL;
             } else {
                 $definition .= self::INDENT . "'{$column->name()}' => ";
-                $faker = self::fakerData($column->name()) ?? self::fakerDataType($column->dataType());
+
+                $type = $column->dataType();
+                if ($column->isUnsigned()) {
+                    $type = 'unsigned' . $type;
+                }
+
+                $faker = self::fakerData($column->name()) ?? (self::fakerDataType($type) ?? self::fakerDataType($column->dataType()));
+
+                if ($faker === null) {
+                    $faker = 'word';
+                }
+
                 $definition .= '$faker->' . $faker;
                 $definition .= ',' . PHP_EOL;
             }
@@ -235,8 +250,10 @@ class FactoryGenerator implements Generator
     public static function fakerDataType(string $type)
     {
         $fakeableTypes = [
-            'biginteger' => 'randomNumber()',
+            'biginteger' => 'numberBetween(-100000, 100000)',
+            'binary' => 'sha256',
             'boolean' => 'boolean',
+            'char' => 'randomLetter',
             'date' => 'date()',
             'datetime' => 'dateTime()',
             'datetimetz' => 'dateTime()',
@@ -244,20 +261,46 @@ class FactoryGenerator implements Generator
             'double' => 'randomFloat(/** double_attributes **/)',
             'enum' => 'randomElement(/** enum_attributes **/)',
             'float' => 'randomFloat(/** float_attributes **/)',
+            'geometry' => 'word',
+            'geometrycollection' => 'word',
             'guid' => 'uuid',
             'id' => 'randomDigitNotNull',
-            'integer' => 'randomNumber()',
+            'integer' => 'numberBetween(-10000, 10000)',
+            'ipaddress' => 'ipv4',
+            'linestring' => 'word',
             'longtext' => 'text',
+            'macaddress' => 'macAddress',
+            'mediuminteger' => 'numberBetween(-10000, 10000)',
+            'mediumtext' => 'text',
+            'morphs_id' => 'randomDigitNotNull',
+            'morphs_type' => 'word',
+            'multilinestring' => 'word',
+            'multipoint' => 'word',
+            'multipolygon' => 'word',
+            'nullablemorphs' => null,
+            'nullabletimestamps' => null,
+            'nullableuuidmorphs' => null,
+            'point' => 'word',
+            'polygon' => 'word',
             'set' => 'randomElement(/** set_attributes **/)',
-            'smallint' => 'randomNumber()',
-            'smallinteger' => 'randomNumber()',
+            'smallint' => 'numberBetween(-1000, 1000)',
+            'smallinteger' => 'numberBetween(-1000, 1000)',
             'string' => 'word',
             'text' => 'text',
             'time' => 'time()',
             'timestamp' => 'dateTime()',
-            'tinyinteger' => 'randomNumber()',
-            'unsignedsmallinteger' => 'randomDigitNotNull',
+            'timestamptz' => 'dateTime()',
+            'timetz' => 'time()',
+            'tinyinteger' => 'numberBetween(-8, 8)',
+            'unsignedbiginteger' => 'randomNumber()',
+            'unsigneddecimal' => 'randomNumber()',
+            'unsignedinteger' => 'randomNumber()',
+            'unsignedmediuminteger' => 'randomNumber()',
+            'unsignedsmallinteger' => 'randomNumber()',
+            'unsignedtinyinteger' => 'randomDigitNotNull',
             'uuid' => 'uuid',
+            'uuidmorphs' => 'word',
+            'year' => 'year()',
         ];
 
         return $fakeableTypes[strtolower($type)] ?? null;
