@@ -15,13 +15,10 @@ assignees: ''
 - Blueprint Version: #.#.#
 - Platform: Mac | Windows | Linux
 
-### Description:
-
-
-### Steps To Reproduce:
+### Issue:
 
 
 ### draft.yaml:
 ```yaml
-# PLEASE PASTE YOUR YAML HERE
+# PLEASE PASTE THE DRAFT FILE WHICH REPRODUCES THE ISSUE HERE...
 ```
