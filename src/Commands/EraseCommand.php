@@ -47,7 +47,7 @@ class EraseCommand extends Command
         $contents = $this->files->get('.blueprint');
 
         $blueprint = new Blueprint();
-        $generated = $blueprint->parse($contents);
+        $generated = $blueprint->parse($contents, false);
 
         collect($generated)->each(function ($files, $action) {
             if ($action === 'created') {

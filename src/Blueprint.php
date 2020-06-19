@@ -29,10 +29,13 @@ class Blueprint
         return str_replace('\\', '/', config('blueprint.app_path'));
     }
 
-    public function parse($content)
+    public function parse($content, $strip_dashes = true)
     {
         $content = str_replace(["\r\n", "\r"], "\n", $content);
-        $content = preg_replace('/^(\s*)-\s*/m', '\1', $content);
+
+        if ($strip_dashes) {
+            $content = preg_replace('/^(\s*)-\s*/m', '\1', $content);
+        }
 
         $content = preg_replace_callback('/^(\s+)(id|timestamps(Tz)?|softDeletes(Tz)?)$/mi', function ($matches) {
             return $matches[1].strtolower($matches[2]).': '.$matches[2];
