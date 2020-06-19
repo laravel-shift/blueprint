@@ -4,8 +4,9 @@ namespace Tests\Feature\Http\Controllers;
 
 use App\Events\NewPost;
 use App\Jobs\SyncMedia;
-use App\Mail\ReviewMail;
+use App\Mail\ReviewPost;
 use App\Post;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Event;
@@ -55,6 +56,7 @@ class PostControllerTest extends TestCase
     {
         $title = $this->faker->sentence(4);
         $content = $this->faker->paragraphs(3, true);
+        $author = factory(User::class)->create();
 
         Mail::fake();
         Queue::fake();
@@ -63,11 +65,13 @@ class PostControllerTest extends TestCase
         $response = $this->post(route('post.store'), [
             'title' => $title,
             'content' => $content,
+            'author_id' => $author->id,
         ]);
 
         $posts = Post::query()
             ->where('title', $title)
             ->where('content', $content)
+            ->where('author_id', $author->id)
             ->get();
         $this->assertCount(1, $posts);
         $post = $posts->first();
@@ -75,8 +79,8 @@ class PostControllerTest extends TestCase
         $response->assertRedirect(route('post.index'));
         $response->assertSessionHas('post.title', $post->title);
 
-        Mail::assertSent(ReviewMail::class, function ($mail) use ($post) {
-            return $mail->hasTo($post->author) && $mail->post->is($post);
+        Mail::assertSent(ReviewPost::class, function ($mail) use ($post) {
+            return $mail->hasTo($post->author->email) && $mail->post->is($post);
         });
         Queue::assertPushed(SyncMedia::class, function ($job) use ($post) {
             return $job->post->is($post);

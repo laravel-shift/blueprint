@@ -208,18 +208,19 @@ class BlueprintTest extends TestCase
                     'title' => 'string:400',
                     'content' => 'longtext',
                     'published_at' => 'nullable timestamp',
+                    'author_id' => 'id:user',
                 ],
             ],
             'controllers' => [
                 'Post' => [
                     'index' => [
-                        'query' => 'all:posts',
+                        'query' => 'all',
                         'render' => 'post.index with:posts',
                     ],
                     'store' => [
-                        'validate' => 'title, content',
+                        'validate' => 'title, content, author_id',
                         'save' => 'post',
-                        'send' => 'ReviewMail to:post.author with:post',
+                        'send' => 'ReviewPost to:post.author.email with:post',
                         'dispatch' => 'SyncMedia with:post',
                         'fire' => 'NewPost with:post',
                         'flash' => 'post.title',
@@ -250,18 +251,19 @@ class BlueprintTest extends TestCase
                     'title' => 'string:400',
                     'content' => 'longtext',
                     'published_at' => 'nullable timestamp',
+                    'author_id' => 'id:user',
                 ],
             ],
             'controllers' => [
                 'Post' => [
                     'index' => [
-                        'query' => 'all:posts',
+                        'query' => 'all',
                         'render' => 'post.index with:posts',
                     ],
                     'store' => [
-                        'validate' => 'title, content',
+                        'validate' => 'title, content, author_id',
                         'save' => 'post',
-                        'send' => 'ReviewMail to:post.author with:post',
+                        'send' => 'ReviewPost to:post.author.email with:post',
                         'dispatch' => 'SyncMedia with:post',
                         'fire' => 'NewPost with:post',
                         'flash' => 'post.title',

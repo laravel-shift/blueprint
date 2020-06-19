@@ -98,6 +98,36 @@ class RulesTest extends TestCase
 
     /**
      * @test
+     */
+    public function forColumn_return_exists_rule_for_id_column()
+    {
+        $column = new Column('user_id', 'id');
+
+        $this->assertContains('exists:users,id', Rules::fromColumn('context', $column));
+    }
+
+    /**
+     * @test
+     */
+    public function forColumn_return_exists_rule_id_column_with_attribute()
+    {
+        $column = new Column('author_id', 'id', [], ['user']);
+
+        $this->assertContains('exists:users,id', Rules::fromColumn('context', $column));
+    }
+
+    /**
+     * @test
+     */
+    public function forColumn_return_exists_rule_for_the_unique_modifier()
+    {
+        $column = new Column('column', 'string', ['unique']);
+
+        $this->assertContains('unique:connection.table,column', Rules::fromColumn('connection.table', $column));
+    }
+
+    /**
+     * @test
      * @dataProvider relationshipColumnProvider
      */
     public function forColumn_returns_exists_rule_for_foreign_keys($name, $table)
@@ -146,16 +176,6 @@ class RulesTest extends TestCase
         $column = new Column('test', $data_type);
 
         $this->assertContains('date', Rules::fromColumn('context', $column));
-    }
-
-    /**
-     * @test
-     */
-    public function forColumn_return_exists_rule_for_the_unique_modifier()
-    {
-        $column = new Column('column', 'string', ['unique']);
-
-        $this->assertContains('unique:connection.table,column', Rules::fromColumn('connection.table', $column));
     }
 
     /**

@@ -106,6 +106,10 @@ class TestGenerator implements Generator
             $context = Str::singular($controller->prefix());
             $variable = Str::camel($context);
 
+            $modelNamespace = config('blueprint.models_namespace')
+                ? config('blueprint.namespace') . '\\' . config('blueprint.models_namespace')
+                : config('blueprint.namespace');
+
             if (in_array($name, ['edit', 'update', 'show', 'destroy'])) {
                 $setup['data'][] = sprintf('$%s = factory(%s::class)->create();', $variable, $model);
             }
@@ -211,16 +215,33 @@ class TestGenerator implements Generator
                                 $qualifier = $context;
                             }
 
-                            /** @var \Blueprint\Models\Model $model */
+                            $variable_name = $data;
+
+                            /** @var \Blueprint\Models\Model $local_model */
                             $local_model = $this->modelForContext($qualifier);
+
                             if (!is_null($local_model) && $local_model->hasColumn($column)) {
-                                $faker = FactoryGenerator::fakerData($local_model->column($column)->name()) ?? FactoryGenerator::fakerDataType($local_model->column($column)->dataType());
+                                $local_column = $local_model->column($column);
+                                if (($local_column->dataType() === 'id' || $local_column->dataType() === 'uuid') && ($local_column->attributes() && Str::endsWith($local_column->name(), '_id'))) {
+                                    $variable_name = Str::beforeLast($local_column->name(), '_id');
+                                    $reference = $variable_name;
+
+                                    if ($local_column->attributes()) {
+                                        $reference = $local_column->attributes()[0];
+                                        $variable_name .= '->id';
+                                    }
+                                    $faker = sprintf('$%s = factory(%s::class)->create();', Str::beforeLast($local_column->name(), '_id'), Str::studly($reference));
+
+                                    $this->addImport($controller, $modelNamespace . '\\' . Str::studly($reference));
+                                } else {
+                                    $faker = sprintf('$%s = $this->faker->%s;', $data, FactoryGenerator::fakerData($local_column->name()) ?? FactoryGenerator::fakerDataType($local_model->column($column)->dataType()));
+                                }
                             } else {
-                                $faker = 'word';
+                                $faker = sprintf('$%s = $this->faker->word;', $data);
                             }
 
-                            $setup['data'][] = sprintf('$%s = $this->faker->%s;', $data, $faker);
-                            $request_data[$data] = '$' . $data;
+                            $setup['data'][] = $faker;
+                            $request_data[$data] = '$' . $variable_name;
                         }
                     }
                 } elseif ($statement instanceof DispatchStatement) {
@@ -357,10 +378,6 @@ class TestGenerator implements Generator
                 } elseif ($statement instanceof EloquentStatement) {
                     $this->addRefreshDatabaseTrait($controller);
 
-                    $modelNamespace = config('blueprint.models_namespace')
-                        ? config('blueprint.namespace') . '\\' . config('blueprint.models_namespace')
-                        : config('blueprint.namespace');
-
                     $model = $this->determineModel($controller->prefix(), $statement->reference());
                     $this->addImport($controller, $modelNamespace . '\\' . $model);
 
@@ -393,10 +410,6 @@ class TestGenerator implements Generator
                     $this->addRefreshDatabaseTrait($controller);
 
                     $setup['data'][] = sprintf('$%s = factory(%s::class, 3)->create();', Str::plural($variable), $model);
-
-                    $modelNamespace = config('blueprint.models_namespace')
-                        ? config('blueprint.namespace') . '\\' . config('blueprint.models_namespace')
-                        : config('blueprint.namespace');
 
                     $this->addImport($controller, $modelNamespace . '\\' . $this->determineModel($controller->prefix(), $statement->model()));
                 }
