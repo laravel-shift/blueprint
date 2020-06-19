@@ -15,6 +15,7 @@ class Post extends Model
         'title',
         'content',
         'published_at',
+        'author_id',
     ];
 
     /**
@@ -24,6 +25,7 @@ class Post extends Model
      */
     protected $casts = [
         'id' => 'integer',
+        'author_id' => 'integer',
     ];
 
     /**
@@ -34,4 +36,10 @@ class Post extends Model
     protected $dates = [
         'published_at',
     ];
+
+
+    public function author()
+    {
+        return $this->belongsTo(\App\User::class);
+    }
 }

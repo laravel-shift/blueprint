@@ -20,8 +20,9 @@ class Rules
             array_push($rules, self::overrideStringRuleForSpecialNames($column->name()));
         }
 
-        if ($column->dataType() === 'id' && Str::endsWith($column->name(), '_id')) {
-            $rules = array_merge($rules, ['integer', 'exists:' . Str::plural(Str::beforeLast($column->name(), '_id')) . ',id']);
+        if ($column->dataType() === 'id' && ($column->attributes() || Str::endsWith($column->name(), '_id'))) {
+            $reference = $column->attributes()[0] ?? Str::beforeLast($column->name(), '_id');
+            $rules = array_merge($rules, ['integer', 'exists:' . Str::plural($reference) . ',id']);
         }
 
         if (in_array($column->dataType(), [

@@ -155,7 +155,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_send_statement()
     {
         $tokens = [
-            'send' => 'ReviewMail'
+            'send' => 'ReviewPost'
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -163,7 +163,7 @@ class StatementLexerTest extends TestCase
         $this->assertCount(1, $actual);
         $this->assertInstanceOf(SendStatement::class, $actual[0]);
 
-        $this->assertEquals('ReviewMail', $actual[0]->mail());
+        $this->assertEquals('ReviewPost', $actual[0]->mail());
         $this->assertNull($actual[0]->to());
         $this->assertSame([], $actual[0]->data());
     }
@@ -174,7 +174,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_send_statement_to_only()
     {
         $tokens = [
-            'send' => 'ReviewMail to:post.author'
+            'send' => 'ReviewPost to:post.author'
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -182,7 +182,7 @@ class StatementLexerTest extends TestCase
         $this->assertCount(1, $actual);
         $this->assertInstanceOf(SendStatement::class, $actual[0]);
 
-        $this->assertEquals('ReviewMail', $actual[0]->mail());
+        $this->assertEquals('ReviewPost', $actual[0]->mail());
         $this->assertEquals('post.author', $actual[0]->to());
         $this->assertSame([], $actual[0]->data());
     }
@@ -193,7 +193,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_send_statement_with_only()
     {
         $tokens = [
-            'send' => 'ReviewMail with:foo, bar, baz'
+            'send' => 'ReviewPost with:foo, bar, baz'
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -201,7 +201,7 @@ class StatementLexerTest extends TestCase
         $this->assertCount(1, $actual);
         $this->assertInstanceOf(SendStatement::class, $actual[0]);
 
-        $this->assertEquals('ReviewMail', $actual[0]->mail());
+        $this->assertEquals('ReviewPost', $actual[0]->mail());
         $this->assertNull($actual[0]->to());
         $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
     }
@@ -212,7 +212,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_send_statement_to_and_with()
     {
         $tokens = [
-            'send' => 'ReviewMail to:post.author with:foo, bar, baz'
+            'send' => 'ReviewPost to:post.author with:foo, bar, baz'
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -220,7 +220,7 @@ class StatementLexerTest extends TestCase
         $this->assertCount(1, $actual);
         $this->assertInstanceOf(SendStatement::class, $actual[0]);
 
-        $this->assertEquals('ReviewMail', $actual[0]->mail());
+        $this->assertEquals('ReviewPost', $actual[0]->mail());
         $this->assertEquals('post.author', $actual[0]->to());
         $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
     }

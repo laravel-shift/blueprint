@@ -26,6 +26,7 @@ class PostStoreRequest extends FormRequest
         return [
             'title' => 'required|string|max:400',
             'content' => 'required|string',
+            'author_id' => 'required|integer|exists:users,id',
         ];
     }
 }
