@@ -278,7 +278,7 @@ class BlueprintTest extends TestCase
     /**
      * @test
      */
-    public function it_parses_yaml_using_dashed_syntax()
+    public function it_parses_yaml_with_dashed_syntax()
     {
         $definition = $this->fixture('drafts/readme-example-dashes.yaml');
 
@@ -305,6 +305,18 @@ class BlueprintTest extends TestCase
         ];
 
         $this->assertEquals($expected, $this->subject->parse($definition));
+    }
+
+    /**
+     * @test
+     */
+    public function it_allows_parsing_without_stripping_dashes()
+    {
+        $sequence = [
+            'numbers' => range(3, 11),
+        ];
+
+        $this->assertEquals($sequence, $this->subject->parse($this->subject->dump($sequence), false));
     }
 
     /**
