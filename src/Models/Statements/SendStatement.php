@@ -6,9 +6,7 @@ namespace Blueprint\Models\Statements;
 class SendStatement
 {
     const TYPE_MAIL = 'mail';
-
     const TYPE_NOTIFICATION_WITH_FACADE = 'notification_with_facade';
-
     const TYPE_NOTIFICATION_WITH_MODEL = 'notification_with_model';
 
     /**
@@ -73,6 +71,11 @@ class SendStatement
         }
 
         return $this->mailOutput();
+    }
+
+    public function isNotification()
+    {
+       return $this->type() === SendStatement::TYPE_NOTIFICATION_WITH_FACADE || $this->type() === SendStatement::TYPE_NOTIFICATION_WITH_MODEL;
     }
 
     private function mailOutput()

@@ -29,13 +29,11 @@ class NotificationGenerator implements Generator
         foreach ($tree['controllers'] as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
-                    if (!$statement instanceof SendStatement) {
+                    if (! $statement instanceof SendStatement) {
                         continue;
                     }
 
-                    if ($statement->type() !== SendStatement::TYPE_NOTIFICATION_WITH_FACADE
-                        && $statement->type() !== SendStatement::TYPE_NOTIFICATION_WITH_MODEL
-                    ) {
+                    if (! $statement->isNotification()) {
                         continue;
                     }
 

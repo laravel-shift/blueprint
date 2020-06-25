@@ -116,9 +116,7 @@ class TestGenerator implements Generator
 
             foreach ($statements as $statement) {
                 if ($statement instanceof SendStatement) {
-                    if ($statement->type() === SendStatement::TYPE_NOTIFICATION_WITH_FACADE
-                        || $statement->type() === SendStatement::TYPE_NOTIFICATION_WITH_MODEL
-                    ) {
+                    if ($statement->isNotification()) {
                         $this->addImport($controller, 'Illuminate\\Support\\Facades\\Notification');
                         $this->addImport($controller, config('blueprint.namespace') . '\\Notification\\' . $statement->mail());
 
