@@ -166,6 +166,7 @@ class StatementLexerTest extends TestCase
         $this->assertEquals('ReviewPost', $actual[0]->mail());
         $this->assertNull($actual[0]->to());
         $this->assertSame([], $actual[0]->data());
+        $this->assertEquals(SendStatement::TYPE_MAIL, $actual[0]->type());
     }
 
     /**
@@ -185,6 +186,7 @@ class StatementLexerTest extends TestCase
         $this->assertEquals('ReviewPost', $actual[0]->mail());
         $this->assertEquals('post.author', $actual[0]->to());
         $this->assertSame([], $actual[0]->data());
+        $this->assertEquals(SendStatement::TYPE_MAIL, $actual[0]->type());
     }
 
     /**
@@ -204,6 +206,7 @@ class StatementLexerTest extends TestCase
         $this->assertEquals('ReviewPost', $actual[0]->mail());
         $this->assertNull($actual[0]->to());
         $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
+        $this->assertEquals(SendStatement::TYPE_MAIL, $actual[0]->type());
     }
 
     /**
@@ -223,6 +226,167 @@ class StatementLexerTest extends TestCase
         $this->assertEquals('ReviewPost', $actual[0]->mail());
         $this->assertEquals('post.author', $actual[0]->to());
         $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
+        $this->assertEquals(SendStatement::TYPE_MAIL, $actual[0]->type());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_send_statement_type_notification_facade()
+    {
+        $tokens = [
+            'send' => 'ReviewNotification'
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(SendStatement::class, $actual[0]);
+
+        $this->assertEquals('ReviewNotification', $actual[0]->mail());
+        $this->assertNull($actual[0]->to());
+        $this->assertSame([], $actual[0]->data());
+        $this->assertEquals(SendStatement::TYPE_NOTIFICATION_WITH_FACADE, $actual[0]->type());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_send_statement_to_only_type_notification_facade()
+    {
+        $tokens = [
+            'send' => 'ReviewNotification to:post.author'
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(SendStatement::class, $actual[0]);
+
+        $this->assertEquals('ReviewNotification', $actual[0]->mail());
+        $this->assertEquals('post.author', $actual[0]->to());
+        $this->assertSame([], $actual[0]->data());
+        $this->assertEquals(SendStatement::TYPE_NOTIFICATION_WITH_FACADE, $actual[0]->type());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_send_statement_with_only_type_notification_facade()
+    {
+        $tokens = [
+            'send' => 'ReviewNotification with:foo, bar, baz'
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(SendStatement::class, $actual[0]);
+
+        $this->assertEquals('ReviewNotification', $actual[0]->mail());
+        $this->assertNull($actual[0]->to());
+        $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
+        $this->assertEquals(SendStatement::TYPE_NOTIFICATION_WITH_FACADE, $actual[0]->type());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_send_statement_to_and_with_type_notification_facade()
+    {
+        $tokens = [
+            'send' => 'ReviewNotification to:post.author with:foo, bar, baz'
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(SendStatement::class, $actual[0]);
+
+        $this->assertEquals('ReviewNotification', $actual[0]->mail());
+        $this->assertEquals('post.author', $actual[0]->to());
+        $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
+        $this->assertEquals(SendStatement::TYPE_NOTIFICATION_WITH_FACADE, $actual[0]->type());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_send_statement_with_type_notification_model()
+    {
+        $tokens = [
+            'notify' => 'user ReviewNotification'
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(SendStatement::class, $actual[0]);
+
+        $this->assertEquals('ReviewNotification', $actual[0]->mail());
+        $this->assertEquals('user', $actual[0]->to());
+        $this->assertSame([], $actual[0]->data());
+        $this->assertEquals(SendStatement::TYPE_NOTIFICATION_WITH_MODEL, $actual[0]->type());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_send_statement_to_only_type_notification_model()
+    {
+        $tokens = [
+            'notify' => 'post.author ReviewNotification'
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(SendStatement::class, $actual[0]);
+
+        $this->assertEquals('ReviewNotification', $actual[0]->mail());
+        $this->assertEquals('post.author', $actual[0]->to());
+        $this->assertSame([], $actual[0]->data());
+        $this->assertEquals(SendStatement::TYPE_NOTIFICATION_WITH_MODEL, $actual[0]->type());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_send_statement_with_only_type_notification_model()
+    {
+        $tokens = [
+            'notify' => 'user ReviewNotification with:foo, bar, baz'
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(SendStatement::class, $actual[0]);
+
+        $this->assertEquals('ReviewNotification', $actual[0]->mail());
+        $this->assertEquals('user', $actual[0]->to());
+        $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
+        $this->assertEquals(SendStatement::TYPE_NOTIFICATION_WITH_MODEL, $actual[0]->type());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_send_statement_to_and_with_type_notification_model()
+    {
+        $tokens = [
+            'notify' => 'post.author ReviewNotification with:foo, bar, baz'
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(SendStatement::class, $actual[0]);
+
+        $this->assertEquals('ReviewNotification', $actual[0]->mail());
+        $this->assertEquals('post.author', $actual[0]->to());
+        $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
+        $this->assertEquals(SendStatement::TYPE_NOTIFICATION_WITH_MODEL, $actual[0]->type());
     }
 
     /**

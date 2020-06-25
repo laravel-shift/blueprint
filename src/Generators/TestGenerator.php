@@ -116,22 +116,24 @@ class TestGenerator implements Generator
 
             foreach ($statements as $statement) {
                 if ($statement instanceof SendStatement) {
-                    if ($statement->type() === 'notification') {
+                    if ($statement->type() === SendStatement::TYPE_NOTIFICATION_WITH_FACADE
+                        || $statement->type() === SendStatement::TYPE_NOTIFICATION_WITH_MODEL
+                    ) {
                         $this->addImport($controller, 'Illuminate\\Support\\Facades\\Notification');
                         $this->addImport($controller, config('blueprint.namespace') . '\\Notification\\' . $statement->mail());
 
                         $setup['mock'][] = 'Notification::fake();';
 
-                        $assertion = sprintf('Notification::assertSent(%s::class', $statement->mail());
+                        $assertion = sprintf(
+                            'Notification::assertSentTo($%s, %s::class',
+                            str_replace('.', '->', $statement->to()),
+                            $statement->mail()
+                        );
 
-                        if ($statement->data() || $statement->to()) {
+                        if ($statement->data()) {
                             $conditions = [];
                             $variables = [];
                             $assertion .= ', function ($notification)';
-
-                            if ($statement->to()) {
-                                $conditions[] = '$notification->hasTo($' . str_replace('.', '->', $statement->to()) . ')';
-                            }
 
                             foreach ($statement->data() as $data) {
                                 if (Str::studly(Str::singular($data)) === $context) {

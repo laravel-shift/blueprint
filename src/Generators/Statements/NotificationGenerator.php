@@ -33,7 +33,9 @@ class NotificationGenerator implements Generator
                         continue;
                     }
 
-                    if ($statement->type() !== 'notification') {
+                    if ($statement->type() !== SendStatement::TYPE_NOTIFICATION_WITH_FACADE
+                        && $statement->type() !== SendStatement::TYPE_NOTIFICATION_WITH_MODEL
+                    ) {
                         continue;
                     }
 

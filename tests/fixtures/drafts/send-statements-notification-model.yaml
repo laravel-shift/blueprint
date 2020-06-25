@@ -1,0 +1,10 @@
+controllers:
+  User:
+    store:
+      notify: user.email ReviewPostNotification with:post
+      redirect: user.show with:user.id
+
+  Post:
+    store:
+      notify: user PublishedPostNotification
+      redirect: post.index

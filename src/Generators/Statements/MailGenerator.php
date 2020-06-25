@@ -32,7 +32,7 @@ class MailGenerator implements Generator
                         continue;
                     }
 
-                    if ($statement->type() !== 'mail') {
+                    if ($statement->type() !== SendStatement::TYPE_MAIL) {
                         continue;
                     }
 

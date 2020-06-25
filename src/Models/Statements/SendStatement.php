@@ -5,6 +5,12 @@ namespace Blueprint\Models\Statements;
 
 class SendStatement
 {
+    const TYPE_MAIL = 'mail';
+
+    const TYPE_NOTIFICATION_WITH_FACADE = 'notification_with_facade';
+
+    const TYPE_NOTIFICATION_WITH_MODEL = 'notification_with_model';
+
     /**
      * @var string
      */
@@ -58,7 +64,15 @@ class SendStatement
 
     public function output()
     {
-        return $this->type() === 'mail' ? $this->mailOutput() : $this->notificationOutput();
+        if ($this->type() === self::TYPE_NOTIFICATION_WITH_FACADE) {
+            return $this->notificationFacadeOutput();
+        }
+
+        if ($this->type() === self::TYPE_NOTIFICATION_WITH_MODEL) {
+            return $this->notificationModelOutput();
+        }
+
+        return $this->mailOutput();
     }
 
     private function mailOutput()
@@ -80,12 +94,30 @@ class SendStatement
         return $code;
     }
 
-    private function notificationOutput()
+    private function notificationFacadeOutput()
     {
         $code = 'Notification::';
 
         if ($this->to()) {
             $code .= 'send($' . str_replace('.', '->', $this->to()) . ', new ' . $this->mail() . '(';
+        }
+
+        if ($this->data()) {
+            $code .= $this->buildParameters($this->data());
+        }
+
+        $code .= '));';
+
+        return $code;
+    }
+
+    private function notificationModelOutput()
+    {
+        $code = '';
+
+        if ($this->to()) {
+            $code .= sprintf('$%s->', str_replace('.', '->', $this->to()));
+            $code .= 'notify(new ' . $this->mail() . '(';
         }
 
         if ($this->data()) {
