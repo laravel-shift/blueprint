@@ -47,7 +47,7 @@ class EnumType extends Type
 
             // if (!preg_match('/\s/', $raw_value)) {
             return $raw_value;
-            // }
+        // }
 
             // return sprintf('"%s"', $raw_value);
         }, $options);
