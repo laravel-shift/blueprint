@@ -134,14 +134,14 @@ class TraceCommand extends Command
 
         $columns = $schema->listTableColumns($table, $database);
 
-        $uses_enums = collect($columns)->contains(function($column) {
+        $uses_enums = collect($columns)->contains(function ($column) {
             return $column->getType() instanceof \Blueprint\EnumType;
         });
 
         if ($uses_enums) {
             $definitions = $model->getConnection()->getDoctrineConnection()->fetchAll($schema->getDatabasePlatform()->getListTableColumnsSQL($table, $database));
 
-            collect($columns)->filter(function($column) {
+            collect($columns)->filter(function ($column) {
                 return $column->getType() instanceof \Blueprint\EnumType;
             })->each(function (&$column, $key) use ($definitions) {
                 $definition = collect($definitions)->where('Field', $key)->first();
