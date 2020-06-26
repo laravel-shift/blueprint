@@ -640,6 +640,7 @@ class MigrationGeneratorTest extends TestCase
             ['drafts/uuid-shorthand.yaml', 'database/migrations/timestamp_create_people_table.php', 'migrations/uuid-shorthand.php'],
             ['drafts/unconventional-foreign-key.yaml', 'database/migrations/timestamp_create_states_table.php', 'migrations/unconventional-foreign-key.php'],
             ['drafts/resource-statements.yaml', 'database/migrations/timestamp_create_users_table.php', 'migrations/resource-statements.php'],
+            ['drafts/enum-options.yaml', 'database/migrations/timestamp_create_messages_table.php', 'migrations/enum-options.php'],
         ];
     }
 }
