@@ -652,6 +652,7 @@ class ModelLexerTest extends TestCase
             ['char:10', 'char', [10]],
             ['string:1000', 'string', [1000]],
             ['enum:one,two,three,four', 'enum', ['one', 'two', 'three', 'four']],
+            ['enum:"Jason McCreary",Shift,O\'Doul', 'enum', ['Jason McCreary', 'Shift', 'O\'Doul']],
             ['set:1,2,3,4', 'set', [1, 2, 3, 4]],
         ];
     }

@@ -221,6 +221,12 @@ class ModelLexer implements Lexer
                 $data_type = self::$dataTypes[strtolower($value)];
                 if (!empty($attributes)) {
                     $attributes = explode(',', $attributes);
+
+                    if ($data_type === 'enum') {
+                        $attributes = array_map(function ($attribute) {
+                            return trim($attribute, '"');
+                        }, $attributes);
+                    }
                 }
             }
 

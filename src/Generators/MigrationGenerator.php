@@ -127,10 +127,7 @@ class MigrationGenerator implements Generator
             if (!empty($column->attributes()) && !in_array($column->dataType(), ['id', 'uuid'])) {
                 $column_definition .= ', ';
                 if (in_array($column->dataType(), ['set', 'enum'])) {
-                    $options = array_map(function ($attribute) {
-                        return trim($attribute, '"');
-                    }, $column->attributes());
-                    $column_definition .= json_encode($options);
+                    $column_definition .= json_encode($column->attributes());
                 } else {
                     $column_definition .= implode(', ', $column->attributes());
                 }
