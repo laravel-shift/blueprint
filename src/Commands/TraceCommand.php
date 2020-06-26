@@ -3,6 +3,8 @@
 namespace Blueprint\Commands;
 
 use Blueprint\Blueprint;
+use Blueprint\EnumType;
+use Doctrine\DBAL\Types\Type;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Filesystem\Filesystem;
@@ -119,12 +121,34 @@ class TraceCommand extends Command
         $table = $model->getConnection()->getTablePrefix() . $model->getTable();
         $schema = $model->getConnection()->getDoctrineSchemaManager();
 
+        if (!Type::hasType('enum')) {
+            Type::addType('enum', EnumType::class);
+            $databasePlatform = $schema->getDatabasePlatform();
+            $databasePlatform->registerDoctrineTypeMapping('enum', 'enum');
+        }
+
         $database = null;
         if (strpos($table, '.')) {
-            list($database, $table) = explode('.', $table);
+            [$database, $table] = explode('.', $table);
         }
 
         $columns = $schema->listTableColumns($table, $database);
+
+        $uses_enums = collect($columns)->contains(function ($column) {
+            return $column->getType() instanceof \Blueprint\EnumType;
+        });
+
+        if ($uses_enums) {
+            $definitions = $model->getConnection()->getDoctrineConnection()->fetchAll($schema->getDatabasePlatform()->getListTableColumnsSQL($table, $database));
+
+            collect($columns)->filter(function ($column) {
+                return $column->getType() instanceof \Blueprint\EnumType;
+            })->each(function (&$column, $key) use ($definitions) {
+                $definition = collect($definitions)->where('Field', $key)->first();
+
+                $column->options = \Blueprint\EnumType::extractOptions($definition['Type']);
+            });
+        }
 
         return $columns;
     }
@@ -160,9 +184,11 @@ class TraceCommand extends Command
             if ($column->getLength() > 65535) {
                 $type = 'longtext';
             }
+        } elseif ($type === 'enum' && !empty($column->options)) {
+            $type .= ':' . implode(',', $column->options);
         }
 
-        // TODO: enums, guid/uuid
+        // TODO: guid/uuid
 
         $attributes[] = $type;
 
@@ -201,6 +227,7 @@ class TraceCommand extends Command
             'datetimetz' => 'datetimetz',
             'datetimetz_immutable' => 'datetimetz',
             'decimal' => 'decimal',
+            'enum' => 'enum',
             'float' => 'float',
             'guid' => 'string',
             'integer' => 'integer',
