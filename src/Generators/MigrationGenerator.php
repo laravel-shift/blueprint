@@ -41,38 +41,54 @@ class MigrationGenerator implements Generator
         $this->files = $files;
     }
 
-    public function output(array $tree): array
+    public function output(array $tree, array $only = [], array $skip = []): array
     {
         $output = [];
-        $created_pivot_tables = [];
 
-        $stub = $this->files->stub('migration.stub');
+        if ($this->shouldGenerate($only, $skip)) {
+            $created_pivot_tables = [];
 
-        $sequential_timestamp = \Carbon\Carbon::now()->subSeconds(count($tree['models']));
+            $stub = $this->files->stub('migration.stub');
 
-        /** @var \Blueprint\Models\Model $model */
-        foreach ($tree['models'] as $model) {
-            $path = $this->getPath($model, $sequential_timestamp->addSecond());
-            $this->files->put($path, $this->populateStub($stub, $model));
+            $sequential_timestamp = \Carbon\Carbon::now()->subSeconds(count($tree['models']));
 
-            $output['created'][] = $path;
+            /** @var \Blueprint\Models\Model $model */
+            foreach ($tree['models'] as $model) {
+                $path = $this->getPath($model, $sequential_timestamp->addSecond());
+                $this->files->put($path, $this->populateStub($stub, $model));
 
-            if (!empty($model->pivotTables())) {
-                foreach ($model->pivotTables() as $pivotSegments) {
-                    $pivotTable = $this->getPivotTableName($pivotSegments);
-                    $created_pivot_tables[$pivotTable] = $pivotSegments;
+                $output['created'][] = $path;
+
+                if (!empty($model->pivotTables())) {
+                    foreach ($model->pivotTables() as $pivotSegments) {
+                        $pivotTable = $this->getPivotTableName($pivotSegments);
+                        $created_pivot_tables[$pivotTable] = $pivotSegments;
+                    }
                 }
+            }
+
+            foreach ($created_pivot_tables as $pivotTable => $pivotSegments) {
+                $path = $this->getPivotTablePath($pivotTable, $sequential_timestamp);
+                $this->files->put($path, $this->populatePivotStub($stub, $pivotSegments));
+                $created_pivot_tables[] = $pivotTable;
+                $output['created'][] = $path;
             }
         }
 
-        foreach ($created_pivot_tables as $pivotTable => $pivotSegments) {
-            $path = $this->getPivotTablePath($pivotTable, $sequential_timestamp);
-            $this->files->put($path, $this->populatePivotStub($stub, $pivotSegments));
-            $created_pivot_tables[] = $pivotTable;
-            $output['created'][] = $path;
+        return $output;
+    }
+
+    protected function shouldGenerate(array $only, array $skip): bool
+    {
+        if (count($only)) {
+            return in_array('migrations', $only);
         }
 
-        return $output;
+        if (count($skip)) {
+            return !in_array('migrations', $skip);
+        }
+
+        return true;
     }
 
     protected function populateStub(string $stub, Model $model)

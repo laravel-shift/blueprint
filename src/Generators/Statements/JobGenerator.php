@@ -18,39 +18,55 @@ class JobGenerator implements Generator
         $this->files = $files;
     }
 
-    public function output(array $tree): array
+    public function output(array $tree, array $only = [], array $skip = []): array
     {
         $output = [];
 
-        $stub = $this->files->stub('job.stub');
+        if ($this->shouldGenerate($only, $skip)) {
+            $stub = $this->files->stub('job.stub');
 
-        /** @var \Blueprint\Models\Controller $controller */
-        foreach ($tree['controllers'] as $controller) {
-            foreach ($controller->methods() as $method => $statements) {
-                foreach ($statements as $statement) {
-                    if (!$statement instanceof DispatchStatement) {
-                        continue;
+            /** @var \Blueprint\Models\Controller $controller */
+            foreach ($tree['controllers'] as $controller) {
+                foreach ($controller->methods() as $method => $statements) {
+                    foreach ($statements as $statement) {
+                        if (!$statement instanceof DispatchStatement) {
+                            continue;
+                        }
+
+                        $path = $this->getPath($statement->job());
+
+                        if ($this->files->exists($path)) {
+                            continue;
+                        }
+
+                        if (!$this->files->exists(dirname($path))) {
+                            $this->files->makeDirectory(dirname($path), 0755, true);
+                        }
+
+                        $this->files->put($path, $this->populateStub($stub, $statement));
+
+                        $output['created'][] = $path;
                     }
-
-                    $path = $this->getPath($statement->job());
-
-                    if ($this->files->exists($path)) {
-                        continue;
-                    }
-
-                    if (!$this->files->exists(dirname($path))) {
-                        $this->files->makeDirectory(dirname($path), 0755, true);
-                    }
-
-                    $this->files->put($path, $this->populateStub($stub, $statement));
-
-                    $output['created'][] = $path;
                 }
             }
         }
 
         return $output;
     }
+
+    protected function shouldGenerate(array $only, array $skip): bool
+    {
+        if (count($only)) {
+            return in_array('jobs', $only);
+        }
+
+        if (count($skip)) {
+            return !in_array('jobs', $skip);
+        }
+
+        return true;
+    }
+
 
     protected function getPath(string $name)
     {

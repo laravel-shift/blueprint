@@ -340,11 +340,13 @@ class BlueprintTest extends TestCase
     {
         $tokens = [];
 
-        $this->assertEquals([
-            'models' => [],
-            'controllers' => []
-        ],
-            $this->subject->analyze($tokens));
+        $this->assertEquals(
+            [
+                'models' => [],
+                'controllers' => []
+            ],
+            $this->subject->analyze($tokens)
+        );
     }
 
     /**
@@ -374,8 +376,11 @@ class BlueprintTest extends TestCase
     {
         $generatorOne = \Mockery::mock(Generator::class);
         $tree = ['branch' => ['code', 'attributes']];
+        $only = [];
+        $skip = [];
+
         $generatorOne->expects('output')
-            ->with($tree)
+            ->with($tree, $only, $skip)
             ->andReturn([
                 'created' => ['one/new.php'],
                 'updated' => ['one/existing.php'],
@@ -384,7 +389,7 @@ class BlueprintTest extends TestCase
 
         $generatorTwo = \Mockery::mock(Generator::class);
         $generatorTwo->expects('output')
-            ->with($tree)
+            ->with($tree, $only, $skip)
             ->andReturn([
                 'created' => ['two/new.php'],
                 'updated' => ['two/existing.php'],
@@ -408,11 +413,14 @@ class BlueprintTest extends TestCase
     {
         $generatorOne = \Mockery::mock(Generator::class);
         $tree = ['branch' => ['code', 'attributes']];
+        $only = [];
+        $skip = [];
+
         $generatorOne->expects('output')->never();
 
         $generatorSwap = \Mockery::mock(Generator::class);
         $generatorSwap->expects('output')
-            ->with($tree)
+            ->with($tree, $only, $skip)
             ->andReturn([
                 'created' => ['swapped/new.php'],
                 'updated' => ['swapped/existing.php'],

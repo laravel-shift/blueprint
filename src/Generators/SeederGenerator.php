@@ -19,26 +19,43 @@ class SeederGenerator implements Generator
         $this->files = $files;
     }
 
-    public function output(array $tree): array
+    public function output(array $tree, array $only = [], array $skip = []): array
     {
         if (empty($tree['seeders'])) {
             return [];
         }
 
         $output = [];
-        $stub = $this->files->stub('seeder.stub');
 
-        $this->registerModels($tree);
+        if ($this->shouldGenerate($only, $skip)) {
+            $stub = $this->files->stub('seeder.stub');
 
-        foreach ($tree['seeders'] as $model) {
-            $path = $this->getPath($model);
-            $this->files->put($path, $this->populateStub($stub, $model));
+            $this->registerModels($tree);
 
-            $output['created'][] = $path;
+            foreach ($tree['seeders'] as $model) {
+                $path = $this->getPath($model);
+                $this->files->put($path, $this->populateStub($stub, $model));
+
+                $output['created'][] = $path;
+            }
         }
 
         return $output;
     }
+
+    protected function shouldGenerate(array $only, array $skip): bool
+    {
+        if (count($only)) {
+            return in_array('seeders', $only);
+        }
+
+        if (count($skip)) {
+            return !in_array('seeders', $skip);
+        }
+
+        return true;
+    }
+
 
     private function getPath($model)
     {

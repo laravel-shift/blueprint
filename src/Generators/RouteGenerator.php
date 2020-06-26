@@ -16,7 +16,7 @@ class RouteGenerator implements Generator
         $this->files = $files;
     }
 
-    public function output(array $tree): array
+    public function output(array $tree, array $only = [], array $skip = []): array
     {
         if (empty($tree['controllers'])) {
             return [];
@@ -31,14 +31,31 @@ class RouteGenerator implements Generator
         }
 
         $paths = [];
-        foreach (array_filter($routes) as $type => $definitions) {
-            $path = 'routes/' . $type . '.php';
-            $this->files->append($path, $definitions . PHP_EOL);
-            $paths[] = $path;
+
+        if ($this->shouldGenerate($only, $skip)) {
+            foreach (array_filter($routes) as $type => $definitions) {
+                $path = 'routes/' . $type . '.php';
+                $this->files->append($path, $definitions . PHP_EOL);
+                $paths[] = $path;
+            }
         }
 
         return ['updated' => $paths];
     }
+
+    protected function shouldGenerate(array $only, array $skip): bool
+    {
+        if (count($only)) {
+            return in_array('routes', $only);
+        }
+
+        if (count($skip)) {
+            return !in_array('routes', $skip);
+        }
+
+        return true;
+    }
+
 
     protected function buildRoutes(Controller $controller)
     {

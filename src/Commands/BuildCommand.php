@@ -16,8 +16,10 @@ class BuildCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'blueprint:build 
+    protected $signature = 'blueprint:build
                             {draft? : The path to the draft file, default: draft.yaml or draft.yml }
+                            {--only= : Comma seperated list of file classes to generate, skipping the rest }
+                            {--skip= : Comma seperated list of file classes to skip, generating the rest }
                             ';
 
     /**
@@ -55,7 +57,7 @@ class BuildCommand extends Command
         }
 
         $blueprint = resolve(Blueprint::class);
-        $generated = Builder::execute($blueprint, $this->files, $file);
+        $generated = Builder::execute($blueprint, $this->files, $file, $this->option('only'), $this->option('skip'));
 
         collect($generated)->each(function ($files, $action) {
             $this->line(Str::studly($action) . ':', $this->outputStyle($action));

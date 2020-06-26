@@ -38,19 +38,19 @@ class Blueprint
         }
 
         $content = preg_replace_callback('/^(\s+)(id|timestamps(Tz)?|softDeletes(Tz)?)$/mi', function ($matches) {
-            return $matches[1].strtolower($matches[2]).': '.$matches[2];
+            return $matches[1] . strtolower($matches[2]) . ': ' . $matches[2];
         }, $content);
 
         $content = preg_replace_callback('/^(\s+)(id|timestamps(Tz)?|softDeletes(Tz)?): true$/mi', function ($matches) {
-            return $matches[1].strtolower($matches[2]).': '.$matches[2];
+            return $matches[1] . strtolower($matches[2]) . ': ' . $matches[2];
         }, $content);
 
         $content = preg_replace_callback('/^(\s+)resource?$/mi', function ($matches) {
-            return $matches[1].'resource: web';
+            return $matches[1] . 'resource: web';
         }, $content);
 
         $content = preg_replace_callback('/^(\s+)uuid(: true)?$/mi', function ($matches) {
-            return $matches[1].'id: uuid primary';
+            return $matches[1] . 'id: uuid primary';
         }, $content);
 
         return Yaml::parse($content);
@@ -70,12 +70,12 @@ class Blueprint
         return $registry;
     }
 
-    public function generate(array $tree): array
+    public function generate(array $tree, array $only = [], array $skip = []): array
     {
         $components = [];
 
         foreach ($this->generators as $generator) {
-            $components = array_merge_recursive($components, $generator->output($tree));
+            $components = array_merge_recursive($components, $generator->output($tree, $only, $skip));
         }
 
         return $components;

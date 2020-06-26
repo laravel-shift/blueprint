@@ -24,35 +24,37 @@ class ResourceGenerator implements Generator
         $this->files = $files;
     }
 
-    public function output(array $tree): array
+    public function output(array $tree, array $only = [], array $skip = []): array
     {
         $output = [];
 
-        $stub = $this->files->stub('resource.stub');
+        if ($this->shouldGenerate($only, $skip)) {
+            $stub = $this->files->stub('resource.stub');
 
-        $this->registerModels($tree);
+            $this->registerModels($tree);
 
-        /** @var \Blueprint\Models\Controller $controller */
-        foreach ($tree['controllers'] as $controller) {
-            foreach ($controller->methods() as $method => $statements) {
-                foreach ($statements as $statement) {
-                    if (! $statement instanceof ResourceStatement) {
-                        continue;
+            /** @var \Blueprint\Models\Controller $controller */
+            foreach ($tree['controllers'] as $controller) {
+                foreach ($controller->methods() as $method => $statements) {
+                    foreach ($statements as $statement) {
+                        if (!$statement instanceof ResourceStatement) {
+                            continue;
+                        }
+
+                        $path = $this->getPath($statement->name());
+
+                        if ($this->files->exists($path)) {
+                            continue;
+                        }
+
+                        if (!$this->files->exists(dirname($path))) {
+                            $this->files->makeDirectory(dirname($path), 0755, true);
+                        }
+
+                        $this->files->put($path, $this->populateStub($stub, $statement));
+
+                        $output['created'][] = $path;
                     }
-
-                    $path = $this->getPath($statement->name());
-
-                    if ($this->files->exists($path)) {
-                        continue;
-                    }
-
-                    if (! $this->files->exists(dirname($path))) {
-                        $this->files->makeDirectory(dirname($path), 0755, true);
-                    }
-
-                    $this->files->put($path, $this->populateStub($stub, $statement));
-
-                    $output['created'][] = $path;
                 }
             }
         }
@@ -60,14 +62,28 @@ class ResourceGenerator implements Generator
         return $output;
     }
 
+    protected function shouldGenerate(array $only, array $skip): bool
+    {
+        if (count($only)) {
+            return in_array('resources', $only);
+        }
+
+        if (count($skip)) {
+            return !in_array('resources', $skip);
+        }
+
+        return true;
+    }
+
+
     protected function getPath(string $name)
     {
-        return Blueprint::appPath().'/Http/Resources/'.$name.'.php';
+        return Blueprint::appPath() . '/Http/Resources/' . $name . '.php';
     }
 
     protected function populateStub(string $stub, ResourceStatement $resource)
     {
-        $stub = str_replace('DummyNamespace', config('blueprint.namespace').'\\Http\\Resources', $stub);
+        $stub = str_replace('DummyNamespace', config('blueprint.namespace') . '\\Http\\Resources', $stub);
         $stub = str_replace('DummyImport', $resource->collection() ? 'Illuminate\\Http\\Resources\\Json\\ResourceCollection' : 'Illuminate\\Http\\Resources\\Json\\JsonResource', $stub);
         $stub = str_replace('DummyParent', $resource->collection() ? 'ResourceCollection' : 'JsonResource', $stub);
         $stub = str_replace('DummyClass', $resource->name(), $stub);
@@ -88,7 +104,7 @@ class ResourceGenerator implements Generator
         $data = [];
         if ($resource->collection()) {
             $data[] = 'return [';
-            $data[] = self::INDENT.'\'data\' => $this->collection,';
+            $data[] = self::INDENT . '\'data\' => $this->collection,';
             $data[] = '        ];';
 
             return implode(PHP_EOL, $data);
@@ -96,7 +112,7 @@ class ResourceGenerator implements Generator
 
         $data[] = 'return [';
         foreach ($this->visibleColumns($model) as $column) {
-            $data[] = self::INDENT.'\''.$column.'\' => $this->'.$column.',';
+            $data[] = self::INDENT . '\'' . $column . '\' => $this->' . $column . ',';
         }
         $data[] = '        ];';
 
@@ -118,7 +134,7 @@ class ResourceGenerator implements Generator
         }
 
         $matches = array_filter(array_keys($this->models), function ($key) use ($context) {
-            return Str::endsWith($key, '/'.Str::studly($context));
+            return Str::endsWith($key, '/' . Str::studly($context));
         });
 
         if (count($matches) === 1) {

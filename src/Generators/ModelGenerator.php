@@ -18,27 +18,43 @@ class ModelGenerator implements Generator
         $this->files = $files;
     }
 
-    public function output(array $tree): array
+    public function output(array $tree, array $only = [], array $skip = []): array
     {
         $output = [];
 
-        $stub = $this->files->stub('model/class.stub');
+        if ($this->shouldGenerate($only, $skip)) {
+            $stub = $this->files->stub('model/class.stub');
 
-        /** @var \Blueprint\Models\Model $model */
-        foreach ($tree['models'] as $model) {
-            $path = $this->getPath($model);
+            /** @var \Blueprint\Models\Model $model */
+            foreach ($tree['models'] as $model) {
+                $path = $this->getPath($model);
 
-            if (!$this->files->exists(dirname($path))) {
-                $this->files->makeDirectory(dirname($path), 0755, true);
+                if (!$this->files->exists(dirname($path))) {
+                    $this->files->makeDirectory(dirname($path), 0755, true);
+                }
+
+                $this->files->put($path, $this->populateStub($stub, $model));
+
+                $output['created'][] = $path;
             }
-
-            $this->files->put($path, $this->populateStub($stub, $model));
-
-            $output['created'][] = $path;
         }
 
         return $output;
     }
+
+    protected function shouldGenerate(array $only, array $skip): bool
+    {
+        if (count($only)) {
+            return in_array('models', $only);
+        }
+
+        if (count($skip)) {
+            return !in_array('models', $skip);
+        }
+
+        return true;
+    }
+
 
     protected function populateStub(string $stub, Model $model)
     {
@@ -92,7 +108,7 @@ class ModelGenerator implements Generator
     {
         $properties = '';
 
-        if (! $model->usesTimestamps()) {
+        if (!$model->usesTimestamps()) {
             $properties .= $this->files->stub('model/timestamps.stub');
         }
 
@@ -224,7 +240,9 @@ class ModelGenerator implements Generator
         return array_filter(array_map(
             function (Column $column) {
                 return $this->castForColumn($column);
-            }, $columns));
+            },
+            $columns
+        ));
     }
 
     private function dateColumns(array $columns)
@@ -236,7 +254,8 @@ class ModelGenerator implements Generator
             array_filter($columns, function (Column $column) {
                 return stripos($column->dataType(), 'datetime') !== false
                     || stripos($column->dataType(), 'timestamp') !== false;
-            }));
+            })
+        );
     }
 
     private function castForColumn(Column $column)

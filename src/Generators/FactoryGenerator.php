@@ -21,29 +21,44 @@ class FactoryGenerator implements Generator
         $this->files = $files;
     }
 
-    public function output(array $tree): array
+    public function output(array $tree, array $only = [], array $skip = []): array
     {
         $output = [];
 
-        $stub = $this->files->stub('factory.stub');
+        if ($this->shouldGenerate($only, $skip)) {
+            $stub = $this->files->stub('factory.stub');
 
-        /** @var \Blueprint\Models\Model $model */
-        foreach ($tree['models'] as $model) {
-            $this->addImport($model, 'Faker\Generator as Faker');
-            $this->addImport($model, $model->fullyQualifiedClassName());
+            /** @var \Blueprint\Models\Model $model */
+            foreach ($tree['models'] as $model) {
+                $this->addImport($model, 'Faker\Generator as Faker');
+                $this->addImport($model, $model->fullyQualifiedClassName());
 
-            $path = $this->getPath($model);
+                $path = $this->getPath($model);
 
-            if (!$this->files->exists(dirname($path))) {
-                $this->files->makeDirectory(dirname($path), 0755, true);
+                if (!$this->files->exists(dirname($path))) {
+                    $this->files->makeDirectory(dirname($path), 0755, true);
+                }
+
+                $this->files->put($path, $this->populateStub($stub, $model));
+
+                $output['created'][] = $path;
             }
-
-            $this->files->put($path, $this->populateStub($stub, $model));
-
-            $output['created'][] = $path;
         }
 
         return $output;
+    }
+
+    protected function shouldGenerate(array $only, array $skip): bool
+    {
+        if (count($only)) {
+            return in_array('factories', $only);
+        }
+
+        if (count($skip)) {
+            return !in_array('factories', $skip);
+        }
+
+        return true;
     }
 
     protected function getPath(Model $model)
