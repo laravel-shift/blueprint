@@ -54,7 +54,7 @@ class ViewGenerator implements Generator
 
     public function types(): array
     {
-        return ['views'];
+        return ['controllers', 'views'];
     }
 
     protected function getPath(string $view)

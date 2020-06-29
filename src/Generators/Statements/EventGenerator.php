@@ -58,7 +58,7 @@ class EventGenerator implements Generator
 
     public function types(): array
     {
-        return ['events'];
+        return ['controllers'];
     }
 
     protected function getPath(string $name)

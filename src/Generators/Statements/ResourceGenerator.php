@@ -62,7 +62,7 @@ class ResourceGenerator implements Generator
 
     public function types(): array
     {
-        return ['resources'];
+        return ['controllers', 'resources'];
     }
 
     protected function getPath(string $name)

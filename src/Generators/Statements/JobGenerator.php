@@ -54,7 +54,7 @@ class JobGenerator implements Generator
 
     public function types(): array
     {
-        return ['jobs'];
+        return ['controllers'];
     }
 
     protected function getPath(string $name)

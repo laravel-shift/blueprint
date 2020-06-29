@@ -65,7 +65,7 @@ class FormRequestGenerator implements Generator
 
     public function types(): array
     {
-        return ['requests'];
+        return ['controllers', 'requests'];
     }
 
     protected function getPath(Controller $controller, string $name)

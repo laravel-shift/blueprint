@@ -58,7 +58,7 @@ class MailGenerator implements Generator
 
     public function types(): array
     {
-        return ['mails'];
+        return ['controllers'];
     }
 
     protected function getPath(string $name)

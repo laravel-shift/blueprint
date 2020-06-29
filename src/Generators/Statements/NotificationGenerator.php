@@ -59,7 +59,7 @@ class NotificationGenerator implements Generator
 
     public function types(): array
     {
-        return ['notifications'];
+        return ['controllers'];
     }
 
     protected function getPath(string $name)
