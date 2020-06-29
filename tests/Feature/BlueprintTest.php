@@ -453,6 +453,210 @@ class BlueprintTest extends TestCase
 
     /**
      * @test
+     */
+    public function generate_only_one_specific_type()
+    {
+        $generatorFoo = \Mockery::mock(Generator::class);
+        $tree = ['branch' => ['code', 'attributes']];
+
+        $only = ['bar'];
+        $skip = [];
+
+        $generatorFoo->shouldReceive('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['foo.php'],
+            ]);
+
+        $generatorFoo->shouldReceive('types')
+            ->andReturn(['foo']);
+
+        $generatorBar = \Mockery::mock(Generator::class);
+        $generatorBar->shouldReceive('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['bar.php'],
+            ]);
+
+        $generatorBar->shouldReceive('types')
+            ->andReturn(['bar']);
+
+        $generatorBaz = \Mockery::mock(Generator::class);
+        $generatorBaz->shouldReceive('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['baz.php'],
+            ]);
+
+        $generatorBaz->shouldReceive('types')
+            ->andReturn(['baz']);
+
+        $this->subject->registerGenerator($generatorFoo);
+        $this->subject->registerGenerator($generatorBar);
+        $this->subject->registerGenerator($generatorBaz);
+
+        $actual = $this->subject->generate($tree, $only, $skip);
+
+        $this->assertEquals([
+            'created' => ['bar.php'],
+        ], $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function generate_only_specific_types()
+    {
+        $generatorFoo = \Mockery::mock(Generator::class);
+        $tree = ['branch' => ['code', 'attributes']];
+
+        $only = ['foo', 'bar'];
+        $skip = [];
+
+        $generatorFoo->shouldReceive('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['foo.php'],
+            ]);
+
+        $generatorFoo->shouldReceive('types')
+            ->andReturn(['foo']);
+
+        $generatorBar = \Mockery::mock(Generator::class);
+        $generatorBar->shouldReceive('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['bar.php'],
+            ]);
+
+        $generatorBar->shouldReceive('types')
+            ->andReturn(['bar']);
+
+        $generatorBaz = \Mockery::mock(Generator::class);
+        $generatorBaz->shouldReceive('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['baz.php'],
+            ]);
+
+        $generatorBaz->shouldReceive('types')
+            ->andReturn(['baz']);
+
+        $this->subject->registerGenerator($generatorFoo);
+        $this->subject->registerGenerator($generatorBar);
+        $this->subject->registerGenerator($generatorBaz);
+
+        $actual = $this->subject->generate($tree, $only, $skip);
+
+        $this->assertEquals([
+            'created' => ['foo.php', 'bar.php'],
+        ], $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function generate_should_skip_one_specific_type()
+    {
+        $generatorFoo = \Mockery::mock(Generator::class);
+        $tree = ['branch' => ['code', 'attributes']];
+
+        $only = [];
+        $skip = ['bar'];
+
+        $generatorFoo->shouldReceive('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['foo.php'],
+            ]);
+
+        $generatorFoo->shouldReceive('types')
+            ->andReturn(['foo']);
+
+        $generatorBar = \Mockery::mock(Generator::class);
+        $generatorBar->shouldReceive('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['bar.php'],
+            ]);
+
+        $generatorBar->shouldReceive('types')
+            ->andReturn(['bar']);
+
+        $generatorBaz = \Mockery::mock(Generator::class);
+        $generatorBaz->shouldReceive('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['baz.php'],
+            ]);
+
+        $generatorBaz->shouldReceive('types')
+            ->andReturn(['baz']);
+
+        $this->subject->registerGenerator($generatorFoo);
+        $this->subject->registerGenerator($generatorBar);
+        $this->subject->registerGenerator($generatorBaz);
+
+        $actual = $this->subject->generate($tree, $only, $skip);
+
+        $this->assertEquals([
+            'created' => ['foo.php', 'baz.php'],
+        ], $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function generate_should_skip_specific_types()
+    {
+        $generatorFoo = \Mockery::mock(Generator::class);
+        $tree = ['branch' => ['code', 'attributes']];
+
+        $only = [];
+        $skip = ['bar', 'baz'];
+
+        $generatorFoo->shouldReceive('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['foo.php'],
+            ]);
+
+        $generatorFoo->shouldReceive('types')
+            ->andReturn(['foo']);
+
+        $generatorBar = \Mockery::mock(Generator::class);
+        $generatorBar->shouldReceive('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['bar.php'],
+            ]);
+
+        $generatorBar->shouldReceive('types')
+            ->andReturn(['bar']);
+
+        $generatorBaz = \Mockery::mock(Generator::class);
+        $generatorBaz->shouldReceive('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['baz.php'],
+            ]);
+
+        $generatorBaz->shouldReceive('types')
+            ->andReturn(['baz']);
+
+        $this->subject->registerGenerator($generatorFoo);
+        $this->subject->registerGenerator($generatorBar);
+        $this->subject->registerGenerator($generatorBaz);
+
+        $actual = $this->subject->generate($tree, $only, $skip);
+
+        $this->assertEquals([
+            'created' => ['foo.php'],
+        ], $actual);
+    }
+
+    /**
+     * @test
      * @dataProvider namespacesDataProvider
      */
     public function relative_namespace_removes_namespace_prefix_from_reference($namespace, $expected, $reference)
