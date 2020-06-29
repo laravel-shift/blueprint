@@ -63,7 +63,7 @@ class BlueprintTest extends TestCase
                     'user_id' => 'id',
                 ],
             ],
-            'seeders' => 'Post, Comment'
+            'seeders' => 'Post, Comment',
         ], $this->subject->parse($blueprint));
     }
 
@@ -78,10 +78,10 @@ class BlueprintTest extends TestCase
             'controllers' => [
                 'UserController' => [
                     'index' => [
-                        'action' => 'detail'
+                        'action' => 'detail',
                     ],
                     'create' => [
-                        'action' => 'additional detail'
+                        'action' => 'additional detail',
                     ],
                 ],
                 'RoleController' => [
@@ -111,9 +111,9 @@ class BlueprintTest extends TestCase
             ],
             'controllers' => [
                 'Context' => [
-                    'resource' => 'web'
-                ]
-            ]
+                    'resource' => 'web',
+                ],
+            ],
         ], $this->subject->parse($blueprint));
     }
 
@@ -130,7 +130,7 @@ class BlueprintTest extends TestCase
                     'id' => 'uuid primary',
                     'timestamps' => 'timestamps',
                 ],
-            ]
+            ],
         ], $this->subject->parse($blueprint));
     }
 
@@ -340,11 +340,13 @@ class BlueprintTest extends TestCase
     {
         $tokens = [];
 
-        $this->assertEquals([
-            'models' => [],
-            'controllers' => []
-        ],
-            $this->subject->analyze($tokens));
+        $this->assertEquals(
+            [
+                'models' => [],
+                'controllers' => [],
+            ],
+            $this->subject->analyze($tokens)
+        );
     }
 
     /**
@@ -363,7 +365,7 @@ class BlueprintTest extends TestCase
         $this->assertEquals([
             'models' => [],
             'controllers' => [],
-            'mock' => 'lexer'
+            'mock' => 'lexer',
         ], $this->subject->analyze($tokens));
     }
 
@@ -374,12 +376,19 @@ class BlueprintTest extends TestCase
     {
         $generatorOne = \Mockery::mock(Generator::class);
         $tree = ['branch' => ['code', 'attributes']];
+
         $generatorOne->expects('output')
             ->with($tree)
             ->andReturn([
                 'created' => ['one/new.php'],
                 'updated' => ['one/existing.php'],
-                'deleted' => ['one/trashed.php']
+                'deleted' => ['one/trashed.php'],
+            ]);
+
+        $generatorOne->expects('types')
+            ->andReturn([
+                'some',
+                'types',
             ]);
 
         $generatorTwo = \Mockery::mock(Generator::class);
@@ -388,7 +397,13 @@ class BlueprintTest extends TestCase
             ->andReturn([
                 'created' => ['two/new.php'],
                 'updated' => ['two/existing.php'],
-                'deleted' => ['two/trashed.php']
+                'deleted' => ['two/trashed.php'],
+            ]);
+
+        $generatorTwo->expects('types')
+            ->andReturn([
+                'some',
+                'types',
             ]);
 
         $this->subject->registerGenerator($generatorOne);
@@ -408,6 +423,7 @@ class BlueprintTest extends TestCase
     {
         $generatorOne = \Mockery::mock(Generator::class);
         $tree = ['branch' => ['code', 'attributes']];
+
         $generatorOne->expects('output')->never();
 
         $generatorSwap = \Mockery::mock(Generator::class);
@@ -416,7 +432,13 @@ class BlueprintTest extends TestCase
             ->andReturn([
                 'created' => ['swapped/new.php'],
                 'updated' => ['swapped/existing.php'],
-                'deleted' => ['swapped/trashed.php']
+                'deleted' => ['swapped/trashed.php'],
+            ]);
+
+        $generatorSwap->expects('types')
+            ->andReturn([
+                'some',
+                'types',
             ]);
 
         $this->subject->registerGenerator($generatorOne);
@@ -427,6 +449,210 @@ class BlueprintTest extends TestCase
             'updated' => ['swapped/existing.php'],
             'deleted' => ['swapped/trashed.php'],
         ], $this->subject->generate($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function generate_only_one_specific_type()
+    {
+        $generatorFoo = \Mockery::mock(Generator::class);
+        $tree = ['branch' => ['code', 'attributes']];
+
+        $only = ['bar'];
+        $skip = [];
+
+        $generatorFoo->shouldReceive('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['foo.php'],
+            ]);
+
+        $generatorFoo->shouldReceive('types')
+            ->andReturn(['foo']);
+
+        $generatorBar = \Mockery::mock(Generator::class);
+        $generatorBar->shouldReceive('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['bar.php'],
+            ]);
+
+        $generatorBar->shouldReceive('types')
+            ->andReturn(['bar']);
+
+        $generatorBaz = \Mockery::mock(Generator::class);
+        $generatorBaz->shouldReceive('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['baz.php'],
+            ]);
+
+        $generatorBaz->shouldReceive('types')
+            ->andReturn(['baz']);
+
+        $this->subject->registerGenerator($generatorFoo);
+        $this->subject->registerGenerator($generatorBar);
+        $this->subject->registerGenerator($generatorBaz);
+
+        $actual = $this->subject->generate($tree, $only, $skip);
+
+        $this->assertEquals([
+            'created' => ['bar.php'],
+        ], $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function generate_only_specific_types()
+    {
+        $generatorFoo = \Mockery::mock(Generator::class);
+        $tree = ['branch' => ['code', 'attributes']];
+
+        $only = ['foo', 'bar'];
+        $skip = [];
+
+        $generatorFoo->shouldReceive('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['foo.php'],
+            ]);
+
+        $generatorFoo->shouldReceive('types')
+            ->andReturn(['foo']);
+
+        $generatorBar = \Mockery::mock(Generator::class);
+        $generatorBar->shouldReceive('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['bar.php'],
+            ]);
+
+        $generatorBar->shouldReceive('types')
+            ->andReturn(['bar']);
+
+        $generatorBaz = \Mockery::mock(Generator::class);
+        $generatorBaz->shouldReceive('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['baz.php'],
+            ]);
+
+        $generatorBaz->shouldReceive('types')
+            ->andReturn(['baz']);
+
+        $this->subject->registerGenerator($generatorFoo);
+        $this->subject->registerGenerator($generatorBar);
+        $this->subject->registerGenerator($generatorBaz);
+
+        $actual = $this->subject->generate($tree, $only, $skip);
+
+        $this->assertEquals([
+            'created' => ['foo.php', 'bar.php'],
+        ], $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function generate_should_skip_one_specific_type()
+    {
+        $generatorFoo = \Mockery::mock(Generator::class);
+        $tree = ['branch' => ['code', 'attributes']];
+
+        $only = [];
+        $skip = ['bar'];
+
+        $generatorFoo->shouldReceive('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['foo.php'],
+            ]);
+
+        $generatorFoo->shouldReceive('types')
+            ->andReturn(['foo']);
+
+        $generatorBar = \Mockery::mock(Generator::class);
+        $generatorBar->shouldReceive('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['bar.php'],
+            ]);
+
+        $generatorBar->shouldReceive('types')
+            ->andReturn(['bar']);
+
+        $generatorBaz = \Mockery::mock(Generator::class);
+        $generatorBaz->shouldReceive('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['baz.php'],
+            ]);
+
+        $generatorBaz->shouldReceive('types')
+            ->andReturn(['baz']);
+
+        $this->subject->registerGenerator($generatorFoo);
+        $this->subject->registerGenerator($generatorBar);
+        $this->subject->registerGenerator($generatorBaz);
+
+        $actual = $this->subject->generate($tree, $only, $skip);
+
+        $this->assertEquals([
+            'created' => ['foo.php', 'baz.php'],
+        ], $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function generate_should_skip_specific_types()
+    {
+        $generatorFoo = \Mockery::mock(Generator::class);
+        $tree = ['branch' => ['code', 'attributes']];
+
+        $only = [];
+        $skip = ['bar', 'baz'];
+
+        $generatorFoo->shouldReceive('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['foo.php'],
+            ]);
+
+        $generatorFoo->shouldReceive('types')
+            ->andReturn(['foo']);
+
+        $generatorBar = \Mockery::mock(Generator::class);
+        $generatorBar->shouldReceive('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['bar.php'],
+            ]);
+
+        $generatorBar->shouldReceive('types')
+            ->andReturn(['bar']);
+
+        $generatorBaz = \Mockery::mock(Generator::class);
+        $generatorBaz->shouldReceive('output')
+            ->with($tree)
+            ->andReturn([
+                'created' => ['baz.php'],
+            ]);
+
+        $generatorBaz->shouldReceive('types')
+            ->andReturn(['baz']);
+
+        $this->subject->registerGenerator($generatorFoo);
+        $this->subject->registerGenerator($generatorBar);
+        $this->subject->registerGenerator($generatorBaz);
+
+        $actual = $this->subject->generate($tree, $only, $skip);
+
+        $this->assertEquals([
+            'created' => ['foo.php'],
+        ], $actual);
     }
 
     /**

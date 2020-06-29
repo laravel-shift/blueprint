@@ -14,7 +14,7 @@ class Blueprint
 
     public static function relativeNamespace(string $fullyQualifiedClassName)
     {
-        $namespace = config('blueprint.namespace') . '\\';
+        $namespace = config('blueprint.namespace').'\\';
         $reference = ltrim($fullyQualifiedClassName, '\\');
 
         if (Str::startsWith($reference, $namespace)) {
@@ -70,12 +70,14 @@ class Blueprint
         return $registry;
     }
 
-    public function generate(array $tree): array
+    public function generate(array $tree, array $only = [], array $skip = []): array
     {
         $components = [];
 
         foreach ($this->generators as $generator) {
-            $components = array_merge_recursive($components, $generator->output($tree));
+            if ($this->shouldGenerate($generator->types(), $only, $skip)) {
+                $components = array_merge_recursive($components, $generator->output($tree));
+            }
         }
 
         return $components;
@@ -105,5 +107,28 @@ class Blueprint
         }
 
         $this->registerGenerator($generator);
+    }
+
+    protected function shouldGenerate(array $types, array $only, array $skip): bool
+    {
+        if (count($only)) {
+            $found = 0;
+            foreach ($types as $type) {
+                $found += in_array($type, $only) ? 1 : 0;
+            }
+
+            return $found > 0;
+        }
+
+        if (count($skip)) {
+            $found = 0;
+            foreach ($types as $type) {
+                $found += in_array($type, $skip) ? 1 : 0;
+            }
+
+            return $found === 0;
+        }
+
+        return true;
     }
 }

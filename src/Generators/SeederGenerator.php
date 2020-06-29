@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Blueprint\Generators;
 
 use Blueprint\Contracts\Generator;
@@ -26,6 +25,7 @@ class SeederGenerator implements Generator
         }
 
         $output = [];
+
         $stub = $this->files->stub('seeder.stub');
 
         $this->registerModels($tree);
@@ -40,9 +40,14 @@ class SeederGenerator implements Generator
         return $output;
     }
 
+    public function types(): array
+    {
+        return ['seeders'];
+    }
+
     private function getPath($model)
     {
-        return 'database/seeds/' . $model . 'Seeder.php';
+        return 'database/seeds/'.$model.'Seeder.php';
     }
 
     protected function populateStub(string $stub, string $model)
@@ -55,7 +60,7 @@ class SeederGenerator implements Generator
 
     private function getClassName(string $model)
     {
-        return $model . 'Seeder';
+        return $model.'Seeder';
     }
 
     private function build(string $model)
@@ -75,7 +80,7 @@ class SeederGenerator implements Generator
         }
 
         $matches = array_filter(array_keys($this->models), function ($key) use ($context) {
-            return Str::endsWith($key, '\\' . Str::studly($context));
+            return Str::endsWith($key, '\\'.Str::studly($context));
         });
 
         if (count($matches) === 1) {
@@ -84,9 +89,9 @@ class SeederGenerator implements Generator
 
         $fqn = config('blueprint.namespace');
         if (config('blueprint.models_namespace')) {
-            $fqn .= '\\' . config('blueprint.models_namespace');
+            $fqn .= '\\'.config('blueprint.models_namespace');
         }
 
-        return $fqn . '\\' . $context;
+        return $fqn.'\\'.$context;
     }
 }

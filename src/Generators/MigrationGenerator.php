@@ -44,6 +44,7 @@ class MigrationGenerator implements Generator
     public function output(array $tree): array
     {
         $output = [];
+
         $created_pivot_tables = [];
 
         $stub = $this->files->stub('migration.stub');
@@ -57,7 +58,7 @@ class MigrationGenerator implements Generator
 
             $output['created'][] = $path;
 
-            if (!empty($model->pivotTables())) {
+            if (! empty($model->pivotTables())) {
                 foreach ($model->pivotTables() as $pivotSegments) {
                     $pivotTable = $this->getPivotTableName($pivotSegments);
                     $created_pivot_tables[$pivotTable] = $pivotSegments;
@@ -73,6 +74,11 @@ class MigrationGenerator implements Generator
         }
 
         return $output;
+    }
+
+    public function types(): array
+    {
+        return ['migrations'];
     }
 
     protected function populateStub(string $stub, Model $model)
@@ -108,11 +114,11 @@ class MigrationGenerator implements Generator
             }
 
             if (in_array($dataType, self::UNSIGNABLE_TYPES) && in_array('unsigned', $column->modifiers())) {
-                $dataType = 'unsigned' . ucfirst($dataType);
+                $dataType = 'unsigned'.ucfirst($dataType);
             }
 
             if (in_array($dataType, self::NULLABLE_TYPES) && $column->isNullable()) {
-                $dataType = 'nullable' . ucfirst($dataType);
+                $dataType = 'nullable'.ucfirst($dataType);
             }
 
             $column_definition = self::INDENT;
@@ -121,10 +127,10 @@ class MigrationGenerator implements Generator
             } elseif ($dataType === 'rememberToken') {
                 $column_definition .= '$table->rememberToken(';
             } else {
-                $column_definition .= '$table->' . $dataType . "('{$column->name()}'";
+                $column_definition .= '$table->'.$dataType."('{$column->name()}'";
             }
 
-            if (!empty($column->attributes()) && !in_array($column->dataType(), ['id', 'uuid'])) {
+            if (! empty($column->attributes()) && ! in_array($column->dataType(), ['id', 'uuid'])) {
                 $column_definition .= ', ';
                 if (in_array($column->dataType(), ['set', 'enum'])) {
                     $column_definition .= json_encode($column->attributes());
@@ -155,45 +161,44 @@ class MigrationGenerator implements Generator
 
                 // TODO: unset the proper modifier
                 $modifiers = collect($modifiers)->reject(function ($modifier) {
-                    return (
-                        (is_array($modifier) && key($modifier) === 'foreign')
+                    return (is_array($modifier) && key($modifier) === 'foreign')
                         || (is_array($modifier) && key($modifier) === 'onDelete')
                         || $modifier === 'foreign'
-                        || ($modifier === 'nullable' && $this->isLaravel7orNewer()));
+                        || ($modifier === 'nullable' && $this->isLaravel7orNewer());
                 });
             }
 
             foreach ($modifiers as $modifier) {
                 if (is_array($modifier)) {
-                    $column_definition .= '->' . key($modifier) . '(' . current($modifier) . ')';
+                    $column_definition .= '->'.key($modifier).'('.current($modifier).')';
                 } elseif ($modifier === 'unsigned' && Str::startsWith($dataType, 'unsigned')) {
                     continue;
                 } elseif ($modifier === 'nullable' && Str::startsWith($dataType, 'nullable')) {
                     continue;
                 } else {
-                    $column_definition .= '->' . $modifier . '()';
+                    $column_definition .= '->'.$modifier.'()';
                 }
             }
 
-            $column_definition .= ';' . PHP_EOL;
-            if (!empty($foreign)) {
-                $column_definition .= $foreign . ';' . PHP_EOL;
+            $column_definition .= ';'.PHP_EOL;
+            if (! empty($foreign)) {
+                $column_definition .= $foreign.';'.PHP_EOL;
             }
 
             $definition .= $column_definition;
         }
 
         if ($model->usesSoftDeletes()) {
-            $definition .= self::INDENT . '$table->' . $model->softDeletesDataType() . '();' . PHP_EOL;
+            $definition .= self::INDENT.'$table->'.$model->softDeletesDataType().'();'.PHP_EOL;
         }
 
         if ($model->morphTo()) {
-            $definition .= self::INDENT . sprintf('$table->unsignedBigInteger(\'%s\');', Str::lower($model->morphTo() . "_id")) . PHP_EOL;
-            $definition .= self::INDENT . sprintf('$table->string(\'%s\');', Str::lower($model->morphTo() . "_type")) . PHP_EOL;
+            $definition .= self::INDENT.sprintf('$table->unsignedBigInteger(\'%s\');', Str::lower($model->morphTo().'_id')).PHP_EOL;
+            $definition .= self::INDENT.sprintf('$table->string(\'%s\');', Str::lower($model->morphTo().'_type')).PHP_EOL;
         }
 
         if ($model->usesTimestamps()) {
-            $definition .= self::INDENT . '$table->' . $model->timestampsDataType() . '();' . PHP_EOL;
+            $definition .= self::INDENT.'$table->'.$model->timestampsDataType().'();'.PHP_EOL;
         }
 
         return trim($definition);
@@ -207,16 +212,16 @@ class MigrationGenerator implements Generator
             $column = Str::before(Str::lower($segment), ':');
             $references = 'id';
             $on = Str::plural($column);
-            $foreign = Str::singular($column) . '_' . $references;
+            $foreign = Str::singular($column).'_'.$references;
 
-            if (!$this->isLaravel7orNewer()) {
-                $definition .= self::INDENT . '$table->unsignedBigInteger(\'' . $foreign . '\');' . PHP_EOL;
+            if (! $this->isLaravel7orNewer()) {
+                $definition .= self::INDENT.'$table->unsignedBigInteger(\''.$foreign.'\');'.PHP_EOL;
             }
 
             if (config('blueprint.use_constraints')) {
-                $definition .= $this->buildForeignKey($foreign, $on, 'id') . ';' . PHP_EOL;
+                $definition .= $this->buildForeignKey($foreign, $on, 'id').';'.PHP_EOL;
             } elseif ($this->isLaravel7orNewer()) {
-                $definition .= self::INDENT . '$table->foreignId(\'' . $foreign . '\');' . PHP_EOL;
+                $definition .= self::INDENT.'$table->foreignId(\''.$foreign.'\');'.PHP_EOL;
             }
         }
 
@@ -236,7 +241,7 @@ class MigrationGenerator implements Generator
             $column = Str::afterLast($column_name, '_');
         }
 
-        if ($type === 'id' && !empty($attributes)) {
+        if ($type === 'id' && ! empty($attributes)) {
             $table = Str::lower(Str::plural($attributes[0]));
         }
 
@@ -246,38 +251,38 @@ class MigrationGenerator implements Generator
 
         if ($this->isLaravel7orNewer() && $type === 'id') {
             $prefix = in_array('nullable', $modifiers)
-                ? '$table->foreignId' . "('{$column_name}')->nullable()"
-                : '$table->foreignId' . "('{$column_name}')";
+                ? '$table->foreignId'."('{$column_name}')->nullable()"
+                : '$table->foreignId'."('{$column_name}')";
 
             if ($on_delete_clause === 'cascade') {
                 $on_delete_suffix = '->cascadeOnDelete()';
             }
-            if ($column_name === Str::singular($table) . '_' . $column) {
-                return self::INDENT . "{$prefix}->constrained(){$on_delete_suffix}";
+            if ($column_name === Str::singular($table).'_'.$column) {
+                return self::INDENT."{$prefix}->constrained(){$on_delete_suffix}";
             }
             if ($column === 'id') {
-                return self::INDENT . "{$prefix}->constrained('{$table}'){$on_delete_suffix}";
+                return self::INDENT."{$prefix}->constrained('{$table}'){$on_delete_suffix}";
             }
 
-            return self::INDENT . "{$prefix}->constrained('{$table}', '{$column}'){$on_delete_suffix}";
+            return self::INDENT."{$prefix}->constrained('{$table}', '{$column}'){$on_delete_suffix}";
         }
 
-        return self::INDENT . '$table->foreign' . "('{$column_name}')->references('{$column}')->on('{$table}'){$on_delete_suffix}";
+        return self::INDENT.'$table->foreign'."('{$column_name}')->references('{$column}')->on('{$table}'){$on_delete_suffix}";
     }
 
     protected function getClassName(Model $model)
     {
-        return 'Create' . Str::studly($model->tableName()) . 'Table';
+        return 'Create'.Str::studly($model->tableName()).'Table';
     }
 
     protected function getPath(Model $model, Carbon $timestamp)
     {
-        return 'database/migrations/' . $timestamp->format('Y_m_d_His') . '_create_' . $model->tableName() . '_table.php';
+        return 'database/migrations/'.$timestamp->format('Y_m_d_His').'_create_'.$model->tableName().'_table.php';
     }
 
     protected function getPivotTablePath($tableName, Carbon $timestamp)
     {
-        return 'database/migrations/' . $timestamp->format('Y_m_d_His') . '_create_' . $tableName . '_table.php';
+        return 'database/migrations/'.$timestamp->format('Y_m_d_His').'_create_'.$tableName.'_table.php';
     }
 
     protected function isLaravel7orNewer()
@@ -287,7 +292,7 @@ class MigrationGenerator implements Generator
 
     protected function getPivotClassName(array $segments)
     {
-        return 'Create' . Str::studly($this->getPivotTableName($segments)) . 'Table';
+        return 'Create'.Str::studly($this->getPivotTableName($segments)).'Table';
     }
 
     protected function getPivotTableName(array $segments)

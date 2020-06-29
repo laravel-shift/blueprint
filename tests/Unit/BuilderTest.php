@@ -17,6 +17,8 @@ class BuilderTest extends TestCase
         $draft = 'draft blueprint content';
         $tokens = ['some', 'blueprint', 'tokens'];
         $registry = ['controllers' => [1, 2, 3]];
+        $only = [];
+        $skip = [];
         $generated = ['created' => [1, 2], 'updated' => [3]];
 
         $blueprint = \Mockery::mock(Blueprint::class);
@@ -27,7 +29,7 @@ class BuilderTest extends TestCase
             ->with($tokens + ['cache' => []])
             ->andReturn($registry);
         $blueprint->expects('generate')
-            ->with($registry)
+            ->with($registry, $only, $skip)
             ->andReturn($generated);
         $blueprint->expects('dump')
             ->with($generated)
@@ -63,6 +65,8 @@ class BuilderTest extends TestCase
             'models' => [1, 2, 3]
         ];
         $registry = ['registry'];
+        $only = [];
+        $skip = [];
         $generated = ['created' => [1, 2], 'updated' => [3]];
 
         $blueprint = \Mockery::mock(Blueprint::class);
@@ -76,7 +80,7 @@ class BuilderTest extends TestCase
             ->with($tokens + ['cache' => $cache['models']])
             ->andReturn($registry);
         $blueprint->expects('generate')
-            ->with($registry)
+            ->with($registry, $only, $skip)
             ->andReturn($generated);
         $blueprint->expects('dump')
             ->with([

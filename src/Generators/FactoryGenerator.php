@@ -34,7 +34,7 @@ class FactoryGenerator implements Generator
 
             $path = $this->getPath($model);
 
-            if (!$this->files->exists(dirname($path))) {
+            if (! $this->files->exists(dirname($path))) {
                 $this->files->makeDirectory(dirname($path), 0755, true);
             }
 
@@ -46,14 +46,19 @@ class FactoryGenerator implements Generator
         return $output;
     }
 
+    public function types(): array
+    {
+        return ['factories'];
+    }
+
     protected function getPath(Model $model)
     {
         $path = $model->name();
         if ($model->namespace()) {
-            $path = str_replace('\\', '/', $model->namespace()) . '/' . $path;
+            $path = str_replace('\\', '/', $model->namespace()).'/'.$path;
         }
 
-        return 'database/factories/' . $path . 'Factory.php';
+        return 'database/factories/'.$path.'Factory.php';
     }
 
     protected function populateStub(string $stub, Model $model)
@@ -91,11 +96,11 @@ class FactoryGenerator implements Generator
                 } elseif ($foreign !== 'foreign') {
                     $table = $foreign;
 
-                    if (Str::startsWith($column->name(), $foreign . '_')) {
-                        $key = Str::after($column->name(), $foreign . '_');
-                    } elseif (Str::startsWith($column->name(), Str::snake(Str::singular($foreign)) . '_')) {
-                        $key = Str::after($column->name(), Str::snake(Str::singular($foreign)) . '_');
-                    } elseif (!Str::endsWith($column->name(), '_id')) {
+                    if (Str::startsWith($column->name(), $foreign.'_')) {
+                        $key = Str::after($column->name(), $foreign.'_');
+                    } elseif (Str::startsWith($column->name(), Str::snake(Str::singular($foreign)).'_')) {
+                        $key = Str::after($column->name(), Str::snake(Str::singular($foreign)).'_');
+                    } elseif (! Str::endsWith($column->name(), '_id')) {
                         $key = $column->name();
                     }
                 }
@@ -103,50 +108,50 @@ class FactoryGenerator implements Generator
                 $class = Str::studly(Str::singular($table));
 
                 if ($key === 'id') {
-                    $definition .= self::INDENT . "'{$column->name()}' => ";
-                    $definition .= sprintf('factory(%s::class)', '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);
-                    $definition .= ',' . PHP_EOL;
+                    $definition .= self::INDENT."'{$column->name()}' => ";
+                    $definition .= sprintf('factory(%s::class)', '\\'.$model->fullyQualifiedNamespace().'\\'.$class);
+                    $definition .= ','.PHP_EOL;
                 } else {
-                    $definition .= self::INDENT . "'{$column->name()}' => function () {";
+                    $definition .= self::INDENT."'{$column->name()}' => function () {";
                     $definition .= PHP_EOL;
-                    $definition .= self::INDENT . '    ' . sprintf('return factory(%s::class)->create()->%s;', '\\' . $model->fullyQualifiedNamespace() . '\\' . $class, $key);
+                    $definition .= self::INDENT.'    '.sprintf('return factory(%s::class)->create()->%s;', '\\'.$model->fullyQualifiedNamespace().'\\'.$class, $key);
                     $definition .= PHP_EOL;
-                    $definition .= self::INDENT . '},' . PHP_EOL;
+                    $definition .= self::INDENT.'},'.PHP_EOL;
                 }
             } elseif ($column->dataType() === 'id' || ($column->dataType() === 'uuid' && Str::endsWith($column->name(), '_id'))) {
                 $name = Str::beforeLast($column->name(), '_id');
                 $class = Str::studly($column->attributes()[0] ?? $name);
 
-                $definition .= self::INDENT . "'{$column->name()}' => ";
-                $definition .= sprintf('factory(%s::class)', '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);
-                $definition .= ',' . PHP_EOL;
-            } elseif (in_array($column->dataType(), ['enum', 'set']) && !empty($column->attributes())) {
-                $definition .= self::INDENT . "'{$column->name()}' => ";
+                $definition .= self::INDENT."'{$column->name()}' => ";
+                $definition .= sprintf('factory(%s::class)', '\\'.$model->fullyQualifiedNamespace().'\\'.$class);
+                $definition .= ','.PHP_EOL;
+            } elseif (in_array($column->dataType(), ['enum', 'set']) && ! empty($column->attributes())) {
+                $definition .= self::INDENT."'{$column->name()}' => ";
                 $faker = $this->fakerData($column->name()) ?? $this->fakerDataType($column->dataType());
-                $definition .= '$faker->' . $faker;
-                $definition .= ',' . PHP_EOL;
+                $definition .= '$faker->'.$faker;
+                $definition .= ','.PHP_EOL;
                 $definition = str_replace(
                     "/** {$column->dataType()}_attributes **/",
                     json_encode($column->attributes()),
                     $definition
                 );
             } elseif (in_array($column->dataType(), ['decimal', 'double', 'float'])) {
-                $definition .= self::INDENT . "'{$column->name()}' => ";
+                $definition .= self::INDENT."'{$column->name()}' => ";
                 $faker = $this->fakerData($column->name()) ?? $this->fakerDataType($column->dataType());
-                $definition .= '$faker->' . $faker;
-                $definition .= ',' . PHP_EOL;
+                $definition .= '$faker->'.$faker;
+                $definition .= ','.PHP_EOL;
 
                 $precision = min([65, intval($column->attributes()[0] ?? 10)]);
                 $scale = min([30, max([0, intval($column->attributes()[1] ?? 0)])]);
 
                 $definition = str_replace(
                     "/** {$column->dataType()}_attributes **/",
-                    implode(', ', [$scale, 0, (str_repeat(9, $precision - $scale) . '.' . str_repeat(9, $scale))]),
+                    implode(', ', [$scale, 0, (str_repeat(9, $precision - $scale).'.'.str_repeat(9, $scale))]),
                     $definition
                 );
             } elseif (in_array($column->dataType(), ['json', 'jsonb'])) {
                 $default = $column->defaultValue() ?? "'{}'";
-                $definition .= self::INDENT . "'{$column->name()}' => {$default}," . PHP_EOL;
+                $definition .= self::INDENT."'{$column->name()}' => {$default},".PHP_EOL;
             } elseif ($column->dataType() === 'morphs') {
                 if ($column->isNullable()) {
                     continue;
@@ -155,15 +160,15 @@ class FactoryGenerator implements Generator
                 $definition .= sprintf('%s%s => $faker->%s,%s', self::INDENT, "'{$column->name()}_type'", self::fakerDataType('string'), PHP_EOL);
             } elseif ($column->dataType() === 'rememberToken') {
                 $this->addImport($model, 'Illuminate\Support\Str');
-                $definition .= self::INDENT . "'{$column->name()}' => ";
+                $definition .= self::INDENT."'{$column->name()}' => ";
                 $definition .= 'Str::random(10)';
-                $definition .= ',' . PHP_EOL;
+                $definition .= ','.PHP_EOL;
             } else {
-                $definition .= self::INDENT . "'{$column->name()}' => ";
+                $definition .= self::INDENT."'{$column->name()}' => ";
 
                 $type = $column->dataType();
                 if ($column->isUnsigned()) {
-                    $type = 'unsigned' . $type;
+                    $type = 'unsigned'.$type;
                 }
 
                 $faker = self::fakerData($column->name()) ?? (self::fakerDataType($type) ?? self::fakerDataType($column->dataType()));
@@ -172,8 +177,8 @@ class FactoryGenerator implements Generator
                     $faker = 'word';
                 }
 
-                $definition .= '$faker->' . $faker;
-                $definition .= ',' . PHP_EOL;
+                $definition .= '$faker->'.$faker;
+                $definition .= ','.PHP_EOL;
             }
         }
 
@@ -191,7 +196,7 @@ class FactoryGenerator implements Generator
         sort($imports);
 
         return implode(PHP_EOL, array_map(function ($class) {
-            return 'use ' . $class . ';';
+            return 'use '.$class.';';
         }, $imports));
     }
 
@@ -202,7 +207,7 @@ class FactoryGenerator implements Generator
         }
 
         return array_filter($columns, function (Column $column) {
-            return !in_array('nullable', $column->modifiers());
+            return ! in_array('nullable', $column->modifiers());
         });
     }
 

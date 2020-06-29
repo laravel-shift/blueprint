@@ -60,6 +60,11 @@ class ResourceGenerator implements Generator
         return $output;
     }
 
+    public function types(): array
+    {
+        return ['controllers', 'resources'];
+    }
+
     protected function getPath(string $name)
     {
         return Blueprint::appPath().'/Http/Resources/'.$name.'.php';
