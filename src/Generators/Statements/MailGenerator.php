@@ -18,39 +18,37 @@ class MailGenerator implements Generator
         $this->files = $files;
     }
 
-    public function output(array $tree, array $only = [], array $skip = []): array
+    public function output(array $tree): array
     {
         $output = [];
 
-        if ($this->shouldGenerate($only, $skip)) {
-            $stub = $this->files->stub('mail.stub');
+        $stub = $this->files->stub('mail.stub');
 
-            /** @var \Blueprint\Models\Controller $controller */
-            foreach ($tree['controllers'] as $controller) {
-                foreach ($controller->methods() as $method => $statements) {
-                    foreach ($statements as $statement) {
-                        if (!$statement instanceof SendStatement) {
-                            continue;
-                        }
-
-                        if ($statement->type() !== SendStatement::TYPE_MAIL) {
-                            continue;
-                        }
-
-                        $path = $this->getPath($statement->mail());
-
-                        if ($this->files->exists($path)) {
-                            continue;
-                        }
-
-                        if (!$this->files->exists(dirname($path))) {
-                            $this->files->makeDirectory(dirname($path), 0755, true);
-                        }
-
-                        $this->files->put($path, $this->populateStub($stub, $statement));
-
-                        $output['created'][] = $path;
+        /** @var \Blueprint\Models\Controller $controller */
+        foreach ($tree['controllers'] as $controller) {
+            foreach ($controller->methods() as $method => $statements) {
+                foreach ($statements as $statement) {
+                    if (! $statement instanceof SendStatement) {
+                        continue;
                     }
+
+                    if ($statement->type() !== SendStatement::TYPE_MAIL) {
+                        continue;
+                    }
+
+                    $path = $this->getPath($statement->mail());
+
+                    if ($this->files->exists($path)) {
+                        continue;
+                    }
+
+                    if (! $this->files->exists(dirname($path))) {
+                        $this->files->makeDirectory(dirname($path), 0755, true);
+                    }
+
+                    $this->files->put($path, $this->populateStub($stub, $statement));
+
+                    $output['created'][] = $path;
                 }
             }
         }
@@ -58,28 +56,19 @@ class MailGenerator implements Generator
         return $output;
     }
 
-    protected function shouldGenerate(array $only, array $skip): bool
+    public function types(): array
     {
-        if (count($only)) {
-            return in_array('mails', $only);
-        }
-
-        if (count($skip)) {
-            return !in_array('mails', $skip);
-        }
-
-        return true;
+        return ['mails'];
     }
-
 
     protected function getPath(string $name)
     {
-        return Blueprint::appPath() . '/Mail/' . $name . '.php';
+        return Blueprint::appPath().'/Mail/'.$name.'.php';
     }
 
     protected function populateStub(string $stub, SendStatement $sendStatement)
     {
-        $stub = str_replace('DummyNamespace', config('blueprint.namespace') . '\\Mail', $stub);
+        $stub = str_replace('DummyNamespace', config('blueprint.namespace').'\\Mail', $stub);
         $stub = str_replace('DummyClass', $sendStatement->mail(), $stub);
         $stub = str_replace('// properties...', $this->buildConstructor($sendStatement), $stub);
 
@@ -98,8 +87,8 @@ class MailGenerator implements Generator
             return trim($constructor);
         }
 
-        $stub = $this->buildProperties($sendStatement->data()) . PHP_EOL . PHP_EOL;
-        $stub .= str_replace('__construct()', '__construct(' . $this->buildParameters($sendStatement->data()) . ')', $constructor);
+        $stub = $this->buildProperties($sendStatement->data()).PHP_EOL.PHP_EOL;
+        $stub .= str_replace('__construct()', '__construct('.$this->buildParameters($sendStatement->data()).')', $constructor);
         $stub = str_replace('//', $this->buildAssignments($sendStatement->data()), $stub);
 
         return $stub;
@@ -108,7 +97,8 @@ class MailGenerator implements Generator
     private function buildProperties(array $data)
     {
         return trim(array_reduce($data, function ($output, $property) {
-            $output .= '    public $' . $property . ';' . PHP_EOL . PHP_EOL;
+            $output .= '    public $'.$property.';'.PHP_EOL.PHP_EOL;
+
             return $output;
         }, ''));
     }
@@ -116,7 +106,7 @@ class MailGenerator implements Generator
     private function buildParameters(array $data)
     {
         $parameters = array_map(function ($parameter) {
-            return '$' . $parameter;
+            return '$'.$parameter;
         }, $data);
 
         return implode(', ', $parameters);
@@ -125,7 +115,8 @@ class MailGenerator implements Generator
     private function buildAssignments(array $data)
     {
         return trim(array_reduce($data, function ($output, $property) {
-            $output .= '        $this->' . $property . ' = $' . $property . ';' . PHP_EOL;
+            $output .= '        $this->'.$property.' = $'.$property.';'.PHP_EOL;
+
             return $output;
         }, ''));
     }

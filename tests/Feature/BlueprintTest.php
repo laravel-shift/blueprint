@@ -63,7 +63,7 @@ class BlueprintTest extends TestCase
                     'user_id' => 'id',
                 ],
             ],
-            'seeders' => 'Post, Comment'
+            'seeders' => 'Post, Comment',
         ], $this->subject->parse($blueprint));
     }
 
@@ -78,10 +78,10 @@ class BlueprintTest extends TestCase
             'controllers' => [
                 'UserController' => [
                     'index' => [
-                        'action' => 'detail'
+                        'action' => 'detail',
                     ],
                     'create' => [
-                        'action' => 'additional detail'
+                        'action' => 'additional detail',
                     ],
                 ],
                 'RoleController' => [
@@ -111,9 +111,9 @@ class BlueprintTest extends TestCase
             ],
             'controllers' => [
                 'Context' => [
-                    'resource' => 'web'
-                ]
-            ]
+                    'resource' => 'web',
+                ],
+            ],
         ], $this->subject->parse($blueprint));
     }
 
@@ -130,7 +130,7 @@ class BlueprintTest extends TestCase
                     'id' => 'uuid primary',
                     'timestamps' => 'timestamps',
                 ],
-            ]
+            ],
         ], $this->subject->parse($blueprint));
     }
 
@@ -343,7 +343,7 @@ class BlueprintTest extends TestCase
         $this->assertEquals(
             [
                 'models' => [],
-                'controllers' => []
+                'controllers' => [],
             ],
             $this->subject->analyze($tokens)
         );
@@ -365,7 +365,7 @@ class BlueprintTest extends TestCase
         $this->assertEquals([
             'models' => [],
             'controllers' => [],
-            'mock' => 'lexer'
+            'mock' => 'lexer',
         ], $this->subject->analyze($tokens));
     }
 
@@ -376,24 +376,34 @@ class BlueprintTest extends TestCase
     {
         $generatorOne = \Mockery::mock(Generator::class);
         $tree = ['branch' => ['code', 'attributes']];
-        $only = [];
-        $skip = [];
 
         $generatorOne->expects('output')
-            ->with($tree, $only, $skip)
+            ->with($tree)
             ->andReturn([
                 'created' => ['one/new.php'],
                 'updated' => ['one/existing.php'],
-                'deleted' => ['one/trashed.php']
+                'deleted' => ['one/trashed.php'],
+            ]);
+
+        $generatorOne->expects('types')
+            ->andReturn([
+                'some',
+                'types',
             ]);
 
         $generatorTwo = \Mockery::mock(Generator::class);
         $generatorTwo->expects('output')
-            ->with($tree, $only, $skip)
+            ->with($tree)
             ->andReturn([
                 'created' => ['two/new.php'],
                 'updated' => ['two/existing.php'],
-                'deleted' => ['two/trashed.php']
+                'deleted' => ['two/trashed.php'],
+            ]);
+
+        $generatorTwo->expects('types')
+            ->andReturn([
+                'some',
+                'types',
             ]);
 
         $this->subject->registerGenerator($generatorOne);
@@ -413,18 +423,22 @@ class BlueprintTest extends TestCase
     {
         $generatorOne = \Mockery::mock(Generator::class);
         $tree = ['branch' => ['code', 'attributes']];
-        $only = [];
-        $skip = [];
 
         $generatorOne->expects('output')->never();
 
         $generatorSwap = \Mockery::mock(Generator::class);
         $generatorSwap->expects('output')
-            ->with($tree, $only, $skip)
+            ->with($tree)
             ->andReturn([
                 'created' => ['swapped/new.php'],
                 'updated' => ['swapped/existing.php'],
-                'deleted' => ['swapped/trashed.php']
+                'deleted' => ['swapped/trashed.php'],
+            ]);
+
+        $generatorSwap->expects('types')
+            ->andReturn([
+                'some',
+                'types',
             ]);
 
         $this->subject->registerGenerator($generatorOne);

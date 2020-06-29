@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Blueprint\Generators;
 
 use Blueprint\Contracts\Generator;
@@ -19,7 +18,7 @@ class SeederGenerator implements Generator
         $this->files = $files;
     }
 
-    public function output(array $tree, array $only = [], array $skip = []): array
+    public function output(array $tree): array
     {
         if (empty($tree['seeders'])) {
             return [];
@@ -27,39 +26,28 @@ class SeederGenerator implements Generator
 
         $output = [];
 
-        if ($this->shouldGenerate($only, $skip)) {
-            $stub = $this->files->stub('seeder.stub');
+        $stub = $this->files->stub('seeder.stub');
 
-            $this->registerModels($tree);
+        $this->registerModels($tree);
 
-            foreach ($tree['seeders'] as $model) {
-                $path = $this->getPath($model);
-                $this->files->put($path, $this->populateStub($stub, $model));
+        foreach ($tree['seeders'] as $model) {
+            $path = $this->getPath($model);
+            $this->files->put($path, $this->populateStub($stub, $model));
 
-                $output['created'][] = $path;
-            }
+            $output['created'][] = $path;
         }
 
         return $output;
     }
 
-    protected function shouldGenerate(array $only, array $skip): bool
+    public function types(): array
     {
-        if (count($only)) {
-            return in_array('seeders', $only);
-        }
-
-        if (count($skip)) {
-            return !in_array('seeders', $skip);
-        }
-
-        return true;
+        return ['seeders'];
     }
-
 
     private function getPath($model)
     {
-        return 'database/seeds/' . $model . 'Seeder.php';
+        return 'database/seeds/'.$model.'Seeder.php';
     }
 
     protected function populateStub(string $stub, string $model)
@@ -72,7 +60,7 @@ class SeederGenerator implements Generator
 
     private function getClassName(string $model)
     {
-        return $model . 'Seeder';
+        return $model.'Seeder';
     }
 
     private function build(string $model)
@@ -92,7 +80,7 @@ class SeederGenerator implements Generator
         }
 
         $matches = array_filter(array_keys($this->models), function ($key) use ($context) {
-            return Str::endsWith($key, '\\' . Str::studly($context));
+            return Str::endsWith($key, '\\'.Str::studly($context));
         });
 
         if (count($matches) === 1) {
@@ -101,9 +89,9 @@ class SeederGenerator implements Generator
 
         $fqn = config('blueprint.namespace');
         if (config('blueprint.models_namespace')) {
-            $fqn .= '\\' . config('blueprint.models_namespace');
+            $fqn .= '\\'.config('blueprint.models_namespace');
         }
 
-        return $fqn . '\\' . $context;
+        return $fqn.'\\'.$context;
     }
 }

@@ -25,39 +25,37 @@ class FormRequestGenerator implements Generator
         $this->files = $files;
     }
 
-    public function output(array $tree, array $only = [], array $skip = []): array
+    public function output(array $tree): array
     {
         $output = [];
 
-        if ($this->shouldGenerate($only, $skip)) {
-            $stub = $this->files->stub('form-request.stub');
+        $stub = $this->files->stub('form-request.stub');
 
-            $this->registerModels($tree);
+        $this->registerModels($tree);
 
-            /** @var \Blueprint\Models\Controller $controller */
-            foreach ($tree['controllers'] as $controller) {
-                foreach ($controller->methods() as $method => $statements) {
-                    foreach ($statements as $statement) {
-                        if (!$statement instanceof ValidateStatement) {
-                            continue;
-                        }
-
-                        $context = Str::singular($controller->prefix());
-                        $name = $this->getName($context, $method);
-                        $path = $this->getPath($controller, $name);
-
-                        if ($this->files->exists($path)) {
-                            continue;
-                        }
-
-                        if (!$this->files->exists(dirname($path))) {
-                            $this->files->makeDirectory(dirname($path), 0755, true);
-                        }
-
-                        $this->files->put($path, $this->populateStub($stub, $name, $context, $statement, $controller));
-
-                        $output['created'][] = $path;
+        /** @var \Blueprint\Models\Controller $controller */
+        foreach ($tree['controllers'] as $controller) {
+            foreach ($controller->methods() as $method => $statements) {
+                foreach ($statements as $statement) {
+                    if (! $statement instanceof ValidateStatement) {
+                        continue;
                     }
+
+                    $context = Str::singular($controller->prefix());
+                    $name = $this->getName($context, $method);
+                    $path = $this->getPath($controller, $name);
+
+                    if ($this->files->exists($path)) {
+                        continue;
+                    }
+
+                    if (! $this->files->exists(dirname($path))) {
+                        $this->files->makeDirectory(dirname($path), 0755, true);
+                    }
+
+                    $this->files->put($path, $this->populateStub($stub, $name, $context, $statement, $controller));
+
+                    $output['created'][] = $path;
                 }
             }
         }
@@ -65,28 +63,19 @@ class FormRequestGenerator implements Generator
         return $output;
     }
 
-    protected function shouldGenerate(array $only, array $skip): bool
+    public function types(): array
     {
-        if (count($only)) {
-            return in_array('requests', $only);
-        }
-
-        if (count($skip)) {
-            return !in_array('requests', $skip);
-        }
-
-        return true;
+        return ['requests'];
     }
-
 
     protected function getPath(Controller $controller, string $name)
     {
-        return Blueprint::appPath() . '/Http/Requests/' . ($controller->namespace() ? $controller->namespace() . '/' : '') . $name . '.php';
+        return Blueprint::appPath().'/Http/Requests/'.($controller->namespace() ? $controller->namespace().'/' : '').$name.'.php';
     }
 
     protected function populateStub(string $stub, string $name, $context, ValidateStatement $validateStatement, Controller $controller)
     {
-        $stub = str_replace('DummyNamespace', config('blueprint.namespace') . '\\Http\\Requests' . ($controller->namespace() ? '\\' . $controller->namespace() : ''), $stub);
+        $stub = str_replace('DummyNamespace', config('blueprint.namespace').'\\Http\\Requests'.($controller->namespace() ? '\\'.$controller->namespace() : ''), $stub);
         $stub = str_replace('DummyClass', $name, $stub);
         $stub = str_replace('// rules...', $this->buildRules($context, $validateStatement), $stub);
 
@@ -105,9 +94,9 @@ class FormRequestGenerator implements Generator
             $validationRules = $this->validationRules($qualifier, $column);
 
             foreach ($validationRules as $name => $rule) {
-                $formattedRule = implode("|", $rule);
+                $formattedRule = implode('|', $rule);
 
-                $output .= self::INDENT . "'{$name}' => '{$formattedRule}'," . PHP_EOL;
+                $output .= self::INDENT."'{$name}' => '{$formattedRule}',".PHP_EOL;
             }
 
             return $output;
@@ -121,19 +110,17 @@ class FormRequestGenerator implements Generator
         }
 
         $matches = array_filter(array_keys($this->models), function ($key) use ($context) {
-            return Str::endsWith($key, '/' . Str::studly($context));
+            return Str::endsWith($key, '/'.Str::studly($context));
         });
 
         if (count($matches) === 1) {
             return $this->models[$matches[0]];
         }
-
-        return null;
     }
 
     private function getName(string $context, string $method)
     {
-        return $context . Str::studly($method) . 'Request';
+        return $context.Str::studly($method).'Request';
     }
 
     private function splitField($field)
@@ -152,7 +139,7 @@ class FormRequestGenerator implements Generator
 
         $rules = [];
 
-        if (!is_null($model)) {
+        if (! is_null($model)) {
             if ($model->hasColumn($column)) {
                 $modelColumn = $model->column($column);
 

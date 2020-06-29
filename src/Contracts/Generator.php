@@ -9,5 +9,7 @@ interface Generator
      */
     public function __construct($files);
 
-    public function output(array $tree, array $only, array $skip): array;
+    public function output(array $tree): array;
+
+    public function types(): array;
 }

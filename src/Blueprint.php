@@ -14,7 +14,7 @@ class Blueprint
 
     public static function relativeNamespace(string $fullyQualifiedClassName)
     {
-        $namespace = config('blueprint.namespace') . '\\';
+        $namespace = config('blueprint.namespace').'\\';
         $reference = ltrim($fullyQualifiedClassName, '\\');
 
         if (Str::startsWith($reference, $namespace)) {
@@ -38,19 +38,19 @@ class Blueprint
         }
 
         $content = preg_replace_callback('/^(\s+)(id|timestamps(Tz)?|softDeletes(Tz)?)$/mi', function ($matches) {
-            return $matches[1] . strtolower($matches[2]) . ': ' . $matches[2];
+            return $matches[1].strtolower($matches[2]).': '.$matches[2];
         }, $content);
 
         $content = preg_replace_callback('/^(\s+)(id|timestamps(Tz)?|softDeletes(Tz)?): true$/mi', function ($matches) {
-            return $matches[1] . strtolower($matches[2]) . ': ' . $matches[2];
+            return $matches[1].strtolower($matches[2]).': '.$matches[2];
         }, $content);
 
         $content = preg_replace_callback('/^(\s+)resource?$/mi', function ($matches) {
-            return $matches[1] . 'resource: web';
+            return $matches[1].'resource: web';
         }, $content);
 
         $content = preg_replace_callback('/^(\s+)uuid(: true)?$/mi', function ($matches) {
-            return $matches[1] . 'id: uuid primary';
+            return $matches[1].'id: uuid primary';
         }, $content);
 
         return Yaml::parse($content);
@@ -75,7 +75,9 @@ class Blueprint
         $components = [];
 
         foreach ($this->generators as $generator) {
-            $components = array_merge_recursive($components, $generator->output($tree, $only, $skip));
+            if ($this->shouldGenerate($generator->types(), $only, $skip)) {
+                $components = array_merge_recursive($components, $generator->output($tree));
+            }
         }
 
         return $components;
@@ -105,5 +107,28 @@ class Blueprint
         }
 
         $this->registerGenerator($generator);
+    }
+
+    protected function shouldGenerate(array $types, array $only, array $skip): bool
+    {
+        if (count($only)) {
+            $matches = 0;
+            foreach ($types as $type) {
+                $matches += in_array($type, $only) ? 1 : 0;
+            }
+
+            return count($types) === $matches;
+        }
+
+        if (count($skip)) {
+            $matches = 0;
+            foreach ($types as $type) {
+                $matches += in_array($type, $skip) ? 1 : 0;
+            }
+
+            return $matches === 0;
+        }
+
+        return true;
     }
 }
