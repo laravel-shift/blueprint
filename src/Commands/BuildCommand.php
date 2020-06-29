@@ -18,8 +18,8 @@ class BuildCommand extends Command
      */
     protected $signature = 'blueprint:build
                             {draft? : The path to the draft file, default: draft.yaml or draft.yml }
-                            {--only= : Comma seperated list of file classes to generate, skipping the rest }
-                            {--skip= : Comma seperated list of file classes to skip, generating the rest }
+                            {--only= : Comma separated list of file classes to generate, skipping the rest }
+                            {--skip= : Comma separated list of file classes to skip, generating the rest }
                             ';
 
     /**
@@ -29,7 +29,7 @@ class BuildCommand extends Command
      */
     protected $description = 'Build components from a Blueprint draft';
 
-    /** @var Filesystem $files */
+    /** @var Filesystem */
     protected $files;
 
     /**
@@ -51,8 +51,8 @@ class BuildCommand extends Command
     {
         $file = $this->argument('draft') ?? $this->defaultDraftFile();
 
-        if (!file_exists($file)) {
-            $this->error('Draft file could not be found: ' . ($file ?: 'draft.yaml'));
+        if (! file_exists($file)) {
+            $this->error('Draft file could not be found: '.($file ?: 'draft.yaml'));
             exit(1);
         }
 
@@ -63,9 +63,9 @@ class BuildCommand extends Command
         $generated = Builder::execute($blueprint, $this->files, $file, $only, $skip);
 
         collect($generated)->each(function ($files, $action) {
-            $this->line(Str::studly($action) . ':', $this->outputStyle($action));
+            $this->line(Str::studly($action).':', $this->outputStyle($action));
             collect($files)->each(function ($file) {
-                $this->line('- ' . $file);
+                $this->line('- '.$file);
             });
 
             $this->line('');
@@ -104,7 +104,5 @@ class BuildCommand extends Command
         if (file_exists('draft.yml')) {
             return 'draft.yml';
         }
-
-        return null;
     }
 }
