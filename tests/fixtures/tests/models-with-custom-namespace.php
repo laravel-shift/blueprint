@@ -43,14 +43,20 @@ class CategoryControllerTest extends TestCase
      */
     public function store_saves()
     {
-        $category = $this->faker->word;
+        $name = $this->faker->name;
+        $image = $this->faker->word;
+        $active = $this->faker->boolean;
 
         $response = $this->post(route('category.store'), [
-            'category' => $category,
+            'name' => $name,
+            'image' => $image,
+            'active' => $active,
         ]);
 
         $categories = Category::query()
-            ->where('category', $category)
+            ->where('name', $name)
+            ->where('image', $image)
+            ->where('active', $active)
             ->get();
         $this->assertCount(1, $categories);
         $category = $categories->first();
@@ -86,10 +92,14 @@ class CategoryControllerTest extends TestCase
     public function update_behaves_as_expected()
     {
         $category = factory(Category::class)->create();
-        $category = $this->faker->word;
+        $name = $this->faker->name;
+        $image = $this->faker->word;
+        $active = $this->faker->boolean;
 
         $response = $this->put(route('category.update', $category), [
-            'category' => $category,
+            'name' => $name,
+            'image' => $image,
+            'active' => $active,
         ]);
     }
 

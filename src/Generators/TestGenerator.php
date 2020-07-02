@@ -240,12 +240,25 @@ class TestGenerator implements Generator
                                 } else {
                                     $faker = sprintf('$%s = $this->faker->%s;', $data, FactoryGenerator::fakerData($local_column->name()) ?? FactoryGenerator::fakerDataType($local_model->column($column)->dataType()));
                                 }
-                            } else {
-                                $faker = sprintf('$%s = $this->faker->word;', $data);
-                            }
 
-                            $setup['data'][] = $faker;
-                            $request_data[$data] = '$'.$variable_name;
+                                $setup['data'][] = $faker;
+                                $request_data[$data] = '$'.$variable_name;
+                            } else {
+                                foreach ($local_model->columns() as $local_column) {
+                                    if ($local_column->name() === 'id') {
+                                        continue;
+                                    }
+
+                                    if (in_array('nullable', $local_column->modifiers())) {
+                                        continue;
+                                    }
+
+                                    // TODO: support "reference"
+
+                                    $setup['data'][] = sprintf('$%s = $this->faker->%s;', $local_column->name(), FactoryGenerator::fakerData($local_column->name()) ?? FactoryGenerator::fakerDataType($local_column->dataType()));
+                                    $request_data[$local_column->name()] = '$'.$local_column->name();
+                                }
+                            }
                         }
                     }
                 } elseif ($statement instanceof DispatchStatement) {
