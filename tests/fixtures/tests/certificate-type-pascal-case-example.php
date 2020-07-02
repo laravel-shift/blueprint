@@ -43,14 +43,14 @@ class CertificateTypeControllerTest extends TestCase
      */
     public function store_saves()
     {
-        $certificateType = $this->faker->word;
+        $name = $this->faker->name;
 
         $response = $this->post(route('certificate-type.store'), [
-            'certificateType' => $certificateType,
+            'name' => $name,
         ]);
 
         $certificateTypes = CertificateType::query()
-            ->where('certificateType', $certificateType)
+            ->where('name', $name)
             ->get();
         $this->assertCount(1, $certificateTypes);
         $certificateType = $certificateTypes->first();
@@ -86,10 +86,10 @@ class CertificateTypeControllerTest extends TestCase
     public function update_behaves_as_expected()
     {
         $certificateType = factory(CertificateType::class)->create();
-        $certificateType = $this->faker->word;
+        $name = $this->faker->name;
 
         $response = $this->put(route('certificate-type.update', $certificateType), [
-            'certificateType' => $certificateType,
+            'name' => $name,
         ]);
     }
 
