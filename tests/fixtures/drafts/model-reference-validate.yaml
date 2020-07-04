@@ -5,7 +5,11 @@ models:
     reference: string
     document: string
     expiry_date: date
-    remarks: text nullable
+    remarks: nullable text
+  CertificateType:
+    name: string
+    relationships:
+      hasMany: Certificate
 
 controllers:
   Certificate:
