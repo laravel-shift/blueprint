@@ -660,15 +660,15 @@ END;
     ): bool {
         if (
             ($local_column->dataType() === 'id' || $local_column->dataType() === 'uuid')
-            && ($local_column->attributes() && Str::endsWith($local_column->name(), '_id'))
+            && ($local_column->attributes() || Str::endsWith($local_column->name(), '_id'))
         ) {
-            $variable_name = Str::beforeLast($local_column->name(), '_id');
-            $reference = $variable_name;
+            $reference = Str::beforeLast($local_column->name(), '_id');
+            $variable_name = $reference .'->id';
 
             if ($local_column->attributes()) {
                 $reference = $local_column->attributes()[0];
-                $variable_name .= '->id';
             }
+
             $faker = sprintf('$%s = factory(%s::class)->create();', Str::beforeLast($local_column->name(), '_id'), Str::studly($reference));
 
             $this->addImport($controller, $modelNamespace.'\\'.Str::studly($reference));

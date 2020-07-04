@@ -1,11 +1,15 @@
 models:
   Certificate:
     name: string
-    certificate_type_id: id:certificate_type
+    certificate_type_id: id
     reference: string
     document: string
     expiry_date: date
-    remarks: text nullable
+    remarks: nullable text
+  CertificateType:
+    name: string
+    relationships:
+      hasMany: Certificate
 
 controllers:
   Certificate:

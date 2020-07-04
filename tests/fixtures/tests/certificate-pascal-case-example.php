@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Certificate;
+use App\CertificateType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use JMac\Testing\Traits\AdditionalAssertions;
@@ -44,14 +45,14 @@ class CertificateControllerTest extends TestCase
     public function store_saves()
     {
         $name = $this->faker->name;
-        $certificate_type_id = $this->faker->randomDigitNotNull;
+        $certificate_type = factory(CertificateType::class)->create();
         $reference = $this->faker->word;
         $document = $this->faker->word;
         $expiry_date = $this->faker->date();
 
         $response = $this->post(route('certificate.store'), [
             'name' => $name,
-            'certificate_type_id' => $certificate_type_id,
+            'certificate_type_id' => $certificate_type->id,
             'reference' => $reference,
             'document' => $document,
             'expiry_date' => $expiry_date,
@@ -59,7 +60,7 @@ class CertificateControllerTest extends TestCase
 
         $certificates = Certificate::query()
             ->where('name', $name)
-            ->where('certificate_type_id', $certificate_type_id)
+            ->where('certificate_type_id', $certificate_type->id)
             ->where('reference', $reference)
             ->where('document', $document)
             ->where('expiry_date', $expiry_date)
@@ -99,14 +100,14 @@ class CertificateControllerTest extends TestCase
     {
         $certificate = factory(Certificate::class)->create();
         $name = $this->faker->name;
-        $certificate_type_id = $this->faker->randomDigitNotNull;
+        $certificate_type = factory(CertificateType::class)->create();
         $reference = $this->faker->word;
         $document = $this->faker->word;
         $expiry_date = $this->faker->date();
 
         $response = $this->put(route('certificate.update', $certificate), [
             'name' => $name,
-            'certificate_type_id' => $certificate_type_id,
+            'certificate_type_id' => $certificate_type->id,
             'reference' => $reference,
             'document' => $document,
             'expiry_date' => $expiry_date,
