@@ -4,6 +4,7 @@ namespace Blueprint\Generators;
 
 use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
+use Blueprint\Models\Column;
 use Blueprint\Models\Controller;
 use Blueprint\Models\Statements\DispatchStatement;
 use Blueprint\Models\Statements\EloquentStatement;
@@ -226,23 +227,11 @@ class TestGenerator implements Generator
 
                             if (! is_null($local_model) && $local_model->hasColumn($column)) {
                                 $local_column = $local_model->column($column);
-                                if (($local_column->dataType() === 'id' || $local_column->dataType() === 'uuid') && ($local_column->attributes() && Str::endsWith($local_column->name(), '_id'))) {
-                                    $variable_name = Str::beforeLast($local_column->name(), '_id');
-                                    $reference = $variable_name;
-
-                                    if ($local_column->attributes()) {
-                                        $reference = $local_column->attributes()[0];
-                                        $variable_name .= '->id';
-                                    }
-                                    $faker = sprintf('$%s = factory(%s::class)->create();', Str::beforeLast($local_column->name(), '_id'), Str::studly($reference));
-
-                                    $this->addImport($controller, $modelNamespace.'\\'.Str::studly($reference));
-                                } else {
+                                if (! $this->generateReferenceFactory($local_column, $controller, $modelNamespace, $setup, $request_data)) {
                                     $faker = sprintf('$%s = $this->faker->%s;', $data, FactoryGenerator::fakerData($local_column->name()) ?? FactoryGenerator::fakerDataType($local_model->column($column)->dataType()));
+                                    $setup['data'][] = $faker;
+                                    $request_data[$data] = '$'.$variable_name;
                                 }
-
-                                $setup['data'][] = $faker;
-                                $request_data[$data] = '$'.$variable_name;
                             } else {
                                 foreach ($local_model->columns() as $local_column) {
                                     if ($local_column->name() === 'id') {
@@ -253,7 +242,9 @@ class TestGenerator implements Generator
                                         continue;
                                     }
 
-                                    // TODO: support "reference"
+                                    if ($this->generateReferenceFactory($local_column, $controller, $modelNamespace, $setup, $request_data)) {
+                                        continue;
+                                    }
 
                                     $setup['data'][] = sprintf('$%s = $this->faker->%s;', $local_column->name(), FactoryGenerator::fakerData($local_column->name()) ?? FactoryGenerator::fakerDataType($local_column->dataType()));
                                     $request_data[$local_column->name()] = '$'.$local_column->name();
@@ -658,5 +649,36 @@ END;
                 return array_unique($lines);
             })
             ->toArray();
+    }
+
+    private function generateReferenceFactory(
+        Column $local_column,
+        Controller $controller,
+        string $modelNamespace,
+        array &$setup,
+        array &$request_data
+    ): bool {
+        if (
+            ($local_column->dataType() === 'id' || $local_column->dataType() === 'uuid')
+            && ($local_column->attributes() && Str::endsWith($local_column->name(), '_id'))
+        ) {
+            $variable_name = Str::beforeLast($local_column->name(), '_id');
+            $reference = $variable_name;
+
+            if ($local_column->attributes()) {
+                $reference = $local_column->attributes()[0];
+                $variable_name .= '->id';
+            }
+            $faker = sprintf('$%s = factory(%s::class)->create();', Str::beforeLast($local_column->name(), '_id'), Str::studly($reference));
+
+            $this->addImport($controller, $modelNamespace.'\\'.Str::studly($reference));
+
+            $setup['data'][] = $faker;
+            $request_data[$local_column->name()] = '$'.$variable_name;
+
+            return true;
+        }
+
+        return false;
     }
 }
