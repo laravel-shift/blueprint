@@ -91,6 +91,10 @@ class CertificateTypeControllerTest extends TestCase
         $response = $this->put(route('certificate-type.update', $certificateType), [
             'name' => $name,
         ]);
+
+        $certificateType->refresh();
+
+        $this->assertEquals($name, $certificateType->name);
     }
 
 

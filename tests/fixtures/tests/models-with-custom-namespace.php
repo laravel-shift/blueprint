@@ -101,6 +101,12 @@ class CategoryControllerTest extends TestCase
             'image' => $image,
             'active' => $active,
         ]);
+
+        $category->refresh();
+
+        $this->assertEquals($name, $category->name);
+        $this->assertEquals($image, $category->image);
+        $this->assertEquals($active, $category->active);
     }
 
 
