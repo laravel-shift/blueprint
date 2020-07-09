@@ -662,6 +662,7 @@ class ModelLexerTest extends TestCase
         return [
             ['default:5', 'default', 5],
             ['default:0.00', 'default', 0.00],
+            ['default:0', 'default', 0],
             ['default:string', 'default', 'string'],
             ["default:'empty'", 'default', "'empty'"],
             ['default:""', 'default', '""'],

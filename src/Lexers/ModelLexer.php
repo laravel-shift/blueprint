@@ -232,7 +232,7 @@ class ModelLexer implements Lexer
 
             if (isset(self::$modifiers[strtolower($value)])) {
                 $modifierAttributes = $parts[1] ?? null;
-                if (empty($modifierAttributes)) {
+                if ($modifierAttributes === null) {
                     $modifiers[] = self::$modifiers[strtolower($value)];
                 } else {
                     $modifiers[] = [self::$modifiers[strtolower($value)] => $modifierAttributes];
