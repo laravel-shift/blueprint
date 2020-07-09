@@ -24,6 +24,9 @@ class CertificateControllerTest extends TestCase
         $certificates = factory(Certificate::class, 3)->create();
 
         $response = $this->get(route('certificate.index'));
+
+        $response->assertOk();
+        $response->assertJsonStructure([]);
     }
 
 
@@ -67,6 +70,9 @@ class CertificateControllerTest extends TestCase
             ->get();
         $this->assertCount(1, $certificates);
         $certificate = $certificates->first();
+
+        $response->assertOk();
+        $response->assertJsonStructure([]);
     }
 
 
@@ -78,6 +84,9 @@ class CertificateControllerTest extends TestCase
         $certificate = factory(Certificate::class)->create();
 
         $response = $this->get(route('certificate.show', $certificate));
+
+        $response->assertOk();
+        $response->assertJsonStructure([]);
     }
 
 
@@ -114,6 +123,9 @@ class CertificateControllerTest extends TestCase
         ]);
 
         $certificate->refresh();
+
+        $response->assertOk();
+        $response->assertJsonStructure([]);
 
         $this->assertEquals($name, $certificate->name);
         $this->assertEquals($certificate_type->id, $certificate->certificate_type_id);

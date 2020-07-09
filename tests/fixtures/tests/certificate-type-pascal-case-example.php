@@ -23,6 +23,9 @@ class CertificateTypeControllerTest extends TestCase
         $certificateTypes = factory(CertificateType::class, 3)->create();
 
         $response = $this->get(route('certificate-type.index'));
+
+        $response->assertOk();
+        $response->assertJsonStructure([]);
     }
 
 
@@ -54,6 +57,9 @@ class CertificateTypeControllerTest extends TestCase
             ->get();
         $this->assertCount(1, $certificateTypes);
         $certificateType = $certificateTypes->first();
+
+        $response->assertOk();
+        $response->assertJsonStructure([]);
     }
 
 
@@ -65,6 +71,9 @@ class CertificateTypeControllerTest extends TestCase
         $certificateType = factory(CertificateType::class)->create();
 
         $response = $this->get(route('certificate-type.show', $certificateType));
+
+        $response->assertOk();
+        $response->assertJsonStructure([]);
     }
 
 
@@ -93,6 +102,9 @@ class CertificateTypeControllerTest extends TestCase
         ]);
 
         $certificateType->refresh();
+
+        $response->assertOk();
+        $response->assertJsonStructure([]);
 
         $this->assertEquals($name, $certificateType->name);
     }
