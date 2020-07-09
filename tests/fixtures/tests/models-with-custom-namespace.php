@@ -23,6 +23,9 @@ class CategoryControllerTest extends TestCase
         $categories = factory(Category::class, 3)->create();
 
         $response = $this->get(route('category.index'));
+
+        $response->assertOk();
+        $response->assertJsonStructure([]);
     }
 
 
@@ -60,6 +63,9 @@ class CategoryControllerTest extends TestCase
             ->get();
         $this->assertCount(1, $categories);
         $category = $categories->first();
+
+        $response->assertOk();
+        $response->assertJsonStructure([]);
     }
 
 
@@ -71,6 +77,9 @@ class CategoryControllerTest extends TestCase
         $category = factory(Category::class)->create();
 
         $response = $this->get(route('category.show', $category));
+
+        $response->assertOk();
+        $response->assertJsonStructure([]);
     }
 
 
@@ -103,6 +112,9 @@ class CategoryControllerTest extends TestCase
         ]);
 
         $category->refresh();
+
+        $response->assertOk();
+        $response->assertJsonStructure([]);
 
         $this->assertEquals($name, $category->name);
         $this->assertEquals($image, $category->image);

@@ -12,6 +12,7 @@ use Blueprint\Models\Statements\FireStatement;
 use Blueprint\Models\Statements\QueryStatement;
 use Blueprint\Models\Statements\RedirectStatement;
 use Blueprint\Models\Statements\RenderStatement;
+use Blueprint\Models\Statements\ResourceStatement;
 use Blueprint\Models\Statements\RespondStatement;
 use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
@@ -376,6 +377,9 @@ class TestGenerator implements Generator
                     $assertion .= '));';
 
                     array_unshift($assertions['response'], $assertion);
+                } elseif ($statement instanceof ResourceStatement) {
+                    $assertions['response'][] = '$response->assertOk();';
+                    $assertions['response'][] = '$response->assertJsonStructure([]);';
                 } elseif ($statement instanceof RespondStatement) {
                     $tested_bits |= self::TESTS_RESPONDS;
 
