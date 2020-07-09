@@ -422,6 +422,14 @@ class TestGenerator implements Generator
                         $tested_bits |= self::TESTS_DELETE;
                         $setup['data'][] = sprintf('$%s = factory(%s::class)->create();', $variable, $model);
                         $assertions['generic'][] = sprintf('$this->assertDeleted($%s);', $variable);
+                    } elseif ($statement->operation() === 'update') {
+                        $assertions['sanity'][] = sprintf('$%s->refresh();', $variable);
+
+                        if ($request_data) {
+                            foreach ($request_data as $key => $datum) {
+                                $assertions['generic'][] = sprintf('$this->assertEquals(%s, $%s->%s);', $datum, $variable, $key);
+                            }
+                        }
                     }
                 } elseif ($statement instanceof QueryStatement) {
                     $this->addRefreshDatabaseTrait($controller);

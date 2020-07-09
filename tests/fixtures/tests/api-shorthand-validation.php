@@ -112,6 +112,14 @@ class CertificateControllerTest extends TestCase
             'document' => $document,
             'expiry_date' => $expiry_date,
         ]);
+
+        $certificate->refresh();
+
+        $this->assertEquals($name, $certificate->name);
+        $this->assertEquals($certificate_type->id, $certificate->certificate_type_id);
+        $this->assertEquals($reference, $certificate->reference);
+        $this->assertEquals($document, $certificate->document);
+        $this->assertEquals($expiry_date, $certificate->expiry_date);
     }
 
 
