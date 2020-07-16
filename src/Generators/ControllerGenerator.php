@@ -104,6 +104,8 @@ class ControllerGenerator implements Generator
             }
 
             $body = '';
+            $using_validation = false;
+
             foreach ($statements as $statement) {
                 if ($statement instanceof SendStatement) {
                     $body .= self::INDENT.$statement->output().PHP_EOL;
@@ -115,6 +117,7 @@ class ControllerGenerator implements Generator
                         $this->addImport($controller, config('blueprint.namespace').'\\Mail\\'.$statement->mail());
                     }
                 } elseif ($statement instanceof ValidateStatement) {
+                    $using_validation = true;
                     $class_name = $controller->name().Str::studly($name).'Request';
 
                     $fqcn = config('blueprint.namespace').'\\Http\\Requests\\'.($controller->namespace() ? $controller->namespace().'\\' : '').$class_name;
@@ -153,7 +156,7 @@ class ControllerGenerator implements Generator
                 } elseif ($statement instanceof SessionStatement) {
                     $body .= self::INDENT.$statement->output().PHP_EOL;
                 } elseif ($statement instanceof EloquentStatement) {
-                    $body .= self::INDENT.$statement->output($controller->prefix(), $name).PHP_EOL;
+                    $body .= self::INDENT.$statement->output($controller->prefix(), $name, $using_validation).PHP_EOL;
                     $this->addImport($controller, $this->determineModel($controller, $statement->reference()));
                 } elseif ($statement instanceof QueryStatement) {
                     $body .= self::INDENT.$statement->output($controller->prefix()).PHP_EOL;
