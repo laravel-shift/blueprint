@@ -71,7 +71,7 @@ class CertificateControllerTest extends TestCase
         $this->assertCount(1, $certificates);
         $certificate = $certificates->first();
 
-        $response->assertOk();
+        $response->assertCreated();
         $response->assertJsonStructure([]);
     }
 

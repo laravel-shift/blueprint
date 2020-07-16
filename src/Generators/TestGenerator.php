@@ -378,7 +378,12 @@ class TestGenerator implements Generator
 
                     array_unshift($assertions['response'], $assertion);
                 } elseif ($statement instanceof ResourceStatement) {
-                    $assertions['response'][] = '$response->assertOk();';
+                    if ($name === 'store') {
+                        $assertions['response'][] = '$response->assertCreated();';
+                    } else {
+                        $assertions['response'][] = '$response->assertOk();';
+                    }
+
                     $assertions['response'][] = '$response->assertJsonStructure([]);';
                 } elseif ($statement instanceof RespondStatement) {
                     $tested_bits |= self::TESTS_RESPONDS;

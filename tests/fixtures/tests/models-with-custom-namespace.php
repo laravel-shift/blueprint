@@ -64,7 +64,7 @@ class CategoryControllerTest extends TestCase
         $this->assertCount(1, $categories);
         $category = $categories->first();
 
-        $response->assertOk();
+        $response->assertCreated();
         $response->assertJsonStructure([]);
     }
 
