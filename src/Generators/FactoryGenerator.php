@@ -185,12 +185,7 @@ class FactoryGenerator implements Generator
         return trim($definition);
     }
 
-    private function addImport(Model $model, $class)
-    {
-        $this->imports[$model->name()][] = $class;
-    }
-
-    private function buildImports(Model $model)
+    protected function buildImports(Model $model)
     {
         $imports = array_unique($this->imports[$model->name()]);
         sort($imports);
@@ -198,6 +193,11 @@ class FactoryGenerator implements Generator
         return implode(PHP_EOL, array_map(function ($class) {
             return 'use '.$class.';';
         }, $imports));
+    }
+
+    private function addImport(Model $model, $class)
+    {
+        $this->imports[$model->name()][] = $class;
     }
 
     private function fillableColumns(array $columns): array

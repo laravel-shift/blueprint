@@ -61,7 +61,7 @@ class ModelGenerator implements Generator
         return $stub;
     }
 
-    private function buildClassPhpDoc(Model $model)
+    protected function buildClassPhpDoc(Model $model)
     {
         if (! config('blueprint.generate_phpdocs')) {
             return '';
@@ -93,7 +93,7 @@ class ModelGenerator implements Generator
         return $phpDoc;
     }
 
-    private function buildProperties(Model $model)
+    protected function buildProperties(Model $model)
     {
         $properties = '';
 
@@ -130,7 +130,7 @@ class ModelGenerator implements Generator
         return trim($properties);
     }
 
-    private function buildRelationships(Model $model)
+    protected function buildRelationships(Model $model)
     {
         $methods = '';
         $template = $this->files->stub('model/method.stub');
@@ -203,6 +203,18 @@ class ModelGenerator implements Generator
         $path = str_replace('\\', '/', Blueprint::relativeNamespace($model->fullyQualifiedClassName()));
 
         return Blueprint::appPath().'/'.$path.'.php';
+    }
+
+    protected function addTraits(Model $model, $stub)
+    {
+        if (!$model->usesSoftDeletes()) {
+            return $stub;
+        }
+
+        $stub = str_replace('use Illuminate\\Database\\Eloquent\\Model;', 'use Illuminate\\Database\\Eloquent\\Model;' . PHP_EOL . 'use Illuminate\\Database\\Eloquent\\SoftDeletes;', $stub);
+        $stub = Str::replaceFirst('{', '{' . PHP_EOL . '    use SoftDeletes;' . PHP_EOL, $stub);
+
+        return $stub;
     }
 
     private function fillableColumns(array $columns)
@@ -281,18 +293,6 @@ class ModelGenerator implements Generator
         }
 
         return trim(str_replace("\n", PHP_EOL, $output));
-    }
-
-    private function addTraits(Model $model, $stub)
-    {
-        if (! $model->usesSoftDeletes()) {
-            return $stub;
-        }
-
-        $stub = str_replace('use Illuminate\\Database\\Eloquent\\Model;', 'use Illuminate\\Database\\Eloquent\\Model;'.PHP_EOL.'use Illuminate\\Database\\Eloquent\\SoftDeletes;', $stub);
-        $stub = Str::replaceFirst('{', '{'.PHP_EOL.'    use SoftDeletes;'.PHP_EOL, $stub);
-
-        return $stub;
     }
 
     private function phpDataType(string $dataType)

@@ -71,7 +71,7 @@ class JobGenerator implements Generator
         return $stub;
     }
 
-    private function buildConstructor(DispatchStatement $dispatchStatement)
+    protected function buildConstructor(DispatchStatement $dispatchStatement)
     {
         static $constructor = null;
 

@@ -489,6 +489,23 @@ class TestGenerator implements Generator
         $this->traits[$controller->name()][] = $trait;
     }
 
+    protected function addImport(Controller $controller, $class)
+    {
+        $this->imports[$controller->name()][] = $class;
+    }
+
+    protected function buildImports(Controller $controller)
+    {
+        $this->addImport($controller, 'Tests\\TestCase');
+
+        $imports = array_unique($this->imports[$controller->name()]);
+        sort($imports);
+
+        return implode(PHP_EOL, array_map(function ($class) {
+            return 'use ' . $class . ';';
+        }, $imports));
+    }
+
     private function buildTraits(Controller $controller)
     {
         if (empty($this->traits[$controller->name()])) {
@@ -508,23 +525,6 @@ class TestGenerator implements Generator
         }
 
         return $this->stubs['test-case'];
-    }
-
-    protected function addImport(Controller $controller, $class)
-    {
-        $this->imports[$controller->name()][] = $class;
-    }
-
-    protected function buildImports(Controller $controller)
-    {
-        $this->addImport($controller, 'Tests\\TestCase');
-
-        $imports = array_unique($this->imports[$controller->name()]);
-        sort($imports);
-
-        return implode(PHP_EOL, array_map(function ($class) {
-            return 'use '.$class.';';
-        }, $imports));
     }
 
     private function determineModel(string $prefix, ?string $reference)
