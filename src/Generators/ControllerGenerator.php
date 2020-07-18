@@ -75,7 +75,7 @@ class ControllerGenerator implements Generator
         return $stub;
     }
 
-    private function buildMethods(Controller $controller)
+    protected function buildMethods(Controller $controller)
     {
         $template = $this->files->stub('controller/method.stub');
 
