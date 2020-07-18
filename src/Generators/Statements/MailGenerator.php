@@ -75,7 +75,7 @@ class MailGenerator implements Generator
         return $stub;
     }
 
-    private function buildConstructor(SendStatement $sendStatement)
+    protected function buildConstructor(SendStatement $sendStatement)
     {
         static $constructor = null;
 

@@ -75,7 +75,7 @@ class EventGenerator implements Generator
         return $stub;
     }
 
-    private function buildConstructor(FireStatement $fireStatement)
+    protected function buildConstructor(FireStatement $fireStatement)
     {
         static $constructor = null;
 

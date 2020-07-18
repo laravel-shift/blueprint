@@ -82,7 +82,7 @@ class FormRequestGenerator implements Generator
         return $stub;
     }
 
-    private function buildRules(string $context, ValidateStatement $validateStatement)
+    protected function buildRules(string $context, ValidateStatement $validateStatement)
     {
         return trim(array_reduce($validateStatement->data(), function ($output, $field) use ($context) {
             [$qualifier, $column] = $this->splitField($field);

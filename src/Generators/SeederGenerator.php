@@ -45,11 +45,6 @@ class SeederGenerator implements Generator
         return ['seeders'];
     }
 
-    private function getPath($model)
-    {
-        return 'database/seeds/'.$model.'Seeder.php';
-    }
-
     protected function populateStub(string $stub, string $model)
     {
         $stub = str_replace('DummyClass', $this->getClassName($model), $stub);
@@ -58,14 +53,19 @@ class SeederGenerator implements Generator
         return $stub;
     }
 
-    private function getClassName(string $model)
+    protected function getClassName(string $model)
     {
         return $model.'Seeder';
     }
 
-    private function build(string $model)
+    protected function build(string $model)
     {
         return sprintf('factory(\\%s::class, 5)->create();', $this->fqcnForContext($model));
+    }
+
+    private function getPath($model)
+    {
+        return 'database/seeds/' . $model . 'Seeder.php';
     }
 
     private function registerModels(array $tree)

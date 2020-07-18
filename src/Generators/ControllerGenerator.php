@@ -80,7 +80,7 @@ class ControllerGenerator implements Generator
         return $stub;
     }
 
-    private function buildMethods(Controller $controller)
+    protected function buildMethods(Controller $controller)
     {
         $template = $this->files->stub('controller/method.stub');
 
@@ -183,12 +183,7 @@ class ControllerGenerator implements Generator
         return Blueprint::appPath().'/'.$path.'.php';
     }
 
-    private function addImport(Controller $controller, $class)
-    {
-        $this->imports[$controller->name()][] = $class;
-    }
-
-    private function buildImports(Controller $controller)
+    protected function buildImports(Controller $controller)
     {
         $imports = array_unique($this->imports[$controller->name()]);
         sort($imports);
@@ -196,6 +191,11 @@ class ControllerGenerator implements Generator
         return implode(PHP_EOL, array_map(function ($class) {
             return 'use '.$class.';';
         }, $imports));
+    }
+
+    private function addImport(Controller $controller, $class)
+    {
+        $this->imports[$controller->name()][] = $class;
     }
 
     private function determineModel(Controller $controller, ?string $reference)

@@ -83,7 +83,7 @@ class ResourceGenerator implements Generator
         return $stub;
     }
 
-    private function buildData(ResourceStatement $resource)
+    protected function buildData(ResourceStatement $resource)
     {
         $context = Str::singular($resource->reference());
 
