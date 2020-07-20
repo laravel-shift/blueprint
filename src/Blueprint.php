@@ -112,21 +112,11 @@ class Blueprint
     protected function shouldGenerate(array $types, array $only, array $skip): bool
     {
         if (count($only)) {
-            $found = 0;
-            foreach ($types as $type) {
-                $found += in_array($type, $only) ? 1 : 0;
-            }
-
-            return $found > 0;
+            return collect($types)->intersect($only)->isNotEmpty();
         }
 
         if (count($skip)) {
-            $found = 0;
-            foreach ($types as $type) {
-                $found += in_array($type, $skip) ? 1 : 0;
-            }
-
-            return $found === 0;
+            return collect($types)->intersect($skip)->isEmpty();
         }
 
         return true;
