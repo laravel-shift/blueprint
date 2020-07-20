@@ -2,14 +2,13 @@
 
 namespace Tests\Feature\Commands;
 
-use Illuminate\Support\Facades\Artisan;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Tests\TestCase;
 
 /**
  * @covers \Blueprint\Commands\NewCommand;
  */
-class StartCommandTest extends TestCase
+class NewCommandTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
