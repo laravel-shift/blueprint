@@ -49,7 +49,7 @@ abstract class Generator implements GeneratorContracts
         }, ''));
     }
 
-    private function buildAssignments(array $data)
+    protected function buildAssignments(array $data)
     {
         return trim(array_reduce($data, function ($output, $property) {
             $output .= '        $this->' . $property . ' = $' . $property . ';' . PHP_EOL;
@@ -58,7 +58,7 @@ abstract class Generator implements GeneratorContracts
         }, ''));
     }
 
-    private function buildParameters(array $data)
+    protected function buildParameters(array $data)
     {
         $parameters = array_map(function ($parameter) {
             return '$' . $parameter;
