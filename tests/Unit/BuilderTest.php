@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use Blueprint\Blueprint;
 use Blueprint\Builder;
+use Blueprint\Tree;
 use Illuminate\Filesystem\Filesystem;
 use Tests\TestCase;
 
@@ -16,7 +17,7 @@ class BuilderTest extends TestCase
     {
         $draft = 'draft blueprint content';
         $tokens = ['some', 'blueprint', 'tokens'];
-        $registry = ['controllers' => [1, 2, 3]];
+        $registry = new Tree(['controllers' => [1, 2, 3]]);
         $only = [];
         $skip = [];
         $generated = ['created' => [1, 2], 'updated' => [3]];
@@ -64,7 +65,7 @@ class BuilderTest extends TestCase
         $tokens = [
             'models' => [1, 2, 3]
         ];
-        $registry = ['registry'];
+        $registry = new Tree(['registry']);
         $only = [];
         $skip = [];
         $generated = ['created' => [1, 2], 'updated' => [3]];

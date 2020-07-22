@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Contracts\Lexer;
+use Blueprint\Tree;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Tests\TestCase;
 
@@ -345,7 +346,7 @@ class BlueprintTest extends TestCase
                 'models' => [],
                 'controllers' => [],
             ],
-            $this->subject->analyze($tokens)
+            $this->subject->analyze($tokens)->toArray()
         );
     }
 
@@ -366,7 +367,7 @@ class BlueprintTest extends TestCase
             'models' => [],
             'controllers' => [],
             'mock' => 'lexer',
-        ], $this->subject->analyze($tokens));
+        ], $this->subject->analyze($tokens)->toArray());
     }
 
     /**
@@ -375,7 +376,7 @@ class BlueprintTest extends TestCase
     public function generate_uses_registered_generators_and_returns_generated_files()
     {
         $generatorOne = \Mockery::mock(Generator::class);
-        $tree = ['branch' => ['code', 'attributes']];
+        $tree = new Tree(['branch' => ['code', 'attributes']]);
 
         $generatorOne->expects('output')
             ->with($tree)
@@ -422,7 +423,7 @@ class BlueprintTest extends TestCase
     public function generate_uses_swapped_generator_and_returns_generated_files()
     {
         $generatorOne = \Mockery::mock(Generator::class);
-        $tree = ['branch' => ['code', 'attributes']];
+        $tree = new Tree(['branch' => ['code', 'attributes']]);
 
         $generatorOne->expects('output')->never();
 
@@ -457,7 +458,7 @@ class BlueprintTest extends TestCase
     public function generate_only_one_specific_type()
     {
         $generatorFoo = \Mockery::mock(Generator::class);
-        $tree = ['branch' => ['code', 'attributes']];
+        $tree = new Tree(['branch' => ['code', 'attributes']]);
 
         $only = ['bar'];
         $skip = [];
@@ -508,7 +509,7 @@ class BlueprintTest extends TestCase
     public function generate_only_specific_types()
     {
         $generatorFoo = \Mockery::mock(Generator::class);
-        $tree = ['branch' => ['code', 'attributes']];
+        $tree = new Tree(['branch' => ['code', 'attributes']]);
 
         $only = ['foo', 'bar'];
         $skip = [];
@@ -559,7 +560,7 @@ class BlueprintTest extends TestCase
     public function generate_should_skip_one_specific_type()
     {
         $generatorFoo = \Mockery::mock(Generator::class);
-        $tree = ['branch' => ['code', 'attributes']];
+        $tree = new Tree(['branch' => ['code', 'attributes']]);
 
         $only = [];
         $skip = ['bar'];
@@ -610,7 +611,7 @@ class BlueprintTest extends TestCase
     public function generate_should_skip_specific_types()
     {
         $generatorFoo = \Mockery::mock(Generator::class);
-        $tree = ['branch' => ['code', 'attributes']];
+        $tree = new Tree(['branch' => ['code', 'attributes']]);
 
         $only = [];
         $skip = ['bar', 'baz'];

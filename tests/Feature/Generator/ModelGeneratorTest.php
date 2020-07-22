@@ -4,6 +4,7 @@ namespace Tests\Feature\Generators;
 
 use Blueprint\Blueprint;
 use Blueprint\Generators\ModelGenerator;
+use Blueprint\Tree;
 use Tests\TestCase;
 
 class ModelGeneratorTest extends TestCase
@@ -38,7 +39,7 @@ class ModelGeneratorTest extends TestCase
 
         $this->files->shouldNotHaveReceived('put');
 
-        $this->assertEquals([], $this->subject->output(['models' => []]));
+        $this->assertEquals([], $this->subject->output(new Tree(['models' => []])));
     }
 
     /**
