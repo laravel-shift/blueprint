@@ -3,10 +3,10 @@
 namespace Blueprint\Generators\Statements;
 
 use Blueprint\Blueprint;
-use Blueprint\Generators\Generator;
+use Blueprint\Generators\StatementGenerator;
 use Blueprint\Models\Statements\FireStatement;
 
-class EventGenerator extends Generator
+class EventGenerator extends StatementGenerator
 {
     protected $new_instance = 'new event instance';
 

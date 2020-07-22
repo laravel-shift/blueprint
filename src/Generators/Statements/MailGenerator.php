@@ -3,10 +3,10 @@
 namespace Blueprint\Generators\Statements;
 
 use Blueprint\Blueprint;
-use Blueprint\Generators\Generator;
+use Blueprint\Generators\StatementGenerator;
 use Blueprint\Models\Statements\SendStatement;
 
-class MailGenerator extends Generator
+class MailGenerator extends StatementGenerator
 {
     protected $new_instance = 'new message instance';
 

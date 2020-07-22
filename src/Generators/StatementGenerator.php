@@ -2,9 +2,9 @@
 
 namespace Blueprint\Generators;
 
-use Blueprint\Contracts\Generator as GeneratorContracts;
+use Blueprint\Contracts\Generator;
 
-abstract class Generator implements GeneratorContracts
+abstract class StatementGenerator implements Generator
 {
     /**
      * @var \Illuminate\Contracts\Filesystem\Filesystem
