@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 
 class Tree
 {
-    private array $tree;
+    private $tree;
 
     public function __construct(array $tree)
     {

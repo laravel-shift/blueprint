@@ -28,7 +28,8 @@ class ControllerGenerator implements Generator
 
     private $imports = [];
 
-    private Tree $tree;
+    /** @var Tree */
+    private $tree;
 
     public function __construct($files)
     {

@@ -31,7 +31,8 @@ class TestGenerator implements Generator
     /** @var \Illuminate\Contracts\Filesystem\Filesystem */
     private $files;
 
-    private Tree $tree;
+    /** @var Tree */
+    private $tree;
 
     private $imports = [];
     private $stubs = [];

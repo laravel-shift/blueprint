@@ -3,16 +3,15 @@
 namespace Blueprint\Generators;
 
 use Blueprint\Contracts\Generator;
-use Blueprint\Models\Model;
 use Blueprint\Tree;
-use Illuminate\Support\Str;
 
 class SeederGenerator implements Generator
 {
     /** @var \Illuminate\Contracts\Filesystem\Filesystem */
     private $files;
 
-    private Tree $tree;
+    /** @var Tree */
+    private $tree;
 
     public function __construct($files)
     {
@@ -27,7 +26,7 @@ class SeederGenerator implements Generator
             return [];
         }
 
-        $output = [];
+        $output = []; 
 
         $stub = $this->files->stub('seeder.stub');
 
