@@ -5,6 +5,7 @@ namespace Blueprint\Generators\Statements;
 use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Statements\FireStatement;
+use Blueprint\Tree;
 
 class EventGenerator implements Generator
 {
@@ -18,14 +19,14 @@ class EventGenerator implements Generator
         $this->files = $files;
     }
 
-    public function output(array $tree): array
+    public function output(Tree $tree): array
     {
         $output = [];
 
         $stub = $this->files->stub('event.stub');
 
         /** @var \Blueprint\Models\Controller $controller */
-        foreach ($tree['controllers'] as $controller) {
+        foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
                     if (! $statement instanceof FireStatement) {

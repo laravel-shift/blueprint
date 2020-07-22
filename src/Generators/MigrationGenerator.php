@@ -4,6 +4,7 @@ namespace Blueprint\Generators;
 
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Model;
+use Blueprint\Tree;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
@@ -41,7 +42,7 @@ class MigrationGenerator implements Generator
         $this->files = $files;
     }
 
-    public function output(array $tree): array
+    public function output(Tree $tree): array
     {
         $output = [];
 
@@ -49,10 +50,10 @@ class MigrationGenerator implements Generator
 
         $stub = $this->files->stub('migration.stub');
 
-        $sequential_timestamp = \Carbon\Carbon::now()->subSeconds(count($tree['models']));
+        $sequential_timestamp = \Carbon\Carbon::now()->subSeconds(count($tree->models()));
 
         /** @var \Blueprint\Models\Model $model */
-        foreach ($tree['models'] as $model) {
+        foreach ($tree->models() as $model) {
             $path = $this->getPath($model, $sequential_timestamp->addSecond());
             $this->files->put($path, $this->populateStub($stub, $model));
 
