@@ -67,10 +67,10 @@ class Blueprint
             $registry = array_merge($registry, $lexer->analyze($tokens));
         }
 
-        return $registry;
+        return new Tree($registry);
     }
 
-    public function generate(array $tree, array $only = [], array $skip = []): array
+    public function generate(Tree $tree, array $only = [], array $skip = []): array
     {
         $components = [];
 

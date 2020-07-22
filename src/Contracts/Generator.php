@@ -2,6 +2,8 @@
 
 namespace Blueprint\Contracts;
 
+use Blueprint\Tree;
+
 interface Generator
 {
     /**
@@ -9,7 +11,7 @@ interface Generator
      */
     public function __construct($files);
 
-    public function output(array $tree): array;
+    public function output(Tree $tree): array;
 
     public function types(): array;
 }
