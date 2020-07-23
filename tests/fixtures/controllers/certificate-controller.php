@@ -28,7 +28,7 @@ class CertificateController extends Controller
      */
     public function store(CertificateStoreRequest $request)
     {
-        $certificate = Certificate::create($request->all());
+        $certificate = Certificate::create($request->validated());
 
         return new CertificateResource($certificate);
     }

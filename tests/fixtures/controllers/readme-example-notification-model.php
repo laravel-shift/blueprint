@@ -27,7 +27,7 @@ class PostController extends Controller
      */
     public function store(PostStoreRequest $request)
     {
-        $post = Post::create($request->all());
+        $post = Post::create($request->validated());
 
         $post->author->notify(new ReviewNotification($post));
 

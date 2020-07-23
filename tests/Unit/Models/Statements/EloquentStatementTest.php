@@ -53,6 +53,16 @@ class EloquentStatementTest extends TestCase
     /**
      * @test
      */
+    public function output_generates_code_for_save_using_create_when_validation_is_used()
+    {
+        $subject = new EloquentStatement('save', 'Post');
+
+        $this->assertEquals('$post = Post::create($request->validated());', $subject->output('', 'store', true));
+    }
+
+    /**
+     * @test
+     */
     public function output_generates_code_for_update_using_model()
     {
         $subject = new EloquentStatement('update', 'post');

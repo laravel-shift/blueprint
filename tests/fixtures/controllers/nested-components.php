@@ -30,7 +30,7 @@ class UserController extends Controller
      */
     public function store(UserStoreRequest $request)
     {
-        $user = User::create($request->all());
+        $user = User::create($request->validated());
 
         Notification::send($user, new InviteNotification($user));
 

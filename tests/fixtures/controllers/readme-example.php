@@ -29,7 +29,7 @@ class PostController extends Controller
      */
     public function store(PostStoreRequest $request)
     {
-        $post = Post::create($request->all());
+        $post = Post::create($request->validated());
 
         Mail::to($post->author->email)->send(new ReviewPost($post));
 
