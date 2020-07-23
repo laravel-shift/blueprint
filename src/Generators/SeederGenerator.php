@@ -26,7 +26,7 @@ class SeederGenerator implements Generator
             return [];
         }
 
-        $output = []; 
+        $output = [];
 
         $stub = $this->files->stub('seeder.stub');
 
