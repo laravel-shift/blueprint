@@ -17,6 +17,7 @@ use Blueprint\Models\Statements\RespondStatement;
 use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
+use Shift\Faker\Registry as FakerRegistry;
 use Blueprint\Tree;
 use Illuminate\Support\Str;
 
@@ -236,7 +237,7 @@ class TestGenerator implements Generator
                                 if ($factory) {
                                     [$faker, $variable_name] = $factory;
                                 } else {
-                                    $faker = sprintf('$%s = $this->faker->%s;', $data, FactoryGenerator::fakerData($local_column->name()) ?? FactoryGenerator::fakerDataType($local_model->column($column)->dataType()));
+                                    $faker = sprintf('$%s = $this->faker->%s;', $data, FakerRegistry::fakerData($local_column->name()) ?? FakerRegistry::fakerDataType($local_model->column($column)->dataType()));
                                 }
 
                                 $setup['data'][] = $faker;
@@ -255,7 +256,7 @@ class TestGenerator implements Generator
                                     if ($factory) {
                                         [$faker, $variable_name] = $factory;
                                     } else {
-                                        $faker = sprintf('$%s = $this->faker->%s;', $local_column->name(), FactoryGenerator::fakerData($local_column->name()) ?? FactoryGenerator::fakerDataType($local_column->dataType()));
+                                        $faker = sprintf('$%s = $this->faker->%s;', $local_column->name(), FakerRegistry::fakerData($local_column->name()) ?? FakerRegistry::fakerDataType($local_column->dataType()));
                                         $variable_name = $local_column->name();
                                     }
 
