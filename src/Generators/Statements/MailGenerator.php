@@ -3,20 +3,12 @@
 namespace Blueprint\Generators\Statements;
 
 use Blueprint\Blueprint;
-use Blueprint\Contracts\Generator;
+use Blueprint\Generators\StatementGenerator;
 use Blueprint\Models\Statements\SendStatement;
 
-class MailGenerator implements Generator
+class MailGenerator extends StatementGenerator
 {
-    /**
-     * @var \Illuminate\Contracts\Filesystem\Filesystem
-     */
-    private $files;
-
-    public function __construct($files)
-    {
-        $this->files = $files;
-    }
+    protected $new_instance = 'new message instance';
 
     public function output(array $tree): array
     {
@@ -73,51 +65,5 @@ class MailGenerator implements Generator
         $stub = str_replace('// properties...', $this->buildConstructor($sendStatement), $stub);
 
         return $stub;
-    }
-
-    protected function buildConstructor(SendStatement $sendStatement)
-    {
-        static $constructor = null;
-
-        if (is_null($constructor)) {
-            $constructor = str_replace('new instance', 'new message instance', $this->files->stub('partials/constructor.stub'));
-        }
-
-        if (empty($sendStatement->data())) {
-            return trim($constructor);
-        }
-
-        $stub = $this->buildProperties($sendStatement->data()).PHP_EOL.PHP_EOL;
-        $stub .= str_replace('__construct()', '__construct('.$this->buildParameters($sendStatement->data()).')', $constructor);
-        $stub = str_replace('//', $this->buildAssignments($sendStatement->data()), $stub);
-
-        return $stub;
-    }
-
-    private function buildProperties(array $data)
-    {
-        return trim(array_reduce($data, function ($output, $property) {
-            $output .= '    public $'.$property.';'.PHP_EOL.PHP_EOL;
-
-            return $output;
-        }, ''));
-    }
-
-    private function buildParameters(array $data)
-    {
-        $parameters = array_map(function ($parameter) {
-            return '$'.$parameter;
-        }, $data);
-
-        return implode(', ', $parameters);
-    }
-
-    private function buildAssignments(array $data)
-    {
-        return trim(array_reduce($data, function ($output, $property) {
-            $output .= '        $this->'.$property.' = $'.$property.';'.PHP_EOL;
-
-            return $output;
-        }, ''));
     }
 }
