@@ -174,6 +174,7 @@ class ControllerGeneratorTest extends TestCase
             ['drafts/nested-components.yaml', 'app/Http/Controllers/Admin/UserController.php', 'controllers/nested-components.php'],
             ['drafts/respond-statements.yaml', 'app/Http/Controllers/Api/PostController.php', 'controllers/respond-statements.php'],
             ['drafts/resource-statements.yaml', 'app/Http/Controllers/UserController.php', 'controllers/resource-statements.php'],
+            ['drafts/save-without-validation.yaml', 'app/Http/Controllers/PostController.php', 'controllers/save-without-validation.php'],
         ];
     }
 }

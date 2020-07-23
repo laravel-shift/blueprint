@@ -1,0 +1,12 @@
+models:
+  Post:
+    title: string:400
+    content: longtext
+    published_at: nullable timestamp
+    author_id: id:user
+
+controllers:
+  Post:
+    store:
+      save: post
+      redirect: post.index

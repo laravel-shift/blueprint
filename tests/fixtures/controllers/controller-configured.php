@@ -26,7 +26,7 @@ class UserController extends Controller
      */
     public function store(UserStoreRequest $request)
     {
-        $user = User::create($request->all());
+        $user = User::create($request->validated());
 
         $request->session()->flash('user.name', $user->name);
 

@@ -54,7 +54,12 @@ class EloquentStatement
                 $code = "$" . Str::camel($model);
                 $code .= ' = ';
                 $code .= $model;
-                $code .= '::create($request->all());';
+
+                if ($using_validation) {
+                    $code .= '::create($request->validated());';
+                } else {
+                    $code .= '::create($request->all());';
+                }
             } else {
                 $code = "$" . Str::camel($model) . '->save();';
             }
