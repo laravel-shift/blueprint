@@ -4,6 +4,7 @@ namespace Tests\Feature\Generators;
 
 use Blueprint\Blueprint;
 use Blueprint\Generators\SeederGenerator;
+use Blueprint\Tree;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Tests\TestCase;
@@ -45,7 +46,7 @@ class SeederGeneratorTest extends TestCase
     {
         $this->files->shouldNotHaveReceived('put');
 
-        $this->assertEquals([], $this->subject->output(['seeders' => []]));
+        $this->assertEquals([], $this->subject->output(new Tree(['seeders' => []])));
     }
 
     /**
@@ -83,9 +84,10 @@ class SeederGeneratorTest extends TestCase
             ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens)->toArray();
         $tree['cache'] = $tree['models'];
         unset($tree['models']);
+        $tree = new Tree($tree);
 
         $this->assertEquals(['created' => ['database/seeds/PostSeeder.php', 'database/seeds/CommentSeeder.php']], $this->subject->output($tree));
     }

@@ -4,6 +4,7 @@ namespace Blueprint\Generators;
 
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Controller;
+use Blueprint\Tree;
 use Illuminate\Support\Str;
 
 class RouteGenerator implements Generator
@@ -16,16 +17,16 @@ class RouteGenerator implements Generator
         $this->files = $files;
     }
 
-    public function output(array $tree): array
+    public function output(Tree $tree): array
     {
-        if (empty($tree['controllers'])) {
+        if (empty($tree->controllers())) {
             return [];
         }
 
         $routes = ['api' => '', 'web' => ''];
 
         /** @var \Blueprint\Models\Controller $controller */
-        foreach ($tree['controllers'] as $controller) {
+        foreach ($tree->controllers() as $controller) {
             $type = $controller->isApiResource() ? 'api' : 'web';
             $routes[$type] .= PHP_EOL.PHP_EOL.$this->buildRoutes($controller);
         }

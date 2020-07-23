@@ -4,6 +4,7 @@ namespace Blueprint\Generators\Statements;
 
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Statements\RenderStatement;
+use Blueprint\Tree;
 
 class ViewGenerator implements Generator
 {
@@ -17,14 +18,14 @@ class ViewGenerator implements Generator
         $this->files = $files;
     }
 
-    public function output(array $tree): array
+    public function output(Tree $tree): array
     {
         $output = [];
 
         $stub = $this->files->stub('view.stub');
 
         /** @var \Blueprint\Models\Controller $controller */
-        foreach ($tree['controllers'] as $controller) {
+        foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
                     if (! $statement instanceof RenderStatement) {

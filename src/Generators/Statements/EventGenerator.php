@@ -5,19 +5,20 @@ namespace Blueprint\Generators\Statements;
 use Blueprint\Blueprint;
 use Blueprint\Generators\StatementGenerator;
 use Blueprint\Models\Statements\FireStatement;
+use Blueprint\Tree;
 
 class EventGenerator extends StatementGenerator
 {
     protected $new_instance = 'new event instance';
 
-    public function output(array $tree): array
+    public function output(Tree $tree): array
     {
         $output = [];
 
         $stub = $this->files->stub('event.stub');
 
         /** @var \Blueprint\Models\Controller $controller */
-        foreach ($tree['controllers'] as $controller) {
+        foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
                     if (! $statement instanceof FireStatement) {

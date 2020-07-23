@@ -6,6 +6,7 @@ use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Column;
 use Blueprint\Models\Model;
+use Blueprint\Tree;
 use Illuminate\Support\Str;
 
 class ModelGenerator implements Generator
@@ -18,14 +19,14 @@ class ModelGenerator implements Generator
         $this->files = $files;
     }
 
-    public function output(array $tree): array
+    public function output(Tree $tree): array
     {
         $output = [];
 
         $stub = $this->files->stub('model/class.stub');
 
         /** @var \Blueprint\Models\Model $model */
-        foreach ($tree['models'] as $model) {
+        foreach ($tree->models() as $model) {
             $path = $this->getPath($model);
 
             if (! $this->files->exists(dirname($path))) {
@@ -211,8 +212,8 @@ class ModelGenerator implements Generator
             return $stub;
         }
 
-        $stub = str_replace('use Illuminate\\Database\\Eloquent\\Model;', 'use Illuminate\\Database\\Eloquent\\Model;' . PHP_EOL . 'use Illuminate\\Database\\Eloquent\\SoftDeletes;', $stub);
-        $stub = Str::replaceFirst('{', '{' . PHP_EOL . '    use SoftDeletes;' . PHP_EOL, $stub);
+        $stub = str_replace('use Illuminate\\Database\\Eloquent\\Model;', 'use Illuminate\\Database\\Eloquent\\Model;'.PHP_EOL.'use Illuminate\\Database\\Eloquent\\SoftDeletes;', $stub);
+        $stub = Str::replaceFirst('{', '{'.PHP_EOL.'    use SoftDeletes;'.PHP_EOL, $stub);
 
         return $stub;
     }

@@ -5,6 +5,7 @@ namespace Blueprint\Generators\Statements;
 use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Statements\DispatchStatement;
+use Blueprint\Tree;
 
 class JobGenerator implements Generator
 {
@@ -18,14 +19,14 @@ class JobGenerator implements Generator
         $this->files = $files;
     }
 
-    public function output(array $tree): array
+    public function output(Tree $tree): array
     {
         $output = [];
 
         $stub = $this->files->stub('job.stub');
 
         /** @var \Blueprint\Models\Controller $controller */
-        foreach ($tree['controllers'] as $controller) {
+        foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
                     if (! $statement instanceof DispatchStatement) {

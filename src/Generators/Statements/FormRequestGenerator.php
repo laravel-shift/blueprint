@@ -7,6 +7,7 @@ use Blueprint\Contracts\Generator;
 use Blueprint\Models\Controller;
 use Blueprint\Models\Statements\ValidateStatement;
 use Blueprint\Translators\Rules;
+use Blueprint\Tree;
 use Illuminate\Support\Str;
 
 class FormRequestGenerator implements Generator
@@ -18,23 +19,24 @@ class FormRequestGenerator implements Generator
      */
     private $files;
 
-    private $models = [];
+    /** @var Tree */
+    private $tree;
 
     public function __construct($files)
     {
         $this->files = $files;
     }
 
-    public function output(array $tree): array
+    public function output(Tree $tree): array
     {
+        $this->tree = $tree;
+
         $output = [];
 
         $stub = $this->files->stub('form-request.stub');
 
-        $this->registerModels($tree);
-
         /** @var \Blueprint\Models\Controller $controller */
-        foreach ($tree['controllers'] as $controller) {
+        foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
                     if (! $statement instanceof ValidateStatement) {
@@ -103,21 +105,6 @@ class FormRequestGenerator implements Generator
         }, ''));
     }
 
-    private function modelForContext(string $context)
-    {
-        if (isset($this->models[Str::studly($context)])) {
-            return $this->models[Str::studly($context)];
-        }
-
-        $matches = array_filter(array_keys($this->models), function ($key) use ($context) {
-            return Str::endsWith($key, '/'.Str::studly($context));
-        });
-
-        if (count($matches) === 1) {
-            return $this->models[$matches[0]];
-        }
-    }
-
     private function getName(string $context, string $method)
     {
         return $context.Str::studly($method).'Request';
@@ -135,7 +122,7 @@ class FormRequestGenerator implements Generator
     private function validationRules(string $qualifier, string $column)
     {
         /** @var \Blueprint\Models\Model $model */
-        $model = $this->modelForContext($qualifier);
+        $model = $this->tree->modelForContext($qualifier);
 
         $rules = [];
 
@@ -163,10 +150,5 @@ class FormRequestGenerator implements Generator
         }
 
         return $rules;
-    }
-
-    private function registerModels(array $tree)
-    {
-        $this->models = array_merge($tree['cache'] ?? [], $tree['models'] ?? []);
     }
 }

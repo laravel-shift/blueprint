@@ -5,6 +5,7 @@ namespace Tests\Feature\Generator\Statements;
 use Blueprint\Blueprint;
 use Blueprint\Generators\Statements\NotificationGenerator;
 use Blueprint\Lexers\StatementLexer;
+use Blueprint\Tree;
 use Tests\TestCase;
 
 /**
@@ -42,7 +43,7 @@ class NotificationGeneratorTest extends TestCase
 
         $this->files->shouldNotHaveReceived('put');
 
-        $this->assertEquals([], $this->subject->output(['controllers' => []]));
+        $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
 
     /**

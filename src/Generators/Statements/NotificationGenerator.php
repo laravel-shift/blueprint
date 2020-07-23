@@ -5,19 +5,20 @@ namespace Blueprint\Generators\Statements;
 use Blueprint\Blueprint;
 use Blueprint\Generators\StatementGenerator;
 use Blueprint\Models\Statements\SendStatement;
+use Blueprint\Tree;
 
 class NotificationGenerator extends StatementGenerator
 {
     protected $new_instance = 'new message instance';
 
-    public function output(array $tree): array
+    public function output(Tree $tree): array
     {
         $output = [];
 
         $stub = $this->files->stub('notification.stub');
 
         /** @var \Blueprint\Models\Controller $controller */
-        foreach ($tree['controllers'] as $controller) {
+        foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
                     if (!$statement instanceof SendStatement) {

@@ -4,6 +4,7 @@ namespace Tests\Feature\Generators;
 
 use Blueprint\Blueprint;
 use Blueprint\Generators\MigrationGenerator;
+use Blueprint\Tree;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Tests\TestCase;
@@ -43,7 +44,7 @@ class MigrationGeneratorTest extends TestCase
 
         $this->files->shouldNotHaveReceived('put');
 
-        $this->assertEquals([], $this->subject->output(['models' => []]));
+        $this->assertEquals([], $this->subject->output(new Tree(['models' => []])));
     }
 
     /**

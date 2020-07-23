@@ -5,7 +5,6 @@ namespace Blueprint\Generators;
 use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Controller;
-use Blueprint\Models\Model;
 use Blueprint\Models\Statements\DispatchStatement;
 use Blueprint\Models\Statements\EloquentStatement;
 use Blueprint\Models\Statements\FireStatement;
@@ -17,6 +16,7 @@ use Blueprint\Models\Statements\RespondStatement;
 use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
+use Blueprint\Tree;
 use Illuminate\Support\Str;
 
 class ControllerGenerator implements Generator
@@ -28,23 +28,24 @@ class ControllerGenerator implements Generator
 
     private $imports = [];
 
-    private $models = [];
+    /** @var Tree */
+    private $tree;
 
     public function __construct($files)
     {
         $this->files = $files;
     }
 
-    public function output(array $tree): array
+    public function output(Tree $tree): array
     {
+        $this->tree = $tree;
+
         $output = [];
 
         $stub = $this->files->stub('controller/class.stub');
 
-        $this->registerModels($tree);
-
         /** @var \Blueprint\Models\Controller $controller */
-        foreach ($tree['controllers'] as $controller) {
+        foreach ($tree->controllers() as $controller) {
             $this->addImport($controller, 'Illuminate\\Http\\Request');
 
             if ($controller->fullyQualifiedNamespace() !== 'App\\Http\\Controllers') {
@@ -53,7 +54,7 @@ class ControllerGenerator implements Generator
 
             $path = $this->getPath($controller);
 
-            if (! $this->files->exists(dirname($path))) {
+            if (!$this->files->exists(dirname($path))) {
                 $this->files->makeDirectory(dirname($path), 0755, true);
             }
 
@@ -131,7 +132,7 @@ class ControllerGenerator implements Generator
                     $this->addImport($controller, config('blueprint.namespace').'\\Jobs\\'.$statement->job());
                 } elseif ($statement instanceof FireStatement) {
                     $body .= self::INDENT.$statement->output().PHP_EOL;
-                    if (! $statement->isNamedEvent()) {
+                    if (!$statement->isNamedEvent()) {
                         $this->addImport($controller, config('blueprint.namespace').'\\Events\\'.$statement->event());
                     }
                 } elseif ($statement instanceof RenderStatement) {
@@ -142,7 +143,7 @@ class ControllerGenerator implements Generator
                     $method = str_replace('* @return \\Illuminate\\Http\\Response', '* @return \\'.$fqcn, $method);
 
                     $import = $fqcn;
-                    if (! $statement->collection()) {
+                    if (!$statement->collection()) {
                         $import .= ' as '.$statement->name().'Resource';
                     }
 
@@ -166,7 +167,7 @@ class ControllerGenerator implements Generator
                 $body .= PHP_EOL;
             }
 
-            if (! empty($body)) {
+            if (!empty($body)) {
                 $method = str_replace('//', trim($body), $method);
             }
 
@@ -218,32 +219,12 @@ class ControllerGenerator implements Generator
         // Use respond-statement.php as test case.
 
         /** @var \Blueprint\Models\Model $model */
-        $model = $this->modelForContext($model_name);
+        $model = $this->tree->modelForContext($model_name);
 
         if (isset($model)) {
             return $model->fullyQualifiedClassName();
         }
 
         return config('blueprint.namespace').'\\'.($sub_namespace ? $sub_namespace.'\\' : '').$model_name;
-    }
-
-    private function modelForContext(string $context)
-    {
-        if (isset($this->models[Str::studly($context)])) {
-            return $this->models[Str::studly($context)];
-        }
-
-        $matches = array_filter(array_keys($this->models), function ($key) use ($context) {
-            return Str::endsWith($key, '/'.Str::studly($context));
-        });
-
-        if (count($matches) === 1) {
-            return $this->models[$matches[0]];
-        }
-    }
-
-    private function registerModels(array $tree)
-    {
-        $this->models = array_merge($tree['cache'] ?? [], $tree['models'] ?? []);
     }
 }

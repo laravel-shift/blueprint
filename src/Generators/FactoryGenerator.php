@@ -5,6 +5,7 @@ namespace Blueprint\Generators;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Column;
 use Blueprint\Models\Model;
+use Blueprint\Tree;
 use Illuminate\Support\Str;
 
 class FactoryGenerator implements Generator
@@ -21,14 +22,14 @@ class FactoryGenerator implements Generator
         $this->files = $files;
     }
 
-    public function output(array $tree): array
+    public function output(Tree $tree): array
     {
         $output = [];
 
         $stub = $this->files->stub('factory.stub');
 
         /** @var \Blueprint\Models\Model $model */
-        foreach ($tree['models'] as $model) {
+        foreach ($tree->models() as $model) {
             $this->addImport($model, 'Faker\Generator as Faker');
             $this->addImport($model, $model->fullyQualifiedClassName());
 

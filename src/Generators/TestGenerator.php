@@ -17,6 +17,7 @@ use Blueprint\Models\Statements\RespondStatement;
 use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
+use Blueprint\Tree;
 use Illuminate\Support\Str;
 
 class TestGenerator implements Generator
@@ -30,7 +31,8 @@ class TestGenerator implements Generator
     /** @var \Illuminate\Contracts\Filesystem\Filesystem */
     private $files;
 
-    private $models = [];
+    /** @var Tree */
+    private $tree;
 
     private $imports = [];
     private $stubs = [];
@@ -41,16 +43,16 @@ class TestGenerator implements Generator
         $this->files = $files;
     }
 
-    public function output(array $tree): array
+    public function output(Tree $tree): array
     {
+        $this->tree = $tree;
+
         $output = [];
 
         $stub = $this->files->get(STUBS_PATH.'/test/class.stub');
 
-        $this->registerModels($tree);
-
         /** @var \Blueprint\Models\Controller $controller */
-        foreach ($tree['controllers'] as $controller) {
+        foreach ($tree->controllers() as $controller) {
             $path = $this->getPath($controller);
 
             if (! $this->files->exists(dirname($path))) {
@@ -224,7 +226,7 @@ class TestGenerator implements Generator
                             $variable_name = $data;
 
                             /** @var \Blueprint\Models\Model $local_model */
-                            $local_model = $this->modelForContext($qualifier);
+                            $local_model = $this->tree->modelForContext($qualifier);
 
                             if (! is_null($local_model) && $local_model->hasColumn($column)) {
                                 $local_column = $local_model->column($column);
@@ -238,7 +240,7 @@ class TestGenerator implements Generator
                                 }
 
                                 $setup['data'][] = $faker;
-                                $request_data[$data] = '$' . $variable_name;
+                                $request_data[$data] = '$'.$variable_name;
                             } else {
                                 foreach ($local_model->columns() as $local_column) {
                                     if ($local_column->name() === 'id') {
@@ -502,7 +504,7 @@ class TestGenerator implements Generator
         sort($imports);
 
         return implode(PHP_EOL, array_map(function ($class) {
-            return 'use ' . $class . ';';
+            return 'use '.$class.';';
         }, $imports));
     }
 
@@ -640,26 +642,6 @@ END;
         return str_pad(' ', 8).implode(PHP_EOL.str_pad(' ', 8), $lines);
     }
 
-    private function modelForContext(string $context)
-    {
-        if (isset($this->models[Str::studly($context)])) {
-            return $this->models[Str::studly($context)];
-        }
-
-        $matches = array_filter(array_keys($this->models), function ($key) use ($context) {
-            return Str::endsWith($key, '/'.Str::studly($context));
-        });
-
-        if (count($matches) === 1) {
-            return $this->models[$matches[0]];
-        }
-    }
-
-    private function registerModels(array $tree)
-    {
-        $this->models = array_merge($tree['cache'] ?? [], $tree['models'] ?? []);
-    }
-
     private function splitField($field)
     {
         if (Str::contains($field, '.')) {
@@ -685,7 +667,7 @@ END;
         }
 
         $reference = Str::beforeLast($local_column->name(), '_id');
-        $variable_name = $reference . '->id';
+        $variable_name = $reference.'->id';
 
         if ($local_column->attributes()) {
             $reference = $local_column->attributes()[0];
@@ -693,7 +675,7 @@ END;
 
         $faker = sprintf('$%s = factory(%s::class)->create();', Str::beforeLast($local_column->name(), '_id'), Str::studly($reference));
 
-        $this->addImport($controller, $modelNamespace . '\\' . Str::studly($reference));
+        $this->addImport($controller, $modelNamespace.'\\'.Str::studly($reference));
 
         return [$faker, $variable_name];
     }

@@ -5,6 +5,7 @@ namespace Tests\Feature\Generators;
 use Blueprint\Blueprint;
 use Blueprint\Generators\RouteGenerator;
 use Blueprint\Lexers\StatementLexer;
+use Blueprint\Tree;
 use Tests\TestCase;
 
 /**
@@ -38,7 +39,7 @@ class RouteGeneratorTest extends TestCase
     {
         $this->files->shouldNotHaveReceived('append');
 
-        $this->assertEquals([], $this->subject->output(['controllers' => []]));
+        $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
 
     /**

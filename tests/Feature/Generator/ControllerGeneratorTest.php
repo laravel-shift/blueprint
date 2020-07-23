@@ -5,6 +5,7 @@ namespace Tests\Feature\Generators;
 use Blueprint\Blueprint;
 use Blueprint\Generators\ControllerGenerator;
 use Blueprint\Lexers\StatementLexer;
+use Blueprint\Tree;
 use Tests\TestCase;
 
 /**
@@ -43,7 +44,7 @@ class ControllerGeneratorTest extends TestCase
 
         $this->files->shouldNotHaveReceived('put');
 
-        $this->assertEquals([], $this->subject->output(['controllers' => []]));
+        $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
 
     /**
