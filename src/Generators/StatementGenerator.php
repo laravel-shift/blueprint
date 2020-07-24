@@ -35,7 +35,7 @@ abstract class StatementGenerator implements Generator
 
         $stub = $this->buildProperties($statement->data()) . PHP_EOL . PHP_EOL;
         $stub .= str_replace('__construct()', '__construct(' . $this->buildParameters($statement->data()) . ')', $constructor);
-        $stub = str_replace('//', $this->buildAssignments($statement->data()), $stub);
+        $stub = trim(str_replace('//', $this->buildAssignments($statement->data()), $stub));
 
         return $stub;
     }
