@@ -81,13 +81,13 @@ class ViewGeneratorTest extends TestCase
             ->with('resources/views/user/index.blade.php')
             ->andReturnFalse();
         $this->files->expects('put')
-            ->with('resources/views/user/index.blade.php', str_replace('DummyView', 'user.index', $template));
+            ->with('resources/views/user/index.blade.php', str_replace('{{ view }}', 'user.index', $template));
 
         $this->files->expects('exists')
             ->with('resources/views/user/create.blade.php')
             ->andReturnFalse();
         $this->files->expects('put')
-            ->with('resources/views/user/create.blade.php', str_replace('DummyView', 'user.create', $template));
+            ->with('resources/views/user/create.blade.php', str_replace('{{ view }}', 'user.create', $template));
 
         $this->files->expects('exists')
             ->with('resources/views/post')
@@ -98,7 +98,7 @@ class ViewGeneratorTest extends TestCase
         $this->files->expects('makeDirectory')
             ->with('resources/views/post', 0755, true);
         $this->files->expects('put')
-            ->with('resources/views/post/show.blade.php', str_replace('DummyView', 'post.show', $template));
+            ->with('resources/views/post/show.blade.php', str_replace('{{ view }}', 'post.show', $template));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/render-statements.yaml'));
         $tree = $this->blueprint->analyze($tokens);

@@ -47,8 +47,8 @@ class SeederGenerator implements Generator
 
     protected function populateStub(string $stub, string $model)
     {
-        $stub = str_replace('DummyClass', $this->getClassName($model), $stub);
-        $stub = str_replace('//', $this->build($model), $stub);
+        $stub = str_replace('{{ class }}', $this->getClassName($model), $stub);
+        $stub = str_replace('{{ body }}', $this->build($model), $stub);
 
         return $stub;
     }

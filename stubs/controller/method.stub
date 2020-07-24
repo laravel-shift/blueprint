@@ -2,7 +2,7 @@
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function DummyMethod(Request $request)
+    public function {{ method }}(Request $request)
     {
-        //
+        {{ body }}
     }

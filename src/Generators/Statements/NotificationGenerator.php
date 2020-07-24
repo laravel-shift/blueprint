@@ -61,9 +61,9 @@ class NotificationGenerator extends StatementGenerator
 
     protected function populateStub(string $stub, SendStatement $sendStatement)
     {
-        $stub = str_replace('DummyNamespace', config('blueprint.namespace') . '\\Notification', $stub);
-        $stub = str_replace('DummyClass', $sendStatement->mail(), $stub);
-        $stub = str_replace('// properties...', $this->buildConstructor($sendStatement), $stub);
+        $stub = str_replace('{{ namespace }}', config('blueprint.namespace') . '\\Notification', $stub);
+        $stub = str_replace('{{ class }}', $sendStatement->mail(), $stub);
+        $stub = str_replace('{{ properties }}', $this->buildConstructor($sendStatement), $stub);
 
         return $stub;
     }

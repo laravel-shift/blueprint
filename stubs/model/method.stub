@@ -1,4 +1,4 @@
-    public function DummyName()
+    public function {{ method }}()
     {
         return null;
     }

@@ -82,11 +82,11 @@ class TestGenerator implements Generator
 
     protected function populateStub(string $stub, Controller $controller)
     {
-        $stub = str_replace('DummyNamespace', 'Tests\\Feature\\'.Blueprint::relativeNamespace($controller->fullyQualifiedNamespace()), $stub);
-        $stub = str_replace('DummyController', '\\'.$controller->fullyQualifiedClassName(), $stub);
-        $stub = str_replace('DummyClass', $controller->className().'Test', $stub);
-        $stub = str_replace('// test cases...', $this->buildTestCases($controller), $stub);
-        $stub = str_replace('// imports...', $this->buildImports($controller), $stub);
+        $stub = str_replace('{{ namespace }}', 'Tests\\Feature\\'.Blueprint::relativeNamespace($controller->fullyQualifiedNamespace()), $stub);
+        $stub = str_replace('{{ namespacedClass }}', '\\'.$controller->fullyQualifiedClassName(), $stub);
+        $stub = str_replace('{{ class }}', $controller->className().'Test', $stub);
+        $stub = str_replace('{{ body }}', $this->buildTestCases($controller), $stub);
+        $stub = str_replace('{{ imports }}', $this->buildImports($controller), $stub);
 
         return $stub;
     }
@@ -478,8 +478,8 @@ class TestGenerator implements Generator
             $body .= PHP_EOL.PHP_EOL;
             $body .= implode(PHP_EOL.PHP_EOL, array_map([$this, 'buildLines'], array_filter($assertions)));
 
-            $test_case = str_replace('dummy_test_case', $this->buildTestCaseName($name, $tested_bits), $test_case);
-            $test_case = str_replace('// ...', trim($body), $test_case);
+            $test_case = str_replace('{{ method }}', $this->buildTestCaseName($name, $tested_bits), $test_case);
+            $test_case = str_replace('{{ body }}', trim($body), $test_case);
 
             $test_cases .= PHP_EOL.$test_case.PHP_EOL;
         }
