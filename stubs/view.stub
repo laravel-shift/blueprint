@@ -1,5 +1,5 @@
 @extends('layouts.app')
 
 @section('content')
-    DummyView template
+    {{ view }} template
 @endsection

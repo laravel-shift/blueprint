@@ -77,9 +77,9 @@ class FormRequestGenerator implements Generator
 
     protected function populateStub(string $stub, string $name, $context, ValidateStatement $validateStatement, Controller $controller)
     {
-        $stub = str_replace('DummyNamespace', config('blueprint.namespace').'\\Http\\Requests'.($controller->namespace() ? '\\'.$controller->namespace() : ''), $stub);
-        $stub = str_replace('DummyClass', $name, $stub);
-        $stub = str_replace('// rules...', $this->buildRules($context, $validateStatement), $stub);
+        $stub = str_replace('{{ namespace }}', config('blueprint.namespace').'\\Http\\Requests'.($controller->namespace() ? '\\'.$controller->namespace() : ''), $stub);
+        $stub = str_replace('{{ class }}', $name, $stub);
+        $stub = str_replace('{{ rules }}', $this->buildRules($context, $validateStatement), $stub);
 
         return $stub;
     }

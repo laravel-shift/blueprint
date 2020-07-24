@@ -65,9 +65,9 @@ class FactoryGenerator implements Generator
 
     protected function populateStub(string $stub, Model $model)
     {
-        $stub = str_replace('DummyClass', $model->name(), $stub);
-        $stub = str_replace('// definition...', $this->buildDefinition($model), $stub);
-        $stub = str_replace('// imports...', $this->buildImports($model), $stub);
+        $stub = str_replace('{{ class }}', $model->name(), $stub);
+        $stub = str_replace('{{ definition }}', $this->buildDefinition($model), $stub);
+        $stub = str_replace('{{ imports }}', $this->buildImports($model), $stub);
 
         return $stub;
     }

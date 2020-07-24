@@ -2,10 +2,10 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-// imports...
+{{ imports }}
 
-$factory->define(DummyClass::class, function (Faker $faker) {
+$factory->define({{ class }}::class, function (Faker $faker) {
     return [
-        // definition...
+        {{ definition }}
     ];
 });

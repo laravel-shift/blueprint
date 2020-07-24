@@ -65,6 +65,6 @@ class ViewGenerator implements Generator
 
     protected function populateStub(string $stub, RenderStatement $renderStatement)
     {
-        return str_replace('DummyView', $renderStatement->view(), $stub);
+        return str_replace('{{ view }}', $renderStatement->view(), $stub);
     }
 }

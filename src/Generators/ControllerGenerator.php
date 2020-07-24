@@ -73,10 +73,10 @@ class ControllerGenerator implements Generator
 
     protected function populateStub(string $stub, Controller $controller)
     {
-        $stub = str_replace('DummyNamespace', $controller->fullyQualifiedNamespace(), $stub);
-        $stub = str_replace('DummyClass', $controller->className(), $stub);
-        $stub = str_replace('// methods...', $this->buildMethods($controller), $stub);
-        $stub = str_replace('// imports...', $this->buildImports($controller), $stub);
+        $stub = str_replace('{{ namespace }}', $controller->fullyQualifiedNamespace(), $stub);
+        $stub = str_replace('{{ class }}', $controller->className(), $stub);
+        $stub = str_replace('{{ methods }}', $this->buildMethods($controller), $stub);
+        $stub = str_replace('{{ imports }}', $this->buildImports($controller), $stub);
 
         return $stub;
     }
@@ -88,7 +88,7 @@ class ControllerGenerator implements Generator
         $methods = '';
 
         foreach ($controller->methods() as $name => $statements) {
-            $method = str_replace('DummyMethod', $name, $template);
+            $method = str_replace('{{ method }}', $name, $template);
 
             if (in_array($name, ['edit', 'update', 'show', 'destroy'])) {
                 $context = Str::singular($controller->prefix());
@@ -168,7 +168,7 @@ class ControllerGenerator implements Generator
             }
 
             if (!empty($body)) {
-                $method = str_replace('//', trim($body), $method);
+                $method = str_replace('{{ body }}', trim($body), $method);
             }
 
             $methods .= PHP_EOL.$method;

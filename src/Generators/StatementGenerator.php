@@ -30,14 +30,14 @@ abstract class StatementGenerator implements Generator
         }
 
         if (empty($statement->data())) {
-            return trim($constructor);
+            $stub = (str_replace('{{ body }}', '//', $constructor));
+        } else {
+            $stub = $this->buildProperties($statement->data()) . PHP_EOL . PHP_EOL;
+            $stub .= str_replace('__construct()', '__construct(' . $this->buildParameters($statement->data()) . ')', $constructor);
+            $stub = str_replace('{{ body }}', $this->buildAssignments($statement->data()), $stub);
         }
 
-        $stub = $this->buildProperties($statement->data()) . PHP_EOL . PHP_EOL;
-        $stub .= str_replace('__construct()', '__construct(' . $this->buildParameters($statement->data()) . ')', $constructor);
-        $stub = trim(str_replace('//', $this->buildAssignments($statement->data()), $stub));
-
-        return $stub;
+        return trim($stub);
     }
 
     protected function buildProperties(array $data)

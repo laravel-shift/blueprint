@@ -1,6 +1,6 @@
 <?php
 
-namespace DummyNamespace;
+namespace {{ namespace }};
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -8,11 +8,11 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Queue\SerializesModels;
 
-class DummyClass extends Notification
+class {{ class }} extends Notification
 {
     use Queueable, SerializesModels;
 
-    // properties...
+    {{ properties }}
 
     /**
      * Get the notification's delivery channels.

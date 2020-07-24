@@ -1,13 +1,13 @@
 <?php
 
-namespace DummyNamespace;
+namespace {{ namespace }};
 
-// imports...
+{{ imports }}
 
 /**
- * @see DummyController
+ * @see {{ namespacedClass }}
  */
-class DummyClass extends TestCase
+class {{ class }} extends TestCase
 {
-    // test cases...
+    {{ body }}
 }

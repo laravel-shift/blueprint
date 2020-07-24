@@ -1,19 +1,19 @@
 <?php
 
-namespace DummyNamespace;
+namespace {{ namespace }};
 
-use DummyImport;
+use {{ import }};
 
-class DummyClass extends DummyParent
+class {{ class }} extends {{ parentClass }}
 {
     /**
-     * Transform the DummyItem into an array.
+     * Transform the {{ resource }} into an array.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function toArray($request)
     {
-        // data...
+        {{ body }}
     }
 }

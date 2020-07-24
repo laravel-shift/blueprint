@@ -48,15 +48,15 @@ class ModelGenerator implements Generator
 
     protected function populateStub(string $stub, Model $model)
     {
-        $stub = str_replace('DummyNamespace', $model->fullyQualifiedNamespace(), $stub);
-        $stub = str_replace('DummyClass', $model->name(), $stub);
-        $stub = str_replace('/** DummyPHPDocClass **/', $this->buildClassPhpDoc($model), $stub);
+        $stub = str_replace('{{ namespace }}', $model->fullyQualifiedNamespace(), $stub);
+        $stub = str_replace('{{ class }}', $model->name(), $stub);
+        $stub = str_replace('{{ PHPDoc }}', $this->buildClassPhpDoc($model), $stub);
 
         $body = $this->buildProperties($model);
         $body .= PHP_EOL.PHP_EOL;
         $body .= $this->buildRelationships($model);
 
-        $stub = str_replace('// ...', trim($body), $stub);
+        $stub = str_replace('{{ body }}', trim($body), $stub);
         $stub = $this->addTraits($model, $stub);
 
         return $stub;
@@ -187,10 +187,10 @@ class ModelGenerator implements Generator
                 } elseif (in_array($type, ['hasMany', 'belongsToMany', 'morphMany'])) {
                     $method_name = Str::plural($column_name);
                 }
-                $method = str_replace('DummyName', Str::camel($method_name), $template);
+                $method = str_replace('{{ method }}', Str::camel($method_name), $template);
                 $method = str_replace('null', $relationship, $method);
 
-                $phpDoc = str_replace('DummyReturn', '\Illuminate\Database\Eloquent\Relations\\'.Str::ucfirst($type), $commentTemplate);
+                $phpDoc = str_replace('{{ namespacedReturnClass }}', '\Illuminate\Database\Eloquent\Relations\\'.Str::ucfirst($type), $commentTemplate);
 
                 $methods .= PHP_EOL.$phpDoc.$method;
             }

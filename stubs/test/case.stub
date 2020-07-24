@@ -1,7 +1,7 @@
     /**
      * @test
      */
-    public function dummy_test_case()
+    public function {{ method }}()
     {
-        // ...
+        {{ body }}
     }

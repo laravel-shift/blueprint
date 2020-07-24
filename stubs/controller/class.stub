@@ -1,10 +1,10 @@
 <?php
 
-namespace DummyNamespace;
+namespace {{ namespace }};
 
-// imports...
+{{ imports }}
 
-class DummyClass extends Controller
+class {{ class }} extends Controller
 {
-    // methods...
+    {{ methods }}
 }

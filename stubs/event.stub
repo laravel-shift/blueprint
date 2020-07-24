@@ -1,12 +1,12 @@
 <?php
 
-namespace DummyNamespace;
+namespace {{ namespace }};
 
 use Illuminate\Queue\SerializesModels;
 
-class DummyClass
+class {{ class }}
 {
     use SerializesModels;
 
-    // properties...
+    {{ properties }}
 }
