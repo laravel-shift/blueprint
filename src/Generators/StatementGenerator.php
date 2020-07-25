@@ -26,7 +26,7 @@ abstract class StatementGenerator implements Generator
         static $constructor = null;
 
         if (is_null($constructor)) {
-            $constructor = str_replace('new instance', $this->new_instance, $this->files->stub('partials/constructor.stub'));
+            $constructor = str_replace('new instance', $this->new_instance, $this->files->stub('constructor.stub'));
         }
 
         if (empty($statement->data())) {
