@@ -77,8 +77,8 @@ class ModelGeneratorTest extends TestCase
             ->andReturn(file_get_contents('stubs/model.method.stub'));
 
         $this->files->shouldReceive('stub')
-            ->with('model.method-comment.stub')
-            ->andReturn(file_get_contents('stubs/model.method-comment.stub'));
+            ->with('model.method.comment.stub')
+            ->andReturn(file_get_contents('stubs/model.method.comment.stub'));
 
 
         $this->files->expects('exists')
@@ -319,8 +319,8 @@ class ModelGeneratorTest extends TestCase
             ->andReturn(file_get_contents('stubs/model.method.stub'));
 
         $this->files->shouldReceive('stub')
-            ->with('model.method-comment.stub')
-            ->andReturn(file_get_contents('stubs/model.method-comment.stub'));
+            ->with('model.method.comment.stub')
+            ->andReturn(file_get_contents('stubs/model.method.comment.stub'));
 
         $this->files->expects('exists')
             ->with(dirname($path))

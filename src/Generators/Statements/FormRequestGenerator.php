@@ -33,7 +33,7 @@ class FormRequestGenerator implements Generator
 
         $output = [];
 
-        $stub = $this->files->stub('form-request.stub');
+        $stub = $this->files->stub('request.stub');
 
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree->controllers() as $controller) {
