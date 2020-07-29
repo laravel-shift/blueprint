@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Commands;
 
+use Illuminate\Support\Facades\Bus;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Tests\TestCase;
 
@@ -71,15 +72,16 @@ class EraseCommandTest extends TestCase
     /** @test */
     public function it_calls_the_trace_command()
     {
+        Bus::fake();
         $filesystem = \Mockery::mock(\Illuminate\Filesystem\Filesystem::class)->makePartial();
         $this->swap('files', $filesystem);
 
         $filesystem->expects('get')->with('.blueprint')->andReturn("other: test.php");
-        $filesystem->expects('put')->with('.blueprint',"other: test.php\n");
+        $filesystem->expects('put')->with('.blueprint', "other: test.php\n");
 
         $this->artisan('blueprint:erase')
             ->expectsOutput('No models found');
-        
+
         $this->markTestIncomplete('how to test if a command called another command?');
     }
 }
