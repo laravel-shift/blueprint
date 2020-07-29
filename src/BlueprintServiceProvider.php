@@ -36,27 +36,32 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
     public function register()
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/blueprint.php', 'blueprint'
+            __DIR__ . '/../config/blueprint.php',
+            'blueprint'
         );
 
         File::mixin(new FileMixins());
 
-        $this->app->bind('command.blueprint.build',
+        $this->app->bind(
+            'command.blueprint.build',
             function ($app) {
-                return new BuildCommand($app['files'],app(Builder::class));
+                return new BuildCommand($app['files'], app(Builder::class));
             }
         );
-        $this->app->bind('command.blueprint.erase',
+        $this->app->bind(
+            'command.blueprint.erase',
             function ($app) {
                 return new EraseCommand($app['files']);
             }
         );
-        $this->app->bind('command.blueprint.trace',
+        $this->app->bind(
+            'command.blueprint.trace',
             function ($app) {
                 return new TraceCommand($app['files']);
             }
         );
-        $this->app->bind('command.blueprint.new',
+        $this->app->bind(
+            'command.blueprint.new',
             function ($app) {
                 return new NewCommand($app['files']);
             }
