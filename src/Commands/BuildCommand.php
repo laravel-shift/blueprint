@@ -34,7 +34,7 @@ class BuildCommand extends Command
     protected $files;
 
     /** @var Builder */
-    private Builder $builder;
+    private $builder;
 
     /**
      * @param Filesystem $files
