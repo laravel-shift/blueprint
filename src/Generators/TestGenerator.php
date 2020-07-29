@@ -50,7 +50,7 @@ class TestGenerator implements Generator
 
         $output = [];
 
-        $stub = $this->files->get(STUBS_PATH.'/test/class.stub');
+        $stub = $this->files->stub('test.class.stub');
 
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree->controllers() as $controller) {
@@ -524,7 +524,7 @@ class TestGenerator implements Generator
     private function testCaseStub()
     {
         if (empty($this->stubs['test-case'])) {
-            $this->stubs['test-case'] = $this->files->get(STUBS_PATH.'/test/case.stub');
+            $this->stubs['test-case'] = $this->files->stub('test.case.stub');
         }
 
         return $this->stubs['test-case'];

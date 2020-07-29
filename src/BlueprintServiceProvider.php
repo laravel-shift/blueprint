@@ -23,9 +23,17 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
             define('STUBS_PATH', dirname(__DIR__) . '/stubs');
         }
 
+        if (!defined('CUSTOM_STUBS_PATH')) {
+            define('CUSTOM_STUBS_PATH', base_path('stubs/blueprint'));
+        }
+
         $this->publishes([
             __DIR__ . '/../config/blueprint.php' => config_path('blueprint.php'),
         ], 'blueprint-config');
+
+        $this->publishes([
+            dirname(__DIR__) . '/stubs' => CUSTOM_STUBS_PATH,
+        ], 'blueprint-stubs');
     }
 
     /**

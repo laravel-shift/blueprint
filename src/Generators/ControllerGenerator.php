@@ -42,7 +42,7 @@ class ControllerGenerator implements Generator
 
         $output = [];
 
-        $stub = $this->files->stub('controller/class.stub');
+        $stub = $this->files->stub('controller.class.stub');
 
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree->controllers() as $controller) {
@@ -83,7 +83,7 @@ class ControllerGenerator implements Generator
 
     protected function buildMethods(Controller $controller)
     {
-        $template = $this->files->stub('controller/method.stub');
+        $template = $this->files->stub('controller.method.stub');
 
         $methods = '';
 

@@ -75,8 +75,8 @@ class NotificationGeneratorTest extends TestCase
 
         if ($draft === 'drafts/send-statements-notification-facade.yaml') {
             $this->files->expects('stub')
-                ->with('partials/constructor.stub')
-                ->andReturn(file_get_contents('stubs/partials/constructor.stub'));
+                ->with('constructor.stub')
+                ->andReturn(file_get_contents('stubs/constructor.stub'));
         }
 
         $this->files->shouldReceive('exists')

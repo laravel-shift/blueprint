@@ -23,7 +23,7 @@ class ModelGenerator implements Generator
     {
         $output = [];
 
-        $stub = $this->files->stub('model/class.stub');
+        $stub = $this->files->stub('model.class.stub');
 
         /** @var \Blueprint\Models\Model $model */
         foreach ($tree->models() as $model) {
@@ -99,33 +99,33 @@ class ModelGenerator implements Generator
         $properties = '';
 
         if (! $model->usesTimestamps()) {
-            $properties .= $this->files->stub('model/timestamps.stub');
+            $properties .= $this->files->stub('model.timestamps.stub');
         }
 
         if (config('blueprint.use_guarded')) {
-            $properties .= $this->files->stub('model/guarded.stub');
+            $properties .= $this->files->stub('model.guarded.stub');
         } else {
             $columns = $this->fillableColumns($model->columns());
             if (! empty($columns)) {
-                $properties .= PHP_EOL.str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model/fillable.stub'));
+                $properties .= PHP_EOL.str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model.fillable.stub'));
             } else {
-                $properties .= $this->files->stub('model/fillable.stub');
+                $properties .= $this->files->stub('model.fillable.stub');
             }
         }
 
         $columns = $this->hiddenColumns($model->columns());
         if (! empty($columns)) {
-            $properties .= PHP_EOL.str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model/hidden.stub'));
+            $properties .= PHP_EOL.str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model.hidden.stub'));
         }
 
         $columns = $this->castableColumns($model->columns());
         if (! empty($columns)) {
-            $properties .= PHP_EOL.str_replace('[]', $this->pretty_print_array($columns), $this->files->stub('model/casts.stub'));
+            $properties .= PHP_EOL.str_replace('[]', $this->pretty_print_array($columns), $this->files->stub('model.casts.stub'));
         }
 
         $columns = $this->dateColumns($model->columns());
         if (! empty($columns)) {
-            $properties .= PHP_EOL.str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model/dates.stub'));
+            $properties .= PHP_EOL.str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model.dates.stub'));
         }
 
         return trim($properties);
@@ -134,11 +134,11 @@ class ModelGenerator implements Generator
     protected function buildRelationships(Model $model)
     {
         $methods = '';
-        $template = $this->files->stub('model/method.stub');
+        $template = $this->files->stub('model.method.stub');
         $commentTemplate = '';
 
         if (config('blueprint.generate_phpdocs')) {
-            $commentTemplate = $this->files->stub('model/method-comment.stub');
+            $commentTemplate = $this->files->stub('model.method.comment.stub');
         }
 
         foreach ($model->relationships() as $type => $references) {

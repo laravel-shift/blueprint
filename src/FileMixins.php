@@ -10,7 +10,10 @@ class FileMixins
     {
         return function ($path) {
             if (!isset($this->stubs[$path])) {
-                $this->stubs[$path] = $this->get(STUBS_PATH . '/' . $path);
+                $stubPath = file_exists($customPath = CUSTOM_STUBS_PATH . '/' . $path)
+                          ? $customPath
+                          : STUBS_PATH . '/' . $path;
+                $this->stubs[$path] = $this->get($stubPath);
             }
 
             return $this->stubs[$path];
