@@ -5,6 +5,7 @@ namespace Blueprint\Commands;
 use Blueprint\Blueprint;
 use Blueprint\Builder;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputArgument;
@@ -32,35 +33,35 @@ class BuildCommand extends Command
     /** @var Filesystem */
     protected $files;
 
+    /** @var Builder */
+    private $builder;
+
     /**
      * @param Filesystem $files
+     * @param Builder $builder
      */
-    public function __construct(Filesystem $files)
+    public function __construct(Filesystem $files, Builder $builder)
     {
         parent::__construct();
 
         $this->files = $files;
+        $this->builder = $builder;
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return void
-     */
     public function handle()
     {
         $file = $this->argument('draft') ?? $this->defaultDraftFile();
 
-        if (! file_exists($file)) {
+        if (!$this->files->exists($file)) {
             $this->error('Draft file could not be found: '.($file ?: 'draft.yaml'));
-            exit(1);
+            return 1;
         }
 
         $only = $this->option('only') ?: '';
         $skip = $this->option('skip') ?: '';
 
         $blueprint = resolve(Blueprint::class);
-        $generated = Builder::execute($blueprint, $this->files, $file, $only, $skip);
+        $generated = $this->builder->execute($blueprint, $this->files, $file, $only, $skip);
 
         collect($generated)->each(function ($files, $action) {
             $this->line(Str::studly($action).':', $this->outputStyle($action));
@@ -97,12 +98,6 @@ class BuildCommand extends Command
 
     private function defaultDraftFile()
     {
-        if (file_exists('draft.yaml')) {
-            return 'draft.yaml';
-        }
-
-        if (file_exists('draft.yml')) {
-            return 'draft.yml';
-        }
+        return file_exists('draft.yml') ? 'draft.yml' : 'draft.yaml';
     }
 }

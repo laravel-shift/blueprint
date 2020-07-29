@@ -43,7 +43,7 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
 
         $this->app->bind('command.blueprint.build',
             function ($app) {
-                return new BuildCommand($app['files']);
+                return new BuildCommand($app['files'],app(Builder::class));
             }
         );
         $this->app->bind('command.blueprint.erase',
