@@ -5,6 +5,7 @@ namespace Blueprint\Commands;
 use Blueprint\Blueprint;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Artisan;
 
 class EraseCommand extends Command
 {
@@ -71,7 +72,7 @@ class EraseCommand extends Command
 
         $this->files->put('.blueprint', $blueprint->dump($generated));
 
-        $this->call('blueprint:trace');
+        Artisan::call('blueprint:trace');
     }
 
     private function outputStyle($action)
