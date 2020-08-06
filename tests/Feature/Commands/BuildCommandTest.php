@@ -24,7 +24,7 @@ class BuildCommandTest extends TestCase
         $builder = $this->mock(Builder::class);
 
         $builder->shouldReceive('execute')
-            ->with(resolve(Blueprint::class), $filesystem, 'draft.yaml', '', '')
+            ->with(resolve(Blueprint::class), $filesystem, 'draft.yaml', '', '', false)
             ->andReturn(collect([]));
 
         $this->artisan('blueprint:build')
@@ -44,7 +44,7 @@ class BuildCommandTest extends TestCase
         $builder = $this->mock(Builder::class);
 
         $builder->shouldReceive('execute')
-            ->with(resolve(Blueprint::class), $filesystem, 'test.yml', 'a,b,c', 'x,y,z')
+            ->with(resolve(Blueprint::class), $filesystem, 'test.yml', 'a,b,c', 'x,y,z', false)
             ->andReturn(collect([]));
 
         $this->artisan('blueprint:build test.yml --only=a,b,c --skip=x,y,z')
@@ -82,7 +82,7 @@ class BuildCommandTest extends TestCase
         $builder = $this->mock(Builder::class);
 
         $builder->shouldReceive('execute')
-            ->with(resolve(Blueprint::class), $filesystem, 'draft.yaml', '', '')
+            ->with(resolve(Blueprint::class), $filesystem, 'draft.yaml', '', '', false)
             ->andReturn(collect([
                 "created" => [
                     "file1",

@@ -7,6 +7,7 @@ use Blueprint\Generators\MigrationGenerator;
 use Blueprint\Tree;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
+use Symfony\Component\Finder\SplFileInfo;
 use Tests\TestCase;
 
 /**
@@ -57,10 +58,6 @@ class MigrationGeneratorTest extends TestCase
             ->with('migration.stub')
             ->andReturn(file_get_contents('stubs/migration.stub'));
 
-        $this->files->expects('files')
-            ->with('database/migrations/')
-            ->andReturn([]);
-
         $now = Carbon::now();
         Carbon::setTestNow($now);
 
@@ -95,7 +92,9 @@ class MigrationGeneratorTest extends TestCase
 
         $this->files->expects('files')
             ->with('database/migrations/')
-            ->andReturn([basename($yesterday_path)]);
+            ->andReturn([
+                new SplFileInfo($yesterday_path, '', ''),
+            ]);
 
         $this->files->expects('exists')
             ->with($yesterday_path)
@@ -124,7 +123,6 @@ class MigrationGeneratorTest extends TestCase
 
         $timestamp_path = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_comments_table.php');
 
-        $this->files->expects('files')->andReturn([]);
         $this->files->expects('exists')->andReturn(false);
 
         $this->files->expects('put')
@@ -151,7 +149,6 @@ class MigrationGeneratorTest extends TestCase
         $post_path = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_posts_table.php');
         $comment_path = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_comments_table.php');
 
-        $this->files->expects('files')->twice()->andReturn([]);
         $this->files->expects('exists')->twice()->andReturn(false);
 
         $this->files->expects('put')
@@ -185,7 +182,6 @@ class MigrationGeneratorTest extends TestCase
 
         $timestamp_path = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_relationships_table.php');
 
-        $this->files->expects('files')->andReturn([]);
         $this->files->expects('exists')->andReturn(false);
 
         $this->files->expects('put')
@@ -213,7 +209,6 @@ class MigrationGeneratorTest extends TestCase
 
         $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_comments_table.php');
 
-        $this->files->expects('files')->andReturn([]);
         $this->files->expects('exists')->andReturn(false);
 
         $this->files->expects('put')
@@ -247,7 +242,6 @@ class MigrationGeneratorTest extends TestCase
 
         $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_comments_table.php');
 
-        $this->files->expects('files')->andReturn([]);
         $this->files->expects('exists')->andReturn(false);
 
         $this->files->expects('put')
@@ -274,7 +268,6 @@ class MigrationGeneratorTest extends TestCase
         $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_journeys_table.php');
         $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_diary_journey_table.php');
 
-        $this->files->expects('files')->twice()->andReturn([]);
         $this->files->expects('exists')->twice()->andReturn(false);
 
         $this->files->expects('put')
@@ -306,8 +299,8 @@ class MigrationGeneratorTest extends TestCase
             ->with('database/migrations/')
             ->twice()
             ->andReturn([
-                basename($model_migration),
-                basename($pivot_migration),
+                new SplFileInfo($model_migration, '', ''),
+                new SplFileInfo($pivot_migration, '', ''),
             ]);
 
         $this->files->expects('exists')->with($model_migration)->andReturn(true);
@@ -321,7 +314,7 @@ class MigrationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/belongs-to-many.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['updated' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
+        $this->assertEquals(['updated' => [$model_migration, $pivot_migration]], $this->subject->output($tree, true));
     }
 
     /**
@@ -345,7 +338,6 @@ class MigrationGeneratorTest extends TestCase
         $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_journeys_table.php');
         $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_diary_journey_table.php');
 
-        $this->files->expects('files')->twice()->andReturn([]);
         $this->files->expects('exists')->twice()->andReturn(false);
 
         $this->files->expects('put')
@@ -377,7 +369,6 @@ class MigrationGeneratorTest extends TestCase
         $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_journeys_table.php');
         $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_diary_journey_table.php');
 
-        $this->files->expects('files')->twice()->andReturn([]);
         $this->files->expects('exists')->twice()->andReturn(false);
 
         $this->files->expects('put')
@@ -415,7 +406,6 @@ class MigrationGeneratorTest extends TestCase
         $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_journeys_table.php');
         $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_diary_journey_table.php');
 
-        $this->files->expects('files')->twice()->andReturn([]);
         $this->files->expects('exists')->twice()->andReturn(false);
 
         $this->files->expects('put')
@@ -445,7 +435,6 @@ class MigrationGeneratorTest extends TestCase
         $people_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_people_table.php');
         $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_company_person_table.php');
 
-        $this->files->expects('files')->times(3)->andReturn([]);
         $this->files->expects('exists')->times(3)->andReturn(false);
 
         $this->files->expects('put')
@@ -483,7 +472,6 @@ class MigrationGeneratorTest extends TestCase
         $people_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_people_table.php');
         $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_company_person_table.php');
 
-        $this->files->expects('files')->times(3)->andReturn([]);
         $this->files->expects('exists')->times(3)->andReturn(false);
 
         $this->files->expects('put')
@@ -514,7 +502,6 @@ class MigrationGeneratorTest extends TestCase
         $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_users_table.php');
         $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_test_table.php');
 
-        $this->files->expects('files')->twice()->andReturn([]);
         $this->files->expects('exists')->twice()->andReturn(false);
 
         $this->files->expects('put')
@@ -549,7 +536,6 @@ class MigrationGeneratorTest extends TestCase
         $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_users_table.php');
         $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_test_table.php');
 
-        $this->files->expects('files')->twice()->andReturn([]);
         $this->files->expects('exists')->twice()->andReturn(false);
 
         $this->files->expects('put')
@@ -579,7 +565,6 @@ class MigrationGeneratorTest extends TestCase
 
         $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_carts_table.php');
 
-        $this->files->expects('files')->andReturn([]);
         $this->files->expects('exists')->andReturn(false);
 
         $this->files
@@ -614,7 +599,6 @@ class MigrationGeneratorTest extends TestCase
 
         $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_carts_table.php');
 
-        $this->files->expects('files')->andReturn([]);
         $this->files->expects('exists')->andReturn(false);
 
         $this->files
@@ -641,7 +625,6 @@ class MigrationGeneratorTest extends TestCase
 
         $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_comments_table.php');
 
-        $this->files->expects('files')->andReturn([]);
         $this->files->expects('exists')->andReturn(false);
 
         $this->files
@@ -674,7 +657,6 @@ class MigrationGeneratorTest extends TestCase
 
         $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_comments_table.php');
 
-        $this->files->expects('files')->andReturn([]);
         $this->files->expects('exists')->andReturn(false);
 
         $this->files
@@ -703,7 +685,6 @@ class MigrationGeneratorTest extends TestCase
         $user_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_users_table.php');
         $image_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_images_table.php');
 
-        $this->files->expects('files')->times(3)->andReturn([]);
         $this->files->expects('exists')->times(3)->andReturn(false);
 
         $this->files->expects('put')
@@ -741,7 +722,6 @@ class MigrationGeneratorTest extends TestCase
         $user_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_users_table.php');
         $image_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_images_table.php');
 
-        $this->files->expects('files')->times(3)->andReturn([]);
         $this->files->expects('exists')->times(3)->andReturn(false);
 
         $this->files->expects('put')

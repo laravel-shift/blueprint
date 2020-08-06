@@ -379,7 +379,7 @@ class BlueprintTest extends TestCase
         $tree = new Tree(['branch' => ['code', 'attributes']]);
 
         $generatorOne->expects('output')
-            ->with($tree)
+            ->with($tree, false)
             ->andReturn([
                 'created' => ['one/new.php'],
                 'updated' => ['one/existing.php'],
@@ -394,7 +394,7 @@ class BlueprintTest extends TestCase
 
         $generatorTwo = \Mockery::mock(Generator::class);
         $generatorTwo->expects('output')
-            ->with($tree)
+            ->with($tree, false)
             ->andReturn([
                 'created' => ['two/new.php'],
                 'updated' => ['two/existing.php'],
@@ -429,7 +429,7 @@ class BlueprintTest extends TestCase
 
         $generatorSwap = \Mockery::mock(Generator::class);
         $generatorSwap->expects('output')
-            ->with($tree)
+            ->with($tree, false)
             ->andReturn([
                 'created' => ['swapped/new.php'],
                 'updated' => ['swapped/existing.php'],
@@ -464,7 +464,7 @@ class BlueprintTest extends TestCase
         $skip = [];
 
         $generatorFoo->shouldReceive('output')
-            ->with($tree)
+            ->with($tree, false)
             ->andReturn([
                 'created' => ['foo.php'],
             ]);
@@ -474,7 +474,7 @@ class BlueprintTest extends TestCase
 
         $generatorBar = \Mockery::mock(Generator::class);
         $generatorBar->shouldReceive('output')
-            ->with($tree)
+            ->with($tree, false)
             ->andReturn([
                 'created' => ['bar.php'],
             ]);
@@ -484,7 +484,7 @@ class BlueprintTest extends TestCase
 
         $generatorBaz = \Mockery::mock(Generator::class);
         $generatorBaz->shouldReceive('output')
-            ->with($tree)
+            ->with($tree, false)
             ->andReturn([
                 'created' => ['baz.php'],
             ]);
@@ -515,7 +515,7 @@ class BlueprintTest extends TestCase
         $skip = [];
 
         $generatorFoo->shouldReceive('output')
-            ->with($tree)
+            ->with($tree, false)
             ->andReturn([
                 'created' => ['foo.php'],
             ]);
@@ -525,7 +525,7 @@ class BlueprintTest extends TestCase
 
         $generatorBar = \Mockery::mock(Generator::class);
         $generatorBar->shouldReceive('output')
-            ->with($tree)
+            ->with($tree, false)
             ->andReturn([
                 'created' => ['bar.php'],
             ]);
@@ -535,7 +535,7 @@ class BlueprintTest extends TestCase
 
         $generatorBaz = \Mockery::mock(Generator::class);
         $generatorBaz->shouldReceive('output')
-            ->with($tree)
+            ->with($tree, false)
             ->andReturn([
                 'created' => ['baz.php'],
             ]);
@@ -566,7 +566,7 @@ class BlueprintTest extends TestCase
         $skip = ['bar'];
 
         $generatorFoo->shouldReceive('output')
-            ->with($tree)
+            ->with($tree, false)
             ->andReturn([
                 'created' => ['foo.php'],
             ]);
@@ -576,7 +576,7 @@ class BlueprintTest extends TestCase
 
         $generatorBar = \Mockery::mock(Generator::class);
         $generatorBar->shouldReceive('output')
-            ->with($tree)
+            ->with($tree, false)
             ->andReturn([
                 'created' => ['bar.php'],
             ]);
@@ -586,7 +586,7 @@ class BlueprintTest extends TestCase
 
         $generatorBaz = \Mockery::mock(Generator::class);
         $generatorBaz->shouldReceive('output')
-            ->with($tree)
+            ->with($tree, false)
             ->andReturn([
                 'created' => ['baz.php'],
             ]);
@@ -617,7 +617,7 @@ class BlueprintTest extends TestCase
         $skip = ['bar', 'baz'];
 
         $generatorFoo->shouldReceive('output')
-            ->with($tree)
+            ->with($tree, false)
             ->andReturn([
                 'created' => ['foo.php'],
             ]);
@@ -637,7 +637,7 @@ class BlueprintTest extends TestCase
 
         $generatorBaz = \Mockery::mock(Generator::class);
         $generatorBaz->shouldReceive('output')
-            ->with($tree)
+            ->with($tree, false)
             ->andReturn([
                 'created' => ['baz.php'],
             ]);
