@@ -42,7 +42,7 @@ class MigrationGenerator implements Generator
         $this->files = $files;
     }
 
-    public function output(Tree $tree): array
+    public function output(Tree $tree,  $overwriteMigrations = false): array
     {
         $output = [];
 
@@ -55,9 +55,10 @@ class MigrationGenerator implements Generator
         /** @var \Blueprint\Models\Model $model */
         foreach ($tree->models() as $model) {
             $path = $this->getPath($model, $sequential_timestamp->addSecond());
+            $action = $this->files->exists($path) ? 'updated' : 'created';
             $this->files->put($path, $this->populateStub($stub, $model));
 
-            $output['created'][] = $path;
+            $output[$action][] = $path;
 
             if (! empty($model->pivotTables())) {
                 foreach ($model->pivotTables() as $pivotSegments) {
@@ -69,9 +70,10 @@ class MigrationGenerator implements Generator
 
         foreach ($created_pivot_tables as $pivotTable => $pivotSegments) {
             $path = $this->getPivotTablePath($pivotTable, $sequential_timestamp);
+            $action = $this->files->exists($path) ? 'updated' : 'created';
             $this->files->put($path, $this->populatePivotStub($stub, $pivotSegments));
             $created_pivot_tables[] = $pivotTable;
-            $output['created'][] = $path;
+            $output[$action][] = $path;
         }
 
         return $output;
@@ -278,12 +280,24 @@ class MigrationGenerator implements Generator
 
     protected function getPath(Model $model, Carbon $timestamp)
     {
-        return 'database/migrations/'.$timestamp->format('Y_m_d_His').'_create_'.$model->tableName().'_table.php';
+        return $this->getTablePath($model->tableName(), $timestamp);
     }
 
     protected function getPivotTablePath($tableName, Carbon $timestamp)
     {
-        return 'database/migrations/'.$timestamp->format('Y_m_d_His').'_create_'.$tableName.'_table.php';
+        return $this->getTablePath($tableName, $timestamp);
+    }
+
+    protected function getTablePath($tableName, Carbon $timestamp)
+    {
+        $dir = 'database/migrations/';
+        $name = '_create_'.$tableName.'_table.php';
+        
+        $file = collect($this->files->files($dir))->first(function ($file) use ($tableName) {
+            return str_contains($file, $tableName);
+        });
+
+        return $dir.($file ?: $timestamp->format('Y_m_d_His').$name);
     }
 
     protected function isLaravel7orNewer()

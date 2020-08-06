@@ -6,7 +6,7 @@ use Illuminate\Filesystem\Filesystem;
 
 class Builder
 {
-    public function execute(Blueprint $blueprint, Filesystem $files, string $draft, string $only = '', string $skip = '')
+    public function execute(Blueprint $blueprint, Filesystem $files, string $draft, string $only = '', string $skip = '', $overwriteMigrations = false)
     {
         $cache = [];
         if ($files->exists('.blueprint')) {
@@ -20,7 +20,7 @@ class Builder
         $only = array_filter(explode(',', $only));
         $skip = array_filter(explode(',', $skip));
 
-        $generated = $blueprint->generate($registry, $only, $skip);
+        $generated = $blueprint->generate($registry, $only, $skip, $overwriteMigrations);
 
         $models = array_merge($tokens['cache'], $tokens['models'] ?? []);
 
