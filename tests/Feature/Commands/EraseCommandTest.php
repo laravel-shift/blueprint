@@ -2,9 +2,7 @@
 
 namespace Tests\Feature\Commands;
 
-use Illuminate\Support\Facades\Artisan;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
-use Tests\ArtisanFake;
 use Tests\TestCase;
 
 /**
@@ -73,8 +71,6 @@ class EraseCommandTest extends TestCase
     /** @test */
     public function it_calls_the_trace_command()
     {
-        Artisan::swap(new ArtisanFake(Artisan::getFacadeRoot(), ['blueprint:trace']));
-
         $filesystem = \Mockery::mock(\Illuminate\Filesystem\Filesystem::class)->makePartial();
         $this->swap('files', $filesystem);
 
@@ -83,7 +79,5 @@ class EraseCommandTest extends TestCase
 
         $this->artisan('blueprint:erase')
             ->assertExitCode(0);
-
-        Artisan::assertCalled('blueprint:trace', 1);
     }
 }

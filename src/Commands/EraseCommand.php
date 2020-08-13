@@ -72,7 +72,7 @@ class EraseCommand extends Command
 
         $this->files->put('.blueprint', $blueprint->dump($generated));
 
-        Artisan::call('blueprint:trace');
+        $this->call('blueprint:trace');
     }
 
     private function outputStyle($action)
