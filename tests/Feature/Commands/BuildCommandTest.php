@@ -7,6 +7,9 @@ use Blueprint\Builder;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Tests\TestCase;
 
+/**
+ * @covers \Blueprint\Commands\BuildCommand
+ */
 class BuildCommandTest extends TestCase
 {
     use MockeryPHPUnitIntegration;

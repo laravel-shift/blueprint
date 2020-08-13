@@ -5,7 +5,7 @@ namespace Blueprint\Commands;
 use Blueprint\Blueprint;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use Symfony\Component\Console\Input\InputArgument;
+use Illuminate\Support\Facades\Artisan;
 
 class EraseCommand extends Command
 {
@@ -46,7 +46,8 @@ class EraseCommand extends Command
     {
         $contents = $this->files->get('.blueprint');
 
-        $blueprint = new Blueprint();
+        $blueprint = resolve(Blueprint::class);
+
         $generated = $blueprint->parse($contents, false);
 
         collect($generated)->each(function ($files, $action) {
@@ -60,7 +61,7 @@ class EraseCommand extends Command
             }
 
             collect($files)->each(function ($file) {
-                $this->line('- ' . $file);
+                $this->line('- '.$file);
             });
 
             $this->line('');
