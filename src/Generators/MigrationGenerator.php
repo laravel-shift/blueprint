@@ -42,7 +42,7 @@ class MigrationGenerator implements Generator
         $this->files = $files;
     }
 
-    public function output(Tree $tree): array
+    public function output(Tree $tree, $overwrite = false): array
     {
         $output = [];
 
@@ -54,10 +54,11 @@ class MigrationGenerator implements Generator
 
         /** @var \Blueprint\Models\Model $model */
         foreach ($tree->models() as $model) {
-            $path = $this->getPath($model, $sequential_timestamp->addSecond());
+            $path = $this->getPath($model, $sequential_timestamp->addSecond(), $overwrite);
+            $action = $this->files->exists($path) ? 'updated' : 'created';
             $this->files->put($path, $this->populateStub($stub, $model));
 
-            $output['created'][] = $path;
+            $output[$action][] = $path;
 
             if (! empty($model->pivotTables())) {
                 foreach ($model->pivotTables() as $pivotSegments) {
@@ -68,10 +69,11 @@ class MigrationGenerator implements Generator
         }
 
         foreach ($created_pivot_tables as $pivotTable => $pivotSegments) {
-            $path = $this->getPivotTablePath($pivotTable, $sequential_timestamp);
+            $path = $this->getPivotTablePath($pivotTable, $sequential_timestamp, $overwrite);
+            $action = $this->files->exists($path) ? 'updated' : 'created';
             $this->files->put($path, $this->populatePivotStub($stub, $pivotSegments));
             $created_pivot_tables[] = $pivotTable;
-            $output['created'][] = $path;
+            $output[$action][] = $path;
         }
 
         return $output;
@@ -276,14 +278,26 @@ class MigrationGenerator implements Generator
         return 'Create'.Str::studly($model->tableName()).'Table';
     }
 
-    protected function getPath(Model $model, Carbon $timestamp)
+    protected function getPath(Model $model, Carbon $timestamp, $overwrite = false)
     {
-        return 'database/migrations/'.$timestamp->format('Y_m_d_His').'_create_'.$model->tableName().'_table.php';
+        return $this->getTablePath($model->tableName(), $timestamp, $overwrite);
     }
 
-    protected function getPivotTablePath($tableName, Carbon $timestamp)
+    protected function getPivotTablePath($tableName, Carbon $timestamp, $overwrite = false)
     {
-        return 'database/migrations/'.$timestamp->format('Y_m_d_His').'_create_'.$tableName.'_table.php';
+        return $this->getTablePath($tableName, $timestamp, $overwrite);
+    }
+
+    protected function getTablePath($tableName, Carbon $timestamp, $overwrite = false)
+    {
+        $dir = 'database/migrations/';
+        $name = '_create_'.$tableName.'_table.php';
+        
+        $file = $overwrite ? collect($this->files->files($dir))->first(function ($file) use ($tableName) {
+            return str_contains($file, $tableName);
+        }) : false;
+
+        return $file ? (string) $file : $dir.$timestamp->format('Y_m_d_His').$name;
     }
 
     protected function isLaravel7orNewer()

@@ -21,6 +21,7 @@ class BuildCommand extends Command
                             {draft? : The path to the draft file, default: draft.yaml or draft.yml }
                             {--only= : Comma separated list of file classes to generate, skipping the rest }
                             {--skip= : Comma separated list of file classes to skip, generating the rest }
+                            {--overwrite-migrations : Update existing migration files, if found }
                             ';
 
     /**
@@ -59,9 +60,10 @@ class BuildCommand extends Command
 
         $only = $this->option('only') ?: '';
         $skip = $this->option('skip') ?: '';
+        $overwriteMigrations = $this->option('overwrite-migrations') ?: false;
 
         $blueprint = resolve(Blueprint::class);
-        $generated = $this->builder->execute($blueprint, $this->files, $file, $only, $skip);
+        $generated = $this->builder->execute($blueprint, $this->files, $file, $only, $skip, $overwriteMigrations);
 
         collect($generated)->each(function ($files, $action) {
             $this->line(Str::studly($action).':', $this->outputStyle($action));

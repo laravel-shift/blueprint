@@ -70,13 +70,13 @@ class Blueprint
         return new Tree($registry);
     }
 
-    public function generate(Tree $tree, array $only = [], array $skip = []): array
+    public function generate(Tree $tree, array $only = [], array $skip = [], $overwriteMigrations = false): array
     {
         $components = [];
 
         foreach ($this->generators as $generator) {
             if ($this->shouldGenerate($generator->types(), $only, $skip)) {
-                $components = array_merge_recursive($components, $generator->output($tree));
+                $components = array_merge_recursive($components, $generator->output($tree, $overwriteMigrations));
             }
         }
 

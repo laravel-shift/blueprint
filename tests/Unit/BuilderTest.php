@@ -30,7 +30,7 @@ class BuilderTest extends TestCase
             ->with($tokens + ['cache' => []])
             ->andReturn($registry);
         $blueprint->expects('generate')
-            ->with($registry, $only, $skip)
+            ->with($registry, $only, $skip, false)
             ->andReturn($generated);
         $blueprint->expects('dump')
             ->with($generated)
@@ -81,7 +81,7 @@ class BuilderTest extends TestCase
             ->with($tokens + ['cache' => $cache['models']])
             ->andReturn($registry);
         $blueprint->expects('generate')
-            ->with($registry, $only, $skip)
+            ->with($registry, $only, $skip, false)
             ->andReturn($generated);
         $blueprint->expects('dump')
             ->with([
