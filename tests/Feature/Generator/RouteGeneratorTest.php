@@ -6,7 +6,6 @@ use Blueprint\Blueprint;
 use Blueprint\Generators\RouteGenerator;
 use Blueprint\Lexers\StatementLexer;
 use Blueprint\Tree;
-use Illuminate\Contracts\Routing\UrlGenerator;
 use Tests\TestCase;
 
 /**
@@ -24,9 +23,6 @@ class RouteGeneratorTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        // Default laravel installations provide a namespace, while the framework itself does not
-        $this->app[UrlGenerator::class]->setRootControllerNamespace('App\Http\Controllers');
 
         $this->files = \Mockery::mock();
         $this->subject = new RouteGenerator($this->files);
@@ -97,7 +93,7 @@ class RouteGeneratorTest extends TestCase
      */
     public function output_generates_routes_using_tuples()
     {
-        $this->app[UrlGenerator::class]->setRootControllerNamespace(null);
+        config(['blueprint.use_route_tuples' => true]);
 
         $this->files->expects('append')
             ->with('routes/web.php', $this->fixture('routes/routes-tuples.php'));
@@ -105,7 +101,7 @@ class RouteGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/routes-tuples.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        (new RouteGenerator($this->files))->output($tree);
+        $this->subject->output($tree);
     }
 
     public function controllerTreeDataProvider()

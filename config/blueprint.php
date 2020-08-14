@@ -102,4 +102,17 @@ return [
 
     'use_guarded' => false,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Use Route Tuples
+    |--------------------------------------------------------------------------
+    |
+    | By default, Laravel configures a root controller namespace within the
+    | RouteServiceProvider. In case you have removed that value to use a
+    | "tuple-based" approach in the routes file(s) to improve typing
+    | in your project, you may set this to true instead.
+    |
+    */
+    'use_route_tuples' => false,
+
 ];

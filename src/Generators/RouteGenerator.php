@@ -6,21 +6,15 @@ use Blueprint\Contracts\Generator;
 use Blueprint\Models\Controller;
 use Blueprint\Tree;
 use Illuminate\Support\Str;
-use Illuminate\Contracts\Routing\UrlGenerator;
 
 class RouteGenerator implements Generator
 {
     /** @var \Illuminate\Contracts\Filesystem\Filesystem */
     private $files;
 
-    /** @var string */
-    private $rootNamespace;
-
     public function __construct($files)
     {
         $this->files = $files;
-
-        $this->rootNamespace = $this->determineRootNamespace(app(UrlGenerator::class));
     }
 
     public function output(Tree $tree): array
@@ -58,11 +52,11 @@ class RouteGenerator implements Generator
         $routes = '';
         $methods = array_keys($controller->methods());
 
-        $useTuples = $this->rootNamespace === null || $this->rootNamespace === '';
+        $useTuples = config('blueprint.use_route_tuples');
 
         $className = $useTuples
             ? $controller->fullyQualifiedClassName() . '::class'
-            : '\'' . str_replace($this->rootNamespace . '\\', '', $controller->fullyQualifiedClassName()) . '\'';
+            : '\'' . str_replace('App\Http\Controllers\\', '', $controller->fullyQualifiedClassName()) . '\'';
 
         $slug = Str::kebab($controller->prefix());
 
@@ -101,14 +95,5 @@ class RouteGenerator implements Generator
         }
 
         return trim($routes);
-    }
-
-    protected function determineRootNamespace(UrlGenerator $urlGenerator): ?string
-    {
-        return (function () {
-            // While there is a setter, there is no getter for the root namespace
-            // This closure acts like a subclass so the value can be retrieved
-            return $this->rootNamespace;
-        })->call($urlGenerator);
     }
 }
