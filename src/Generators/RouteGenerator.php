@@ -52,7 +52,7 @@ class RouteGenerator implements Generator
         $routes = '';
         $methods = array_keys($controller->methods());
 
-        $useTuples = config('blueprint.use_route_tuples');
+        $useTuples = config('blueprint.generate_fqcn_route');
 
         $className = $useTuples
             ? $controller->fullyQualifiedClassName() . '::class'
