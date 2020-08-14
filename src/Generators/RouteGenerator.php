@@ -52,14 +52,19 @@ class RouteGenerator implements Generator
         $routes = '';
         $methods = array_keys($controller->methods());
 
-        $className = str_replace('App\Http\Controllers\\', '', $controller->fullyQualifiedClassName());
+        $useTuples = config('blueprint.generate_fqcn_route');
+
+        $className = $useTuples
+            ? $controller->fullyQualifiedClassName() . '::class'
+            : '\'' . str_replace('App\Http\Controllers\\', '', $controller->fullyQualifiedClassName()) . '\'';
+
         $slug = Str::kebab($controller->prefix());
 
         $resource_methods = array_intersect($methods, Controller::$resourceMethods);
         if (count($resource_methods)) {
             $routes .= $controller->isApiResource()
-                ? sprintf("Route::apiResource('%s', '%s')", $slug, $className)
-                : sprintf("Route::resource('%s', '%s')", $slug, $className);
+                ? sprintf("Route::apiResource('%s', %s)", $slug, $className)
+                : sprintf("Route::resource('%s', %s)", $slug, $className);
 
             $missing_methods = $controller->isApiResource()
                 ? array_diff(Controller::$apiResourceMethods, $resource_methods)
@@ -78,7 +83,14 @@ class RouteGenerator implements Generator
 
         $methods = array_diff($methods, Controller::$resourceMethods);
         foreach ($methods as $method) {
-            $routes .= sprintf("Route::get('%s/%s', '%s@%s');", $slug, Str::kebab($method), $className, $method);
+            if ($useTuples) {
+                $action = "[{$className}, '{$method}']";
+            } else {
+                $classNameNoQuotes = trim($className, '\'');
+                $action = "'{$classNameNoQuotes}@{$method}'";
+            }
+
+            $routes .= sprintf("Route::get('%s/%s', %s);", $slug, Str::kebab($method), $action);
             $routes .= PHP_EOL;
         }
 

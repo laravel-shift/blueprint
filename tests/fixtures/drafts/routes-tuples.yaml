@@ -1,0 +1,10 @@
+models:
+  Foo:
+    name: string
+
+controllers:
+  Foo:
+    resource
+  Some:
+    whatever:
+      redirect: some.index
