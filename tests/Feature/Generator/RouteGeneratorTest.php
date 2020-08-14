@@ -93,7 +93,7 @@ class RouteGeneratorTest extends TestCase
      */
     public function output_generates_routes_using_tuples()
     {
-        config(['blueprint.use_route_tuples' => true]);
+        config(['blueprint.generate_fqcn_route' => true]);
 
         $this->files->expects('append')
             ->with('routes/web.php', $this->fixture('routes/routes-tuples.php'));

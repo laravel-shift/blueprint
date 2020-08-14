@@ -104,7 +104,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Use Route Tuples
+    | Generate FQCN Routes
     |--------------------------------------------------------------------------
     |
     | By default, Blueprint follows the Laravel convention of the controller
