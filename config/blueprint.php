@@ -114,6 +114,6 @@ return [
     | or wish to improve static analysis.
     |
     */
-    'use_route_tuples' => false,
+    'generate_fqcn_route' => false,
 
 ];
