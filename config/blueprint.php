@@ -107,10 +107,11 @@ return [
     | Use Route Tuples
     |--------------------------------------------------------------------------
     |
-    | By default, Laravel configures a root controller namespace within the
-    | RouteServiceProvider. In case you have removed that value to use a
-    | "tuple-based" approach in the routes file(s) to improve typing
-    | in your project, you may set this to true instead.
+    | By default, Blueprint follows the Laravel convention of the controller
+    | namespace matches the namespace set within the RouteServiceProvider.
+    | However, you may configure Blueprint to generate routes using a
+    | "tuple syntax" in cases where you may not use this property
+    | or wish to improve static analysis.
     |
     */
     'use_route_tuples' => false,
