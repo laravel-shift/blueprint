@@ -3,11 +3,8 @@
 namespace Blueprint\Commands;
 
 use Blueprint\Blueprint;
-use Blueprint\EnumType;
 use Blueprint\Tracer;
-use Doctrine\DBAL\Types\Type;
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
@@ -37,7 +34,7 @@ class TraceCommand extends Command
      * @param Filesystem $files
      * @param Tracer $tracer
      */
-    public function __construct(Filesystem $files,Tracer $tracer)
+    public function __construct(Filesystem $files, Tracer $tracer)
     {
         parent::__construct();
 
@@ -53,11 +50,11 @@ class TraceCommand extends Command
     public function handle()
     {
         $blueprint = resolve(Blueprint::class);
-        $definitions = $this->tracer->execute($blueprint,$this->files);
+        $definitions = $this->tracer->execute($blueprint, $this->files);
 
         if (empty($definitions)) {
             $this->error('No models found');
-        }else{
+        } else {
             $this->info('Traced ' . count($definitions) . ' ' . Str::plural('model', count($definitions)));
         }
 
