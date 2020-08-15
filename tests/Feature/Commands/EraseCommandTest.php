@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Commands;
 
+use Blueprint\Blueprint;
+use Blueprint\Tracer;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Tests\TestCase;
 
@@ -77,7 +79,12 @@ class EraseCommandTest extends TestCase
         $filesystem->expects('get')->with('.blueprint')->andReturn("other: test.php");
         $filesystem->expects('put')->with('.blueprint', "other: test.php\n");
 
+        $tracer = $this->spy(Tracer::class);
+
         $this->artisan('blueprint:erase')
             ->assertExitCode(0);
+
+        $tracer->shouldHaveReceived('execute')
+            ->with(resolve(Blueprint::class), $filesystem);
     }
 }
