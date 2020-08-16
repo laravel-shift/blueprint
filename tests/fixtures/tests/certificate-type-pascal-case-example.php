@@ -119,7 +119,7 @@ class CertificateTypeControllerTest extends TestCase
 
         $response = $this->delete(route('certificate-type.destroy', $certificateType));
 
-        $response->assertOk();
+        $response->assertNoContent();
 
         $this->assertDeleted($certificateType);
     }
