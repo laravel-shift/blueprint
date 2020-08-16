@@ -39,7 +39,7 @@ class EventGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('event.stub')
-            ->andReturn(file_get_contents('stubs/event.stub'));
+            ->andReturn($this->stub('event.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -53,7 +53,7 @@ class EventGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('event.stub')
-            ->andReturn(file_get_contents('stubs/event.stub'));
+            ->andReturn($this->stub('event.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -70,11 +70,11 @@ class EventGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('event.stub')
-            ->andReturn(file_get_contents('stubs/event.stub'));
+            ->andReturn($this->stub('event.stub'));
 
         $this->files->expects('stub')
             ->with('constructor.stub')
-            ->andReturn(file_get_contents('stubs/constructor.stub'));
+            ->andReturn($this->stub('constructor.stub'));
 
         $this->files->shouldReceive('exists')
             ->twice()
@@ -107,7 +107,7 @@ class EventGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('event.stub')
-            ->andReturn(file_get_contents('stubs/event.stub'));
+            ->andReturn($this->stub('event.stub'));
 
         $this->files->expects('exists')
             ->with('app/Events/UserCreated.php')
@@ -132,7 +132,7 @@ class EventGeneratorTest extends TestCase
 
         $this->files->expects('stub')
             ->with('event.stub')
-            ->andReturn(file_get_contents('stubs/event.stub'));
+            ->andReturn($this->stub('event.stub'));
 
         $this->files->expects('exists')
             ->with('src/path/Events')

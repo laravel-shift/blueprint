@@ -39,7 +39,7 @@ class ViewGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('view.stub')
-            ->andReturn(file_get_contents('stubs/view.stub'));
+            ->andReturn($this->stub('view.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -53,7 +53,7 @@ class ViewGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('view.stub')
-            ->andReturn(file_get_contents('stubs/view.stub'));
+            ->andReturn($this->stub('view.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -68,7 +68,7 @@ class ViewGeneratorTest extends TestCase
      */
     public function output_writes_views_for_render_statements()
     {
-        $template = file_get_contents('stubs/view.stub');
+        $template = $this->stub('view.stub');
         $this->files->expects('stub')
             ->with('view.stub')
             ->andReturn($template);
@@ -113,7 +113,7 @@ class ViewGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('view.stub')
-            ->andReturn(file_get_contents('stubs/view.stub'));
+            ->andReturn($this->stub('view.stub'));
 
         $this->files->expects('exists')
             ->with('resources/views/user/index.blade.php')
