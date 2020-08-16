@@ -24,7 +24,7 @@ class CertificateController extends Controller
 
     /**
      * @param \App\Http\Requests\CertificateStoreRequest $request
-     * @return \App\Http\Resources\Certificate
+     * @return CertificateResource
      */
     public function store(CertificateStoreRequest $request)
     {
@@ -36,7 +36,7 @@ class CertificateController extends Controller
     /**
      * @param \Illuminate\Http\Request $request
      * @param \App\Certificate $certificate
-     * @return \App\Http\Resources\Certificate
+     * @return CertificateResource
      */
     public function show(Request $request, Certificate $certificate)
     {
@@ -46,7 +46,7 @@ class CertificateController extends Controller
     /**
      * @param \App\Http\Requests\CertificateUpdateRequest $request
      * @param \App\Certificate $certificate
-     * @return \App\Http\Resources\Certificate
+     * @return CertificateResource
      */
     public function update(CertificateUpdateRequest $request, Certificate $certificate)
     {

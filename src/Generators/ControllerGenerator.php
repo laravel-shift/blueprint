@@ -140,12 +140,16 @@ class ControllerGenerator implements Generator
                 } elseif ($statement instanceof ResourceStatement) {
                     $fqcn = config('blueprint.namespace').'\\Http\\Resources\\'.($controller->namespace() ? $controller->namespace().'\\' : '').$statement->name();
 
-                    $method = str_replace('* @return \\Illuminate\\Http\\Response', '* @return \\'.$fqcn, $method);
-
                     $import = $fqcn;
+
                     if (!$statement->collection()) {
-                        $import .= ' as '.$statement->name().'Resource';
+                        $fqcn = $statement->name().'Resource';
+                        $import .= ' as '.$fqcn;
+                    } else {
+                        $fqcn = "\\{$fqcn}";
                     }
+
+                    $method = str_replace('* @return \\Illuminate\\Http\\Response', '* @return '.$fqcn, $method);
 
                     $this->addImport($controller, $import);
 

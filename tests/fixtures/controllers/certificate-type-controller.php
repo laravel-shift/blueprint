@@ -24,7 +24,7 @@ class CertificateTypeController extends Controller
 
     /**
      * @param \App\Http\Requests\CertificateTypeStoreRequest $request
-     * @return \App\Http\Resources\CertificateType
+     * @return CertificateTypeResource
      */
     public function store(CertificateTypeStoreRequest $request)
     {
@@ -36,7 +36,7 @@ class CertificateTypeController extends Controller
     /**
      * @param \Illuminate\Http\Request $request
      * @param \App\CertificateType $certificateType
-     * @return \App\Http\Resources\CertificateType
+     * @return CertificateTypeResource
      */
     public function show(Request $request, CertificateType $certificateType)
     {
@@ -46,7 +46,7 @@ class CertificateTypeController extends Controller
     /**
      * @param \App\Http\Requests\CertificateTypeUpdateRequest $request
      * @param \App\CertificateType $certificateType
-     * @return \App\Http\Resources\CertificateType
+     * @return CertificateTypeResource
      */
     public function update(CertificateTypeUpdateRequest $request, CertificateType $certificateType)
     {
