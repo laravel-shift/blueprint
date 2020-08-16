@@ -8,5 +8,5 @@ models:
     remarks: text nullable
 
 controllers:
-  Certificate:
+  Api/Certificate:
     resource: api

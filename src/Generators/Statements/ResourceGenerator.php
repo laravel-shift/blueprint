@@ -42,7 +42,7 @@ class ResourceGenerator implements Generator
                         continue;
                     }
 
-                    $path = $this->getPath($statement->name());
+                    $path = $this->getPath(($controller->namespace() ? $controller->namespace().'/' : '').$statement->name());
 
                     if ($this->files->exists($path)) {
                         continue;
@@ -52,7 +52,7 @@ class ResourceGenerator implements Generator
                         $this->files->makeDirectory(dirname($path), 0755, true);
                     }
 
-                    $this->files->put($path, $this->populateStub($stub, $statement));
+                    $this->files->put($path, $this->populateStub($stub, $controller, $statement));
 
                     $output['created'][] = $path;
                 }
@@ -72,9 +72,13 @@ class ResourceGenerator implements Generator
         return Blueprint::appPath().'/Http/Resources/'.$name.'.php';
     }
 
-    protected function populateStub(string $stub, ResourceStatement $resource)
+    protected function populateStub(string $stub, Controller $controller, ResourceStatement $resource)
     {
-        $stub = str_replace('{{ namespace }}', config('blueprint.namespace').'\\Http\\Resources', $stub);
+        $namespace = config('blueprint.namespace')
+            .'\\Http\\Resources'
+            .($controller->namespace() ? '\\'.$controller->namespace() : '');
+
+        $stub = str_replace('{{ namespace }}', $namespace, $stub);
         $stub = str_replace('{{ import }}', $resource->collection() ? 'Illuminate\\Http\\Resources\\Json\\ResourceCollection' : 'Illuminate\\Http\\Resources\\Json\\JsonResource', $stub);
         $stub = str_replace('{{ parentClass }}', $resource->collection() ? 'ResourceCollection' : 'JsonResource', $stub);
         $stub = str_replace('{{ class }}', $resource->name(), $stub);
