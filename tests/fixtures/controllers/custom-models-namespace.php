@@ -64,6 +64,6 @@ class TagController extends Controller
     {
         $tag->delete();
 
-        return response()->noContent(200);
+        return response()->noContent();
     }
 }

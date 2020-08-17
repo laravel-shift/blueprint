@@ -131,7 +131,7 @@ class CategoryControllerTest extends TestCase
 
         $response = $this->delete(route('category.destroy', $category));
 
-        $response->assertOk();
+        $response->assertNoContent();
 
         $this->assertDeleted($category);
     }

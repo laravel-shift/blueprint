@@ -64,6 +64,6 @@ class CertificateTypeController extends Controller
     {
         $certificateType->delete();
 
-        return response()->noContent(200);
+        return response()->noContent();
     }
 }
