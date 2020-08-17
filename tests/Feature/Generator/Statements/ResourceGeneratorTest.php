@@ -100,4 +100,40 @@ class ResourceGeneratorTest extends TestCase
 
         $this->assertEquals(['created' => ['app/Http/Resources/UserCollection.php', 'app/Http/Resources/User.php']], $this->subject->output($tree));
     }
+
+    /**
+     * @test
+     */
+    public function output_writes_namespaced_classes()
+    {
+        $this->files->expects('stub')
+            ->with('resource.stub')
+            ->andReturn(file_get_contents('stubs/resource.stub'));
+
+        $this->files->shouldReceive('exists')
+            ->with('app/Http/Resources/Api')
+            ->andReturns(false, true);
+        $this->files->expects('makeDirectory')
+            ->with('app/Http/Resources/Api', 0755, true);
+
+        $this->files->expects('exists')
+            ->times(3)
+            ->with('app/Http/Resources/Api/Certificate.php')
+            ->andReturns(false, true, true);
+        $this->files->expects('put')
+            ->with('app/Http/Resources/Api/Certificate.php', $this->fixture('resources/certificate.php'));
+
+        $this->files->expects('exists')
+            ->with('app/Http/Resources/Api/CertificateCollection.php')
+            ->andReturns(false);
+        $this->files->expects('put')
+            ->with('app/Http/Resources/Api/CertificateCollection.php', $this->fixture('resources/certificate-collection.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/api-routes-example.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals([
+            'created' => ['app/Http/Resources/Api/CertificateCollection.php', 'app/Http/Resources/Api/Certificate.php'],
+        ], $this->subject->output($tree));
+    }
 }
