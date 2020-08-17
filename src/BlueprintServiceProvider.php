@@ -65,7 +65,7 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
         $this->app->bind(
             'command.blueprint.trace',
             function ($app) {
-                return new TraceCommand($app['files']);
+                return new TraceCommand($app['files'], app(Tracer::class));
             }
         );
         $this->app->bind(
