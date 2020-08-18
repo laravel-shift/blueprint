@@ -254,7 +254,8 @@ class ModelGenerator implements Generator
                 return $column->name();
             },
             array_filter($columns, function (Column $column) {
-                return stripos($column->dataType(), 'datetime') !== false
+                return stripos($column->dataType(), 'datet') !== false
+                    || stripos($column->dataType(), 'datetime') !== false
                     || stripos($column->dataType(), 'timestamp') !== false;
             })
         );
