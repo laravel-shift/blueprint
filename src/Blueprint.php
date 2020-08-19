@@ -29,6 +29,13 @@ class Blueprint
         return str_replace('\\', '/', config('blueprint.app_path'));
     }
 
+    public static function modelNamespace()
+    {
+        return config('blueprint.models_namespace')
+            ? config('blueprint.namespace') . '\\' . config('blueprint.models_namespace')
+            : config('blueprint.namespace');
+    }
+
     public function parse($content, $strip_dashes = true)
     {
         $content = str_replace(["\r\n", "\r"], "\n", $content);

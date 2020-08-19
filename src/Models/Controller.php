@@ -3,6 +3,7 @@
 
 namespace Blueprint\Models;
 
+use Blueprint\Blueprint;
 use Illuminate\Support\Str;
 
 class Controller
@@ -115,5 +116,12 @@ class Controller
     public function isApiResource(): bool
     {
         return $this->apiResource;
+    }
+
+    public function getPath()
+    {
+        $path = str_replace('\\', '/', Blueprint::relativeNamespace($this->fullyQualifiedClassName()));
+
+        return 'tests/Feature/' . $path . 'Test.php';
     }
 }
