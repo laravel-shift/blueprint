@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Generators;
 
-use Blueprint\Tree;
-use Tests\TestCase;
 use Blueprint\Blueprint;
 use Blueprint\Generators\FactoryGenerator;
+use Blueprint\Tree;
+use Tests\TestCase;
 
 /**
  * @see FactoryGenerator
@@ -96,7 +96,7 @@ class FactoryGeneratorTest extends TestCase
             ->with('factory.stub')
             ->andReturn(file_get_contents('stubs/factory.stub'));
 
-       $this->files->expects('forcePut')
+        $this->files->expects('forcePut')
             ->with('database/factories/PostFactory.php', $this->fixture('factories/post-configured.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/post.yaml'));
