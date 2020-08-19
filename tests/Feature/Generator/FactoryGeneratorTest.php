@@ -55,11 +55,7 @@ class FactoryGeneratorTest extends TestCase
             ->with('factory.stub')
             ->andReturn(file_get_contents('stubs/factory.stub'));
 
-        $this->files->expects('exists')
-            ->with('database/factories')
-            ->andReturnTrue();
-
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with($path, $this->fixture($factory));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
@@ -79,11 +75,7 @@ class FactoryGeneratorTest extends TestCase
             ->with('factory.stub')
             ->andReturn(file_get_contents('stubs/factory.stub'));
 
-        $this->files->expects('exists')
-            ->with('database/factories')
-            ->andReturnTrue();
-
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('database/factories/PostFactory.php', $this->fixture('factories/fake-nullables.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
@@ -104,11 +96,7 @@ class FactoryGeneratorTest extends TestCase
             ->with('factory.stub')
             ->andReturn(file_get_contents('stubs/factory.stub'));
 
-        $this->files->expects('exists')
-            ->with('database/factories')
-            ->andReturnTrue();
-
-        $this->files->expects('put')
+       $this->files->expects('forcePut')
             ->with('database/factories/PostFactory.php', $this->fixture('factories/post-configured.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/post.yaml'));
@@ -126,13 +114,7 @@ class FactoryGeneratorTest extends TestCase
             ->with('factory.stub')
             ->andReturn(file_get_contents('stubs/factory.stub'));
 
-        $this->files->expects('exists')
-            ->with('database/factories/Admin')
-            ->andReturnFalse();
-        $this->files->expects('makeDirectory')
-            ->with('database/factories/Admin', 0755, true);
-
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('database/factories/Admin/UserFactory.php', $this->fixture('factories/nested-components.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/nested-components.yaml'));

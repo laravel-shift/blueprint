@@ -35,11 +35,7 @@ class MailGenerator extends StatementGenerator
                         continue;
                     }
 
-                    if (! $this->files->exists(dirname($path))) {
-                        $this->files->makeDirectory(dirname($path), 0755, true);
-                    }
-
-                    $this->files->put($path, $this->populateStub($stub, $statement));
+                    $this->files->forcePut($path, $this->populateStub($stub, $statement));
 
                     $output['created'][] = $path;
                 }

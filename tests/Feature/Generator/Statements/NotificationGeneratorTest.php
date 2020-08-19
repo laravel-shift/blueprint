@@ -79,22 +79,16 @@ class NotificationGeneratorTest extends TestCase
                 ->andReturn(file_get_contents('stubs/constructor.stub'));
         }
 
-        $this->files->shouldReceive('exists')
-            ->twice()
-            ->with('app/Notification')
-            ->andReturns(false, true);
         $this->files->expects('exists')
             ->with('app/Notification/ReviewPostNotification.php')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
-            ->with('app/Notification', 0755, true);
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('app/Notification/ReviewPostNotification.php', $this->fixture('notifications/review-post.php'));
 
         $this->files->expects('exists')
             ->with('app/Notification/PublishedPostNotification.php')
             ->andReturnFalse();
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('app/Notification/PublishedPostNotification.php', $this->fixture('notifications/published-post.php'));
 
         $tokens = $this->blueprint->parse($this->fixture($draft));
@@ -138,14 +132,9 @@ class NotificationGeneratorTest extends TestCase
             ->andReturn(file_get_contents('stubs/notification.stub'));
 
         $this->files->expects('exists')
-            ->with('src/path/Notification')
-            ->andReturnFalse();
-        $this->files->expects('exists')
             ->with('src/path/Notification/ReviewNotification.php')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
-            ->with('src/path/Notification', 0755, true);
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('src/path/Notification/ReviewNotification.php', $this->fixture('notifications/notification-configured.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example-notification-facade.yaml'));

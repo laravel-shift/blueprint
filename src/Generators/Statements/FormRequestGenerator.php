@@ -51,11 +51,7 @@ class FormRequestGenerator implements Generator
                         continue;
                     }
 
-                    if (! $this->files->exists(dirname($path))) {
-                        $this->files->makeDirectory(dirname($path), 0755, true);
-                    }
-
-                    $this->files->put($path, $this->populateStub($stub, $name, $context, $statement, $controller));
+                    $this->files->forcePut($path, $this->populateStub($stub, $name, $context, $statement, $controller));
 
                     $output['created'][] = $path;
                 }

@@ -76,22 +76,16 @@ class JobGeneratorTest extends TestCase
             ->with('constructor.stub')
             ->andReturn(file_get_contents('stubs/constructor.stub'));
 
-        $this->files->shouldReceive('exists')
-            ->twice()
-            ->with('app/Jobs')
-            ->andReturns(false, true);
         $this->files->expects('exists')
             ->with('app/Jobs/CreateUser.php')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
-            ->with('app/Jobs', 0755, true);
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('app/Jobs/CreateUser.php', $this->fixture('jobs/create-user.php'));
 
         $this->files->expects('exists')
             ->with('app/Jobs/DeleteRole.php')
             ->andReturnFalse();
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('app/Jobs/DeleteRole.php', $this->fixture('jobs/delete-user.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/dispatch-statements.yaml'));
@@ -135,14 +129,9 @@ class JobGeneratorTest extends TestCase
             ->andReturn(file_get_contents('stubs/job.stub'));
 
         $this->files->expects('exists')
-            ->with('src/path/Jobs')
-            ->andReturnFalse();
-        $this->files->expects('exists')
             ->with('src/path/Jobs/SyncMedia.php')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
-            ->with('src/path/Jobs', 0755, true);
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('src/path/Jobs/SyncMedia.php', $this->fixture('jobs/job-configured.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));

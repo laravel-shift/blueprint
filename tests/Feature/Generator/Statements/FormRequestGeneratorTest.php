@@ -73,28 +73,22 @@ class FormRequestGeneratorTest extends TestCase
             ->with('request.stub')
             ->andReturn(file_get_contents('stubs/request.stub'));
 
-        $this->files->shouldReceive('exists')
-            ->times(3)
-            ->with('app/Http/Requests')
-            ->andReturns(false, true, true);
         $this->files->expects('exists')
             ->with('app/Http/Requests/PostIndexRequest.php')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
-            ->with('app/Http/Requests', 0755, true);
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('app/Http/Requests/PostIndexRequest.php', $this->fixture('form-requests/post-index.php'));
 
         $this->files->expects('exists')
             ->with('app/Http/Requests/PostStoreRequest.php')
             ->andReturnFalse();
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('app/Http/Requests/PostStoreRequest.php', $this->fixture('form-requests/post-store.php'));
 
         $this->files->expects('exists')
             ->with('app/Http/Requests/OtherStoreRequest.php')
             ->andReturnFalse();
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('app/Http/Requests/OtherStoreRequest.php', $this->fixture('form-requests/other-store.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/validate-statements.yaml'));
@@ -112,26 +106,16 @@ class FormRequestGeneratorTest extends TestCase
             ->with('request.stub')
             ->andReturn(file_get_contents('stubs/request.stub'));
 
-        $this->files->shouldReceive('exists')
-            ->twice()
-            ->with('app/Http/Requests')
-            ->andReturns(false, false);
-
-        $this->files->expects('makeDirectory')
-            ->twice()
-            ->with('app/Http/Requests', 0755, true)
-            ->andReturns(true, false);
-
         $this->files->expects('exists')
             ->with('app/Http/Requests/CertificateStoreRequest.php')
             ->andReturnFalse();
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('app/Http/Requests/CertificateStoreRequest.php', $this->fixture('form-requests/certificate-store.php'));
 
         $this->files->expects('exists')
             ->with('app/Http/Requests/CertificateUpdateRequest.php')
             ->andReturnFalse();
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('app/Http/Requests/CertificateUpdateRequest.php', $this->fixture('form-requests/certificate-update.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/model-reference-validate.yaml'));
@@ -175,14 +159,9 @@ class FormRequestGeneratorTest extends TestCase
             ->andReturn(file_get_contents('stubs/request.stub'));
 
         $this->files->expects('exists')
-            ->with('app/Http/Requests/Admin')
-            ->andReturnFalse();
-        $this->files->expects('exists')
             ->with('app/Http/Requests/Admin/UserStoreRequest.php')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
-            ->with('app/Http/Requests/Admin', 0755, true);
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('app/Http/Requests/Admin/UserStoreRequest.php', $this->fixture('form-requests/nested-components.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/nested-components.yaml'));
@@ -204,14 +183,9 @@ class FormRequestGeneratorTest extends TestCase
             ->andReturn(file_get_contents('stubs/request.stub'));
 
         $this->files->expects('exists')
-            ->with('src/path/Http/Requests')
-            ->andReturns(false);
-        $this->files->expects('exists')
             ->with('src/path/Http/Requests/PostStoreRequest.php')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
-            ->with('src/path/Http/Requests', 0755, true);
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('src/path/Http/Requests/PostStoreRequest.php', $this->fixture('form-requests/form-request-configured.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
@@ -230,14 +204,9 @@ class FormRequestGeneratorTest extends TestCase
             ->andReturn(file_get_contents('stubs/request.stub'));
 
         $this->files->expects('exists')
-            ->with('app/Http/Requests')
-            ->andReturnFalse();
-        $this->files->expects('exists')
             ->with('app/Http/Requests/UserStoreRequest.php')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
-            ->with('app/Http/Requests', 0755, true);
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('app/Http/Requests/UserStoreRequest.php', $this->fixture('form-requests/reference-cache.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/reference-cache.yaml'));

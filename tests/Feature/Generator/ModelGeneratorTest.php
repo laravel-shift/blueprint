@@ -81,10 +81,7 @@ class ModelGeneratorTest extends TestCase
             ->andReturn(file_get_contents('stubs/model.method.comment.stub'));
 
 
-        $this->files->expects('exists')
-            ->with(dirname($path))
-            ->andReturnTrue();
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with($path, $this->fixture($model));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
@@ -117,16 +114,10 @@ class ModelGeneratorTest extends TestCase
         $certificateModel = 'app/Certificate.php';
         $certificateTypeModel = 'app/CertificateType.php';
 
-        $this->files->expects('exists')
-            ->with(dirname($certificateModel))
-            ->andReturnTrue();
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with($certificateModel, $this->fixture('models/certificate-pascal-case-example.php'));
 
-        $this->files->expects('exists')
-            ->with(dirname($certificateTypeModel))
-            ->andReturnTrue();
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with($certificateTypeModel, $this->fixture('models/certificate-type-pascal-case-example.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/pascal-case.yaml'));
@@ -153,10 +144,7 @@ class ModelGeneratorTest extends TestCase
             ->with('model.method.stub')
             ->andReturn(file_get_contents('stubs/model.method.stub'));
 
-        $this->files->expects('exists')
-            ->with('app')
-            ->andReturnTrue();
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('app/Subscription.php', $this->fixture('models/model-relationships.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/model-relationships.yaml'));
@@ -186,22 +174,13 @@ class ModelGeneratorTest extends TestCase
             ->with('model.method.stub')
             ->andReturn(file_get_contents('stubs/model.method.stub'));
 
-        $this->files->expects('exists')
-            ->with('app')
-            ->andReturnTrue();
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('app/Post.php', $this->fixture('models/post-polymorphic-relationship.php'));
 
-        $this->files->expects('exists')
-            ->with('app')
-            ->andReturnTrue();
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('app/User.php', $this->fixture('models/user-polymorphic-relationship.php'));
 
-        $this->files->expects('exists')
-            ->with('app')
-            ->andReturnTrue();
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('app/Image.php', $this->fixture('models/image-polymorphic-relationship.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/polymorphic-relationships.yaml'));
@@ -231,10 +210,7 @@ class ModelGeneratorTest extends TestCase
             ->with('model.method.stub')
             ->andReturn(file_get_contents('stubs/model.method.stub'));
 
-        $this->files->expects('exists')
-            ->with('app')
-            ->andReturnTrue();
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('app/State.php', $this->fixture('models/disable-auto-columns.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/disable-auto-columns.yaml'));
@@ -268,12 +244,7 @@ class ModelGeneratorTest extends TestCase
             ->with('model.method.stub')
             ->andReturn(file_get_contents('stubs/model.method.stub'));
 
-        $this->files->expects('exists')
-            ->with('src/path/Models')
-            ->andReturnFalse();
-        $this->files->expects('makeDirectory')
-            ->with('src/path/Models', 0755, true);
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('src/path/Models/Comment.php', $this->fixture('models/model-configured.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/relationships.yaml'));
@@ -322,11 +293,7 @@ class ModelGeneratorTest extends TestCase
             ->with('model.method.comment.stub')
             ->andReturn(file_get_contents('stubs/model.method.comment.stub'));
 
-        $this->files->expects('exists')
-            ->with(dirname($path))
-            ->andReturnTrue();
-
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with($path, $this->fixture($model));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
@@ -358,11 +325,7 @@ class ModelGeneratorTest extends TestCase
             ->with('model.method.stub')
             ->andReturn(file_get_contents('stubs/model.method.stub'));
 
-        $this->files->expects('exists')
-            ->with(dirname('app/Comment.php'))
-            ->andReturnTrue();
-
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('app/Comment.php', $this->fixture('models/model-guarded.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/model-guarded.yaml'));
@@ -395,10 +358,7 @@ class ModelGeneratorTest extends TestCase
             ->with('model.method.stub')
             ->andReturn(file_get_contents('stubs/model.method.stub'));
 
-        $this->files->expects('exists')
-            ->with('app/Models')
-            ->andReturnTrue();
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with($path, $this->fixture($model));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
@@ -428,10 +388,7 @@ class ModelGeneratorTest extends TestCase
             ->with('model.hidden.stub')
             ->andReturn(file_get_contents('stubs/model.hidden.stub'));
 
-        $this->files->expects('exists')
-            ->with('app')
-            ->andReturnTrue();
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('app/User.php', $this->fixture('models/custom-pivot-table-name.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/custom-pivot-table-name.yaml'));

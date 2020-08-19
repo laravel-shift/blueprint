@@ -60,10 +60,7 @@ class ControllerGeneratorTest extends TestCase
             ->with('controller.method.stub')
             ->andReturn(file_get_contents('stubs/controller.method.stub'));
 
-        $this->files->expects('exists')
-            ->with(dirname($path))
-            ->andReturnTrue();
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with($path, $this->fixture($controller));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
@@ -89,10 +86,7 @@ class ControllerGeneratorTest extends TestCase
             ->with('controller.method.stub')
             ->andReturn(file_get_contents('stubs/controller.method.stub'));
 
-        $this->files->expects('exists')
-            ->with(dirname($path))
-            ->andReturnTrue();
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with($path, $this->fixture($controller));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
@@ -117,16 +111,10 @@ class ControllerGeneratorTest extends TestCase
         $certificateController = 'app/Http/Controllers/CertificateController.php';
         $certificateTypeController = 'app/Http/Controllers/CertificateTypeController.php';
 
-        $this->files->expects('exists')
-            ->with(dirname($certificateController))
-            ->andReturnTrue();
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with($certificateController, $this->fixture('controllers/certificate-controller.php'));
 
-        $this->files->expects('exists')
-            ->with(dirname($certificateTypeController))
-            ->andReturnTrue();
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with($certificateTypeController, $this->fixture('controllers/certificate-type-controller.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/pascal-case.yaml'));
@@ -150,12 +138,7 @@ class ControllerGeneratorTest extends TestCase
             ->with('controller.method.stub')
             ->andReturn(file_get_contents('stubs/controller.method.stub'));
 
-        $this->files->expects('exists')
-            ->with('src/path/Other/Http')
-            ->andReturnFalse();
-        $this->files->expects('makeDirectory')
-            ->with('src/path/Other/Http', 0755, true);
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('src/path/Other/Http/UserController.php', $this->fixture('controllers/controller-configured.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/simple-controller.yaml'));

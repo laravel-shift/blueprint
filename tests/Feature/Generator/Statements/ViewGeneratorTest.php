@@ -73,31 +73,22 @@ class ViewGeneratorTest extends TestCase
             ->with('view.stub')
             ->andReturn($template);
 
-        $this->files->shouldReceive('exists')
-            ->times(2)
-            ->with('resources/views/user')
-            ->andReturnTrue();
         $this->files->expects('exists')
             ->with('resources/views/user/index.blade.php')
             ->andReturnFalse();
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('resources/views/user/index.blade.php', str_replace('{{ view }}', 'user.index', $template));
 
         $this->files->expects('exists')
             ->with('resources/views/user/create.blade.php')
             ->andReturnFalse();
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('resources/views/user/create.blade.php', str_replace('{{ view }}', 'user.create', $template));
 
         $this->files->expects('exists')
-            ->with('resources/views/post')
-            ->andReturns(false, true);
-        $this->files->expects('exists')
             ->with('resources/views/post/show.blade.php')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
-            ->with('resources/views/post', 0755, true);
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('resources/views/post/show.blade.php', str_replace('{{ view }}', 'post.show', $template));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/render-statements.yaml'));

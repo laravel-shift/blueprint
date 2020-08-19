@@ -76,22 +76,16 @@ class MailGeneratorTest extends TestCase
             ->with('constructor.stub')
             ->andReturn(file_get_contents('stubs/constructor.stub'));
 
-        $this->files->shouldReceive('exists')
-            ->twice()
-            ->with('app/Mail')
-            ->andReturns(false, true);
         $this->files->expects('exists')
             ->with('app/Mail/ReviewPost.php')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
-            ->with('app/Mail', 0755, true);
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('app/Mail/ReviewPost.php', $this->fixture('mailables/review-post.php'));
 
         $this->files->expects('exists')
             ->with('app/Mail/PublishedPost.php')
             ->andReturnFalse();
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('app/Mail/PublishedPost.php', $this->fixture('mailables/published-post.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/send-statements.yaml'));
@@ -135,14 +129,9 @@ class MailGeneratorTest extends TestCase
             ->andReturn(file_get_contents('stubs/mail.stub'));
 
         $this->files->expects('exists')
-            ->with('src/path/Mail')
-            ->andReturnFalse();
-        $this->files->expects('exists')
             ->with('src/path/Mail/ReviewPost.php')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
-            ->with('src/path/Mail', 0755, true);
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('src/path/Mail/ReviewPost.php', $this->fixture('mailables/mail-configured.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));

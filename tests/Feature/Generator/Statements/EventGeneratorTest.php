@@ -76,22 +76,16 @@ class EventGeneratorTest extends TestCase
             ->with('constructor.stub')
             ->andReturn(file_get_contents('stubs/constructor.stub'));
 
-        $this->files->shouldReceive('exists')
-            ->twice()
-            ->with('app/Events')
-            ->andReturns(false, true);
         $this->files->expects('exists')
             ->with('app/Events/UserCreated.php')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
-            ->with('app/Events', 0755, true);
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('app/Events/UserCreated.php', $this->fixture('events/user-created.php'));
 
         $this->files->expects('exists')
             ->with('app/Events/UserDeleted.php')
             ->andReturnFalse();
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('app/Events/UserDeleted.php', $this->fixture('events/user-deleted.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/fire-statements.yaml'));
@@ -135,14 +129,9 @@ class EventGeneratorTest extends TestCase
             ->andReturn(file_get_contents('stubs/event.stub'));
 
         $this->files->expects('exists')
-            ->with('src/path/Events')
-            ->andReturnFalse();
-        $this->files->expects('makeDirectory')
-            ->with('src/path/Events', 0755, true);
-        $this->files->expects('exists')
             ->with('src/path/Events/NewPost.php')
             ->andReturnFalse();
-        $this->files->expects('put')
+        $this->files->expects('forcePut')
             ->with('src/path/Events/NewPost.php', $this->fixture('events/event-configured.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
