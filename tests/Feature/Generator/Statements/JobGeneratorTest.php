@@ -84,7 +84,7 @@ class JobGeneratorTest extends TestCase
             ->with('app/Jobs/CreateUser.php')
             ->andReturnFalse();
         $this->files->expects('makeDirectory')
-            ->with('app/Jobs', 0755, true);
+            ->with('app/Jobs');
         $this->files->expects('put')
             ->with('app/Jobs/CreateUser.php', $this->fixture('jobs/create-user.php'));
 
@@ -141,7 +141,7 @@ class JobGeneratorTest extends TestCase
             ->with('src/path/Jobs/SyncMedia.php')
             ->andReturnFalse();
         $this->files->expects('makeDirectory')
-            ->with('src/path/Jobs', 0755, true);
+            ->with('src/path/Jobs');
         $this->files->expects('put')
             ->with('src/path/Jobs/SyncMedia.php', $this->fixture('jobs/job-configured.php'));
 

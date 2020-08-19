@@ -130,7 +130,7 @@ class FactoryGeneratorTest extends TestCase
             ->with('database/factories/Admin')
             ->andReturnFalse();
         $this->files->expects('makeDirectory')
-            ->with('database/factories/Admin', 0755, true);
+            ->with('database/factories/Admin');
 
         $this->files->expects('put')
             ->with('database/factories/Admin/UserFactory.php', $this->fixture('factories/nested-components.php'));

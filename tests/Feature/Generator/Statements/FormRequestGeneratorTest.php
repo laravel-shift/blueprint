@@ -81,7 +81,7 @@ class FormRequestGeneratorTest extends TestCase
             ->with('app/Http/Requests/PostIndexRequest.php')
             ->andReturnFalse();
         $this->files->expects('makeDirectory')
-            ->with('app/Http/Requests', 0755, true);
+            ->with('app/Http/Requests');
         $this->files->expects('put')
             ->with('app/Http/Requests/PostIndexRequest.php', $this->fixture('form-requests/post-index.php'));
 
@@ -119,7 +119,7 @@ class FormRequestGeneratorTest extends TestCase
 
         $this->files->expects('makeDirectory')
             ->twice()
-            ->with('app/Http/Requests', 0755, true)
+            ->with('app/Http/Requests')
             ->andReturns(true, false);
 
         $this->files->expects('exists')
@@ -181,7 +181,7 @@ class FormRequestGeneratorTest extends TestCase
             ->with('app/Http/Requests/Admin/UserStoreRequest.php')
             ->andReturnFalse();
         $this->files->expects('makeDirectory')
-            ->with('app/Http/Requests/Admin', 0755, true);
+            ->with('app/Http/Requests/Admin');
         $this->files->expects('put')
             ->with('app/Http/Requests/Admin/UserStoreRequest.php', $this->fixture('form-requests/nested-components.php'));
 
@@ -210,7 +210,7 @@ class FormRequestGeneratorTest extends TestCase
             ->with('src/path/Http/Requests/PostStoreRequest.php')
             ->andReturnFalse();
         $this->files->expects('makeDirectory')
-            ->with('src/path/Http/Requests', 0755, true);
+            ->with('src/path/Http/Requests');
         $this->files->expects('put')
             ->with('src/path/Http/Requests/PostStoreRequest.php', $this->fixture('form-requests/form-request-configured.php'));
 
@@ -236,7 +236,7 @@ class FormRequestGeneratorTest extends TestCase
             ->with('app/Http/Requests/UserStoreRequest.php')
             ->andReturnFalse();
         $this->files->expects('makeDirectory')
-            ->with('app/Http/Requests', 0755, true);
+            ->with('app/Http/Requests');
         $this->files->expects('put')
             ->with('app/Http/Requests/UserStoreRequest.php', $this->fixture('form-requests/reference-cache.php'));
 

@@ -87,7 +87,7 @@ class NotificationGeneratorTest extends TestCase
             ->with('app/Notification/ReviewPostNotification.php')
             ->andReturnFalse();
         $this->files->expects('makeDirectory')
-            ->with('app/Notification', 0755, true);
+            ->with('app/Notification');
         $this->files->expects('put')
             ->with('app/Notification/ReviewPostNotification.php', $this->fixture('notifications/review-post.php'));
 
@@ -144,7 +144,7 @@ class NotificationGeneratorTest extends TestCase
             ->with('src/path/Notification/ReviewNotification.php')
             ->andReturnFalse();
         $this->files->expects('makeDirectory')
-            ->with('src/path/Notification', 0755, true);
+            ->with('src/path/Notification');
         $this->files->expects('put')
             ->with('src/path/Notification/ReviewNotification.php', $this->fixture('notifications/notification-configured.php'));
 

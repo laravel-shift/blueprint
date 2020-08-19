@@ -154,7 +154,7 @@ class ControllerGeneratorTest extends TestCase
             ->with('src/path/Other/Http')
             ->andReturnFalse();
         $this->files->expects('makeDirectory')
-            ->with('src/path/Other/Http', 0755, true);
+            ->with('src/path/Other/Http');
         $this->files->expects('put')
             ->with('src/path/Other/Http/UserController.php', $this->fixture('controllers/controller-configured.php'));
 

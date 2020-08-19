@@ -272,7 +272,7 @@ class ModelGeneratorTest extends TestCase
             ->with('src/path/Models')
             ->andReturnFalse();
         $this->files->expects('makeDirectory')
-            ->with('src/path/Models', 0755, true);
+            ->with('src/path/Models');
         $this->files->expects('put')
             ->with('src/path/Models/Comment.php', $this->fixture('models/model-configured.php'));
 

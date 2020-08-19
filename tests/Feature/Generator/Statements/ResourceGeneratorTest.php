@@ -79,7 +79,7 @@ class ResourceGeneratorTest extends TestCase
             ->with('app/Http/Resources')
             ->andReturns(false, true);
         $this->files->expects('makeDirectory')
-            ->with('app/Http/Resources', 0755, true);
+            ->with('app/Http/Resources');
 
         $this->files->expects('exists')
             ->twice()
@@ -114,7 +114,7 @@ class ResourceGeneratorTest extends TestCase
             ->with('app/Http/Resources/Api')
             ->andReturns(false, true);
         $this->files->expects('makeDirectory')
-            ->with('app/Http/Resources/Api', 0755, true);
+            ->with('app/Http/Resources/Api');
 
         $this->files->expects('exists')
             ->times(3)
