@@ -19,7 +19,7 @@ class RouteGenerator implements Generator
 
     public function output(Tree $tree): array
     {
-        if (empty($tree->controllers())) {
+        if ($tree->controllers()->isEmpty()) {
             return [];
         }
 

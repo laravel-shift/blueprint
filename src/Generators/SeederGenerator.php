@@ -4,10 +4,11 @@ namespace Blueprint\Generators;
 
 use Blueprint\Contracts\Generator;
 use Blueprint\Tree;
+use Illuminate\Contracts\Filesystem\Filesystem;
 
 class SeederGenerator implements Generator
 {
-    /** @var \Illuminate\Contracts\Filesystem\Filesystem */
+    /** @var Filesystem */
     private $files;
 
     /** @var Tree */
@@ -22,7 +23,7 @@ class SeederGenerator implements Generator
     {
         $this->tree = $tree;
 
-        if (empty($tree->seeders())) {
+        if ($tree->seeders()->isEmpty()) {
             return [];
         }
 

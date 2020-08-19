@@ -22,17 +22,17 @@ class Tree
 
     public function controllers()
     {
-        return $this->tree['controllers'];
+        return collect($this->tree['controllers']);
     }
 
     public function models()
     {
-        return $this->tree['models'];
+        return collect($this->tree['models']);
     }
 
     public function seeders()
     {
-        return $this->tree['seeders'];
+        return collect($this->tree['seeders']);
     }
 
     public function modelForContext(string $context)
