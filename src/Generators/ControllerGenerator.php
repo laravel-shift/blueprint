@@ -139,20 +139,8 @@ class ControllerGenerator implements Generator
                     $body .= self::INDENT.$statement->output().PHP_EOL;
                 } elseif ($statement instanceof ResourceStatement) {
                     $fqcn = config('blueprint.namespace').'\\Http\\Resources\\'.($controller->namespace() ? $controller->namespace().'\\' : '').$statement->name();
-
-                    $import = $fqcn;
-
-                    if (!$statement->collection()) {
-                        $fqcn = $statement->name().'Resource';
-                        $import .= ' as '.$fqcn;
-                    } else {
-                        $fqcn = "\\{$fqcn}";
-                    }
-
-                    $method = str_replace('* @return \\Illuminate\\Http\\Response', '* @return '.$fqcn, $method);
-
-                    $this->addImport($controller, $import);
-
+                    $method = str_replace('* @return \\Illuminate\\Http\\Response', '* @return \\'.$fqcn, $method);
+                    $this->addImport($controller, $fqcn);
                     $body .= self::INDENT.$statement->output().PHP_EOL;
                 } elseif ($statement instanceof RedirectStatement) {
                     $body .= self::INDENT.$statement->output().PHP_EOL;
