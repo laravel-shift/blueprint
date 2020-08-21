@@ -65,6 +65,6 @@ class CertificateController extends Controller
     {
         $certificate->delete();
 
-        return response()->noContent(200);
+        return response()->noContent();
     }
 }
