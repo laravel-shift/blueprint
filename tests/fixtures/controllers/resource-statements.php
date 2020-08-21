@@ -20,7 +20,7 @@ class UserController extends Controller
 
     /**
      * @param \Illuminate\Http\Request $request
-     * @return \App\Http\Resources\User
+     * @return UserResource
      */
     public function store(Request $request)
     {
@@ -30,7 +30,7 @@ class UserController extends Controller
     /**
      * @param \Illuminate\Http\Request $request
      * @param \App\User $user
-     * @return \App\Http\Resources\User
+     * @return UserResource
      */
     public function show(Request $request, User $user)
     {
