@@ -663,7 +663,7 @@ class StatementLexerTest extends TestCase
         $this->assertCount(1, $actual);
         $this->assertInstanceOf(ResourceStatement::class, $actual[0]);
 
-        $this->assertEquals('User', $actual[0]->name());
+        $this->assertEquals('UserResource', $actual[0]->name());
         $this->assertEquals('user', $actual[0]->reference());
         $this->assertFalse($actual[0]->collection());
         $this->assertFalse($actual[0]->paginate());
