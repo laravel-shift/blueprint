@@ -56,7 +56,7 @@ class ModelGeneratorTest extends TestCase
             ->with('model.fillable.stub')
             ->andReturn(file_get_contents('stubs/model.fillable.stub'));
 
-        if (in_array($definition, ['drafts/nested-components.yaml','drafts/resource-statements.yaml'])) {
+        if (in_array($definition, ['drafts/nested-components.yaml', 'drafts/resource-statements.yaml'])) {
             $this->files->expects('stub')
                 ->with('model.hidden.stub')
                 ->andReturn(file_get_contents('stubs/model.hidden.stub'));
@@ -66,7 +66,7 @@ class ModelGeneratorTest extends TestCase
             ->with('model.casts.stub')
             ->andReturn(file_get_contents('stubs/model.casts.stub'));
 
-        if ($definition === 'drafts/readme-example.yaml') {
+        if (in_array($definition, ['drafts/readme-example.yaml', 'drafts/all-column-types.yaml'])) {
             $this->files->expects('stub')
                 ->with('model.dates.stub')
                 ->andReturn(file_get_contents('stubs/model.dates.stub'));
@@ -109,6 +109,9 @@ class ModelGeneratorTest extends TestCase
             ->with('model.casts.stub')
             ->andReturn(file_get_contents('stubs/model.casts.stub'))
             ->twice();
+        $this->files->expects('stub')
+            ->with('model.dates.stub')
+            ->andReturn(file_get_contents('stubs/model.dates.stub'));
         $this->files->expects('stub')
             ->with('model.method.stub')
             ->andReturn(file_get_contents('stubs/model.method.stub'))
@@ -255,15 +258,12 @@ class ModelGeneratorTest extends TestCase
         $this->files->expects('stub')
             ->with('model.class.stub')
             ->andReturn(file_get_contents('stubs/model.class.stub'));
-
         $this->files->expects('stub')
             ->with('model.fillable.stub')
             ->andReturn(file_get_contents('stubs/model.fillable.stub'));
-
         $this->files->expects('stub')
             ->with('model.casts.stub')
             ->andReturn(file_get_contents('stubs/model.casts.stub'));
-
         $this->files->expects('stub')
             ->with('model.method.stub')
             ->andReturn(file_get_contents('stubs/model.method.stub'));
@@ -450,6 +450,7 @@ class ModelGeneratorTest extends TestCase
             ['drafts/unconventional.yaml', 'app/Team.php', 'models/unconventional.php'],
             ['drafts/nested-components.yaml', 'app/Admin/User.php', 'models/nested-components.php'],
             ['drafts/resource-statements.yaml', 'app/User.php', 'models/resource-statements.php'],
+            ['drafts/all-column-types.yaml', 'app/AllType.php', 'models/all-column-types.php'],
         ];
     }
 
