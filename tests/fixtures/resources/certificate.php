@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Api;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class CertificateResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,7 +17,11 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'email' => $this->email,
+            'certificate_type_id' => $this->certificate_type_id,
+            'reference' => $this->reference,
+            'document' => $this->document,
+            'expiry_date' => $this->expiry_date,
+            'remarks' => $this->remarks,
         ];
     }
 }

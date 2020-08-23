@@ -125,7 +125,7 @@ class ControllerLexer implements Lexer
             ],
             'api.destroy' => [
                 'delete' => '[singular]',
-                'respond' => 200,
+                'respond' => 204,
             ],
         ];
     }

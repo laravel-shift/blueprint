@@ -1,19 +1,20 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Certificate;
-use App\Http\Requests\CertificateStoreRequest;
-use App\Http\Requests\CertificateUpdateRequest;
-use App\Http\Resources\CertificateCollection;
-use App\Http\Resources\CertificateResource;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\CertificateStoreRequest;
+use App\Http\Requests\Api\CertificateUpdateRequest;
+use App\Http\Resources\Api\CertificateCollection;
+use App\Http\Resources\Api\CertificateResource;
 use Illuminate\Http\Request;
 
 class CertificateController extends Controller
 {
     /**
      * @param \Illuminate\Http\Request $request
-     * @return \App\Http\Resources\CertificateCollection
+     * @return \App\Http\Resources\Api\CertificateCollection
      */
     public function index(Request $request)
     {
@@ -23,8 +24,8 @@ class CertificateController extends Controller
     }
 
     /**
-     * @param \App\Http\Requests\CertificateStoreRequest $request
-     * @return \App\Http\Resources\CertificateResource
+     * @param \App\Http\Requests\Api\CertificateStoreRequest $request
+     * @return \App\Http\Resources\Api\CertificateResource
      */
     public function store(CertificateStoreRequest $request)
     {
@@ -36,7 +37,7 @@ class CertificateController extends Controller
     /**
      * @param \Illuminate\Http\Request $request
      * @param \App\Certificate $certificate
-     * @return \App\Http\Resources\CertificateResource
+     * @return \App\Http\Resources\Api\CertificateResource
      */
     public function show(Request $request, Certificate $certificate)
     {
@@ -44,9 +45,9 @@ class CertificateController extends Controller
     }
 
     /**
-     * @param \App\Http\Requests\CertificateUpdateRequest $request
+     * @param \App\Http\Requests\Api\CertificateUpdateRequest $request
      * @param \App\Certificate $certificate
-     * @return \App\Http\Resources\CertificateResource
+     * @return \App\Http\Resources\Api\CertificateResource
      */
     public function update(CertificateUpdateRequest $request, Certificate $certificate)
     {

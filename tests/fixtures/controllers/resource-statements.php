@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\User as UserResource;
 use App\Http\Resources\UserCollection;
+use App\Http\Resources\UserResource;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -20,7 +20,7 @@ class UserController extends Controller
 
     /**
      * @param \Illuminate\Http\Request $request
-     * @return \App\Http\Resources\User
+     * @return \App\Http\Resources\UserResource
      */
     public function store(Request $request)
     {
@@ -30,7 +30,7 @@ class UserController extends Controller
     /**
      * @param \Illuminate\Http\Request $request
      * @param \App\User $user
-     * @return \App\Http\Resources\User
+     * @return \App\Http\Resources\UserResource
      */
     public function show(Request $request, User $user)
     {

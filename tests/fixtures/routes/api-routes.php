@@ -1,3 +1,3 @@
 
 
-Route::apiResource('certificate', 'CertificateController');
+Route::apiResource('certificate', 'Api\CertificateController');

@@ -83,10 +83,10 @@ class ResourceGeneratorTest extends TestCase
 
         $this->files->expects('exists')
             ->twice()
-            ->with('app/Http/Resources/User.php')
+            ->with('app/Http/Resources/UserResource.php')
             ->andReturns(false, true);
         $this->files->expects('put')
-            ->with('app/Http/Resources/User.php', $this->fixture('resources/user.php'));
+            ->with('app/Http/Resources/UserResource.php', $this->fixture('resources/user.php'));
 
         $this->files->expects('exists')
             ->twice()
@@ -98,6 +98,42 @@ class ResourceGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/resource-statements.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['app/Http/Resources/UserCollection.php', 'app/Http/Resources/User.php']], $this->subject->output($tree));
+        $this->assertEquals(['created' => ['app/Http/Resources/UserCollection.php', 'app/Http/Resources/UserResource.php']], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function output_writes_namespaced_classes()
+    {
+        $this->files->expects('stub')
+            ->with('resource.stub')
+            ->andReturn(file_get_contents('stubs/resource.stub'));
+
+        $this->files->shouldReceive('exists')
+            ->with('app/Http/Resources/Api')
+            ->andReturns(false, true);
+        $this->files->expects('makeDirectory')
+            ->with('app/Http/Resources/Api', 0755, true);
+
+        $this->files->expects('exists')
+            ->times(3)
+            ->with('app/Http/Resources/Api/CertificateResource.php')
+            ->andReturns(false, true, true);
+        $this->files->expects('put')
+            ->with('app/Http/Resources/Api/CertificateResource.php', $this->fixture('resources/certificate.php'));
+
+        $this->files->expects('exists')
+            ->with('app/Http/Resources/Api/CertificateCollection.php')
+            ->andReturns(false);
+        $this->files->expects('put')
+            ->with('app/Http/Resources/Api/CertificateCollection.php', $this->fixture('resources/certificate-collection.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/api-routes-example.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals([
+            'created' => ['app/Http/Resources/Api/CertificateCollection.php', 'app/Http/Resources/Api/CertificateResource.php'],
+        ], $this->subject->output($tree));
     }
 }
