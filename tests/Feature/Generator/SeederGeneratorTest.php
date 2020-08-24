@@ -56,7 +56,7 @@ class SeederGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('seeder.stub')
-            ->andReturn(file_get_contents('stubs/seeder.stub'));
+            ->andReturn($this->stub('seeder.stub'));
 
         $this->files->expects('put')
             ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/PostSeeder.php'));
@@ -76,7 +76,7 @@ class SeederGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('seeder.stub')
-            ->andReturn(file_get_contents('stubs/seeder.stub'));
+            ->andReturn($this->stub('seeder.stub'));
 
         $this->files->expects('put')
             ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/PostSeeder.php'));

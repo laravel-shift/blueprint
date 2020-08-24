@@ -40,7 +40,7 @@ class ResourceGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('resource.stub')
-            ->andReturn(file_get_contents('stubs/resource.stub'));
+            ->andReturn($this->stub('resource.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -54,7 +54,7 @@ class ResourceGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('resource.stub')
-            ->andReturn(file_get_contents('stubs/resource.stub'));
+            ->andReturn($this->stub('resource.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -69,17 +69,17 @@ class ResourceGeneratorTest extends TestCase
      */
     public function output_writes_resources_for_render_statements()
     {
-        $template = file_get_contents('stubs/resource.stub');
+        $template = $this->stub('resource.stub');
         $this->files->expects('stub')
             ->with('resource.stub')
             ->andReturn($template);
 
         $this->files->expects('exists')
             ->twice()
-            ->with('app/Http/Resources/User.php')
+            ->with('app/Http/Resources/UserResource.php')
             ->andReturns(false, true);
         $this->files->expects('forcePut')
-            ->with('app/Http/Resources/User.php', $this->fixture('resources/user.php'));
+            ->with('app/Http/Resources/UserResource.php', $this->fixture('resources/user.php'));
 
         $this->files->expects('exists')
             ->twice()
@@ -91,7 +91,7 @@ class ResourceGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/resource-statements.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['app/Http/Resources/UserCollection.php', 'app/Http/Resources/User.php']], $this->subject->output($tree));
+        $this->assertEquals(['created' => ['app/Http/Resources/UserCollection.php', 'app/Http/Resources/UserResource.php']], $this->subject->output($tree));
     }
 
     /**
@@ -105,10 +105,10 @@ class ResourceGeneratorTest extends TestCase
 
         $this->files->expects('exists')
             ->times(3)
-            ->with('app/Http/Resources/Api/Certificate.php')
+            ->with('app/Http/Resources/Api/CertificateResource.php')
             ->andReturns(false, true, true);
         $this->files->expects('forcePut')
-            ->with('app/Http/Resources/Api/Certificate.php', $this->fixture('resources/certificate.php'));
+            ->with('app/Http/Resources/Api/CertificateResource.php', $this->fixture('resources/certificate.php'));
 
         $this->files->expects('exists')
             ->with('app/Http/Resources/Api/CertificateCollection.php')
@@ -120,7 +120,7 @@ class ResourceGeneratorTest extends TestCase
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([
-            'created' => ['app/Http/Resources/Api/CertificateCollection.php', 'app/Http/Resources/Api/Certificate.php'],
+            'created' => ['app/Http/Resources/Api/CertificateCollection.php', 'app/Http/Resources/Api/CertificateResource.php'],
         ], $this->subject->output($tree));
     }
 }

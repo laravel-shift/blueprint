@@ -38,7 +38,7 @@ class FactoryGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('factory.stub')
-            ->andReturn(file_get_contents('stubs/factory.stub'));
+            ->andReturn($this->stub('factory.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -53,7 +53,7 @@ class FactoryGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('factory.stub')
-            ->andReturn(file_get_contents('stubs/factory.stub'));
+            ->andReturn($this->stub('factory.stub'));
 
         $this->files->expects('forcePut')
             ->with($path, $this->fixture($factory));
@@ -73,7 +73,7 @@ class FactoryGeneratorTest extends TestCase
 
         $this->files->expects('stub')
             ->with('factory.stub')
-            ->andReturn(file_get_contents('stubs/factory.stub'));
+            ->andReturn($this->stub('factory.stub'));
 
         $this->files->expects('forcePut')
             ->with('database/factories/PostFactory.php', $this->fixture('factories/fake-nullables.php'));
@@ -94,7 +94,7 @@ class FactoryGeneratorTest extends TestCase
 
         $this->files->expects('stub')
             ->with('factory.stub')
-            ->andReturn(file_get_contents('stubs/factory.stub'));
+            ->andReturn($this->stub('factory.stub'));
 
         $this->files->expects('forcePut')
             ->with('database/factories/PostFactory.php', $this->fixture('factories/post-configured.php'));
@@ -112,7 +112,7 @@ class FactoryGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('factory.stub')
-            ->andReturn(file_get_contents('stubs/factory.stub'));
+            ->andReturn($this->stub('factory.stub'));
 
         $this->files->expects('forcePut')
             ->with('database/factories/Admin/UserFactory.php', $this->fixture('factories/nested-components.php'));

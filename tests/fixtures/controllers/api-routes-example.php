@@ -6,8 +6,8 @@ use App\Certificate;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\CertificateStoreRequest;
 use App\Http\Requests\Api\CertificateUpdateRequest;
-use App\Http\Resources\Api\Certificate as CertificateResource;
 use App\Http\Resources\Api\CertificateCollection;
+use App\Http\Resources\Api\CertificateResource;
 use Illuminate\Http\Request;
 
 class CertificateController extends Controller
@@ -25,7 +25,7 @@ class CertificateController extends Controller
 
     /**
      * @param \App\Http\Requests\Api\CertificateStoreRequest $request
-     * @return \App\Http\Resources\Api\Certificate
+     * @return \App\Http\Resources\Api\CertificateResource
      */
     public function store(CertificateStoreRequest $request)
     {
@@ -37,7 +37,7 @@ class CertificateController extends Controller
     /**
      * @param \Illuminate\Http\Request $request
      * @param \App\Certificate $certificate
-     * @return \App\Http\Resources\Api\Certificate
+     * @return \App\Http\Resources\Api\CertificateResource
      */
     public function show(Request $request, Certificate $certificate)
     {
@@ -47,7 +47,7 @@ class CertificateController extends Controller
     /**
      * @param \App\Http\Requests\Api\CertificateUpdateRequest $request
      * @param \App\Certificate $certificate
-     * @return \App\Http\Resources\Api\Certificate
+     * @return \App\Http\Resources\Api\CertificateResource
      */
     public function update(CertificateUpdateRequest $request, Certificate $certificate)
     {

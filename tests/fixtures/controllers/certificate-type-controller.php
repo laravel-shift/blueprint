@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\CertificateType;
 use App\Http\Requests\CertificateTypeStoreRequest;
 use App\Http\Requests\CertificateTypeUpdateRequest;
-use App\Http\Resources\CertificateType as CertificateTypeResource;
 use App\Http\Resources\CertificateTypeCollection;
+use App\Http\Resources\CertificateTypeResource;
 use Illuminate\Http\Request;
 
 class CertificateTypeController extends Controller
@@ -24,7 +24,7 @@ class CertificateTypeController extends Controller
 
     /**
      * @param \App\Http\Requests\CertificateTypeStoreRequest $request
-     * @return \App\Http\Resources\CertificateType
+     * @return \App\Http\Resources\CertificateTypeResource
      */
     public function store(CertificateTypeStoreRequest $request)
     {
@@ -36,7 +36,7 @@ class CertificateTypeController extends Controller
     /**
      * @param \Illuminate\Http\Request $request
      * @param \App\CertificateType $certificateType
-     * @return \App\Http\Resources\CertificateType
+     * @return \App\Http\Resources\CertificateTypeResource
      */
     public function show(Request $request, CertificateType $certificateType)
     {
@@ -46,7 +46,7 @@ class CertificateTypeController extends Controller
     /**
      * @param \App\Http\Requests\CertificateTypeUpdateRequest $request
      * @param \App\CertificateType $certificateType
-     * @return \App\Http\Resources\CertificateType
+     * @return \App\Http\Resources\CertificateTypeResource
      */
     public function update(CertificateTypeUpdateRequest $request, CertificateType $certificateType)
     {

@@ -4,7 +4,7 @@ namespace App\Http\Resources\Api;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class Certificate extends JsonResource
+class CertificateResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
