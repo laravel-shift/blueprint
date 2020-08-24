@@ -39,7 +39,7 @@ class NotificationGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('notification.stub')
-            ->andReturn(file_get_contents('stubs/notification.stub'));
+            ->andReturn($this->stub('notification.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -53,7 +53,7 @@ class NotificationGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('notification.stub')
-            ->andReturn(file_get_contents('stubs/notification.stub'));
+            ->andReturn($this->stub('notification.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -71,12 +71,12 @@ class NotificationGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('notification.stub')
-            ->andReturn(file_get_contents('stubs/notification.stub'));
+            ->andReturn($this->stub('notification.stub'));
 
         if ($draft === 'drafts/send-statements-notification-facade.yaml') {
             $this->files->expects('stub')
                 ->with('constructor.stub')
-                ->andReturn(file_get_contents('stubs/constructor.stub'));
+                ->andReturn($this->stub('constructor.stub'));
         }
 
         $this->files->shouldReceive('exists')
@@ -110,7 +110,7 @@ class NotificationGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('notification.stub')
-            ->andReturn(file_get_contents('stubs/notification.stub'));
+            ->andReturn($this->stub('notification.stub'));
 
         $this->files->expects('exists')
             ->with('app/Notification/ReviewPostNotification.php')
@@ -135,7 +135,7 @@ class NotificationGeneratorTest extends TestCase
 
         $this->files->expects('stub')
             ->with('notification.stub')
-            ->andReturn(file_get_contents('stubs/notification.stub'));
+            ->andReturn($this->stub('notification.stub'));
 
         $this->files->expects('exists')
             ->with('src/path/Notification')

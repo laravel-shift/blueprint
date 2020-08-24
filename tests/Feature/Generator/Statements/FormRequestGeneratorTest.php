@@ -40,7 +40,7 @@ class FormRequestGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('request.stub')
-            ->andReturn(file_get_contents('stubs/request.stub'));
+            ->andReturn($this->stub('request.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -54,7 +54,7 @@ class FormRequestGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('request.stub')
-            ->andReturn(file_get_contents('stubs/request.stub'));
+            ->andReturn($this->stub('request.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -71,7 +71,7 @@ class FormRequestGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('request.stub')
-            ->andReturn(file_get_contents('stubs/request.stub'));
+            ->andReturn($this->stub('request.stub'));
 
         $this->files->shouldReceive('exists')
             ->times(3)
@@ -110,7 +110,7 @@ class FormRequestGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('request.stub')
-            ->andReturn(file_get_contents('stubs/request.stub'));
+            ->andReturn($this->stub('request.stub'));
 
         $this->files->shouldReceive('exists')
             ->twice()
@@ -147,7 +147,7 @@ class FormRequestGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('request.stub')
-            ->andReturn(file_get_contents('stubs/request.stub'));
+            ->andReturn($this->stub('request.stub'));
 
         $this->files->expects('exists')
             ->with('app/Http/Requests/PostIndexRequest.php')
@@ -172,7 +172,7 @@ class FormRequestGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('request.stub')
-            ->andReturn(file_get_contents('stubs/request.stub'));
+            ->andReturn($this->stub('request.stub'));
 
         $this->files->expects('exists')
             ->with('app/Http/Requests/Admin')
@@ -201,7 +201,7 @@ class FormRequestGeneratorTest extends TestCase
 
         $this->files->expects('stub')
             ->with('request.stub')
-            ->andReturn(file_get_contents('stubs/request.stub'));
+            ->andReturn($this->stub('request.stub'));
 
         $this->files->expects('exists')
             ->with('src/path/Http/Requests')
@@ -227,7 +227,7 @@ class FormRequestGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('request.stub')
-            ->andReturn(file_get_contents('stubs/request.stub'));
+            ->andReturn($this->stub('request.stub'));
 
         $this->files->expects('exists')
             ->with('app/Http/Requests')

@@ -39,7 +39,7 @@ class MailGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('mail.stub')
-            ->andReturn(file_get_contents('stubs/mail.stub'));
+            ->andReturn($this->stub('mail.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -53,7 +53,7 @@ class MailGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('mail.stub')
-            ->andReturn(file_get_contents('stubs/mail.stub'));
+            ->andReturn($this->stub('mail.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -70,11 +70,11 @@ class MailGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('mail.stub')
-            ->andReturn(file_get_contents('stubs/mail.stub'));
+            ->andReturn($this->stub('mail.stub'));
 
         $this->files->expects('stub')
             ->with('constructor.stub')
-            ->andReturn(file_get_contents('stubs/constructor.stub'));
+            ->andReturn($this->stub('constructor.stub'));
 
         $this->files->shouldReceive('exists')
             ->twice()
@@ -107,7 +107,7 @@ class MailGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('mail.stub')
-            ->andReturn(file_get_contents('stubs/mail.stub'));
+            ->andReturn($this->stub('mail.stub'));
 
         $this->files->expects('exists')
             ->with('app/Mail/ReviewPost.php')
@@ -132,7 +132,7 @@ class MailGeneratorTest extends TestCase
 
         $this->files->expects('stub')
             ->with('mail.stub')
-            ->andReturn(file_get_contents('stubs/mail.stub'));
+            ->andReturn($this->stub('mail.stub'));
 
         $this->files->expects('exists')
             ->with('src/path/Mail')

@@ -40,7 +40,7 @@ class TestGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('test.class.stub')
-            ->andReturn(file_get_contents('stubs/test.class.stub'));
+            ->andReturn($this->stub('test.class.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -55,11 +55,11 @@ class TestGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('test.class.stub')
-            ->andReturn(file_get_contents('stubs/test.class.stub'));
+            ->andReturn($this->stub('test.class.stub'));
 
         $this->files->expects('stub')
             ->with('test.case.stub')
-            ->andReturn(file_get_contents('stubs/test.case.stub'));
+            ->andReturn($this->stub('test.case.stub'));
         $dirname = dirname($path);
         $this->files->expects('exists')
             ->with($dirname)
@@ -82,11 +82,11 @@ class TestGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('test.class.stub')
-            ->andReturn(file_get_contents('stubs/test.class.stub'));
+            ->andReturn($this->stub('test.class.stub'));
 
         $this->files->expects('stub')
             ->with('test.case.stub')
-            ->andReturn(file_get_contents('stubs/test.case.stub'));
+            ->andReturn($this->stub('test.case.stub'));
 
         $certificateControllerTest = 'tests/Feature/Http/Controllers/CertificateControllerTest.php';
         $certificateTypeControllerTest = 'tests/Feature/Http/Controllers/CertificateTypeControllerTest.php';
@@ -115,11 +115,11 @@ class TestGeneratorTest extends TestCase
     {
         $this->files->expects('stub')
             ->with('test.class.stub')
-            ->andReturn(file_get_contents('stubs/test.class.stub'));
+            ->andReturn($this->stub('test.class.stub'));
 
         $this->files->expects('stub')
             ->with('test.case.stub')
-            ->andReturn(file_get_contents('stubs/test.case.stub'));
+            ->andReturn($this->stub('test.case.stub'));
         $this->files->expects('exists')
             ->with('tests/Feature/Http/Controllers')
             ->andReturnFalse();
@@ -153,11 +153,11 @@ class TestGeneratorTest extends TestCase
 
         $this->files->expects('stub')
             ->with('test.class.stub')
-            ->andReturn(file_get_contents('stubs/test.class.stub'));
+            ->andReturn($this->stub('test.class.stub'));
 
         $this->files->expects('stub')
             ->with('test.case.stub')
-            ->andReturn(file_get_contents('stubs/test.case.stub'));
+            ->andReturn($this->stub('test.case.stub'));
         $dirname = dirname($path);
         $this->files->expects('exists')
             ->with($dirname)
