@@ -127,6 +127,9 @@ class MigrationGenerator implements Generator
             $column_definition = self::INDENT;
             if ($dataType === 'bigIncrements' && $this->isLaravel7orNewer()) {
                 $column_definition .= '$table->id(';
+                if ($column->name() !== 'id') {
+                    $column_definition .= "'{$column->name()}'";
+                }
             } elseif ($dataType === 'rememberToken') {
                 $column_definition .= '$table->rememberToken(';
             } else {

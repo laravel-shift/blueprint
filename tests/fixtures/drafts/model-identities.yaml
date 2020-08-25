@@ -2,4 +2,5 @@ models:
   Relationship:
     post_id: id
     another: id
+    big_increments_custom_name: bigIncrements
     timestamps: false

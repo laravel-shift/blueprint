@@ -17,6 +17,7 @@ class CreateRelationshipsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('post_id');
             $table->unsignedBigInteger('another');
+            $table->id('big_increments_custom_name');
         });
     }
 
