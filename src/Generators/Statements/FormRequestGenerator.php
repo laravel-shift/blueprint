@@ -96,9 +96,9 @@ class FormRequestGenerator implements Generator
             $validationRules = $this->validationRules($qualifier, $column);
 
             foreach ($validationRules as $name => $rule) {
-                $formattedRule = implode('|', $rule);
+                $formattedRule = implode("', '", $rule);
 
-                $output .= self::INDENT."'{$name}' => '{$formattedRule}',".PHP_EOL;
+                $output .= self::INDENT."'{$name}' => ['{$formattedRule}'],".PHP_EOL;
             }
 
             return $output;
