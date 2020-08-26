@@ -136,7 +136,11 @@ class MigrationGenerator implements Generator
             } elseif ($dataType === 'rememberToken') {
                 $column_definition .= '$table->rememberToken(';
             } elseif (in_array(mb_strtolower($column->name()), self::COMPOSITE_INDEXES)) {
-                $column_definition .= '$table->'.$dataType."(['".implode("', '", $column->attributes())."']";
+                $column_definition = [];
+                foreach ($column->attributes() as $attributes) {
+                    $column_definition[] = self::INDENT.'$table->'.$dataType."(['".implode("', '", $attributes)."']);";
+                }
+                $column_definition =  implode(PHP_EOL, $column_definition).PHP_EOL;
             } else {
                 $column_definition .= '$table->'.$dataType."('{$column->name()}'";
             }
@@ -149,7 +153,9 @@ class MigrationGenerator implements Generator
                     $column_definition .= implode(', ', $column->attributes());
                 }
             }
-            $column_definition .= ')';
+            if (!in_array(mb_strtolower($column->name()), self::COMPOSITE_INDEXES)) {
+                $column_definition .= ')';
+            }
 
             $modifiers = $column->modifiers();
 
@@ -191,7 +197,9 @@ class MigrationGenerator implements Generator
                 }
             }
 
-            $column_definition .= ';'.PHP_EOL;
+            if (!in_array(mb_strtolower($column->name()), self::COMPOSITE_INDEXES)) {
+                $column_definition .= ';'.PHP_EOL;
+            }
             if (! empty($foreign)) {
                 $column_definition .= $foreign.';'.PHP_EOL;
             }

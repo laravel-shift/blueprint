@@ -226,7 +226,10 @@ class ModelLexer implements Lexer
             }
             if (isset(self::$compositeIndexes[strtolower($name)])) {
                 $data_type = self::$compositeIndexes[strtolower($name)];
-                $attributes = explode(',', $value);
+                $attributes = [];
+                foreach (explode(' ', $definition) as $attribute) {
+                    $attributes[] = explode(',', $attribute);
+                }
             }
             if (isset(self::$dataTypes[strtolower($value)])) {
                 $attributes = $parts[1] ?? null;
