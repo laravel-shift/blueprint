@@ -24,7 +24,7 @@ class PostIndexRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|string|max:400',
+            'title' => ['required', 'string', 'max:400'],
         ];
     }
 }

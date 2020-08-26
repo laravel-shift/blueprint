@@ -24,10 +24,10 @@ class PostStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|string|max:400',
-            'content' => 'required|string',
-            'rating' => 'required|numeric|between:-99.99,99.99',
-            'count' => 'required|numeric|gt:0|between:0,99999999',
+            'title' => ['required', 'string', 'max:400'],
+            'content' => ['required', 'string'],
+            'rating' => ['required', 'numeric', 'between:-99.99,99.99'],
+            'count' => ['required', 'numeric', 'gt:0', 'between:0,99999999'],
         ];
     }
 }

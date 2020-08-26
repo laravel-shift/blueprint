@@ -24,8 +24,8 @@ class OtherStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'field' => 'required',
-            'text' => 'required',
+            'field' => ['required'],
+            'text' => ['required'],
         ];
     }
 }
