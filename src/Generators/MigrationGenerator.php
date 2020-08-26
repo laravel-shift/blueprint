@@ -11,6 +11,12 @@ use Illuminate\Support\Str;
 
 class MigrationGenerator implements Generator
 {
+    const COMPOSITE_INDEXES = [
+        '_index',
+        '_primary',
+        '_unique',
+    ];
+
     const INDENT = '            ';
 
     const NULLABLE_TYPES = [
@@ -129,11 +135,13 @@ class MigrationGenerator implements Generator
                 $column_definition .= '$table->id(';
             } elseif ($dataType === 'rememberToken') {
                 $column_definition .= '$table->rememberToken(';
+            } elseif (in_array(mb_strtolower($column->name()), self::COMPOSITE_INDEXES)) {
+                $column_definition .= '$table->'.$dataType."(['".implode("', '", $column->attributes())."']";
             } else {
                 $column_definition .= '$table->'.$dataType."('{$column->name()}'";
             }
 
-            if (! empty($column->attributes()) && ! in_array($column->dataType(), ['id', 'uuid'])) {
+            if (! empty($column->attributes()) && ! in_array($column->dataType(), ['id', 'uuid']) && ! in_array($column->name(), self::COMPOSITE_INDEXES)) {
                 $column_definition .= ', ';
                 if (in_array($column->dataType(), ['set', 'enum'])) {
                     $column_definition .= json_encode($column->attributes());

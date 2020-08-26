@@ -98,6 +98,12 @@ class ModelLexer implements Lexer
         'comment' => 'comment',
     ];
 
+    private static $compositeIndexes = [
+        '_index' => 'index',
+        '_primary' => 'primary',
+        '_unique' => 'unique',
+    ];
+
     public function analyze(array $tokens): array
     {
         $registry = [
@@ -217,7 +223,12 @@ class ModelLexer implements Lexer
                 if (isset($parts[1])) {
                     $attributes = [$parts[1]];
                 }
-            } elseif (isset(self::$dataTypes[strtolower($value)])) {
+            }
+            if (isset(self::$compositeIndexes[strtolower($name)])) {
+                $data_type = self::$compositeIndexes[strtolower($name)];
+                $attributes = explode(',', $value);
+            }
+            if (isset(self::$dataTypes[strtolower($value)])) {
                 $attributes = $parts[1] ?? null;
                 $data_type = self::$dataTypes[strtolower($value)];
                 if (!empty($attributes)) {
