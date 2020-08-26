@@ -3,6 +3,6 @@ models:
     project_id: bigInteger
     user_id: bigInteger
     name: string
-    _unique: project_id,user_id
+    _unique: project_id,user_id team_id,project_id
     _index: project_id,user_id
     _primary: project_id,user_id

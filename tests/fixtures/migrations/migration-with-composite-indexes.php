@@ -19,6 +19,7 @@ class CreateParticipationsTable extends Migration
             $table->bigInteger('user_id');
             $table->string('name');
             $table->unique(['project_id', 'user_id']);
+            $table->unique(['team_id', 'project_id']);
             $table->index(['project_id', 'user_id']);
             $table->primary(['project_id', 'user_id']);
             $table->timestamps();
