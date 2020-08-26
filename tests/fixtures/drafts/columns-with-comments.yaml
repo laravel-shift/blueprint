@@ -1,0 +1,4 @@
+models:
+  Profession:
+    title: string:400 comment:"Some title for the profession"
+    description: string:400 nullable comment:'Some description for the profession'

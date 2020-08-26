@@ -95,6 +95,7 @@ class ModelLexer implements Lexer
         'primary' => 'primary',
         'foreign' => 'foreign',
         'ondelete' => 'onDelete',
+        'comment' => 'comment',
     ];
 
     public function analyze(array $tokens): array
@@ -206,7 +207,7 @@ class ModelLexer implements Lexer
         $data_type = null;
         $modifiers = [];
 
-        $tokens = preg_split('#".*?"(*SKIP)(*FAIL)|\s+#', $definition);
+        $tokens = preg_split('#("|\').*?\1(*SKIP)(*FAIL)|\s+#', $definition);
         foreach ($tokens as $token) {
             $parts = explode(':', $token);
             $value = $parts[0];
