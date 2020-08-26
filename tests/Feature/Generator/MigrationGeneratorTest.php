@@ -755,6 +755,7 @@ class MigrationGeneratorTest extends TestCase
             ['drafts/resource-statements.yaml', 'database/migrations/timestamp_create_users_table.php', 'migrations/resource-statements.php'],
             ['drafts/enum-options.yaml', 'database/migrations/timestamp_create_messages_table.php', 'migrations/enum-options.php'],
             ['drafts/columns-with-comments.yaml', 'database/migrations/timestamp_create_professions_table.php', 'migrations/columns-with-comments.php'],
+            ['drafts/migration-with-composite-indexes.yaml', 'database/migrations/timestamp_create_participations_table.php', 'migrations/migration-with-composite-indexes.php'],
         ];
     }
 }
