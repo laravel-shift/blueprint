@@ -64,7 +64,7 @@ class BlueprintTest extends TestCase
                     'user_id' => 'id',
                 ],
             ],
-            'seeders' => 'Post, Comment',
+            'seeders' => 'Post,Comment',
         ], $this->subject->parse($blueprint));
     }
 
@@ -219,7 +219,7 @@ class BlueprintTest extends TestCase
                         'render' => 'post.index with:posts',
                     ],
                     'store' => [
-                        'validate' => 'title, content, author_id',
+                        'validate' => 'title,content,author_id',
                         'save' => 'post',
                         'send' => 'ReviewPost to:post.author.email with:post',
                         'dispatch' => 'SyncMedia with:post',
@@ -262,7 +262,7 @@ class BlueprintTest extends TestCase
                         'render' => 'post.index with:posts',
                     ],
                     'store' => [
-                        'validate' => 'title, content, author_id',
+                        'validate' => 'title,content,author_id',
                         'save' => 'post',
                         'send' => 'ReviewPost to:post.author.email with:post',
                         'dispatch' => 'SyncMedia with:post',
@@ -299,7 +299,7 @@ class BlueprintTest extends TestCase
                         'render' => 'post.index with:posts',
                     ],
                     'store' => [
-                        'validate' => 'title, content',
+                        'validate' => 'title,content',
                         'save' => 'post',
                         'redirect' => 'post.index',
                     ],
