@@ -15,6 +15,7 @@ class Model
     private $columns = [];
     private $relationships = [];
     private $pivotTables = [];
+    private $indexes = [];
 
     /**
      * @param $name
@@ -157,6 +158,16 @@ class Model
         $segments = [$this->name(), $reference];
         sort($segments);
         $this->pivotTables[] = $segments;
+    }
+
+    public function indexes(): array
+    {
+        return $this->indexes;
+    }
+    
+    public function addIndex(Index $index)
+    {
+        $this->indexes[] = $index;
     }
 
     public function pivotTables(): array
