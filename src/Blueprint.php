@@ -29,8 +29,8 @@ class Blueprint
         return str_replace('\\', '/', config('blueprint.app_path'));
     }
 
-    public function parse($content, $strip_dashes = true)
-    {
+    public function parse($content, $strip_dashes = false)
+    {   
         $content = str_replace(["\r\n", "\r"], "\n", $content);
 
         if ($strip_dashes) {
