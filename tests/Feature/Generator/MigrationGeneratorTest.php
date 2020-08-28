@@ -70,7 +70,7 @@ class MigrationGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with($timestamp_path, $this->fixture($migration));
 
-        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tokens = $this->blueprint->parse($this->fixture($definition), $definition !== 'drafts/indexes.yaml');
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
@@ -103,7 +103,7 @@ class MigrationGeneratorTest extends TestCase
         $this->files->expects('put')
             ->with($yesterday_path, $this->fixture($migration));
 
-        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tokens = $this->blueprint->parse($this->fixture($definition), $definition !== 'drafts/indexes.yaml');
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['updated' => [$yesterday_path]], $this->subject->output($tree, true));
