@@ -203,10 +203,9 @@ class MigrationGenerator implements Generator
         foreach ($model->indexes() as $index) {
             $index_definition = self::INDENT;
             $index_definition .= '$table->'.$index->type();
-            if (count($index->columns()) > 1 ) {
+            if (count($index->columns()) > 1) {
                 $index_definition .= "(['".implode("', '", $index->columns())."']);".PHP_EOL;
-            }
-            else {
+            } else {
                 $index_definition .= "('{$index->columns()[0]}');".PHP_EOL;
             }
             $definition .= $index_definition;
