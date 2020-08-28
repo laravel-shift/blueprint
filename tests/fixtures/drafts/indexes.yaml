@@ -1,0 +1,16 @@
+models:
+  Post:
+    id: unsignedInteger
+    title: string
+    parent_post_id: id
+    author_id: id
+    published_at: timestamp nullable
+    word_count: integer unsigned
+    location: geometry
+    indexes:
+      - primary: id
+      - index: author_id
+      - index: author_id, published_at
+      - unique: title
+      - unique: title, parent_post_id
+      - spatialIndex: location

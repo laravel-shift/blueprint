@@ -4,6 +4,7 @@ namespace Blueprint\Lexers;
 
 use Blueprint\Contracts\Lexer;
 use Blueprint\Models\Column;
+use Blueprint\Models\Index;
 use Blueprint\Models\Model;
 use Illuminate\Support\Str;
 
@@ -164,6 +165,13 @@ class ModelLexer implements Lexer
             }
 
             unset($columns['relationships']);
+        }
+
+        if (isset($columns['indexes'])) {
+            foreach ($columns['indexes'] as $index) {
+                $model->addIndex(new Index(key($index), array_map('trim', explode(',', current($index)))));
+            }
+            unset($columns['indexes']);
         }
 
         if (!isset($columns['id']) && $model->usesPrimaryKey()) {
