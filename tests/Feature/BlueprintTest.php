@@ -281,6 +281,38 @@ class BlueprintTest extends TestCase
     /**
      * @test
      */
+    public function it_parses_yaml_with_dashed_syntax()
+    {
+        $definition = $this->fixture('drafts/readme-example-dashes.yaml');
+
+        $expected = [
+            'models' => [
+                'Post' => [
+                    'title' => 'string:400',
+                    'content' => 'longtext',
+                ],
+            ],
+            'controllers' => [
+                'Post' => [
+                    'index' => [
+                        'query' => 'all:posts',
+                        'render' => 'post.index with:posts',
+                    ],
+                    'store' => [
+                        'validate' => 'title, content',
+                        'save' => 'post',
+                        'redirect' => 'post.index',
+                    ],
+                ],
+            ],
+        ];
+
+        $this->assertEquals($expected, $this->subject->parse($definition));
+    }
+
+    /**
+     * @test
+     */
     public function it_allows_parsing_without_stripping_dashes()
     {
         $sequence = [
