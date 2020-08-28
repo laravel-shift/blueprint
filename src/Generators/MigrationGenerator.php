@@ -203,13 +203,13 @@ class MigrationGenerator implements Generator
         foreach ($model->indexes() as $index) {
             $index_definition = self::INDENT;
             $index_definition .= '$table->'.$index->type();
-            if (count($index->columnNames()) > 1 ) {
-                $index_definition .= "(['".implode("', '", $index->columnNames())."']);".PHP_EOL;
+            if (count($index->columns()) > 1 ) {
+                $index_definition .= "(['".implode("', '", $index->columns())."']);".PHP_EOL;
             }
             else {
-                $index_definition .= "('{$index->columnNames()[0]}');".PHP_EOL;
+                $index_definition .= "('{$index->columns()[0]}');".PHP_EOL;
             }
-            $definition .= $index_definition; 
+            $definition .= $index_definition;
         }
         if ($model->usesTimestamps()) {
             $definition .= self::INDENT.'$table->'.$model->timestampsDataType().'();'.PHP_EOL;
@@ -303,7 +303,7 @@ class MigrationGenerator implements Generator
     {
         $dir = 'database/migrations/';
         $name = '_create_'.$tableName.'_table.php';
-        
+
         $file = $overwrite ? collect($this->files->files($dir))->first(function ($file) use ($tableName) {
             return str_contains($file, $tableName);
         }) : false;

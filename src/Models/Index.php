@@ -5,12 +5,12 @@ namespace Blueprint\Models;
 class Index
 {
     private $type;
-    private $columnNames;
+    private $columns;
 
-    public function __construct(string $type, array $columnNames = [])
+    public function __construct(string $type, array $columns = [])
     {
         $this->type = $type;
-        $this->columnNames = $columnNames;
+        $this->columns = $columns;
     }
 
     public function type()
@@ -18,8 +18,8 @@ class Index
         return $this->type;
     }
 
-    public function columnNames()
+    public function columns()
     {
-        return $this->columnNames;
+        return $this->columns;
     }
 }
