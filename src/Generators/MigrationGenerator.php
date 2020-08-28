@@ -203,13 +203,12 @@ class MigrationGenerator implements Generator
         foreach ($model->indexes() as $index) {
             $index_definition = self::INDENT;
             $index_definition .= '$table->'.$index->type();
-            if (count($index->columnNames()) > 1 ) {
+            if (count($index->columnNames()) > 1) {
                 $index_definition .= "(['".implode("', '", $index->columnNames())."']);".PHP_EOL;
-            }
-            else {
+            } else {
                 $index_definition .= "('{$index->columnNames()[0]}');".PHP_EOL;
             }
-            $definition .= $index_definition; 
+            $definition .= $index_definition;
         }
         if ($model->usesTimestamps()) {
             $definition .= self::INDENT.'$table->'.$model->timestampsDataType().'();'.PHP_EOL;
