@@ -453,6 +453,7 @@ class ModelGeneratorTest extends TestCase
             ['drafts/nested-components.yaml', 'app/Admin/User.php', 'models/nested-components.php'],
             ['drafts/resource-statements.yaml', 'app/User.php', 'models/resource-statements.php'],
             ['drafts/all-column-types.yaml', 'app/AllType.php', 'models/all-column-types.php'],
+            ['drafts/alias-relationships.yaml', 'app/Salesman.php', 'models/alias-relationships.php'],
         ];
     }
 
