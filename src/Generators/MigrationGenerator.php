@@ -297,17 +297,9 @@ class MigrationGenerator implements Generator
 
     protected function disableForeignKeyConstraints($stub): string
     {
-        $stub = str_replace(
-            'Schema::create(',
-            sprintf("%s\n%s", 'Schema::disableForeignKeyConstraints();', str_pad(' ', 8).'Schema::create('),
-            $stub
-        );
+        $stub = str_replace('Schema::create(', 'Schema::disableForeignKeyConstraints();'.PHP_EOL.str_pad(' ', 8).'Schema::create(', $stub);
 
-        $stub = str_replace(
-            '});',
-            sprintf("%s\n%s", '});', str_pad(' ', 8).'Schema::enableForeignKeyConstraints();'),
-            $stub
-        );
+        $stub = str_replace('});', '});'.PHP_EOL.str_pad(' ', 8).'Schema::enableForeignKeyConstraints();', $stub);
 
         return $stub;
     }
