@@ -4,28 +4,30 @@ namespace Tests\Feature\Commands;
 
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Tests\TestCase;
+use Tests\Traits\MocksFilesystem;
 
 /**
  * @covers \Blueprint\Commands\NewCommand
  */
 class NewCommandTest extends TestCase
 {
-    use MockeryPHPUnitIntegration;
+    use MockeryPHPUnitIntegration, MocksFilesystem;
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_creates_a_draft_file_from_stub_if_none_exists()
     {
-        $filesystem = \Mockery::mock(\Illuminate\Filesystem\Filesystem::class)->makePartial();
-        $this->swap('files', $filesystem);
-
-        $filesystem->shouldReceive('exists')
+        $this->files->shouldReceive('exists')
             ->with('draft.yaml')
             ->andReturnFalse();
-        $filesystem->shouldReceive('stub')
+        $this->files->shouldReceive('stub')
             ->with('draft.stub')
             ->andReturn('stub');
-        $filesystem->shouldReceive('put')
+        $this->files->shouldReceive('put')
             ->with('draft.yaml', 'stub');
+
+        $this->files->shouldReceive('exists')->with('app');
 
         $this->artisan('blueprint:new')
             ->assertExitCode(0);
@@ -34,13 +36,12 @@ class NewCommandTest extends TestCase
     /** @test */
     public function it_does_not_create_a_draft_file_if_one_exists_already()
     {
-        $filesystem = \Mockery::mock(\Illuminate\Filesystem\Filesystem::class)->makePartial();
-        $this->swap('files', $filesystem);
-
-        $filesystem->shouldReceive('exists')
+        $this->files->shouldReceive('exists')
             ->with('draft.yaml')
             ->andReturnTrue();
-        $filesystem->shouldNotReceive('put');
+        $this->files->shouldNotReceive('put');
+        $this->files->shouldReceive('exists')
+            ->with('app');
 
         $this->artisan('blueprint:new')
             ->assertExitCode(0);
