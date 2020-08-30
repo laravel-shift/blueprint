@@ -164,15 +164,10 @@ class MigrationGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel6
      */
     public function output_uses_proper_data_type_for_id_columns_in_laravel6()
     {
-        $app = \Mockery::mock();
-        $app->shouldReceive('version')
-            ->withNoArgs()
-            ->andReturn('6.0.0');
-        App::swap($app);
-
         $this->files->expects('stub')
             ->with('migration.stub')
             ->andReturn($this->stub('migration.stub'));
@@ -222,16 +217,11 @@ class MigrationGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel6
      */
     public function output_creates_constraints_for_unconventional_foreign_reference_migration_laravel6()
     {
         $this->app->config->set('blueprint.use_constraints', true);
-
-        $app = \Mockery::mock();
-        $app->shouldReceive('version')
-            ->withNoArgs()
-            ->andReturn('6.0.0');
-        App::swap($app);
 
         $this->files->expects('stub')
             ->with('migration.stub')
@@ -319,15 +309,10 @@ class MigrationGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel6
      */
     public function output_also_creates_pivot_table_migration_laravel6()
     {
-        $app = \Mockery::mock();
-        $app->shouldReceive('version')
-            ->withNoArgs()
-            ->andReturn('6.0.0');
-        App::swap($app);
-
         $this->files->expects('stub')
             ->with('migration.stub')
             ->andReturn($this->stub('migration.stub'));
@@ -385,16 +370,11 @@ class MigrationGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel6
      */
     public function output_also_creates_constraints_for_pivot_table_migration_laravel6()
     {
         $this->app->config->set('blueprint.use_constraints', true);
-
-        $app = \Mockery::mock();
-        $app->shouldReceive('version')
-            ->withNoArgs()
-            ->andReturn('6.0.0');
-        App::swap($app);
 
         $this->files->expects('stub')
             ->with('migration.stub')
@@ -452,15 +432,10 @@ class MigrationGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel6
      */
     public function output_does_not_duplicate_pivot_table_migration_laravel6()
     {
-        $app = \Mockery::mock();
-        $app->shouldReceive('version')
-            ->withNoArgs()
-            ->andReturn('6.0.0');
-        App::swap($app);
-
         $this->files->expects('stub')
             ->with('migration.stub')
             ->andReturn($this->stub('migration.stub'));
@@ -517,15 +492,10 @@ class MigrationGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel6
      */
     public function output_also_creates_pivot_table_migration_with_custom_name_laravel6()
     {
-        $app = \Mockery::mock();
-        $app->shouldReceive('version')
-            ->withNoArgs()
-            ->andReturn('6.0.0');
-        App::swap($app);
-
         $this->files->expects('stub')
             ->with('migration.stub')
             ->andReturn($this->stub('migration.stub'));
@@ -579,16 +549,11 @@ class MigrationGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel6
      */
     public function output_creates_foreign_keys_with_nullable_chained_correctly_laravel6()
     {
         $this->app->config->set('blueprint.on_delete', 'null');
-
-        $app = \Mockery::mock();
-        $app->shouldReceive('version')
-            ->withNoArgs()
-            ->andReturn('6.0.0');
-        App::swap($app);
 
         $this->files->expects('stub')
             ->with('migration.stub')
@@ -639,15 +604,10 @@ class MigrationGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel6
      */
     public function output_creates_foreign_keys_with_on_delete_laravel6()
     {
-        $app = \Mockery::mock();
-        $app->shouldReceive('version')
-            ->withNoArgs()
-            ->andReturn('6.0.0');
-        App::swap($app);
-
         $this->files->expects('stub')
             ->with('migration.stub')
             ->andReturn($this->stub('migration.stub'));
@@ -702,15 +662,10 @@ class MigrationGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel6
      */
     public function output_works_with_polymorphic_relationships_laravel6()
     {
-        $app = \Mockery::mock();
-        $app->shouldReceive('version')
-            ->withNoArgs()
-            ->andReturn('6.0.0');
-        App::swap($app);
-
         $this->files->expects('stub')
             ->with('migration.stub')
             ->andReturn($this->stub('migration.stub'));
