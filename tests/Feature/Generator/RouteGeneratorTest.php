@@ -32,9 +32,7 @@ class RouteGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function output_generates_nothing_for_empty_tree()
     {
         $this->files->shouldNotHaveReceived('append');
@@ -58,9 +56,7 @@ class RouteGeneratorTest extends TestCase
         $this->assertEquals(['updated' => [$path]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function output_generates_api_routes()
     {
         $this->files->expects('append')
@@ -72,9 +68,7 @@ class RouteGeneratorTest extends TestCase
         $this->assertEquals(['updated' => ['routes/api.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function output_generates_routes_for_mixed_resources()
     {
         $this->files->expects('append')
@@ -88,9 +82,7 @@ class RouteGeneratorTest extends TestCase
         $this->assertEquals(['updated' => ['routes/api.php', 'routes/web.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function output_generates_routes_using_tuples()
     {
         config(['blueprint.generate_fqcn_route' => true]);

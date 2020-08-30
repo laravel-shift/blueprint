@@ -33,9 +33,7 @@ class ControllerGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function output_writes_nothing_for_empty_tree()
     {
         $this->files->expects('stub')
@@ -71,9 +69,7 @@ class ControllerGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function output_generates_controllers_with_models_with_custom_namespace_correctly()
     {
         $definition = 'drafts/custom-models-namespace.yaml';
@@ -101,9 +97,7 @@ class ControllerGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function output_works_for_pascal_case_definition()
     {
         $this->files->expects('stub')
@@ -134,9 +128,7 @@ class ControllerGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$certificateController, $certificateTypeController]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function output_respects_configuration()
     {
         $this->app['config']->set('blueprint.app_path', 'src/path');

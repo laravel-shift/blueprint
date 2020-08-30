@@ -19,9 +19,7 @@ class ModelLexerTest extends TestCase
         $this->subject = new ModelLexer();
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_returns_nothing_without_models_token()
     {
         $this->assertEquals([
@@ -30,9 +28,7 @@ class ModelLexerTest extends TestCase
         ], $this->subject->analyze([]));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_returns_models()
     {
         $tokens = [
@@ -96,9 +92,7 @@ class ModelLexerTest extends TestCase
         $this->assertEquals([], $columns['id']->modifiers());
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_defaults_the_id_column()
     {
         $tokens = [
@@ -131,9 +125,7 @@ class ModelLexerTest extends TestCase
         $this->assertEquals(['nullable'], $columns['title']->modifiers());
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_disables_the_id_column()
     {
         $tokens = [
@@ -156,9 +148,7 @@ class ModelLexerTest extends TestCase
         $this->assertFalse($model->usesPrimaryKey());
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_disables_timestamps()
     {
         $tokens = [
@@ -180,9 +170,7 @@ class ModelLexerTest extends TestCase
         $this->assertFalse($model->usesSoftDeletes());
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_defaults_to_string_datatype()
     {
         $tokens = [
@@ -215,9 +203,7 @@ class ModelLexerTest extends TestCase
         $this->assertEquals(['nullable'], $columns['title']->modifiers());
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_accepts_lowercase_keywords()
     {
         $tokens = [
@@ -330,9 +316,7 @@ class ModelLexerTest extends TestCase
         $this->assertEquals([[$modifier => $attributes], 'nullable'], $columns['column']->modifiers());
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_handles_attributes_and_modifiers_with_attributes()
     {
         $tokens = [
@@ -351,9 +335,7 @@ class ModelLexerTest extends TestCase
         $this->assertEquals(['100'], $actual->attributes());
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_enables_soft_deletes()
     {
         $tokens = [
@@ -381,9 +363,7 @@ class ModelLexerTest extends TestCase
         $this->assertEquals([], $columns['id']->modifiers());
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_converts_foreign_shorthand_to_id()
     {
         $tokens = [
@@ -418,9 +398,7 @@ class ModelLexerTest extends TestCase
         $this->assertEquals([['foreign' => 'user']], $columns['author_id']->modifiers());
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_sets_belongs_to_with_foreign_attributes()
     {
         $tokens = [
@@ -488,9 +466,7 @@ class ModelLexerTest extends TestCase
         ], $relationships['belongsTo']);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_returns_traced_models()
     {
         $tokens = [
@@ -563,9 +539,7 @@ class ModelLexerTest extends TestCase
         $this->assertEquals(['nullable'], $columns['name']->modifiers());
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_stores_relationships()
     {
         $tokens = [
@@ -606,9 +580,7 @@ class ModelLexerTest extends TestCase
         $this->assertEquals(['Duration', 'Transaction:tid'], $relationships['hasOne']);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_enables_morphable_and_set_its_reference()
     {
         $tokens = [

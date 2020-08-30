@@ -31,9 +31,7 @@ class FactoryGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function output_writes_nothing_for_empty_tree()
     {
         $this->files->expects('stub')
@@ -68,9 +66,7 @@ class FactoryGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function output_ignores_nullables_if_fake_nullables_configuration_is_set_to_false()
     {
         $this->app['config']->set('blueprint.fake_nullables', false);
@@ -92,9 +88,7 @@ class FactoryGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['database/factories/PostFactory.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function output_respects_configuration()
     {
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
@@ -117,9 +111,7 @@ class FactoryGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['database/factories/PostFactory.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function output_creates_directory_for_nested_components()
     {
         $this->files->expects('stub')

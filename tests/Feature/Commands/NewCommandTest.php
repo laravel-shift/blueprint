@@ -13,9 +13,7 @@ class NewCommandTest extends TestCase
 {
     use MockeryPHPUnitIntegration, MocksFilesystem;
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_creates_a_draft_file_from_stub_if_none_exists()
     {
         $this->files->shouldReceive('exists')
