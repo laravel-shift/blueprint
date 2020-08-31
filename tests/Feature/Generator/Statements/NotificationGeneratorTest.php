@@ -32,7 +32,9 @@ class NotificationGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_writes_nothing_for_empty_tree()
     {
         $this->files->expects('stub')
@@ -44,7 +46,9 @@ class NotificationGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_writes_nothing_tree_without_validate_statements()
     {
         $this->files->expects('stub')
@@ -99,7 +103,9 @@ class NotificationGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Notification/ReviewPostNotification.php', 'app/Notification/PublishedPostNotification.php']], $this->subject->output($tree));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_only_outputs_new_notifications()
     {
         $this->files->expects('stub')
@@ -119,7 +125,9 @@ class NotificationGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output($tree));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_respects_configuration()
     {
         $this->app['config']->set('blueprint.namespace', 'Some\\App');

@@ -33,7 +33,9 @@ class TestGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_writes_nothing_for_empty_tree()
     {
         $this->files->expects('stub')
@@ -106,7 +108,9 @@ class TestGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$certificateControllerTest, $certificateTypeControllerTest]], $this->subject->output($tree));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_generates_test_for_controller_tree_using_cached_model()
     {
         $this->files->expects('stub')
@@ -136,7 +140,9 @@ class TestGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['tests/Feature/Http/Controllers/UserControllerTest.php']], $this->subject->output($tree));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_generates_tests_with_models_with_custom_namespace_correctly()
     {
         $definition = 'drafts/models-with-custom-namespace.yaml';

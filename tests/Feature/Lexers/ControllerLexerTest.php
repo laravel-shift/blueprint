@@ -27,13 +27,17 @@ class ControllerLexerTest extends TestCase
         $this->subject = new ControllerLexer($this->statementLexer);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_nothing_without_controllers_token()
     {
         $this->assertEquals(['controllers' => []], $this->subject->analyze([]));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_controllers()
     {
         $tokens = [
@@ -101,7 +105,9 @@ class ControllerLexerTest extends TestCase
         $this->assertEquals('index-statement-1', $methods['index'][0]);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_web_resource_controller()
     {
         $tokens = [
@@ -188,7 +194,9 @@ class ControllerLexerTest extends TestCase
         $this->assertEquals('destroy-statements', $methods['destroy'][0]);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_an_api_resource_controller()
     {
         $tokens = [
@@ -246,7 +254,9 @@ class ControllerLexerTest extends TestCase
         $this->assertEquals('api-update-statements', $methods['update'][0]);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_specific_resource_controller()
     {
         $tokens = [
@@ -306,7 +316,9 @@ class ControllerLexerTest extends TestCase
         $this->assertEquals('destroy-statements', $methods['destroy'][0]);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_resource_controller_with_overrides()
     {
         $tokens = [
@@ -361,7 +373,9 @@ class ControllerLexerTest extends TestCase
         $this->assertEquals('custom-statements', $methods['custom'][0]);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_resource_controllers_with_api_flag_set()
     {
         $tokens = [

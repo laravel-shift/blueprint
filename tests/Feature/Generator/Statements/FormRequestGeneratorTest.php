@@ -33,7 +33,9 @@ class FormRequestGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_writes_nothing_for_empty_tree()
     {
         $this->files->expects('stub')
@@ -45,7 +47,9 @@ class FormRequestGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_writes_nothing_without_validate_statements()
     {
         $this->files->expects('stub')
@@ -60,7 +64,9 @@ class FormRequestGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output($tree));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_writes_form_requests()
     {
         $this->files->expects('stub')
@@ -97,7 +103,9 @@ class FormRequestGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Http/Requests/PostIndexRequest.php', 'app/Http/Requests/PostStoreRequest.php', 'app/Http/Requests/OtherStoreRequest.php']], $this->subject->output($tree));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_writes_form_requests_with_support_for_model_reference_in_validate_statement()
     {
         $this->files->expects('stub')
@@ -132,7 +140,9 @@ class FormRequestGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Http/Requests/CertificateStoreRequest.php', 'app/Http/Requests/CertificateUpdateRequest.php']], $this->subject->output($tree));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_only_outputs_new_form_requests()
     {
         $this->files->expects('stub')
@@ -155,7 +165,9 @@ class FormRequestGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output($tree));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_supports_nested_form_requests()
     {
         $this->files->expects('stub')
@@ -179,7 +191,9 @@ class FormRequestGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Http/Requests/Admin/UserStoreRequest.php']], $this->subject->output($tree));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_respects_configuration()
     {
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
@@ -206,7 +220,9 @@ class FormRequestGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['src/path/Http/Requests/PostStoreRequest.php']], $this->subject->output($tree));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_generates_test_for_controller_tree_using_cached_model()
     {
         $this->files->expects('stub')

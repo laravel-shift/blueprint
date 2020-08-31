@@ -33,13 +33,17 @@ class StatementLexerTest extends TestCase
         $this->subject = new StatementLexer();
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_nothing_without_statements_token()
     {
         $this->assertEquals([], $this->subject->analyze([]));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_render_statement()
     {
         $tokens = [
@@ -55,7 +59,9 @@ class StatementLexerTest extends TestCase
         $this->assertSame([], $actual[0]->data());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_render_statement_with_data()
     {
         $tokens = [
@@ -71,7 +77,9 @@ class StatementLexerTest extends TestCase
         $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_an_event_statement()
     {
         $tokens = [
@@ -87,7 +95,9 @@ class StatementLexerTest extends TestCase
         $this->assertSame([], $actual[0]->data());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_an_event_statement_with_data()
     {
         $tokens = [
@@ -103,7 +113,9 @@ class StatementLexerTest extends TestCase
         $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_dispatch_statement()
     {
         $tokens = [
@@ -119,7 +131,9 @@ class StatementLexerTest extends TestCase
         $this->assertSame([], $actual[0]->data());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_dispatch_statement_with_data()
     {
         $tokens = [
@@ -135,7 +149,9 @@ class StatementLexerTest extends TestCase
         $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_send_statement()
     {
         $tokens = [
@@ -153,7 +169,9 @@ class StatementLexerTest extends TestCase
         $this->assertEquals(SendStatement::TYPE_MAIL, $actual[0]->type());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_send_statement_to_only()
     {
         $tokens = [
@@ -171,7 +189,9 @@ class StatementLexerTest extends TestCase
         $this->assertEquals(SendStatement::TYPE_MAIL, $actual[0]->type());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_send_statement_with_only()
     {
         $tokens = [
@@ -189,7 +209,9 @@ class StatementLexerTest extends TestCase
         $this->assertEquals(SendStatement::TYPE_MAIL, $actual[0]->type());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_send_statement_to_and_with()
     {
         $tokens = [
@@ -207,7 +229,9 @@ class StatementLexerTest extends TestCase
         $this->assertEquals(SendStatement::TYPE_MAIL, $actual[0]->type());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_send_statement_type_notification_facade()
     {
         $tokens = [
@@ -225,7 +249,9 @@ class StatementLexerTest extends TestCase
         $this->assertEquals(SendStatement::TYPE_NOTIFICATION_WITH_FACADE, $actual[0]->type());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_send_statement_to_only_type_notification_facade()
     {
         $tokens = [
@@ -243,7 +269,9 @@ class StatementLexerTest extends TestCase
         $this->assertEquals(SendStatement::TYPE_NOTIFICATION_WITH_FACADE, $actual[0]->type());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_send_statement_with_only_type_notification_facade()
     {
         $tokens = [
@@ -261,7 +289,9 @@ class StatementLexerTest extends TestCase
         $this->assertEquals(SendStatement::TYPE_NOTIFICATION_WITH_FACADE, $actual[0]->type());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_send_statement_to_and_with_type_notification_facade()
     {
         $tokens = [
@@ -279,7 +309,9 @@ class StatementLexerTest extends TestCase
         $this->assertEquals(SendStatement::TYPE_NOTIFICATION_WITH_FACADE, $actual[0]->type());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_send_statement_with_type_notification_model()
     {
         $tokens = [
@@ -297,7 +329,9 @@ class StatementLexerTest extends TestCase
         $this->assertEquals(SendStatement::TYPE_NOTIFICATION_WITH_MODEL, $actual[0]->type());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_send_statement_to_only_type_notification_model()
     {
         $tokens = [
@@ -315,7 +349,9 @@ class StatementLexerTest extends TestCase
         $this->assertEquals(SendStatement::TYPE_NOTIFICATION_WITH_MODEL, $actual[0]->type());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_send_statement_with_only_type_notification_model()
     {
         $tokens = [
@@ -333,7 +369,9 @@ class StatementLexerTest extends TestCase
         $this->assertEquals(SendStatement::TYPE_NOTIFICATION_WITH_MODEL, $actual[0]->type());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_send_statement_to_and_with_type_notification_model()
     {
         $tokens = [
@@ -351,7 +389,9 @@ class StatementLexerTest extends TestCase
         $this->assertEquals(SendStatement::TYPE_NOTIFICATION_WITH_MODEL, $actual[0]->type());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_validate_statement()
     {
         $tokens = [
@@ -385,7 +425,9 @@ class StatementLexerTest extends TestCase
         $this->assertSame($reference, $actual[0]->reference());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_an_update_eloquent_statement_with_columns()
     {
         $tokens = [
@@ -421,7 +463,9 @@ class StatementLexerTest extends TestCase
         $this->assertSame($reference, $actual[0]->reference());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_redirect_statement()
     {
         $tokens = [
@@ -437,7 +481,9 @@ class StatementLexerTest extends TestCase
         $this->assertSame([], $actual[0]->data());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_redirect_statement_with_data()
     {
         $tokens = [
@@ -453,7 +499,9 @@ class StatementLexerTest extends TestCase
         $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_response_statement_with_status_code()
     {
         $tokens = [
@@ -469,7 +517,9 @@ class StatementLexerTest extends TestCase
         $this->assertNull($actual[0]->content());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_response_statement_with_content()
     {
         $tokens = [
@@ -485,7 +535,9 @@ class StatementLexerTest extends TestCase
         $this->assertEquals('post', $actual[0]->content());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_query_all_statement()
     {
         $tokens = [
@@ -502,7 +554,9 @@ class StatementLexerTest extends TestCase
         $this->assertSame('Post', $actual[0]->model());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_query_all_statement_without_clause()
     {
         $tokens = [
@@ -519,7 +573,9 @@ class StatementLexerTest extends TestCase
         $this->assertNull($actual[0]->model());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_query_get_statement()
     {
         $tokens = [
@@ -536,7 +592,9 @@ class StatementLexerTest extends TestCase
         $this->assertNull($actual[0]->model());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_query_pluck_statement()
     {
         $tokens = [
@@ -553,7 +611,9 @@ class StatementLexerTest extends TestCase
         $this->assertNull($actual[0]->model());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_query_count_statement()
     {
         $tokens = [
@@ -570,7 +630,9 @@ class StatementLexerTest extends TestCase
         $this->assertNull($actual[0]->model());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_query_exists_statement()
     {
         $tokens = [
@@ -587,7 +649,9 @@ class StatementLexerTest extends TestCase
         $this->assertNull($actual[0]->model());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_resource_statement()
     {
         $tokens = [
@@ -605,7 +669,9 @@ class StatementLexerTest extends TestCase
         $this->assertFalse($actual[0]->paginate());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_resource_collection_statement()
     {
         $tokens = [
@@ -623,7 +689,9 @@ class StatementLexerTest extends TestCase
         $this->assertFalse($actual[0]->paginate());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_a_resource_collection_statement_with_pagination()
     {
         $tokens = [

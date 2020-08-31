@@ -33,7 +33,9 @@ class SeederLexerTest extends TestCase
         $this->subject = new SeederLexer();
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_nothing_without_seeders_token()
     {
         $this->assertEquals([
@@ -41,7 +43,9 @@ class SeederLexerTest extends TestCase
         ], $this->subject->analyze([]));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_seeders()
     {
         $tokens = [
@@ -56,7 +60,9 @@ class SeederLexerTest extends TestCase
         $this->assertSame(['Post'], $actual['seeders']);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_multiple_seeders()
     {
         $tokens = [

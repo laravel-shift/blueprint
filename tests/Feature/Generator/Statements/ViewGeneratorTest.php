@@ -32,7 +32,9 @@ class ViewGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_writes_nothing_for_empty_tree()
     {
         $this->files->expects('stub')
@@ -44,7 +46,9 @@ class ViewGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_writes_nothing_without_render_statements()
     {
         $this->files->expects('stub')
@@ -59,7 +63,9 @@ class ViewGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output($tree));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_writes_views_for_render_statements()
     {
         $template = $this->stub('view.stub');
@@ -100,7 +106,9 @@ class ViewGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['resources/views/user/index.blade.php', 'resources/views/user/create.blade.php', 'resources/views/post/show.blade.php']], $this->subject->output($tree));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_only_outputs_new_views()
     {
         $this->files->expects('stub')

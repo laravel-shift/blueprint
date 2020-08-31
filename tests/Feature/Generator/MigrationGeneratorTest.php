@@ -34,7 +34,9 @@ class MigrationGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_writes_nothing_for_empty_tree()
     {
         $this->files->expects('stub')
@@ -107,7 +109,9 @@ class MigrationGeneratorTest extends TestCase
         $this->assertEquals(['updated' => [$yesterday_path]], $this->subject->output($tree, true));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_writes_migration_for_foreign_shorthand()
     {
         $this->files->expects('stub')
@@ -130,7 +134,9 @@ class MigrationGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_uses_past_timestamp_for_multiple_migrations()
     {
         $this->files->expects('stub')
@@ -182,7 +188,9 @@ class MigrationGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_creates_constraints_for_unconventional_foreign_reference_migration()
     {
         $this->app->config->set('blueprint.use_constraints', true);
@@ -235,7 +243,9 @@ class MigrationGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$model_migration]], $this->subject->output($tree));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_also_creates_pivot_table_migration()
     {
         $this->files->expects('stub')
@@ -261,7 +271,9 @@ class MigrationGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_also_updates_pivot_table_migration()
     {
         $this->files->expects('stub')
@@ -325,7 +337,9 @@ class MigrationGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_also_creates_constraints_for_pivot_table_migration()
     {
         $this->app->config->set('blueprint.use_constraints', true);
@@ -385,7 +399,9 @@ class MigrationGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_does_not_duplicate_pivot_table_migration()
     {
         $this->files->expects('stub')
@@ -446,7 +462,9 @@ class MigrationGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$company_migration, $people_migration, $pivot_migration]], $this->subject->output($tree));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_also_creates_pivot_table_migration_with_custom_name()
     {
         $this->files->expects('stub')
@@ -501,7 +519,9 @@ class MigrationGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_creates_foreign_keys_with_nullable_chained_correctly()
     {
         $this->app->config->set('blueprint.on_delete', 'null');
@@ -556,7 +576,9 @@ class MigrationGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$model_migration]], $this->subject->output($tree));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_creates_foreign_keys_with_on_delete()
     {
         $this->files->expects('stub')
@@ -607,7 +629,9 @@ class MigrationGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$model_migration]], $this->subject->output($tree));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function output_works_with_polymorphic_relationships()
     {
         $this->files->expects('stub')
