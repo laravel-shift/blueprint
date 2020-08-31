@@ -33,4 +33,14 @@ class TestCase extends \Orchestra\Testbench\TestCase
             BlueprintServiceProvider::class,
         ];
     }
+
+    protected function useLaravel6($app)
+    {
+        $appMock = \Mockery::mock($app);
+        $appMock->shouldReceive('version')
+            ->withNoArgs()
+            ->andReturn('6.0.0');
+
+        \App::swap($appMock);
+    }
 }
