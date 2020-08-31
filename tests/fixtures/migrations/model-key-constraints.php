@@ -14,6 +14,7 @@ class CreateOrdersTable extends Migration
     public function up()
     {
         Schema::disableForeignKeyConstraints();
+
         Schema::create('orders', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
@@ -24,6 +25,7 @@ class CreateOrdersTable extends Migration
             $table->json('meta')->default('[]');
             $table->timestamps();
         });
+
         Schema::enableForeignKeyConstraints();
     }
 

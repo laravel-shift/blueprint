@@ -14,6 +14,7 @@ class CreateCartsTable extends Migration
     public function up()
     {
         Schema::disableForeignKeyConstraints();
+
         Schema::create('carts', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
@@ -21,6 +22,7 @@ class CreateCartsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             $table->timestamps();
         });
+
         Schema::enableForeignKeyConstraints();
     }
 

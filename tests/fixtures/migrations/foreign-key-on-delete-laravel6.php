@@ -14,6 +14,7 @@ class CreateCommentsTable extends Migration
     public function up()
     {
         Schema::disableForeignKeyConstraints();
+
         Schema::create('comments', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('site_id');
@@ -26,6 +27,7 @@ class CreateCommentsTable extends Migration
             $table->foreign('approver_id')->references('id')->on('users')->onDelete('no action');
             $table->timestamps();
         });
+
         Schema::enableForeignKeyConstraints();
     }
 

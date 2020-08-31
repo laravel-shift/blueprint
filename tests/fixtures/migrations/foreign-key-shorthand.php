@@ -14,6 +14,7 @@ class CreateCommentsTable extends Migration
     public function up()
     {
         Schema::disableForeignKeyConstraints();
+
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('post_id')->constrained()->cascadeOnDelete();
@@ -21,6 +22,7 @@ class CreateCommentsTable extends Migration
             $table->foreignId('ccid')->constrained('countries', 'code')->cascadeOnDelete();
             $table->timestamps();
         });
+
         Schema::enableForeignKeyConstraints();
     }
 

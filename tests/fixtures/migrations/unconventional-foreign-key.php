@@ -14,6 +14,7 @@ class CreateStatesTable extends Migration
     public function up()
     {
         Schema::disableForeignKeyConstraints();
+
         Schema::create('states', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -26,6 +27,7 @@ class CreateStatesTable extends Migration
             $table->foreign('c_code')->references('code')->on('countries')->onDelete('cascade');
             $table->timestamps();
         });
+
         Schema::enableForeignKeyConstraints();
     }
 
