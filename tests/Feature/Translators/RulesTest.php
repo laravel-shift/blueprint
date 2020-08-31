@@ -11,9 +11,7 @@ use Blueprint\Translators\Rules;
  */
 class RulesTest extends TestCase
 {
-    /**
-     * @test
-     */
+    /** @test */
     public function forColumn_returns_required_rule_by_default()
     {
         $column = new Column('test', 'unknown');
@@ -32,9 +30,7 @@ class RulesTest extends TestCase
         $this->assertContains('string', Rules::fromColumn('context', $column));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function forColumn_returns_max_rule_for_string_attributes()
     {
         $column = new Column('test', 'string', [], [1000]);
@@ -96,9 +92,7 @@ class RulesTest extends TestCase
         $this->assertContains('integer', Rules::fromColumn('context', $column));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function forColumn_return_exists_rule_for_id_column()
     {
         $column = new Column('user_id', 'id');
@@ -106,9 +100,7 @@ class RulesTest extends TestCase
         $this->assertContains('exists:users,id', Rules::fromColumn('context', $column));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function forColumn_return_exists_rule_id_column_with_attribute()
     {
         $column = new Column('author_id', 'id', [], ['user']);
@@ -116,9 +108,7 @@ class RulesTest extends TestCase
         $this->assertContains('exists:users,id', Rules::fromColumn('context', $column));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function forColumn_return_exists_rule_for_the_unique_modifier()
     {
         $column = new Column('column', 'string', ['unique']);
@@ -140,9 +130,7 @@ class RulesTest extends TestCase
         $this->assertContains("exists:{$table},id", $actual);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function forColumn_returns_gt0_rule_for_unsigned_numeric_types()
     {
         $column = new Column('test', 'integer');
@@ -154,9 +142,7 @@ class RulesTest extends TestCase
         $this->assertContains('gt:0', Rules::fromColumn('context', $column));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function forColumn_returns_in_rule_for_enums_and_sets()
     {
         $column = new Column('test', 'enum', [], ['alpha', 'bravo', 'charlie']);
@@ -178,9 +164,7 @@ class RulesTest extends TestCase
         $this->assertContains('date', Rules::fromColumn('context', $column));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function forColumn_return_json_rule_for_the_json_type()
     {
         $column = new Column('column', 'json');

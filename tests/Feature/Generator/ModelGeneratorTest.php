@@ -28,9 +28,7 @@ class ModelGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function output_generates_nothing_for_empty_tree()
     {
         $this->files->expects('stub')
@@ -92,9 +90,7 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function output_works_for_pascal_case_definition()
     {
         $this->files->expects('stub')
@@ -137,9 +133,7 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$certificateModel, $certificateTypeModel]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function output_generates_relationships()
     {
         $this->files->expects('stub')
@@ -167,9 +161,7 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Subscription.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function output_generates_polymorphic_relationships()
     {
         $this->files->expects('stub')
@@ -212,9 +204,7 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Post.php', 'app/User.php', 'app/Image.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function output_generates_disabled_auto_columns()
     {
         $this->files->expects('stub')
@@ -245,9 +235,7 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/State.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function output_respects_configuration()
     {
         $this->app['config']->set('blueprint.app_path', 'src/path');
@@ -337,9 +325,7 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function output_generates_models_with_guarded_property_when_config_option_is_set()
     {
         $this->app['config']->set('blueprint.use_guarded', true);
@@ -373,9 +359,7 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Comment.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function output_generates_models_with_custom_namespace_correctly()
     {
         $definition = 'drafts/custom-models-namespace.yaml';
@@ -409,9 +393,7 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function output_generates_models_with_custom_pivot_columns()
     {
         $this->files->expects('stub')

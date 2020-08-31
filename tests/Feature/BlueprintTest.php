@@ -26,9 +26,7 @@ class BlueprintTest extends TestCase
         $this->subject = new Blueprint();
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_parses_models()
     {
         $blueprint = $this->fixture('drafts/models-only.yaml');
@@ -68,9 +66,7 @@ class BlueprintTest extends TestCase
         ], $this->subject->parse($blueprint));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_parses_controllers()
     {
         $blueprint = $this->fixture('drafts/controllers-only.yaml');
@@ -95,9 +91,7 @@ class BlueprintTest extends TestCase
         ], $this->subject->parse($blueprint));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_parses_shorthands()
     {
         $blueprint = $this->fixture('drafts/shorthands.yaml');
@@ -118,9 +112,7 @@ class BlueprintTest extends TestCase
         ], $this->subject->parse($blueprint));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_parses_uuid_shorthand()
     {
         $blueprint = $this->fixture('drafts/uuid-shorthand.yaml');
@@ -135,9 +127,7 @@ class BlueprintTest extends TestCase
         ], $this->subject->parse($blueprint));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_parses_shorthands_with_timezones()
     {
         $blueprint = $this->fixture('drafts/with-timezones.yaml');
@@ -152,9 +142,7 @@ class BlueprintTest extends TestCase
         ], $this->subject->parse($blueprint));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_parses_longhands()
     {
         $blueprint = $this->fixture('drafts/longhands.yaml');
@@ -179,9 +167,7 @@ class BlueprintTest extends TestCase
         ], $this->subject->parse($blueprint));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_parses_resource_shorthands()
     {
         $blueprint = $this->fixture('drafts/with-timezones.yaml');
@@ -196,9 +182,7 @@ class BlueprintTest extends TestCase
         ], $this->subject->parse($blueprint));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_parses_the_readme_example()
     {
         $blueprint = $this->fixture('drafts/readme-example.yaml');
@@ -232,9 +216,7 @@ class BlueprintTest extends TestCase
         ], $this->subject->parse($blueprint));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_parses_the_readme_example_with_different_platform_eols()
     {
         $definition = $this->fixture('drafts/readme-example.yaml');
@@ -278,9 +260,7 @@ class BlueprintTest extends TestCase
         $this->assertEquals($expected, $this->subject->parse($definition_windows_eol));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_parses_yaml_with_dashed_syntax()
     {
         $definition = $this->fixture('drafts/readme-example-dashes.yaml');
@@ -310,9 +290,7 @@ class BlueprintTest extends TestCase
         $this->assertEquals($expected, $this->subject->parse($definition));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_allows_parsing_without_stripping_dashes()
     {
         $sequence = [
@@ -322,9 +300,7 @@ class BlueprintTest extends TestCase
         $this->assertEquals($sequence, $this->subject->parse($this->subject->dump($sequence), false));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_throws_a_custom_error_when_parsing_fails()
     {
         $this->expectException(ParseException::class);
@@ -334,9 +310,7 @@ class BlueprintTest extends TestCase
         $this->subject->parse($blueprint);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function analyze_return_default_tree_for_empty_tokens()
     {
         $tokens = [];
@@ -350,9 +324,7 @@ class BlueprintTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function analyze_uses_register_lexers_to_analyze_tokens()
     {
         $lexer = \Mockery::mock(Lexer::class);
@@ -370,9 +342,7 @@ class BlueprintTest extends TestCase
         ], $this->subject->analyze($tokens)->toArray());
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function generate_uses_registered_generators_and_returns_generated_files()
     {
         $generatorOne = \Mockery::mock(Generator::class);
@@ -417,9 +387,7 @@ class BlueprintTest extends TestCase
         ], $this->subject->generate($tree));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function generate_uses_swapped_generator_and_returns_generated_files()
     {
         $generatorOne = \Mockery::mock(Generator::class);
@@ -452,9 +420,7 @@ class BlueprintTest extends TestCase
         ], $this->subject->generate($tree));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function generate_only_one_specific_type()
     {
         $generatorFoo = \Mockery::mock(Generator::class);
@@ -503,9 +469,7 @@ class BlueprintTest extends TestCase
         ], $actual);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function generate_only_specific_types()
     {
         $generatorFoo = \Mockery::mock(Generator::class);
@@ -554,9 +518,7 @@ class BlueprintTest extends TestCase
         ], $actual);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function generate_should_skip_one_specific_type()
     {
         $generatorFoo = \Mockery::mock(Generator::class);
@@ -605,9 +567,7 @@ class BlueprintTest extends TestCase
         ], $actual);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function generate_should_skip_specific_types()
     {
         $generatorFoo = \Mockery::mock(Generator::class);

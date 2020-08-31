@@ -33,9 +33,7 @@ class ResourceGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function output_writes_nothing_for_empty_tree()
     {
         $this->files->expects('stub')
@@ -47,9 +45,7 @@ class ResourceGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function output_writes_nothing_without_resource_statements()
     {
         $this->files->expects('stub')
@@ -64,9 +60,7 @@ class ResourceGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function output_writes_resources_for_render_statements()
     {
         $template = $this->stub('resource.stub');
@@ -101,9 +95,7 @@ class ResourceGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Http/Resources/UserCollection.php', 'app/Http/Resources/UserResource.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function output_writes_namespaced_classes()
     {
         $this->files->expects('stub')

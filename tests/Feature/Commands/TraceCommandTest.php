@@ -8,24 +8,22 @@ use Blueprint\Commands\TraceCommand;
 use Blueprint\Tracer;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Tests\TestCase;
+use Tests\Traits\MocksFilesystem;
 
 /**
  * @covers \Blueprint\Commands\TraceCommand
  */
 class TraceCommandTest extends TestCase
 {
-    use MockeryPHPUnitIntegration;
+    use MockeryPHPUnitIntegration, MocksFilesystem;
 
     /** @test */
     public function it_shows_error_if_no_model_found()
     {
-        $filesystem = \Mockery::mock(\Illuminate\Filesystem\Filesystem::class)->makePartial();
-        $this->swap('files', $filesystem);
-
         $tracer = $this->mock(Tracer::class);
 
         $tracer->shouldReceive('execute')
-            ->with(resolve(Blueprint::class), $filesystem)
+            ->with(resolve(Blueprint::class), $this->files)
             ->andReturn([]);
 
         $this->artisan('blueprint:trace')
@@ -36,13 +34,10 @@ class TraceCommandTest extends TestCase
     /** @test */
     public function it_shows_the_number_of_traced_models()
     {
-        $filesystem = \Mockery::mock(\Illuminate\Filesystem\Filesystem::class)->makePartial();
-        $this->swap('files', $filesystem);
-
         $tracer = $this->mock(Tracer::class);
 
         $tracer->shouldReceive('execute')
-            ->with(resolve(Blueprint::class), $filesystem)
+            ->with(resolve(Blueprint::class), $this->files)
             ->andReturn([
                 "Model" => [],
                 "OtherModel" => [],
