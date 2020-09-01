@@ -15,7 +15,7 @@ jobs:
       matrix:
         php-version: [7.2, 7.3, 7.4]
 
-        laravel-version: [6, 7]
+        laravel-version: [6, 7, 8]
 
         os: [ubuntu-latest]
 
@@ -58,12 +58,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Determine composer cache directory
+        id: determine-composer-cache-directory
+        run: 'echo "::set-output name=directory::$(composer config cache-dir)"'
+
       - name: Cache dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
-          path: ~/.composer/cache/files
+          path: ${{ steps.determine-composer-cache-directory.outputs.directory }}
           key: dependencies-os-${{ matrix.os }}-php-${{ matrix.php-version }}-laravel-${{ matrix.laravel-version }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: dependencies-os-${{ matrix.os }}-php-${{ matrix.php-version }}-laravel-${{ matrix.laravel-version }}
+          restore-keys: dependencies-os-${{ matrix.os }}-php-${{ matrix.php-version }}-laravel-${{ matrix.laravel-version }}-composer-
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
