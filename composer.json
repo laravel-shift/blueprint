@@ -28,10 +28,7 @@
     "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/"
-        },
-        "exclude-from-classmap": [
-            "*/tests/fixtures/*"
-        ]
+        }
     },
     "config": {
         "sort-packages": true
