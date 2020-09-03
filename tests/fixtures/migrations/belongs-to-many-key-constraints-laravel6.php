@@ -13,6 +13,8 @@ class CreateJourneysTable extends Migration
      */
     public function up()
     {
+        Schema::disableForeignKeyConstraints();
+
         Schema::create('journeys', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
@@ -20,6 +22,8 @@ class CreateJourneysTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
+
+        Schema::enableForeignKeyConstraints();
     }
 
     /**

@@ -13,12 +13,16 @@ class CreateDiaryJourneyTable extends Migration
      */
     public function up()
     {
+        Schema::disableForeignKeyConstraints();
+
         Schema::create('diary_journey', function (Blueprint $table) {
             $table->unsignedBigInteger('diary_id');
             $table->foreign('diary_id')->references('id')->on('diaries')->onDelete('cascade');
             $table->unsignedBigInteger('journey_id');
             $table->foreign('journey_id')->references('id')->on('journeys')->onDelete('cascade');
         });
+
+        Schema::enableForeignKeyConstraints();
     }
 
     /**

@@ -37,6 +37,8 @@ class MigrationGenerator implements Generator
     /** @var \Illuminate\Contracts\Filesystem\Filesystem */
     private $files;
 
+    private $hasForeignKeyConstraints = false;
+
     public function __construct($files)
     {
         $this->files = $files;
@@ -90,6 +92,10 @@ class MigrationGenerator implements Generator
         $stub = str_replace('{{ table }}', $model->tableName(), $stub);
         $stub = str_replace('{{ definition }}', $this->buildDefinition($model), $stub);
 
+        if ($this->hasForeignKeyConstraints) {
+            $stub = $this->disableForeignKeyConstraints($stub);
+        }
+
         return $stub;
     }
 
@@ -98,6 +104,10 @@ class MigrationGenerator implements Generator
         $stub = str_replace('{{ class }}', $this->getPivotClassName($segments), $stub);
         $stub = str_replace('{{ table }}', $this->getPivotTableName($segments), $stub);
         $stub = str_replace('{{ definition }}', $this->buildPivotTableDefinition($segments), $stub);
+
+        if ($this->hasForeignKeyConstraints) {
+            $stub = $this->disableForeignKeyConstraints($stub);
+        }
 
         return $stub;
     }
@@ -149,6 +159,7 @@ class MigrationGenerator implements Generator
             $foreign_modifier = $column->isForeignKey();
 
             if ($this->shouldAddForeignKeyConstraint($column)) {
+                $this->hasForeignKeyConstraints = true;
                 $foreign = $this->buildForeignKey(
                     $column->name(),
                     $foreign_modifier === 'foreign' ? null : $foreign_modifier,
@@ -232,6 +243,7 @@ class MigrationGenerator implements Generator
             }
 
             if (config('blueprint.use_constraints')) {
+                $this->hasForeignKeyConstraints = true;
                 $definition .= $this->buildForeignKey($foreign, $on, 'id').';'.PHP_EOL;
             } elseif ($this->isLaravel7orNewer()) {
                 $definition .= self::INDENT.'$table->foreignId(\''.$foreign.'\');'.PHP_EOL;
@@ -281,6 +293,15 @@ class MigrationGenerator implements Generator
         }
 
         return self::INDENT.'$table->foreign'."('{$column_name}')->references('{$column}')->on('{$table}'){$on_delete_suffix}";
+    }
+
+    protected function disableForeignKeyConstraints($stub): string
+    {
+        $stub = str_replace('Schema::create(', 'Schema::disableForeignKeyConstraints();'.PHP_EOL.PHP_EOL.str_pad(' ', 8).'Schema::create(', $stub);
+
+        $stub = str_replace('});', '});'.PHP_EOL.PHP_EOL.str_pad(' ', 8).'Schema::enableForeignKeyConstraints();', $stub);
+
+        return $stub;
     }
 
     protected function getClassName(Model $model)

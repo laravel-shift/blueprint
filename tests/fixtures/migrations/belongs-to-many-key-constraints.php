@@ -13,12 +13,16 @@ class CreateJourneysTable extends Migration
      */
     public function up()
     {
+        Schema::disableForeignKeyConstraints();
+
         Schema::create('journeys', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
+
+        Schema::enableForeignKeyConstraints();
     }
 
     /**
