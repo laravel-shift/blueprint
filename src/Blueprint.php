@@ -11,22 +11,6 @@ class Blueprint
 {
     private $lexers = [];
     private $generators = [];
-    private $defaultGenerators = [
-        'controller' => \Blueprint\Generators\ControllerGenerator::class,
-        'factory' => \Blueprint\Generators\FactoryGenerator::class,
-        'migration' => \Blueprint\Generators\MigrationGenerator::class,
-        'model' => \Blueprint\Generators\ModelGenerator::class,
-        'route' => \Blueprint\Generators\RouteGenerator::class,
-        'seeder' => \Blueprint\Generators\SeederGenerator::class,
-        'test' => \Blueprint\Generators\TestGenerator::class,
-        'event' => \Blueprint\Generators\Statements\EventGenerator::class,
-        'form_request' => \Blueprint\Generators\Statements\FormRequestGenerator::class,
-        'job' => \Blueprint\Generators\Statements\JobGenerator::class,
-        'mail' => \Blueprint\Generators\Statements\MailGenerator::class,
-        'notification' => \Blueprint\Generators\Statements\NotificationGenerator::class,
-        'resource' => \Blueprint\Generators\Statements\ResourceGenerator::class,
-        'view' => \Blueprint\Generators\Statements\ViewGenerator::class,
-    ];
 
     public static function relativeNamespace(string $fullyQualifiedClassName)
     {
@@ -97,11 +81,6 @@ class Blueprint
         }
 
         return $components;
-    }
-
-    public function defaultGenerators()
-    {
-        return $this->defaultGenerators;
     }
 
     public function dump(array $generated)

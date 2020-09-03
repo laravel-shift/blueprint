@@ -74,7 +74,7 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
             $blueprint->registerLexer(new \Blueprint\Lexers\SeederLexer());
             $blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new \Blueprint\Lexers\StatementLexer()));
 
-            foreach (collect($blueprint->defaultGenerators())->merge(config('blueprint.generators'))->toArray() as $key => $generator) {
+            foreach (config('blueprint.generators') as $generator) {
                 $blueprint->registerGenerator(new $generator($app['files']));
             }
 
