@@ -1,23 +1,23 @@
 <?php
 
-namespace Tests\Feature\Generator\Statements;
+namespace Tests\Feature\Generators\Statements;
 
 use Blueprint\Blueprint;
-use Blueprint\Generators\Statements\JobGenerator;
+use Blueprint\Generators\Statements\EventGenerator;
 use Blueprint\Lexers\StatementLexer;
 use Blueprint\Tree;
 use Tests\TestCase;
 
 /**
- * @see JobGenerator
+ * @see EventGenerator
  */
-class JobGeneratorTest extends TestCase
+class EventGeneratorTest extends TestCase
 {
     private $blueprint;
 
     private $files;
 
-    /** @var JobGenerator */
+    /** @var EventGenerator */
     private $subject;
 
     protected function setUp(): void
@@ -25,7 +25,7 @@ class JobGeneratorTest extends TestCase
         parent::setUp();
 
         $this->files = \Mockery::mock();
-        $this->subject = new JobGenerator($this->files);
+        $this->subject = new EventGenerator($this->files);
 
         $this->blueprint = new Blueprint();
         $this->blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new StatementLexer()));
@@ -38,8 +38,8 @@ class JobGeneratorTest extends TestCase
     public function output_writes_nothing_for_empty_tree()
     {
         $this->files->expects('stub')
-            ->with('job.stub')
-            ->andReturn($this->stub('job.stub'));
+            ->with('event.stub')
+            ->andReturn($this->stub('event.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -52,8 +52,8 @@ class JobGeneratorTest extends TestCase
     public function output_writes_nothing_tree_without_validate_statements()
     {
         $this->files->expects('stub')
-            ->with('job.stub')
-            ->andReturn($this->stub('job.stub'));
+            ->with('event.stub')
+            ->andReturn($this->stub('event.stub'));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -66,11 +66,11 @@ class JobGeneratorTest extends TestCase
     /**
      * @test
      */
-    public function output_writes_jobs()
+    public function output_writes_events()
     {
         $this->files->expects('stub')
-            ->with('job.stub')
-            ->andReturn($this->stub('job.stub'));
+            ->with('event.stub')
+            ->andReturn($this->stub('event.stub'));
 
         $this->files->expects('stub')
             ->with('constructor.stub')
@@ -78,45 +78,45 @@ class JobGeneratorTest extends TestCase
 
         $this->files->shouldReceive('exists')
             ->twice()
-            ->with('app/Jobs')
+            ->with('app/Events')
             ->andReturns(false, true);
         $this->files->expects('exists')
-            ->with('app/Jobs/CreateUser.php')
+            ->with('app/Events/UserCreated.php')
             ->andReturnFalse();
         $this->files->expects('makeDirectory')
-            ->with('app/Jobs', 0755, true);
+            ->with('app/Events', 0755, true);
         $this->files->expects('put')
-            ->with('app/Jobs/CreateUser.php', $this->fixture('jobs/create-user.php'));
+            ->with('app/Events/UserCreated.php', $this->fixture('events/user-created.php'));
 
         $this->files->expects('exists')
-            ->with('app/Jobs/DeleteRole.php')
+            ->with('app/Events/UserDeleted.php')
             ->andReturnFalse();
         $this->files->expects('put')
-            ->with('app/Jobs/DeleteRole.php', $this->fixture('jobs/delete-user.php'));
+            ->with('app/Events/UserDeleted.php', $this->fixture('events/user-deleted.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('drafts/dispatch-statements.yaml'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/fire-statements.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['app/Jobs/CreateUser.php', 'app/Jobs/DeleteRole.php']], $this->subject->output($tree));
+        $this->assertEquals(['created' => ['app/Events/UserCreated.php', 'app/Events/UserDeleted.php']], $this->subject->output($tree));
     }
 
     /**
      * @test
      */
-    public function it_only_outputs_new_jobs()
+    public function it_only_outputs_new_events()
     {
         $this->files->expects('stub')
-            ->with('job.stub')
-            ->andReturn($this->stub('job.stub'));
+            ->with('event.stub')
+            ->andReturn($this->stub('event.stub'));
 
         $this->files->expects('exists')
-            ->with('app/Jobs/CreateUser.php')
+            ->with('app/Events/UserCreated.php')
             ->andReturnTrue();
         $this->files->expects('exists')
-            ->with('app/Jobs/DeleteRole.php')
+            ->with('app/Events/UserDeleted.php')
             ->andReturnTrue();
 
-        $tokens = $this->blueprint->parse($this->fixture('drafts/dispatch-statements.yaml'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/fire-statements.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([], $this->subject->output($tree));
@@ -131,23 +131,23 @@ class JobGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.app_path', 'src/path');
 
         $this->files->expects('stub')
-            ->with('job.stub')
-            ->andReturn($this->stub('job.stub'));
+            ->with('event.stub')
+            ->andReturn($this->stub('event.stub'));
 
         $this->files->expects('exists')
-            ->with('src/path/Jobs')
-            ->andReturnFalse();
-        $this->files->expects('exists')
-            ->with('src/path/Jobs/SyncMedia.php')
+            ->with('src/path/Events')
             ->andReturnFalse();
         $this->files->expects('makeDirectory')
-            ->with('src/path/Jobs', 0755, true);
+            ->with('src/path/Events', 0755, true);
+        $this->files->expects('exists')
+            ->with('src/path/Events/NewPost.php')
+            ->andReturnFalse();
         $this->files->expects('put')
-            ->with('src/path/Jobs/SyncMedia.php', $this->fixture('jobs/job-configured.php'));
+            ->with('src/path/Events/NewPost.php', $this->fixture('events/event-configured.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['src/path/Jobs/SyncMedia.php']], $this->subject->output($tree));
+        $this->assertEquals(['created' => ['src/path/Events/NewPost.php']], $this->subject->output($tree));
     }
 }

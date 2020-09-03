@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Generator\Statements;
+namespace Tests\Feature\Generators\Statements;
 
 use Blueprint\Blueprint;
 use Blueprint\Generators\Statements\FormRequestGenerator;
