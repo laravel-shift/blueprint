@@ -1,13 +1,31 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 use App\Team;
-use Faker\Generator as Faker;
+use App\User;
 
-$factory->define(Team::class, function (Faker $faker) {
-    return [
-        'name' => $faker->name,
-        'owner_id' => factory(\App\User::class),
-    ];
-});
+class TeamFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Team::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'name' => $this->faker->name,
+            'owner_id' => User::factory(),
+        ];
+    }
+}

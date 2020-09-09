@@ -1,22 +1,34 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
+use App\Country;
 use App\State;
-use Faker\Generator as Faker;
 
-$factory->define(State::class, function (Faker $faker) {
-    return [
-        'name' => $faker->name,
-        'countries_id' => factory(\App\Country::class),
-        'country_code' => function () {
-            return factory(\App\Country::class)->create()->code;
-        },
-        'ccid' => function () {
-            return factory(\App\Country::class)->create()->ccid;
-        },
-        'c_code' => function () {
-            return factory(\App\Country::class)->create()->code;
-        },
-    ];
-});
+class StateFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = State::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'name' => $this->faker->name,
+            'countries_id' => Country::factory(),
+            'country_code' => Country::factory()->create()->code,
+            'ccid' => Country::factory()->create()->ccid,
+            'c_code' => Country::factory()->create()->code,
+        ];
+    }
+}
