@@ -7,6 +7,7 @@ use Blueprint\Contracts\Generator;
 use Blueprint\Models\Column;
 use Blueprint\Models\Model;
 use Blueprint\Tree;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 
 class ModelGenerator implements Generator
@@ -23,7 +24,11 @@ class ModelGenerator implements Generator
     {
         $output = [];
 
-        $stub = $this->files->stub('model.class.stub');
+        if ($this->isLaravel8Up()) {
+            $stub = $this->files->stub('model.class.stub');
+        } else {
+            $stub = $this->files->stub('model.class.no-factory.stub');
+        }
 
         /** @var \Blueprint\Models\Model $model */
         foreach ($tree->models() as $model) {
@@ -48,16 +53,30 @@ class ModelGenerator implements Generator
 
     protected function populateStub(string $stub, Model $model)
     {
-        $stub = str_replace('{{ namespace }}', $model->fullyQualifiedNamespace(), $stub);
-        $stub = str_replace('{{ class }}', $model->name(), $stub);
-        $stub = str_replace('{{ PHPDoc }}', $this->buildClassPhpDoc($model), $stub);
+        if ($this->isLaravel8Up()) {
+            $stub = str_replace('{{ namespace }}', $model->fullyQualifiedNamespace(), $stub);
+            $stub = str_replace(PHP_EOL.'class {{ class }}', $this->buildClassPhpDoc($model).PHP_EOL.'class {{ class }}', $stub);
+            $stub = str_replace('{{ class }}', $model->name(), $stub);
 
-        $body = $this->buildProperties($model);
-        $body .= PHP_EOL.PHP_EOL;
-        $body .= $this->buildRelationships($model);
+            $body = $this->buildProperties($model);
+            $body .= PHP_EOL.PHP_EOL;
+            $body .= $this->buildRelationships($model);
 
-        $stub = str_replace('{{ body }}', trim($body), $stub);
-        $stub = $this->addTraits($model, $stub);
+            $stub = str_replace('use HasFactory;', 'use HasFactory;'.PHP_EOL.PHP_EOL.'    '.trim($body), $stub);
+
+            $stub = $this->addTraits($model, $stub);
+        } else {
+            $stub = str_replace('{{ namespace }}', $model->fullyQualifiedNamespace(), $stub);
+            $stub = str_replace('{{ class }}', $model->name(), $stub);
+            $stub = str_replace('{{ PHPDoc }}', $this->buildClassPhpDoc($model), $stub);
+
+            $body = $this->buildProperties($model);
+            $body .= PHP_EOL.PHP_EOL;
+            $body .= $this->buildRelationships($model);
+
+            $stub = str_replace('{{ body }}', trim($body), $stub);
+            $stub = $this->addTraits($model, $stub);
+        }
 
         return $stub;
     }
@@ -213,7 +232,11 @@ class ModelGenerator implements Generator
         }
 
         $stub = str_replace('use Illuminate\\Database\\Eloquent\\Model;', 'use Illuminate\\Database\\Eloquent\\Model;'.PHP_EOL.'use Illuminate\\Database\\Eloquent\\SoftDeletes;', $stub);
-        $stub = Str::replaceFirst('{', '{'.PHP_EOL.'    use SoftDeletes;'.PHP_EOL, $stub);
+        if ($this->isLaravel8Up()) {
+            $stub = Str::replaceFirst('use HasFactory', 'use HasFactory, SoftDeletes', $stub);
+        } else {
+            $stub = Str::replaceFirst('{', '{'.PHP_EOL.'    use SoftDeletes;'.PHP_EOL, $stub);
+        }
 
         return $stub;
     }
@@ -282,6 +305,11 @@ class ModelGenerator implements Generator
         if ($column->dataType() === 'json') {
             return 'array';
         }
+    }
+
+    protected function isLaravel8Up()
+    {
+        return version_compare(App::version(), '8.0.0', '>=');
     }
 
     private function pretty_print_array(array $data, $assoc = true)
