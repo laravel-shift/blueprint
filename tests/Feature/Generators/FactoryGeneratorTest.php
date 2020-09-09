@@ -70,6 +70,54 @@ class FactoryGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel6
+     * @dataProvider modelTreeDataProvider
+     */
+    public function output_writes_factory_for_model_tree_l6($definition, $path, $factory)
+    {
+        $this->files->expects('stub')
+            ->with('factory.closure.stub')
+            ->andReturn($this->stub('factory.closure.stub'));
+
+        $this->files->expects('exists')
+            ->with('database/factories')
+            ->andReturnTrue();
+
+        $this->files->expects('put')
+            ->with($path, $this->fixture(str_replace('factories', 'factories/closure-based', $factory)));
+
+        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     * @environment-setup useLaravel7
+     * @dataProvider modelTreeDataProvider
+     */
+    public function output_writes_factory_for_model_tree_l7($definition, $path, $factory)
+    {
+        $this->files->expects('stub')
+            ->with('factory.closure.stub')
+            ->andReturn($this->stub('factory.closure.stub'));
+
+        $this->files->expects('exists')
+            ->with('database/factories')
+            ->andReturnTrue();
+
+        $this->files->expects('put')
+            ->with($path, $this->fixture(str_replace('factories', 'factories/closure-based', $factory)));
+
+        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
      */
     public function output_ignores_nullables_if_fake_nullables_configuration_is_set_to_false()
     {
