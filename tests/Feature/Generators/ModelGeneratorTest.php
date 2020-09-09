@@ -94,6 +94,108 @@ class ModelGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel6
+     * @dataProvider modelTreeDataProvider
+     */
+    public function output_generates_models_l6($definition, $path, $model)
+    {
+        $this->files->expects('stub')
+            ->with('model.class.no-factory.stub')
+            ->andReturn($this->stub('model.class.no-factory.stub'));
+
+        $this->files->expects('stub')
+            ->with('model.fillable.stub')
+            ->andReturn($this->stub('model.fillable.stub'));
+
+        if (in_array($definition, ['drafts/nested-components.yaml', 'drafts/resource-statements.yaml'])) {
+            $this->files->expects('stub')
+                ->with('model.hidden.stub')
+                ->andReturn($this->stub('model.hidden.stub'));
+        }
+
+        $this->files->expects('stub')
+            ->with('model.casts.stub')
+            ->andReturn($this->stub('model.casts.stub'));
+
+        if (in_array($definition, ['drafts/readme-example.yaml', 'drafts/all-column-types.yaml'])) {
+            $this->files->expects('stub')
+                ->with('model.dates.stub')
+                ->andReturn($this->stub('model.dates.stub'));
+        }
+
+        $this->files->shouldReceive('stub')
+            ->with('model.method.stub')
+            ->andReturn($this->stub('model.method.stub'));
+
+        $this->files->shouldReceive('stub')
+            ->with('model.method.comment.stub')
+            ->andReturn($this->stub('model.method.comment.stub'));
+
+        $this->files->expects('exists')
+            ->with(dirname($path))
+            ->andReturnTrue();
+        $this->files->expects('put')
+            ->with($path, $this->fixture(str_replace('models', 'models/no-factory', $model)));
+
+        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     * @environment-setup useLaravel7
+     * @dataProvider modelTreeDataProvider
+     */
+    public function output_generates_models_l7($definition, $path, $model)
+    {
+        $this->files->expects('stub')
+            ->with('model.class.no-factory.stub')
+            ->andReturn($this->stub('model.class.no-factory.stub'));
+
+        $this->files->expects('stub')
+            ->with('model.fillable.stub')
+            ->andReturn($this->stub('model.fillable.stub'));
+
+        if (in_array($definition, ['drafts/nested-components.yaml', 'drafts/resource-statements.yaml'])) {
+            $this->files->expects('stub')
+                ->with('model.hidden.stub')
+                ->andReturn($this->stub('model.hidden.stub'));
+        }
+
+        $this->files->expects('stub')
+            ->with('model.casts.stub')
+            ->andReturn($this->stub('model.casts.stub'));
+
+        if (in_array($definition, ['drafts/readme-example.yaml', 'drafts/all-column-types.yaml'])) {
+            $this->files->expects('stub')
+                ->with('model.dates.stub')
+                ->andReturn($this->stub('model.dates.stub'));
+        }
+
+        $this->files->shouldReceive('stub')
+            ->with('model.method.stub')
+            ->andReturn($this->stub('model.method.stub'));
+
+        $this->files->shouldReceive('stub')
+            ->with('model.method.comment.stub')
+            ->andReturn($this->stub('model.method.comment.stub'));
+
+        $this->files->expects('exists')
+            ->with(dirname($path))
+            ->andReturnTrue();
+        $this->files->expects('put')
+            ->with($path, $this->fixture(str_replace('models', 'models/no-factory', $model)));
+
+        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
      */
     public function output_works_for_pascal_case_definition()
     {
@@ -330,6 +432,114 @@ class ModelGeneratorTest extends TestCase
 
         $this->files->expects('put')
             ->with($path, $this->fixture($model));
+
+        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     * @environment-setup useLaravel6
+     * @dataProvider docBlockModelsDataProvider
+     */
+    public function output_generates_phpdoc_for_model_l6($definition, $path, $model)
+    {
+        $this->app['config']->set('blueprint.generate_phpdocs', true);
+
+        $this->files->expects('stub')
+            ->with('model.class.no-factory.stub')
+            ->andReturn($this->stub('model.class.no-factory.stub'));
+
+        if ($definition === 'drafts/disable-auto-columns.yaml') {
+            $this->files->expects('stub')
+                ->with('model.timestamps.stub')
+                ->andReturn($this->stub('model.timestamps.stub'));
+        }
+
+        $this->files->expects('stub')
+            ->with('model.fillable.stub')
+            ->andReturn($this->stub('model.fillable.stub'));
+
+        $this->files->expects('stub')
+            ->with('model.casts.stub')
+            ->andReturn($this->stub('model.casts.stub'));
+
+        if ($definition === 'drafts/readme-example.yaml') {
+            $this->files->expects('stub')
+                ->with('model.dates.stub')
+                ->andReturn($this->stub('model.dates.stub'));
+        }
+
+        $this->files->shouldReceive('stub')
+            ->with('model.method.stub')
+            ->andReturn($this->stub('model.method.stub'));
+
+        $this->files->shouldReceive('stub')
+            ->with('model.method.comment.stub')
+            ->andReturn($this->stub('model.method.comment.stub'));
+
+        $this->files->expects('exists')
+            ->with(dirname($path))
+            ->andReturnTrue();
+
+        $this->files->expects('put')
+            ->with($path, $this->fixture(str_replace('models', 'models/no-factory', $model)));
+
+        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     * @environment-setup useLaravel7
+     * @dataProvider docBlockModelsDataProvider
+     */
+    public function output_generates_phpdoc_for_model_l7($definition, $path, $model)
+    {
+        $this->app['config']->set('blueprint.generate_phpdocs', true);
+
+        $this->files->expects('stub')
+            ->with('model.class.no-factory.stub')
+            ->andReturn($this->stub('model.class.no-factory.stub'));
+
+        if ($definition === 'drafts/disable-auto-columns.yaml') {
+            $this->files->expects('stub')
+                ->with('model.timestamps.stub')
+                ->andReturn($this->stub('model.timestamps.stub'));
+        }
+
+        $this->files->expects('stub')
+            ->with('model.fillable.stub')
+            ->andReturn($this->stub('model.fillable.stub'));
+
+        $this->files->expects('stub')
+            ->with('model.casts.stub')
+            ->andReturn($this->stub('model.casts.stub'));
+
+        if ($definition === 'drafts/readme-example.yaml') {
+            $this->files->expects('stub')
+                ->with('model.dates.stub')
+                ->andReturn($this->stub('model.dates.stub'));
+        }
+
+        $this->files->shouldReceive('stub')
+            ->with('model.method.stub')
+            ->andReturn($this->stub('model.method.stub'));
+
+        $this->files->shouldReceive('stub')
+            ->with('model.method.comment.stub')
+            ->andReturn($this->stub('model.method.comment.stub'));
+
+        $this->files->expects('exists')
+            ->with(dirname($path))
+            ->andReturnTrue();
+
+        $this->files->expects('put')
+            ->with($path, $this->fixture(str_replace('models', 'models/no-factory', $model)));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
