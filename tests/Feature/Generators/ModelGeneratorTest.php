@@ -46,6 +46,7 @@ class ModelGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel8
      * @dataProvider modelTreeDataProvider
      */
     public function output_generates_models($definition, $path, $model)
@@ -87,57 +88,6 @@ class ModelGeneratorTest extends TestCase
             ->andReturnTrue();
         $this->files->expects('put')
             ->with($path, $this->fixture($model));
-
-        $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree = $this->blueprint->analyze($tokens);
-
-        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
-    }
-
-    /**
-     * @test
-     * @environment-setup useLaravel6
-     * @dataProvider modelTreeDataProvider
-     */
-    public function output_generates_models_l6($definition, $path, $model)
-    {
-        $this->files->expects('stub')
-            ->with($this->modelStub)
-            ->andReturn($this->stub($this->modelStub));
-
-        $this->files->expects('stub')
-            ->with('model.fillable.stub')
-            ->andReturn($this->stub('model.fillable.stub'));
-
-        if (in_array($definition, ['drafts/nested-components.yaml', 'drafts/resource-statements.yaml'])) {
-            $this->files->expects('stub')
-                ->with('model.hidden.stub')
-                ->andReturn($this->stub('model.hidden.stub'));
-        }
-
-        $this->files->expects('stub')
-            ->with('model.casts.stub')
-            ->andReturn($this->stub('model.casts.stub'));
-
-        if (in_array($definition, ['drafts/readme-example.yaml', 'drafts/all-column-types.yaml'])) {
-            $this->files->expects('stub')
-                ->with('model.dates.stub')
-                ->andReturn($this->stub('model.dates.stub'));
-        }
-
-        $this->files->shouldReceive('stub')
-            ->with('model.method.stub')
-            ->andReturn($this->stub('model.method.stub'));
-
-        $this->files->shouldReceive('stub')
-            ->with('model.method.comment.stub')
-            ->andReturn($this->stub('model.method.comment.stub'));
-
-        $this->files->expects('exists')
-            ->with(dirname($path))
-            ->andReturnTrue();
-        $this->files->expects('put')
-            ->with($path, $this->fixture(str_replace('models', 'models/no-factory', $model)));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
@@ -198,6 +148,58 @@ class ModelGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel6
+     * @dataProvider modelTreeDataProvider
+     */
+    public function output_generates_models_l6($definition, $path, $model)
+    {
+        $this->files->expects('stub')
+            ->with($this->modelStub)
+            ->andReturn($this->stub($this->modelStub));
+
+        $this->files->expects('stub')
+            ->with('model.fillable.stub')
+            ->andReturn($this->stub('model.fillable.stub'));
+
+        if (in_array($definition, ['drafts/nested-components.yaml', 'drafts/resource-statements.yaml'])) {
+            $this->files->expects('stub')
+                ->with('model.hidden.stub')
+                ->andReturn($this->stub('model.hidden.stub'));
+        }
+
+        $this->files->expects('stub')
+            ->with('model.casts.stub')
+            ->andReturn($this->stub('model.casts.stub'));
+
+        if (in_array($definition, ['drafts/readme-example.yaml', 'drafts/all-column-types.yaml'])) {
+            $this->files->expects('stub')
+                ->with('model.dates.stub')
+                ->andReturn($this->stub('model.dates.stub'));
+        }
+
+        $this->files->shouldReceive('stub')
+            ->with('model.method.stub')
+            ->andReturn($this->stub('model.method.stub'));
+
+        $this->files->shouldReceive('stub')
+            ->with('model.method.comment.stub')
+            ->andReturn($this->stub('model.method.comment.stub'));
+
+        $this->files->expects('exists')
+            ->with(dirname($path))
+            ->andReturnTrue();
+        $this->files->expects('put')
+            ->with($path, $this->fixture(str_replace('models', 'models/no-factory', $model)));
+
+        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     * @environment-setup useLaravel8
      */
     public function output_works_for_pascal_case_definition()
     {
@@ -243,6 +245,7 @@ class ModelGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel8
      */
     public function output_generates_relationships()
     {
@@ -273,6 +276,7 @@ class ModelGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel8
      */
     public function output_generates_polymorphic_relationships()
     {
@@ -318,6 +322,7 @@ class ModelGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel8
      */
     public function output_generates_disabled_auto_columns()
     {
@@ -351,6 +356,7 @@ class ModelGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel8
      */
     public function output_respects_configuration()
     {
@@ -390,6 +396,7 @@ class ModelGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel8
      * @dataProvider docBlockModelsDataProvider
      */
     public function output_generates_phpdoc_for_model($definition, $path, $model)
@@ -434,60 +441,6 @@ class ModelGeneratorTest extends TestCase
 
         $this->files->expects('put')
             ->with($path, $this->fixture($model));
-
-        $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree = $this->blueprint->analyze($tokens);
-
-        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
-    }
-
-    /**
-     * @test
-     * @environment-setup useLaravel6
-     * @dataProvider docBlockModelsDataProvider
-     */
-    public function output_generates_phpdoc_for_model_l6($definition, $path, $model)
-    {
-        $this->app['config']->set('blueprint.generate_phpdocs', true);
-
-        $this->files->expects('stub')
-            ->with($this->modelStub)
-            ->andReturn($this->stub($this->modelStub));
-
-        if ($definition === 'drafts/disable-auto-columns.yaml') {
-            $this->files->expects('stub')
-                ->with('model.timestamps.stub')
-                ->andReturn($this->stub('model.timestamps.stub'));
-        }
-
-        $this->files->expects('stub')
-            ->with('model.fillable.stub')
-            ->andReturn($this->stub('model.fillable.stub'));
-
-        $this->files->expects('stub')
-            ->with('model.casts.stub')
-            ->andReturn($this->stub('model.casts.stub'));
-
-        if ($definition === 'drafts/readme-example.yaml') {
-            $this->files->expects('stub')
-                ->with('model.dates.stub')
-                ->andReturn($this->stub('model.dates.stub'));
-        }
-
-        $this->files->shouldReceive('stub')
-            ->with('model.method.stub')
-            ->andReturn($this->stub('model.method.stub'));
-
-        $this->files->shouldReceive('stub')
-            ->with('model.method.comment.stub')
-            ->andReturn($this->stub('model.method.comment.stub'));
-
-        $this->files->expects('exists')
-            ->with(dirname($path))
-            ->andReturnTrue();
-
-        $this->files->expects('put')
-            ->with($path, $this->fixture(str_replace('models', 'models/no-factory', $model)));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
@@ -551,6 +504,61 @@ class ModelGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel6
+     * @dataProvider docBlockModelsDataProvider
+     */
+    public function output_generates_phpdoc_for_model_l6($definition, $path, $model)
+    {
+        $this->app['config']->set('blueprint.generate_phpdocs', true);
+
+        $this->files->expects('stub')
+            ->with($this->modelStub)
+            ->andReturn($this->stub($this->modelStub));
+
+        if ($definition === 'drafts/disable-auto-columns.yaml') {
+            $this->files->expects('stub')
+                ->with('model.timestamps.stub')
+                ->andReturn($this->stub('model.timestamps.stub'));
+        }
+
+        $this->files->expects('stub')
+            ->with('model.fillable.stub')
+            ->andReturn($this->stub('model.fillable.stub'));
+
+        $this->files->expects('stub')
+            ->with('model.casts.stub')
+            ->andReturn($this->stub('model.casts.stub'));
+
+        if ($definition === 'drafts/readme-example.yaml') {
+            $this->files->expects('stub')
+                ->with('model.dates.stub')
+                ->andReturn($this->stub('model.dates.stub'));
+        }
+
+        $this->files->shouldReceive('stub')
+            ->with('model.method.stub')
+            ->andReturn($this->stub('model.method.stub'));
+
+        $this->files->shouldReceive('stub')
+            ->with('model.method.comment.stub')
+            ->andReturn($this->stub('model.method.comment.stub'));
+
+        $this->files->expects('exists')
+            ->with(dirname($path))
+            ->andReturnTrue();
+
+        $this->files->expects('put')
+            ->with($path, $this->fixture(str_replace('models', 'models/no-factory', $model)));
+
+        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     * @environment-setup useLaravel8
      */
     public function output_generates_models_with_guarded_property_when_config_option_is_set()
     {
@@ -587,6 +595,7 @@ class ModelGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel8
      */
     public function output_generates_models_with_custom_namespace_correctly()
     {
@@ -623,6 +632,7 @@ class ModelGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel8
      */
     public function output_generates_models_with_custom_pivot_columns()
     {
