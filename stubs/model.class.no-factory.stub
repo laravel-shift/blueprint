@@ -2,10 +2,9 @@
 
 namespace {{ namespace }};
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+{{ PHPDoc }}
 class {{ class }} extends Model
 {
-    use HasFactory;
+    {{ body }}
 }
