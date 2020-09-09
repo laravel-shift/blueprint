@@ -5,6 +5,7 @@ namespace Tests\Feature\Generators;
 use Blueprint\Blueprint;
 use Blueprint\Generators\ModelGenerator;
 use Blueprint\Tree;
+use Illuminate\Support\Facades\App;
 use Tests\TestCase;
 
 class ModelGeneratorTest extends TestCase
@@ -21,6 +22,7 @@ class ModelGeneratorTest extends TestCase
         parent::setUp();
 
         $this->files = \Mockery::mock();
+        $this->modelStub = version_compare(App::version(), '8.0.0', '>=') ? 'model.class.stub' : 'model.class.no-factory.stub';
         $this->subject = new ModelGenerator($this->files);
 
         $this->blueprint = new Blueprint();
@@ -34,8 +36,8 @@ class ModelGeneratorTest extends TestCase
     public function output_generates_nothing_for_empty_tree()
     {
         $this->files->expects('stub')
-            ->with('model.class.stub')
-            ->andReturn($this->stub('model.class.stub'));
+            ->with($this->modelStub)
+            ->andReturn($this->stub($this->modelStub));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -49,8 +51,8 @@ class ModelGeneratorTest extends TestCase
     public function output_generates_models($definition, $path, $model)
     {
         $this->files->expects('stub')
-            ->with('model.class.stub')
-            ->andReturn($this->stub('model.class.stub'));
+            ->with($this->modelStub)
+            ->andReturn($this->stub($this->modelStub));
 
         $this->files->expects('stub')
             ->with('model.fillable.stub')
@@ -100,8 +102,8 @@ class ModelGeneratorTest extends TestCase
     public function output_generates_models_l6($definition, $path, $model)
     {
         $this->files->expects('stub')
-            ->with('model.class.no-factory.stub')
-            ->andReturn($this->stub('model.class.no-factory.stub'));
+            ->with($this->modelStub)
+            ->andReturn($this->stub($this->modelStub));
 
         $this->files->expects('stub')
             ->with('model.fillable.stub')
@@ -151,8 +153,8 @@ class ModelGeneratorTest extends TestCase
     public function output_generates_models_l7($definition, $path, $model)
     {
         $this->files->expects('stub')
-            ->with('model.class.no-factory.stub')
-            ->andReturn($this->stub('model.class.no-factory.stub'));
+            ->with($this->modelStub)
+            ->andReturn($this->stub($this->modelStub));
 
         $this->files->expects('stub')
             ->with('model.fillable.stub')
@@ -200,8 +202,8 @@ class ModelGeneratorTest extends TestCase
     public function output_works_for_pascal_case_definition()
     {
         $this->files->expects('stub')
-            ->with('model.class.stub')
-            ->andReturn($this->stub('model.class.stub'));
+            ->with($this->modelStub)
+            ->andReturn($this->stub($this->modelStub));
         $this->files->expects('stub')
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'))
@@ -245,8 +247,8 @@ class ModelGeneratorTest extends TestCase
     public function output_generates_relationships()
     {
         $this->files->expects('stub')
-            ->with('model.class.stub')
-            ->andReturn($this->stub('model.class.stub'));
+            ->with($this->modelStub)
+            ->andReturn($this->stub($this->modelStub));
         $this->files->expects('stub')
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'));
@@ -275,8 +277,8 @@ class ModelGeneratorTest extends TestCase
     public function output_generates_polymorphic_relationships()
     {
         $this->files->expects('stub')
-            ->with('model.class.stub')
-            ->andReturn($this->stub('model.class.stub'));
+            ->with($this->modelStub)
+            ->andReturn($this->stub($this->modelStub));
         $this->files->expects('stub')
             ->times(3)
             ->with('model.fillable.stub')
@@ -320,8 +322,8 @@ class ModelGeneratorTest extends TestCase
     public function output_generates_disabled_auto_columns()
     {
         $this->files->expects('stub')
-            ->with('model.class.stub')
-            ->andReturn($this->stub('model.class.stub'));
+            ->with($this->modelStub)
+            ->andReturn($this->stub($this->modelStub));
         $this->files->expects('stub')
             ->with('model.timestamps.stub')
             ->andReturn($this->stub('model.timestamps.stub'));
@@ -357,8 +359,8 @@ class ModelGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.models_namespace', 'Models');
 
         $this->files->expects('stub')
-            ->with('model.class.stub')
-            ->andReturn($this->stub('model.class.stub'));
+            ->with($this->modelStub)
+            ->andReturn($this->stub($this->modelStub));
 
         $this->files->expects('stub')
             ->with('model.fillable.stub')
@@ -395,8 +397,8 @@ class ModelGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.generate_phpdocs', true);
 
         $this->files->expects('stub')
-            ->with('model.class.stub')
-            ->andReturn($this->stub('model.class.stub'));
+            ->with($this->modelStub)
+            ->andReturn($this->stub($this->modelStub));
 
         if ($definition === 'drafts/disable-auto-columns.yaml') {
             $this->files->expects('stub')
@@ -449,8 +451,8 @@ class ModelGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.generate_phpdocs', true);
 
         $this->files->expects('stub')
-            ->with('model.class.no-factory.stub')
-            ->andReturn($this->stub('model.class.no-factory.stub'));
+            ->with($this->modelStub)
+            ->andReturn($this->stub($this->modelStub));
 
         if ($definition === 'drafts/disable-auto-columns.yaml') {
             $this->files->expects('stub')
@@ -503,8 +505,8 @@ class ModelGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.generate_phpdocs', true);
 
         $this->files->expects('stub')
-            ->with('model.class.no-factory.stub')
-            ->andReturn($this->stub('model.class.no-factory.stub'));
+            ->with($this->modelStub)
+            ->andReturn($this->stub($this->modelStub));
 
         if ($definition === 'drafts/disable-auto-columns.yaml') {
             $this->files->expects('stub')
@@ -555,8 +557,8 @@ class ModelGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.use_guarded', true);
 
         $this->files->expects('stub')
-            ->with('model.class.stub')
-            ->andReturn($this->stub('model.class.stub'));
+            ->with($this->modelStub)
+            ->andReturn($this->stub($this->modelStub));
 
         $this->files->expects('stub')
             ->with('model.guarded.stub')
@@ -595,8 +597,8 @@ class ModelGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.models_namespace', 'Models');
 
         $this->files->expects('stub')
-            ->with('model.class.stub')
-            ->andReturn($this->stub('model.class.stub'));
+            ->with($this->modelStub)
+            ->andReturn($this->stub($this->modelStub));
         $this->files->expects('stub')
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'));
@@ -625,8 +627,8 @@ class ModelGeneratorTest extends TestCase
     public function output_generates_models_with_custom_pivot_columns()
     {
         $this->files->expects('stub')
-            ->with('model.class.stub')
-            ->andReturn($this->stub('model.class.stub'));
+            ->with($this->modelStub)
+            ->andReturn($this->stub($this->modelStub));
         $this->files->expects('stub')
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'));

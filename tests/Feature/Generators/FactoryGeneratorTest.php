@@ -6,6 +6,7 @@ use Blueprint\Tree;
 use Tests\TestCase;
 use Blueprint\Blueprint;
 use Blueprint\Generators\FactoryGenerator;
+use Illuminate\Support\Facades\App;
 
 /**
  * @see FactoryGenerator
@@ -24,6 +25,7 @@ class FactoryGeneratorTest extends TestCase
         parent::setUp();
 
         $this->files = \Mockery::mock();
+        $this->factoryStub = version_compare(App::version(), '8.0.0', '>=') ? 'factory.stub' : 'factory.closure.stub';
         $this->subject = new FactoryGenerator($this->files);
 
         $this->blueprint = new Blueprint();
@@ -37,8 +39,8 @@ class FactoryGeneratorTest extends TestCase
     public function output_writes_nothing_for_empty_tree()
     {
         $this->files->expects('stub')
-            ->with('factory.stub')
-            ->andReturn($this->stub('factory.stub'));
+            ->with($this->factoryStub)
+            ->andReturn($this->stub($this->factoryStub));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -52,8 +54,8 @@ class FactoryGeneratorTest extends TestCase
     public function output_writes_factory_for_model_tree($definition, $path, $factory)
     {
         $this->files->expects('stub')
-            ->with('factory.stub')
-            ->andReturn($this->stub('factory.stub'));
+            ->with($this->factoryStub)
+            ->andReturn($this->stub($this->factoryStub));
 
         $this->files->expects('exists')
             ->with('database/factories')
@@ -76,8 +78,8 @@ class FactoryGeneratorTest extends TestCase
     public function output_writes_factory_for_model_tree_l6($definition, $path, $factory)
     {
         $this->files->expects('stub')
-            ->with('factory.closure.stub')
-            ->andReturn($this->stub('factory.closure.stub'));
+            ->with($this->factoryStub)
+            ->andReturn($this->stub($this->factoryStub));
 
         $this->files->expects('exists')
             ->with('database/factories')
@@ -100,8 +102,8 @@ class FactoryGeneratorTest extends TestCase
     public function output_writes_factory_for_model_tree_l7($definition, $path, $factory)
     {
         $this->files->expects('stub')
-            ->with('factory.closure.stub')
-            ->andReturn($this->stub('factory.closure.stub'));
+            ->with($this->factoryStub)
+            ->andReturn($this->stub($this->factoryStub));
 
         $this->files->expects('exists')
             ->with('database/factories')
@@ -124,8 +126,8 @@ class FactoryGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.fake_nullables', false);
 
         $this->files->expects('stub')
-            ->with('factory.stub')
-            ->andReturn($this->stub('factory.stub'));
+            ->with($this->factoryStub)
+            ->andReturn($this->stub($this->factoryStub));
 
         $this->files->expects('exists')
             ->with('database/factories')
@@ -149,8 +151,8 @@ class FactoryGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.models_namespace', 'Models');
 
         $this->files->expects('stub')
-            ->with('factory.stub')
-            ->andReturn($this->stub('factory.stub'));
+            ->with($this->factoryStub)
+            ->andReturn($this->stub($this->factoryStub));
 
         $this->files->expects('exists')
             ->with('database/factories')
@@ -171,8 +173,8 @@ class FactoryGeneratorTest extends TestCase
     public function output_creates_directory_for_nested_components()
     {
         $this->files->expects('stub')
-            ->with('factory.stub')
-            ->andReturn($this->stub('factory.stub'));
+            ->with($this->factoryStub)
+            ->andReturn($this->stub($this->factoryStub));
 
         $this->files->expects('exists')
             ->with('database/factories/Admin')
