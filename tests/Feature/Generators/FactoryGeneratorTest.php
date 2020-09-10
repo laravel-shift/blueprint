@@ -50,7 +50,7 @@ class FactoryGeneratorTest extends TestCase
     /**
      * @test
      * @environment-setup useLaravel8
-     * @dataProvider modelTreeDataProvider
+     * @dataProvider laravel8ModelTreeDataProvider
      */
     public function output_writes_factory_for_model_tree($definition, $path, $factory)
     {
@@ -87,7 +87,7 @@ class FactoryGeneratorTest extends TestCase
             ->andReturnTrue();
 
         $this->files->expects('put')
-            ->with($path, $this->fixture(str_replace('factories', 'factories/closure-based', $factory)));
+            ->with($path, $this->fixture($factory));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
@@ -111,7 +111,7 @@ class FactoryGeneratorTest extends TestCase
             ->andReturnTrue();
 
         $this->files->expects('put')
-            ->with($path, $this->fixture(str_replace('factories', 'factories/closure-based', $factory)));
+            ->with($path, $this->fixture($factory));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
@@ -209,6 +209,23 @@ class FactoryGeneratorTest extends TestCase
             ['drafts/resource-statements.yaml', 'database/factories/UserFactory.php', 'factories/resource-statements.php'],
             ['drafts/factory-smallint-and-tinyint.yaml', 'database/factories/ModelFactory.php', 'factories/factory-smallint-and-tinyint.php'],
             ['drafts/all-column-types.yaml', 'database/factories/AllTypeFactory.php', 'factories/all-column-types.php'],
+        ];
+    }
+
+    public function laravel8ModelTreeDataProvider()
+    {
+        return [
+            ['drafts/phone.yaml', 'database/factories/PhoneFactory.php', 'factories/phone-laravel8.php'],
+            ['drafts/post.yaml', 'database/factories/PostFactory.php', 'factories/post-laravel8.php'],
+            ['drafts/team.yaml', 'database/factories/TeamFactory.php', 'factories/team-laravel8.php'],
+            ['drafts/unconventional.yaml', 'database/factories/TeamFactory.php', 'factories/unconventional-laravel8.php'],
+            ['drafts/model-modifiers.yaml', 'database/factories/ModifierFactory.php', 'factories/model-modifiers-laravel8.php'],
+            ['drafts/model-key-constraints.yaml', 'database/factories/OrderFactory.php', 'factories/model-key-constraints-laravel8.php'],
+            ['drafts/unconventional-foreign-key.yaml', 'database/factories/StateFactory.php', 'factories/unconventional-foreign-key-laravel8.php'],
+            ['drafts/foreign-key-shorthand.yaml', 'database/factories/CommentFactory.php', 'factories/foreign-key-shorthand-laravel8.php'],
+            ['drafts/resource-statements.yaml', 'database/factories/UserFactory.php', 'factories/resource-statements-laravel8.php'],
+            ['drafts/factory-smallint-and-tinyint.yaml', 'database/factories/ModelFactory.php', 'factories/factory-smallint-and-tinyint-laravel8.php'],
+            ['drafts/all-column-types.yaml', 'database/factories/AllTypeFactory.php', 'factories/all-column-types-laravel8.php'],
         ];
     }
 }
