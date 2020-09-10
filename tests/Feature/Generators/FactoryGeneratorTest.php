@@ -136,7 +136,7 @@ class FactoryGeneratorTest extends TestCase
             ->andReturnTrue();
 
         $this->files->expects('put')
-            ->with('database/factories/PostFactory.php', $this->fixture('factories/fake-nullables.php'));
+            ->with('database/factories/PostFactory.php', $this->fixture('factories/fake-nullables-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -162,7 +162,7 @@ class FactoryGeneratorTest extends TestCase
             ->andReturnTrue();
 
         $this->files->expects('put')
-            ->with('database/factories/PostFactory.php', $this->fixture('factories/post-configured.php'));
+            ->with('database/factories/PostFactory.php', $this->fixture('factories/post-configured-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/post.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -187,7 +187,7 @@ class FactoryGeneratorTest extends TestCase
             ->with('database/factories/Admin', 0755, true);
 
         $this->files->expects('put')
-            ->with('database/factories/Admin/UserFactory.php', $this->fixture('factories/nested-components.php'));
+            ->with('database/factories/Admin/UserFactory.php', $this->fixture('factories/nested-components-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/nested-components.yaml'));
         $tree = $this->blueprint->analyze($tokens);

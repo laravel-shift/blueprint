@@ -1,34 +1,16 @@
 <?php
 
-namespace Database\Factories;
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 use App\Comment;
-use App\Country;
-use App\Post;
-use App\User;
+use Faker\Generator as Faker;
 
-class CommentFactory extends Factory
-{
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
-    protected $model = Comment::class;
-
-    /**
-     * Define the model's default state.
-     *
-     * @return array
-     */
-    public function definition()
-    {
-        return [
-            'post_id' => Post::factory(),
-            'author_id' => User::factory(),
-            'ccid' => Country::factory()->create()->code,
-        ];
-    }
-}
+$factory->define(Comment::class, function (Faker $faker) {
+    return [
+        'post_id' => factory(\App\Post::class),
+        'author_id' => factory(\App\User::class),
+        'ccid' => function () {
+            return factory(\App\Country::class)->create()->code;
+        },
+    ];
+});

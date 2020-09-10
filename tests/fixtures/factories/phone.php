@@ -1,36 +1,18 @@
 <?php
 
-namespace Database\Factories;
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 use App\Phone;
-use App\User;
+use Faker\Generator as Faker;
 
-class PhoneFactory extends Factory
-{
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
-    protected $model = Phone::class;
-
-    /**
-     * Define the model's default state.
-     *
-     * @return array
-     */
-    public function definition()
-    {
-        return [
-            'label' => $this->faker->word,
-            'user_id' => User::factory(),
-            'phone_number' => $this->faker->phoneNumber,
-            'type' => $this->faker->randomElement(["home","cell"]),
-            'status' => $this->faker->randomElement(["archived","deleted"]),
-            'foo_id' => $this->faker->randomDigitNotNull,
-            'foo_type' => $this->faker->word,
-        ];
-    }
-}
+$factory->define(Phone::class, function (Faker $faker) {
+    return [
+        'label' => $faker->word,
+        'user_id' => factory(\App\User::class),
+        'phone_number' => $faker->phoneNumber,
+        'type' => $faker->randomElement(["home","cell"]),
+        'status' => $faker->randomElement(["archived","deleted"]),
+        'foo_id' => $faker->randomDigitNotNull,
+        'foo_type' => $faker->word,
+    ];
+});
