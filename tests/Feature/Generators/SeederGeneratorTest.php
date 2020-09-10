@@ -60,9 +60,9 @@ class SeederGeneratorTest extends TestCase
             ->andReturn($this->stub($this->seederStub));
 
         $this->files->expects('put')
-            ->with('database/seeders/PostSeeder.php', $this->fixture('seeders/PostSeeder.php'));
+            ->with('database/seeders/PostSeeder.php', $this->fixture('seeders/PostSeeder-laravel8.php'));
         $this->files->expects('put')
-            ->with('database/seeders/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
+            ->with('database/seeders/CommentSeeder.php', $this->fixture('seeders/CommentSeeder-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -81,9 +81,9 @@ class SeederGeneratorTest extends TestCase
             ->andReturn($this->stub($this->seederStub));
 
         $this->files->expects('put')
-            ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/no-factory/PostSeeder.php'));
+            ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/PostSeeder.php'));
         $this->files->expects('put')
-            ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/no-factory/CommentSeeder.php'));
+            ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -102,9 +102,9 @@ class SeederGeneratorTest extends TestCase
             ->andReturn($this->stub($this->seederStub));
 
         $this->files->expects('put')
-            ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/no-factory/PostSeeder.php'));
+            ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/PostSeeder.php'));
         $this->files->expects('put')
-            ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/no-factory/CommentSeeder.php'));
+            ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -123,9 +123,9 @@ class SeederGeneratorTest extends TestCase
             ->andReturn($this->stub($this->seederStub));
 
         $this->files->expects('put')
-            ->with('database/seeders/PostSeeder.php', $this->fixture('seeders/PostSeeder.php'));
+            ->with('database/seeders/PostSeeder.php', $this->fixture('seeders/PostSeeder-laravel8.php'));
         $this->files->expects('put')
-            ->with('database/seeders/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
+            ->with('database/seeders/CommentSeeder.php', $this->fixture('seeders/CommentSeeder-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
         $tree = $this->blueprint->analyze($tokens)->toArray();
@@ -147,9 +147,9 @@ class SeederGeneratorTest extends TestCase
             ->andReturn($this->stub($this->seederStub));
 
         $this->files->expects('put')
-            ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/no-factory/PostSeeder.php'));
+            ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/PostSeeder.php'));
         $this->files->expects('put')
-            ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/no-factory/CommentSeeder.php'));
+            ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
         $tree = $this->blueprint->analyze($tokens)->toArray();
@@ -171,9 +171,9 @@ class SeederGeneratorTest extends TestCase
             ->andReturn($this->stub($this->seederStub));
 
         $this->files->expects('put')
-            ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/no-factory/PostSeeder.php'));
+            ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/PostSeeder.php'));
         $this->files->expects('put')
-            ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/no-factory/CommentSeeder.php'));
+            ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
         $tree = $this->blueprint->analyze($tokens)->toArray();
