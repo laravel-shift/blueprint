@@ -60,14 +60,14 @@ class SeederGeneratorTest extends TestCase
             ->andReturn($this->stub($this->seederStub));
 
         $this->files->expects('put')
-            ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/PostSeeder.php'));
+            ->with('database/seeders/PostSeeder.php', $this->fixture('seeders/PostSeeder.php'));
         $this->files->expects('put')
-            ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
+            ->with('database/seeders/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['database/seeds/PostSeeder.php', 'database/seeds/CommentSeeder.php']], $this->subject->output($tree));
+        $this->assertEquals(['created' => ['database/seeders/PostSeeder.php', 'database/seeders/CommentSeeder.php']], $this->subject->output($tree));
     }
 
     /**
@@ -123,9 +123,9 @@ class SeederGeneratorTest extends TestCase
             ->andReturn($this->stub($this->seederStub));
 
         $this->files->expects('put')
-            ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/PostSeeder.php'));
+            ->with('database/seeders/PostSeeder.php', $this->fixture('seeders/PostSeeder.php'));
         $this->files->expects('put')
-            ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
+            ->with('database/seeders/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
         $tree = $this->blueprint->analyze($tokens)->toArray();
@@ -133,7 +133,7 @@ class SeederGeneratorTest extends TestCase
         unset($tree['models']);
         $tree = new Tree($tree);
 
-        $this->assertEquals(['created' => ['database/seeds/PostSeeder.php', 'database/seeds/CommentSeeder.php']], $this->subject->output($tree));
+        $this->assertEquals(['created' => ['database/seeders/PostSeeder.php', 'database/seeders/CommentSeeder.php']], $this->subject->output($tree));
     }
 
     /**

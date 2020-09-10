@@ -97,6 +97,10 @@ class SeederGenerator implements Generator
 
     private function getPath($model)
     {
+        if ($this->isLaravel8OrHigher()) {
+            return 'database/seeders/'.$model.'Seeder.php';
+        }
+
         return 'database/seeds/'.$model.'Seeder.php';
     }
 
