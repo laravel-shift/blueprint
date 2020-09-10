@@ -2,21 +2,12 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * @property string $name
- * @property string $code
- * @property int $country_id
- */
-class State extends Model
+class User extends Model
 {
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -25,8 +16,6 @@ class State extends Model
      */
     protected $fillable = [
         'name',
-        'code',
-        'country_id',
     ];
 
     /**
@@ -35,6 +24,12 @@ class State extends Model
      * @var array
      */
     protected $casts = [
-        'country_id' => 'integer',
+        'id' => 'integer',
     ];
+
+
+    public function images()
+    {
+        return $this->morphMany(\App\Image::class, 'imageable');
+    }
 }

@@ -2,17 +2,21 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property int $id
  * @property int $post_id
  * @property int $author_id
+ * @property int $ccid
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
 class Comment extends Model
 {
+    use HasFactory;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -21,6 +25,7 @@ class Comment extends Model
     protected $fillable = [
         'post_id',
         'author_id',
+        'ccid',
     ];
 
     /**
@@ -32,6 +37,7 @@ class Comment extends Model
         'id' => 'integer',
         'post_id' => 'integer',
         'author_id' => 'integer',
+        'ccid' => 'integer',
     ];
 
 
@@ -49,5 +55,13 @@ class Comment extends Model
     public function author()
     {
         return $this->belongsTo(\App\User::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function country()
+    {
+        return $this->belongsTo(\App\Country::class, 'ccid', 'code');
     }
 }

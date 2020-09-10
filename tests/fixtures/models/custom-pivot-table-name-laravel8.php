@@ -2,10 +2,13 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CertificateType extends Model
+class User extends Model
 {
+    use HasFactory;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -13,6 +16,15 @@ class CertificateType extends Model
      */
     protected $fillable = [
         'name',
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'remember_token',
     ];
 
     /**
@@ -25,8 +37,8 @@ class CertificateType extends Model
     ];
 
 
-    public function certificates()
+    public function accounts()
     {
-        return $this->hasMany(\App\Certificate::class);
+        return $this->belongsToMany(\App\Account::class, 'test');
     }
 }

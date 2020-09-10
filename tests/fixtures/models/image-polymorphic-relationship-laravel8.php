@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Models;
+namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Tag extends Model
+class Image extends Model
 {
-    use SoftDeletes;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -15,9 +15,7 @@ class Tag extends Model
      * @var array
      */
     protected $fillable = [
-        'name',
-        'icon',
-        'active',
+        'url',
     ];
 
     /**
@@ -27,6 +25,11 @@ class Tag extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'active' => 'boolean',
     ];
+
+
+    public function imageable()
+    {
+        return $this->morphTo();
+    }
 }
