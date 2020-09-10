@@ -43,4 +43,24 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
         \App::swap($appMock);
     }
+
+    protected function useLaravel7($app)
+    {
+        $appMock = \Mockery::mock($app);
+        $appMock->shouldReceive('version')
+            ->withNoArgs()
+            ->andReturn('7.0.0');
+
+        \App::swap($appMock);
+    }
+
+    protected function useLaravel8($app)
+    {
+        $appMock = \Mockery::mock($app);
+        $appMock->shouldReceive('version')
+            ->withNoArgs()
+            ->andReturn('8.0.0');
+
+        \App::swap($appMock);
+    }
 }

@@ -6,6 +6,7 @@ use Blueprint\Tree;
 use Tests\TestCase;
 use Blueprint\Blueprint;
 use Blueprint\Generators\FactoryGenerator;
+use Illuminate\Support\Facades\App;
 
 /**
  * @see FactoryGenerator
@@ -24,6 +25,7 @@ class FactoryGeneratorTest extends TestCase
         parent::setUp();
 
         $this->files = \Mockery::mock();
+        $this->factoryStub = version_compare(App::version(), '8.0.0', '>=') ? 'factory.stub' : 'factory.closure.stub';
         $this->subject = new FactoryGenerator($this->files);
 
         $this->blueprint = new Blueprint();
@@ -37,8 +39,8 @@ class FactoryGeneratorTest extends TestCase
     public function output_writes_nothing_for_empty_tree()
     {
         $this->files->expects('stub')
-            ->with('factory.stub')
-            ->andReturn($this->stub('factory.stub'));
+            ->with($this->factoryStub)
+            ->andReturn($this->stub($this->factoryStub));
 
         $this->files->shouldNotHaveReceived('put');
 
@@ -47,13 +49,14 @@ class FactoryGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel8
      * @dataProvider modelTreeDataProvider
      */
     public function output_writes_factory_for_model_tree($definition, $path, $factory)
     {
         $this->files->expects('stub')
-            ->with('factory.stub')
-            ->andReturn($this->stub('factory.stub'));
+            ->with($this->factoryStub)
+            ->andReturn($this->stub($this->factoryStub));
 
         $this->files->expects('exists')
             ->with('database/factories')
@@ -70,14 +73,63 @@ class FactoryGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel7
+     * @dataProvider modelTreeDataProvider
+     */
+    public function output_writes_factory_for_model_tree_l7($definition, $path, $factory)
+    {
+        $this->files->expects('stub')
+            ->with($this->factoryStub)
+            ->andReturn($this->stub($this->factoryStub));
+
+        $this->files->expects('exists')
+            ->with('database/factories')
+            ->andReturnTrue();
+
+        $this->files->expects('put')
+            ->with($path, $this->fixture(str_replace('factories', 'factories/closure-based', $factory)));
+
+        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     * @environment-setup useLaravel6
+     * @dataProvider modelTreeDataProvider
+     */
+    public function output_writes_factory_for_model_tree_l6($definition, $path, $factory)
+    {
+        $this->files->expects('stub')
+            ->with($this->factoryStub)
+            ->andReturn($this->stub($this->factoryStub));
+
+        $this->files->expects('exists')
+            ->with('database/factories')
+            ->andReturnTrue();
+
+        $this->files->expects('put')
+            ->with($path, $this->fixture(str_replace('factories', 'factories/closure-based', $factory)));
+
+        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     * @environment-setup useLaravel8
      */
     public function output_ignores_nullables_if_fake_nullables_configuration_is_set_to_false()
     {
         $this->app['config']->set('blueprint.fake_nullables', false);
 
         $this->files->expects('stub')
-            ->with('factory.stub')
-            ->andReturn($this->stub('factory.stub'));
+            ->with($this->factoryStub)
+            ->andReturn($this->stub($this->factoryStub));
 
         $this->files->expects('exists')
             ->with('database/factories')
@@ -94,6 +146,7 @@ class FactoryGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel8
      */
     public function output_respects_configuration()
     {
@@ -101,8 +154,8 @@ class FactoryGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.models_namespace', 'Models');
 
         $this->files->expects('stub')
-            ->with('factory.stub')
-            ->andReturn($this->stub('factory.stub'));
+            ->with($this->factoryStub)
+            ->andReturn($this->stub($this->factoryStub));
 
         $this->files->expects('exists')
             ->with('database/factories')
@@ -119,12 +172,13 @@ class FactoryGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel8
      */
     public function output_creates_directory_for_nested_components()
     {
         $this->files->expects('stub')
-            ->with('factory.stub')
-            ->andReturn($this->stub('factory.stub'));
+            ->with($this->factoryStub)
+            ->andReturn($this->stub($this->factoryStub));
 
         $this->files->expects('exists')
             ->with('database/factories/Admin')

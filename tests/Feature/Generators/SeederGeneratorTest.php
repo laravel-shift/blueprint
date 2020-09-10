@@ -30,7 +30,7 @@ class SeederGeneratorTest extends TestCase
         parent::setUp();
 
         $this->files = \Mockery::mock();
-
+        $this->seederStub = version_compare(App::version(), '8.0.0', '>=') ? 'seeder.stub' : 'seeder.no-factory.stub';
         $this->subject = new SeederGenerator($this->files);
 
         $this->blueprint = new Blueprint();
@@ -51,12 +51,13 @@ class SeederGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel8
      */
     public function output_generates_seeders()
     {
         $this->files->expects('stub')
-            ->with('seeder.stub')
-            ->andReturn($this->stub('seeder.stub'));
+            ->with($this->seederStub)
+            ->andReturn($this->stub($this->seederStub));
 
         $this->files->expects('put')
             ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/PostSeeder.php'));
@@ -71,17 +72,108 @@ class SeederGeneratorTest extends TestCase
 
     /**
      * @test
+     * @environment-setup useLaravel7
+     */
+    public function output_generates_seeders_l7()
+    {
+        $this->files->expects('stub')
+            ->with($this->seederStub)
+            ->andReturn($this->stub($this->seederStub));
+
+        $this->files->expects('put')
+            ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/no-factory/PostSeeder.php'));
+        $this->files->expects('put')
+            ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/no-factory/CommentSeeder.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['database/seeds/PostSeeder.php', 'database/seeds/CommentSeeder.php']], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     * @environment-setup useLaravel6
+     */
+    public function output_generates_seeders_l6()
+    {
+        $this->files->expects('stub')
+            ->with($this->seederStub)
+            ->andReturn($this->stub($this->seederStub));
+
+        $this->files->expects('put')
+            ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/no-factory/PostSeeder.php'));
+        $this->files->expects('put')
+            ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/no-factory/CommentSeeder.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['database/seeds/PostSeeder.php', 'database/seeds/CommentSeeder.php']], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     * @environment-setup useLaravel8
      */
     public function output_generates_seeders_from_traced_models()
     {
         $this->files->expects('stub')
-            ->with('seeder.stub')
-            ->andReturn($this->stub('seeder.stub'));
+            ->with($this->seederStub)
+            ->andReturn($this->stub($this->seederStub));
 
         $this->files->expects('put')
             ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/PostSeeder.php'));
         $this->files->expects('put')
             ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
+        $tree = $this->blueprint->analyze($tokens)->toArray();
+        $tree['cache'] = $tree['models'];
+        unset($tree['models']);
+        $tree = new Tree($tree);
+
+        $this->assertEquals(['created' => ['database/seeds/PostSeeder.php', 'database/seeds/CommentSeeder.php']], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     * @environment-setup useLaravel7
+     */
+    public function output_generates_seeders_from_traced_models_l7()
+    {
+        $this->files->expects('stub')
+            ->with($this->seederStub)
+            ->andReturn($this->stub($this->seederStub));
+
+        $this->files->expects('put')
+            ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/no-factory/PostSeeder.php'));
+        $this->files->expects('put')
+            ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/no-factory/CommentSeeder.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
+        $tree = $this->blueprint->analyze($tokens)->toArray();
+        $tree['cache'] = $tree['models'];
+        unset($tree['models']);
+        $tree = new Tree($tree);
+
+        $this->assertEquals(['created' => ['database/seeds/PostSeeder.php', 'database/seeds/CommentSeeder.php']], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     * @environment-setup useLaravel6
+     */
+    public function output_generates_seeders_from_traced_models_l6()
+    {
+        $this->files->expects('stub')
+            ->with($this->seederStub)
+            ->andReturn($this->stub($this->seederStub));
+
+        $this->files->expects('put')
+            ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/no-factory/PostSeeder.php'));
+        $this->files->expects('put')
+            ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/no-factory/CommentSeeder.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
         $tree = $this->blueprint->analyze($tokens)->toArray();
