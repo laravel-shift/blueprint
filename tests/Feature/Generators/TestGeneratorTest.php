@@ -160,13 +160,13 @@ class TestGeneratorTest extends TestCase
             ->with(dirname($certificateControllerTest))
             ->andReturnTrue();
         $this->files->expects('put')
-            ->with($certificateControllerTest, $this->fixture('tests/certificate-pascal-case-example-laravel-8.php'));
+            ->with($certificateControllerTest, $this->fixture('tests/certificate-pascal-case-example-laravel8.php'));
 
         $this->files->expects('exists')
             ->with(dirname($certificateTypeControllerTest))
             ->andReturnTrue();
         $this->files->expects('put')
-            ->with($certificateTypeControllerTest, $this->fixture('tests/certificate-type-pascal-case-example-laravel-8.php'));
+            ->with($certificateTypeControllerTest, $this->fixture('tests/certificate-type-pascal-case-example-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/pascal-case.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -225,7 +225,7 @@ class TestGeneratorTest extends TestCase
         $this->files->expects('makeDirectory')
             ->with('tests/Feature/Http/Controllers', 0755, true);
         $this->files->expects('put')
-            ->with('tests/Feature/Http/Controllers/UserControllerTest.php', $this->fixture('tests/reference-cache-laravel-8.php'));
+            ->with('tests/Feature/Http/Controllers/UserControllerTest.php', $this->fixture('tests/reference-cache-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/reference-cache.yaml'));
         $tokens['cache'] = [
@@ -281,7 +281,7 @@ class TestGeneratorTest extends TestCase
     {
         $definition = 'drafts/models-with-custom-namespace.yaml';
         $path = 'tests/Feature/Http/Controllers/CategoryControllerTest.php';
-        $test = 'tests/models-with-custom-namespace-laravel-8.php';
+        $test = 'tests/models-with-custom-namespace-laravel8.php';
 
         $this->app['config']->set('blueprint.models_namespace', 'Models');
 
@@ -322,12 +322,12 @@ class TestGeneratorTest extends TestCase
     public function laravel8ControllerTreeDataProvider()
     {
         return [
-            ['drafts/readme-example.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/readme-example-laravel-8.php'],
-            ['drafts/readme-example-notification-facade.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/readme-example-notification-laravel-8.php'],
-            ['drafts/readme-example-notification-model.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/readme-example-notification-laravel-8.php'],
-            ['drafts/respond-statements.yaml', 'tests/Feature/Http/Controllers/Api/PostControllerTest.php', 'tests/respond-statements-laravel-8.php'],
-            ['drafts/full-crud-example.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/full-crud-example-laravel-8.php'],
-            ['drafts/model-reference-validate.yaml', 'tests/Feature/Http/Controllers/CertificateControllerTest.php', 'tests/api-shorthand-validation-laravel-8.php'],
+            ['drafts/readme-example.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/readme-example-laravel8.php'],
+            ['drafts/readme-example-notification-facade.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/readme-example-notification-laravel8.php'],
+            ['drafts/readme-example-notification-model.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/readme-example-notification-laravel8.php'],
+            ['drafts/respond-statements.yaml', 'tests/Feature/Http/Controllers/Api/PostControllerTest.php', 'tests/respond-statements-laravel8.php'],
+            ['drafts/full-crud-example.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/full-crud-example-laravel8.php'],
+            ['drafts/model-reference-validate.yaml', 'tests/Feature/Http/Controllers/CertificateControllerTest.php', 'tests/api-shorthand-validation-laravel8.php'],
         ];
     }
 }
