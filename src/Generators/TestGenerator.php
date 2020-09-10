@@ -17,9 +17,10 @@ use Blueprint\Models\Statements\RespondStatement;
 use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
-use Shift\Faker\Registry as FakerRegistry;
 use Blueprint\Tree;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
+use Shift\Faker\Registry as FakerRegistry;
 
 class TestGenerator implements Generator
 {
@@ -120,7 +121,11 @@ class TestGenerator implements Generator
                 : config('blueprint.namespace');
 
             if (in_array($name, ['edit', 'update', 'show', 'destroy'])) {
-                $setup['data'][] = sprintf('$%s = factory(%s::class)->create();', $variable, $model);
+                if ($this->isLaravel8OrHigher()) {
+                    $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
+                } else {
+                    $setup['data'][] = sprintf('$%s = factory(%s::class)->create();', $variable, $model);
+                }
             }
 
             foreach ($statements as $statement) {
@@ -429,10 +434,18 @@ class TestGenerator implements Generator
                             $assertions['generic'][] = '$this->assertDatabaseHas('.Str::camel(Str::plural($model)).', [ /* ... */ ]);';
                         }
                     } elseif ($statement->operation() === 'find') {
-                        $setup['data'][] = sprintf('$%s = factory(%s::class)->create();', $variable, $model);
+                        if ($this->isLaravel8OrHigher()) {
+                            $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
+                        } else {
+                            $setup['data'][] = sprintf('$%s = factory(%s::class)->create();', $variable, $model);
+                        }
                     } elseif ($statement->operation() === 'delete') {
                         $tested_bits |= self::TESTS_DELETE;
-                        $setup['data'][] = sprintf('$%s = factory(%s::class)->create();', $variable, $model);
+                        if ($this->isLaravel8OrHigher()) {
+                            $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
+                        } else {
+                            $setup['data'][] = sprintf('$%s = factory(%s::class)->create();', $variable, $model);
+                        }
                         $assertions['generic'][] = sprintf('$this->assertDeleted($%s);', $variable);
                     } elseif ($statement->operation() === 'update') {
                         $assertions['sanity'][] = sprintf('$%s->refresh();', $variable);
@@ -445,8 +458,11 @@ class TestGenerator implements Generator
                     }
                 } elseif ($statement instanceof QueryStatement) {
                     $this->addRefreshDatabaseTrait($controller);
-
-                    $setup['data'][] = sprintf('$%s = factory(%s::class, 3)->create();', Str::plural($variable), $model);
+                    if ($this->isLaravel8OrHigher()) {
+                        $setup['data'][] = sprintf('$%s = %s::factory()->times(3)->create();', Str::plural($variable), $model);
+                    } else {
+                        $setup['data'][] = sprintf('$%s = factory(%s::class, 3)->create();', Str::plural($variable), $model);
+                    }
 
                     $this->addImport($controller, $modelNamespace.'\\'.$this->determineModel($controller->prefix(), $statement->model()));
                 }
@@ -674,10 +690,19 @@ END;
             $reference = $local_column->attributes()[0];
         }
 
-        $faker = sprintf('$%s = factory(%s::class)->create();', Str::beforeLast($local_column->name(), '_id'), Str::studly($reference));
+        if ($this->isLaravel8OrHigher()) {
+            $faker = sprintf('$%s = %s::factory()->create();', Str::beforeLast($local_column->name(), '_id'), Str::studly($reference));
+        } else {
+            $faker = sprintf('$%s = factory(%s::class)->create();', Str::beforeLast($local_column->name(), '_id'), Str::studly($reference));
+        }
 
         $this->addImport($controller, $modelNamespace.'\\'.Str::studly($reference));
 
         return [$faker, $variable_name];
+    }
+
+    protected function isLaravel8OrHigher()
+    {
+        return version_compare(App::version(), '8.0.0', '>=');
     }
 }
