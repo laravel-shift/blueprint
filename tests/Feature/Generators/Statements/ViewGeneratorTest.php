@@ -68,10 +68,9 @@ class ViewGeneratorTest extends TestCase
      */
     public function output_writes_views_for_render_statements()
     {
-        $template = $this->stub('view.stub');
         $this->files->expects('stub')
             ->with('view.stub')
-            ->andReturn($template);
+            ->andReturn($this->stub('view.stub'));
 
         $this->files->shouldReceive('exists')
             ->times(2)
@@ -81,13 +80,13 @@ class ViewGeneratorTest extends TestCase
             ->with('resources/views/user/index.blade.php')
             ->andReturnFalse();
         $this->files->expects('put')
-            ->with('resources/views/user/index.blade.php', str_replace('{{ view }}', 'user.index', $template));
+            ->with('resources/views/user/index.blade.php', $this->fixture('views/user.index.blade.php'));
 
         $this->files->expects('exists')
             ->with('resources/views/user/create.blade.php')
             ->andReturnFalse();
         $this->files->expects('put')
-            ->with('resources/views/user/create.blade.php', str_replace('{{ view }}', 'user.create', $template));
+            ->with('resources/views/user/create.blade.php', $this->fixture('views/user.create.blade.php'));
 
         $this->files->expects('exists')
             ->with('resources/views/post')
@@ -98,7 +97,7 @@ class ViewGeneratorTest extends TestCase
         $this->files->expects('makeDirectory')
             ->with('resources/views/post', 0755, true);
         $this->files->expects('put')
-            ->with('resources/views/post/show.blade.php', str_replace('{{ view }}', 'post.show', $template));
+            ->with('resources/views/post/show.blade.php', $this->fixture('views/post.show.blade.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/render-statements.yaml'));
         $tree = $this->blueprint->analyze($tokens);
