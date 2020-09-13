@@ -325,11 +325,6 @@ class MigrationGenerator implements Generator
         return $this->getTablePath($model->tableName(), $timestamp, $overwrite);
     }
 
-    protected function getPivotTablePath($tableName, Carbon $timestamp, $overwrite = false)
-    {
-        return $this->getTablePath($tableName, $timestamp, $overwrite);
-    }
-
     protected function getTablePath($tableName, Carbon $timestamp, $overwrite = false)
     {
         $dir = 'database/migrations/';
