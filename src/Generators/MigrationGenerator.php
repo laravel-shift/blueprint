@@ -332,14 +332,18 @@ class MigrationGenerator implements Generator
                 })
                 ->sort();
 
-            $migrations->diff($migrations->first()->getPathname())
-                ->each(function (SplFileInfo $file) {
-                    $this->files->delete($file->getPathname());
-                });
+            if ($migrations->isNotEmpty()) {
+                $migration = $migrations->first()->getPathname();
 
-            return $migrations->first()->getPathname();
+                $migrations->diff($migration)
+                    ->each(function (SplFileInfo $file) {
+                        $this->files->delete($file->getPathname());
+                    });
+
+                return $migration;
+            }
         }
-        
+
         return $dir.$timestamp->format('Y_m_d_His').$name;
     }
 
