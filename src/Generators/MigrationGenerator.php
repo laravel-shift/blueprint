@@ -233,7 +233,7 @@ class MigrationGenerator implements Generator
         $definition = '';
 
         foreach ($segments as $segment) {
-            $column = Str::before(Str::lower($segment), ':');
+            $column = Str::before(Str::snake($segment), ':');
             $references = 'id';
             $on = Str::plural($column);
             $foreign = Str::singular($column).'_'.$references;
