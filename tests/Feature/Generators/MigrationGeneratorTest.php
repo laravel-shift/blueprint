@@ -164,6 +164,37 @@ class MigrationGeneratorTest extends TestCase
 
     /**
      * @test
+     */
+    public function output_proper_pascal_case_model_names()
+    {
+        $this->files->expects('stub')
+            ->with('migration.stub')
+            ->andReturn($this->stub('migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $broker_path = str_replace('timestamp', $now->copy()->subSeconds(2)->format('Y_m_d_His'), 'database/migrations/timestamp_create_brokers_table.php');
+        $broker_type_path = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_broker_types_table.php');
+        $broker_broker_type_path = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_broker_broker_type_table.php');
+
+        $this->files->expects('exists')->times(3)->andReturn(false);
+
+        $this->files->expects('put')
+            ->with($broker_path, $this->fixture('migrations/pascal-case-model-names-broker.php'));
+        $this->files->expects('put')
+            ->with($broker_type_path, $this->fixture('migrations/pascal-case-model-names-broker-type.php'));
+        $this->files->expects('put')
+            ->with($broker_broker_type_path, $this->fixture('migrations/pascal-case-model-names-broker-broker-type.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/pascal-case-model-names.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$broker_path, $broker_type_path, $broker_broker_type_path]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
      * @environment-setup useLaravel6
      */
     public function output_uses_proper_data_type_for_id_columns_in_laravel6()
@@ -255,7 +286,7 @@ class MigrationGeneratorTest extends TestCase
         $now = Carbon::now();
         Carbon::setTestNow($now);
 
-        $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_journeys_table.php');
+        $model_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_journeys_table.php');
         $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_diary_journey_table.php');
 
         $this->files->expects('exists')->twice()->andReturn(false);
@@ -320,7 +351,7 @@ class MigrationGeneratorTest extends TestCase
         $now = Carbon::now();
         Carbon::setTestNow($now);
 
-        $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_journeys_table.php');
+        $model_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_journeys_table.php');
         $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_diary_journey_table.php');
 
         $this->files->expects('exists')->twice()->andReturn(false);
@@ -351,7 +382,7 @@ class MigrationGeneratorTest extends TestCase
         $now = Carbon::now();
         Carbon::setTestNow($now);
 
-        $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_journeys_table.php');
+        $model_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_journeys_table.php');
         $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_diary_journey_table.php');
 
         $this->files->expects('exists')->twice()->andReturn(false);
@@ -383,7 +414,7 @@ class MigrationGeneratorTest extends TestCase
         $now = Carbon::now();
         Carbon::setTestNow($now);
 
-        $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_journeys_table.php');
+        $model_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_journeys_table.php');
         $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_diary_journey_table.php');
 
         $this->files->expects('exists')->twice()->andReturn(false);
@@ -411,8 +442,8 @@ class MigrationGeneratorTest extends TestCase
         $now = Carbon::now();
         Carbon::setTestNow($now);
 
-        $company_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_companies_table.php');
-        $people_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_people_table.php');
+        $company_migration = str_replace('timestamp', $now->copy()->subSeconds(2)->format('Y_m_d_His'), 'database/migrations/timestamp_create_companies_table.php');
+        $people_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_people_table.php');
         $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_company_person_table.php');
 
         $this->files->expects('exists')->times(3)->andReturn(false);
@@ -443,8 +474,8 @@ class MigrationGeneratorTest extends TestCase
         $now = Carbon::now();
         Carbon::setTestNow($now);
 
-        $company_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_companies_table.php');
-        $people_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_people_table.php');
+        $company_migration = str_replace('timestamp', $now->copy()->subSeconds(2)->format('Y_m_d_His'), 'database/migrations/timestamp_create_companies_table.php');
+        $people_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_people_table.php');
         $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_company_person_table.php');
 
         $this->files->expects('exists')->times(3)->andReturn(false);
@@ -474,7 +505,7 @@ class MigrationGeneratorTest extends TestCase
         $now = Carbon::now();
         Carbon::setTestNow($now);
 
-        $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_users_table.php');
+        $model_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_users_table.php');
         $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_test_table.php');
 
         $this->files->expects('exists')->twice()->andReturn(false);
@@ -503,7 +534,7 @@ class MigrationGeneratorTest extends TestCase
         $now = Carbon::now();
         Carbon::setTestNow($now);
 
-        $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_users_table.php');
+        $model_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_users_table.php');
         $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_test_table.php');
 
         $this->files->expects('exists')->twice()->andReturn(false);
