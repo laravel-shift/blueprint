@@ -38,6 +38,8 @@ class MigrationGenerator implements Generator
     /** @var \Illuminate\Contracts\Filesystem\Filesystem */
     private $files;
 
+    private $output = [];
+
     private $hasForeignKeyConstraints = false;
 
     public function __construct($files)
@@ -47,8 +49,6 @@ class MigrationGenerator implements Generator
 
     public function output(Tree $tree, $overwrite = false): array
     {
-        $output = [];
-
         $created_pivot_tables = [];
 
         $stub = $this->files->stub('migration.stub');
@@ -61,7 +61,7 @@ class MigrationGenerator implements Generator
             $action = $this->files->exists($path) ? 'updated' : 'created';
             $this->files->put($path, $this->populateStub($stub, $model));
 
-            $output[$action][] = $path;
+            $this->output[$action][] = $path;
 
             if (! empty($model->pivotTables())) {
                 foreach ($model->pivotTables() as $pivotSegments) {
@@ -76,10 +76,10 @@ class MigrationGenerator implements Generator
             $action = $this->files->exists($path) ? 'updated' : 'created';
             $this->files->put($path, $this->populatePivotStub($stub, $pivotSegments));
             $created_pivot_tables[] = $pivotTable;
-            $output[$action][] = $path;
+            $this->output[$action][] = $path;
         }
 
-        return $output;
+        return $this->output;
     }
 
     public function types(): array
@@ -337,7 +337,11 @@ class MigrationGenerator implements Generator
 
                 $migrations->diff($migration)
                     ->each(function (SplFileInfo $file) {
-                        $this->files->delete($file->getPathname());
+                        $path = $file->getPathname();
+
+                        $this->files->delete($path);
+
+                        $this->output['deleted'][] = $path;
                     });
 
                 return $migration;
