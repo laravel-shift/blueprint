@@ -2,29 +2,28 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property int $id
- * @property string $title
- * @property string $content
- * @property \Carbon\Carbon $published_at
- * @property int $author_id
+ * @property int $post_id
+ * @property \Carbon\Carbon $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
-class Post extends Model
+class Comment extends Model
 {
+    use HasFactory, SoftDeletes;
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'title',
-        'content',
-        'published_at',
-        'author_id',
+        'post_id',
     ];
 
     /**
@@ -34,24 +33,15 @@ class Post extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'author_id' => 'integer',
-    ];
-
-    /**
-     * The attributes that should be mutated to dates.
-     *
-     * @var array
-     */
-    protected $dates = [
-        'published_at',
+        'post_id' => 'integer',
     ];
 
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function author()
+    public function post()
     {
-        return $this->belongsTo(\App\User::class);
+        return $this->belongsTo(\App\Post::class);
     }
 }

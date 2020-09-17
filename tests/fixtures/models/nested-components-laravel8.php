@@ -1,11 +1,14 @@
 <?php
 
-namespace App;
+namespace App\Admin;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
 {
+    use HasFactory;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -13,6 +16,7 @@ class User extends Model
      */
     protected $fillable = [
         'name',
+        'password',
     ];
 
     /**
@@ -21,7 +25,7 @@ class User extends Model
      * @var array
      */
     protected $hidden = [
-        'remember_token',
+        'password',
     ];
 
     /**
@@ -32,10 +36,4 @@ class User extends Model
     protected $casts = [
         'id' => 'integer',
     ];
-
-
-    public function accounts()
-    {
-        return $this->belongsToMany(\App\Account::class, 'test');
-    }
 }

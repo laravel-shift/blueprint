@@ -2,18 +2,19 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class Comment extends Model
 {
+    use HasFactory;
+
     /**
-     * The attributes that are mass assignable.
+     * The attributes that aren't mass assignable.
      *
      * @var array
      */
-    protected $fillable = [
-        'name',
-    ];
+    protected $guarded = [];
 
     /**
      * The attributes that should be cast to native types.
@@ -23,10 +24,4 @@ class User extends Model
     protected $casts = [
         'id' => 'integer',
     ];
-
-
-    public function images()
-    {
-        return $this->morphMany(\App\Image::class, 'imageable');
-    }
 }

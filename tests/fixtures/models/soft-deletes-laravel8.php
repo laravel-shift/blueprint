@@ -1,11 +1,15 @@
 <?php
 
-namespace Some\App\Models;
+namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Comment extends Model
 {
+    use HasFactory, SoftDeletes;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -13,7 +17,6 @@ class Comment extends Model
      */
     protected $fillable = [
         'post_id',
-        'author_id',
     ];
 
     /**
@@ -24,17 +27,11 @@ class Comment extends Model
     protected $casts = [
         'id' => 'integer',
         'post_id' => 'integer',
-        'author_id' => 'integer',
     ];
 
 
     public function post()
     {
-        return $this->belongsTo(\Some\App\Models\Post::class);
-    }
-
-    public function author()
-    {
-        return $this->belongsTo(\Some\App\Models\User::class);
+        return $this->belongsTo(\App\Post::class);
     }
 }

@@ -2,22 +2,23 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Certificate extends Model
+class Post extends Model
 {
+    use HasFactory;
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name',
-        'certificate_type_id',
-        'reference',
-        'document',
-        'expiry_date',
-        'remarks',
+        'title',
+        'content',
+        'published_at',
+        'author_id',
     ];
 
     /**
@@ -27,7 +28,7 @@ class Certificate extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'certificate_type_id' => 'integer',
+        'author_id' => 'integer',
     ];
 
     /**
@@ -36,12 +37,12 @@ class Certificate extends Model
      * @var array
      */
     protected $dates = [
-        'expiry_date',
+        'published_at',
     ];
 
 
-    public function certificateType()
+    public function author()
     {
-        return $this->belongsTo(\App\CertificateType::class);
+        return $this->belongsTo(\App\User::class);
     }
 }

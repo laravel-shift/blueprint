@@ -2,18 +2,20 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Comment extends Model
+class CertificateType extends Model
 {
+    use HasFactory;
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'post_id',
-        'author_id',
+        'name',
     ];
 
     /**
@@ -23,18 +25,11 @@ class Comment extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'post_id' => 'integer',
-        'author_id' => 'integer',
     ];
 
 
-    public function post()
+    public function certificates()
     {
-        return $this->belongsTo(\App\Post::class);
-    }
-
-    public function author()
-    {
-        return $this->belongsTo(\App\User::class);
+        return $this->hasMany(\App\Certificate::class);
     }
 }

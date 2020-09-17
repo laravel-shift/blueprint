@@ -2,9 +2,9 @@
 
 namespace Blueprint\Generators;
 
+use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Tree;
-use Illuminate\Support\Facades\App;
 
 class SeederGenerator implements Generator
 {
@@ -31,7 +31,7 @@ class SeederGenerator implements Generator
 
         $output = [];
 
-        if ($this->isLaravel8OrHigher()) {
+        if (Blueprint::isLaravel8OrHigher()) {
             $stub = $this->files->stub('seeder.stub');
         } else {
             $stub = $this->files->stub('seeder.no-factory.stub');
@@ -55,7 +55,7 @@ class SeederGenerator implements Generator
     protected function populateStub(string $stub, string $model)
     {
         $stub = str_replace('{{ class }}', $this->getClassName($model), $stub);
-        if ($this->isLaravel8OrHigher()) {
+        if (Blueprint::isLaravel8OrHigher()) {
             $this->addImport($model, 'Illuminate\Database\Seeder');
 
             $stub = str_replace('//', $this->build($model), $stub);
@@ -73,7 +73,7 @@ class SeederGenerator implements Generator
 
     protected function build(string $model)
     {
-        if ($this->isLaravel8OrHigher()) {
+        if (Blueprint::isLaravel8OrHigher()) {
             $this->addImport($model, $this->tree->fqcnForContext($model));
             return sprintf('%s::factory()->times(5)->create();', class_basename($this->tree->fqcnForContext($model)));
         }
@@ -97,15 +97,10 @@ class SeederGenerator implements Generator
 
     private function getPath($model)
     {
-        if ($this->isLaravel8OrHigher()) {
+        if (Blueprint::isLaravel8OrHigher()) {
             return 'database/seeders/'.$model.'Seeder.php';
         }
 
         return 'database/seeds/'.$model.'Seeder.php';
-    }
-
-    protected function isLaravel8OrHigher()
-    {
-        return version_compare(App::version(), '8.0.0', '>=');
     }
 }

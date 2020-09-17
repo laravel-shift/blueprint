@@ -2,10 +2,13 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Post extends Model
+class User extends Model
 {
+    use HasFactory;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -13,6 +16,18 @@ class Post extends Model
      */
     protected $fillable = [
         'name',
+        'email',
+        'password',
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
     ];
 
     /**
@@ -23,10 +38,4 @@ class Post extends Model
     protected $casts = [
         'id' => 'integer',
     ];
-
-
-    public function images()
-    {
-        return $this->morphMany(\App\Image::class, 'imageable');
-    }
 }
