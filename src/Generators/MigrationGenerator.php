@@ -8,6 +8,7 @@ use Blueprint\Tree;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
+use Symfony\Component\Finder\SplFileInfo;
 
 class MigrationGenerator implements Generator
 {
@@ -37,6 +38,8 @@ class MigrationGenerator implements Generator
     /** @var \Illuminate\Contracts\Filesystem\Filesystem */
     private $files;
 
+    private $output = [];
+
     private $hasForeignKeyConstraints = false;
 
     public function __construct($files)
@@ -46,8 +49,6 @@ class MigrationGenerator implements Generator
 
     public function output(Tree $tree, $overwrite = false): array
     {
-        $output = [];
-
         $created_pivot_tables = [];
 
         $stub = $this->files->stub('migration.stub');
@@ -60,7 +61,7 @@ class MigrationGenerator implements Generator
             $action = $this->files->exists($path) ? 'updated' : 'created';
             $this->files->put($path, $this->populateStub($stub, $model));
 
-            $output[$action][] = $path;
+            $this->output[$action][] = $path;
 
             if (! empty($model->pivotTables())) {
                 foreach ($model->pivotTables() as $pivotSegments) {
@@ -75,10 +76,10 @@ class MigrationGenerator implements Generator
             $action = $this->files->exists($path) ? 'updated' : 'created';
             $this->files->put($path, $this->populatePivotStub($stub, $pivotSegments));
             $created_pivot_tables[] = $pivotTable;
-            $output[$action][] = $path;
+            $this->output[$action][] = $path;
         }
 
-        return $output;
+        return $this->output;
     }
 
     public function types(): array
@@ -324,11 +325,30 @@ class MigrationGenerator implements Generator
         $dir = 'database/migrations/';
         $name = '_create_'.$tableName.'_table.php';
 
-        $file = $overwrite ? collect($this->files->files($dir))->first(function ($file) use ($tableName) {
-            return str_contains($file, $tableName);
-        }) : false;
+        if ($overwrite) {
+            $migrations = collect($this->files->files($dir))
+                ->filter(function (SplFileInfo $file) use ($name) {
+                    return str_contains($file->getFilename(), $name);
+                })
+                ->sort();
 
-        return $file ? (string) $file : $dir.$timestamp->format('Y_m_d_His').$name;
+            if ($migrations->isNotEmpty()) {
+                $migration = $migrations->first()->getPathname();
+
+                $migrations->diff($migration)
+                    ->each(function (SplFileInfo $file) {
+                        $path = $file->getPathname();
+
+                        $this->files->delete($path);
+
+                        $this->output['deleted'][] = $path;
+                    });
+
+                return $migration;
+            }
+        }
+
+        return $dir.$timestamp->format('Y_m_d_His').$name;
     }
 
     protected function isLaravel7orNewer()
