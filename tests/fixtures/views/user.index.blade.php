@@ -2,6 +2,6 @@
     @extends('layouts.app')
 
     @section('content')
-        {{ view }} template
+        user.index template
     @endsection
 --}
