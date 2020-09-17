@@ -49,42 +49,55 @@ class MigrationGenerator implements Generator
 
     public function output(Tree $tree, $overwrite = false): array
     {
-        $created_pivot_tables = [];
+        $tables = ['tableNames' => [], 'pivotTableNames' => []];
 
         $stub = $this->files->stub('migration.stub');
 
-        $sequential_timestamp = \Carbon\Carbon::now()->subSeconds(count($tree->models()));
-
         /** @var \Blueprint\Models\Model $model */
         foreach ($tree->models() as $model) {
-            $path = $this->getPath($model, $sequential_timestamp->addSecond(), $overwrite);
-            $action = $this->files->exists($path) ? 'updated' : 'created';
-            $this->files->put($path, $this->populateStub($stub, $model));
-
-            $this->output[$action][] = $path;
+            $tables['tableNames'][$model->tableName()] = $this->populateStub($stub, $model);
 
             if (! empty($model->pivotTables())) {
                 foreach ($model->pivotTables() as $pivotSegments) {
-                    $pivotTable = $this->getPivotTableName($pivotSegments);
-                    $created_pivot_tables[$pivotTable] = $pivotSegments;
+                    $pivotTableName = $this->getPivotTableName($pivotSegments);
+                    $tables['pivotTableNames'][$pivotTableName] = $this->populatePivotStub($stub, $pivotSegments);
                 }
             }
         }
 
-        foreach ($created_pivot_tables as $pivotTable => $pivotSegments) {
-            $path = $this->getPivotTablePath($pivotTable, $sequential_timestamp, $overwrite);
-            $action = $this->files->exists($path) ? 'updated' : 'created';
-            $this->files->put($path, $this->populatePivotStub($stub, $pivotSegments));
-            $created_pivot_tables[] = $pivotTable;
-            $this->output[$action][] = $path;
-        }
-
-        return $this->output;
+        return $this->createMigrations($tables, $overwrite);
     }
 
     public function types(): array
     {
         return ['migrations'];
+    }
+
+    protected function createMigrations(array $tables, $overwrite = false): array
+    {
+        $output = [];
+
+        $sequential_timestamp = \Carbon\Carbon::now()->copy()->subSeconds(
+            collect($tables['tableNames'])->merge($tables['pivotTableNames'])->count()
+        );
+
+        foreach ($tables['tableNames'] as $tableName => $data) {
+            $path = $this->getTablePath($tableName, $sequential_timestamp->addSecond(), $overwrite);
+            $action = $this->files->exists($path) ? 'updated' : 'created';
+            $this->files->put($path, $data);
+
+            $output[$action][] = $path;
+        }
+
+        foreach ($tables['pivotTableNames'] as $tableName => $data) {
+            $path = $this->getTablePath($tableName, $sequential_timestamp->addSecond(), $overwrite);
+            $action = $this->files->exists($path) ? 'updated' : 'created';
+            $this->files->put($path, $data);
+
+            $output[$action][] = $path;
+        }
+
+        return $output;
     }
 
     protected function populateStub(string $stub, Model $model)
@@ -234,7 +247,7 @@ class MigrationGenerator implements Generator
         $definition = '';
 
         foreach ($segments as $segment) {
-            $column = Str::before(Str::lower($segment), ':');
+            $column = Str::before(Str::snake($segment), ':');
             $references = 'id';
             $on = Str::plural($column);
             $foreign = Str::singular($column).'_'.$references;
@@ -313,11 +326,6 @@ class MigrationGenerator implements Generator
     protected function getPath(Model $model, Carbon $timestamp, $overwrite = false)
     {
         return $this->getTablePath($model->tableName(), $timestamp, $overwrite);
-    }
-
-    protected function getPivotTablePath($tableName, Carbon $timestamp, $overwrite = false)
-    {
-        return $this->getTablePath($tableName, $timestamp, $overwrite);
     }
 
     protected function getTablePath($tableName, Carbon $timestamp, $overwrite = false)
