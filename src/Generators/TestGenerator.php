@@ -121,7 +121,7 @@ class TestGenerator implements Generator
                 : config('blueprint.namespace');
 
             if (in_array($name, ['edit', 'update', 'show', 'destroy'])) {
-                if ($this->isLaravel8OrHigher()) {
+                if (Blueprint::isLaravel8OrHigher()) {
                     $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
                 } else {
                     $setup['data'][] = sprintf('$%s = factory(%s::class)->create();', $variable, $model);
@@ -434,14 +434,14 @@ class TestGenerator implements Generator
                             $assertions['generic'][] = '$this->assertDatabaseHas('.Str::camel(Str::plural($model)).', [ /* ... */ ]);';
                         }
                     } elseif ($statement->operation() === 'find') {
-                        if ($this->isLaravel8OrHigher()) {
+                        if (Blueprint::isLaravel8OrHigher()) {
                             $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
                         } else {
                             $setup['data'][] = sprintf('$%s = factory(%s::class)->create();', $variable, $model);
                         }
                     } elseif ($statement->operation() === 'delete') {
                         $tested_bits |= self::TESTS_DELETE;
-                        if ($this->isLaravel8OrHigher()) {
+                        if (Blueprint::isLaravel8OrHigher()) {
                             $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
                         } else {
                             $setup['data'][] = sprintf('$%s = factory(%s::class)->create();', $variable, $model);
@@ -458,7 +458,7 @@ class TestGenerator implements Generator
                     }
                 } elseif ($statement instanceof QueryStatement) {
                     $this->addRefreshDatabaseTrait($controller);
-                    if ($this->isLaravel8OrHigher()) {
+                    if (Blueprint::isLaravel8OrHigher()) {
                         $setup['data'][] = sprintf('$%s = %s::factory()->times(3)->create();', Str::plural($variable), $model);
                     } else {
                         $setup['data'][] = sprintf('$%s = factory(%s::class, 3)->create();', Str::plural($variable), $model);
@@ -690,7 +690,7 @@ END;
             $reference = $local_column->attributes()[0];
         }
 
-        if ($this->isLaravel8OrHigher()) {
+        if (Blueprint::isLaravel8OrHigher()) {
             $faker = sprintf('$%s = %s::factory()->create();', Str::beforeLast($local_column->name(), '_id'), Str::studly($reference));
         } else {
             $faker = sprintf('$%s = factory(%s::class)->create();', Str::beforeLast($local_column->name(), '_id'), Str::studly($reference));
@@ -699,10 +699,5 @@ END;
         $this->addImport($controller, $modelNamespace.'\\'.Str::studly($reference));
 
         return [$faker, $variable_name];
-    }
-
-    protected function isLaravel8OrHigher()
-    {
-        return version_compare(App::version(), '8.0.0', '>=');
     }
 }
