@@ -4,6 +4,7 @@ namespace Blueprint;
 
 use Blueprint\Contracts\Generator;
 use Blueprint\Contracts\Lexer;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Symfony\Component\Yaml\Yaml;
 
@@ -27,6 +28,11 @@ class Blueprint
     public static function appPath()
     {
         return str_replace('\\', '/', config('blueprint.app_path'));
+    }
+
+    public static function isLaravel8OrHigher()
+    {
+        return version_compare(App::version(), '8.0.0', '>=');
     }
 
     public function parse($content, $strip_dashes = true)

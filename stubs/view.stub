@@ -1,5 +1,7 @@
-@extends('layouts.app')
+{--
+    @extends('layouts.app')
 
-@section('content')
-    {{ view }} template
-@endsection
+    @section('content')
+        {{ view }} template
+    @endsection
+--}

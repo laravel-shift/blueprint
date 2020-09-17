@@ -7,7 +7,6 @@ use Blueprint\Contracts\Generator;
 use Blueprint\Models\Column;
 use Blueprint\Models\Model;
 use Blueprint\Tree;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 
 class ModelGenerator implements Generator
@@ -24,7 +23,7 @@ class ModelGenerator implements Generator
     {
         $output = [];
 
-        if ($this->isLaravel8Up()) {
+        if (Blueprint::isLaravel8OrHigher()) {
             $stub = $this->files->stub('model.class.stub');
         } else {
             $stub = $this->files->stub('model.class.no-factory.stub');
@@ -53,7 +52,7 @@ class ModelGenerator implements Generator
 
     protected function populateStub(string $stub, Model $model)
     {
-        if ($this->isLaravel8Up()) {
+        if (Blueprint::isLaravel8OrHigher()) {
             $stub = str_replace('{{ namespace }}', $model->fullyQualifiedNamespace(), $stub);
             $stub = str_replace(PHP_EOL.'class {{ class }}', $this->buildClassPhpDoc($model).PHP_EOL.'class {{ class }}', $stub);
             $stub = str_replace('{{ class }}', $model->name(), $stub);
@@ -232,7 +231,7 @@ class ModelGenerator implements Generator
         }
 
         $stub = str_replace('use Illuminate\\Database\\Eloquent\\Model;', 'use Illuminate\\Database\\Eloquent\\Model;'.PHP_EOL.'use Illuminate\\Database\\Eloquent\\SoftDeletes;', $stub);
-        if ($this->isLaravel8Up()) {
+        if (Blueprint::isLaravel8OrHigher()) {
             $stub = Str::replaceFirst('use HasFactory', 'use HasFactory, SoftDeletes', $stub);
         } else {
             $stub = Str::replaceFirst('{', '{'.PHP_EOL.'    use SoftDeletes;'.PHP_EOL, $stub);
@@ -305,11 +304,6 @@ class ModelGenerator implements Generator
         if ($column->dataType() === 'json') {
             return 'array';
         }
-    }
-
-    protected function isLaravel8Up()
-    {
-        return version_compare(App::version(), '8.0.0', '>=');
     }
 
     private function pretty_print_array(array $data, $assoc = true)
