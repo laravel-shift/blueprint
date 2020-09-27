@@ -20,7 +20,7 @@ class CategoryControllerTest extends TestCase
      */
     public function index_behaves_as_expected()
     {
-        $categories = Category::factory()->times(3)->create();
+        $categories = Category::factory()->count(3)->create();
 
         $response = $this->get(route('category.index'));
 

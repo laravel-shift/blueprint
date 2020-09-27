@@ -75,7 +75,7 @@ class SeederGenerator implements Generator
     {
         if (Blueprint::isLaravel8OrHigher()) {
             $this->addImport($model, $this->tree->fqcnForContext($model));
-            return sprintf('%s::factory()->times(5)->create();', class_basename($this->tree->fqcnForContext($model)));
+            return sprintf('%s::factory()->count(5)->create();', class_basename($this->tree->fqcnForContext($model)));
         }
         return sprintf('factory(\\%s::class, 5)->create();', $this->tree->fqcnForContext($model));
     }

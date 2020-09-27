@@ -26,7 +26,7 @@ class PostControllerTest extends TestCase
      */
     public function index_displays_view()
     {
-        $posts = Post::factory()->times(3)->create();
+        $posts = Post::factory()->count(3)->create();
 
         $response = $this->get(route('post.index'));
 

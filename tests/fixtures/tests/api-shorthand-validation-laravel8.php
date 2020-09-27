@@ -21,7 +21,7 @@ class CertificateControllerTest extends TestCase
      */
     public function index_behaves_as_expected()
     {
-        $certificates = Certificate::factory()->times(3)->create();
+        $certificates = Certificate::factory()->count(3)->create();
 
         $response = $this->get(route('certificate.index'));
 

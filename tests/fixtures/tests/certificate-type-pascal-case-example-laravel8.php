@@ -20,7 +20,7 @@ class CertificateTypeControllerTest extends TestCase
      */
     public function index_behaves_as_expected()
     {
-        $certificateTypes = CertificateType::factory()->times(3)->create();
+        $certificateTypes = CertificateType::factory()->count(3)->create();
 
         $response = $this->get(route('certificate-type.index'));
 

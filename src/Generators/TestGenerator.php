@@ -459,7 +459,7 @@ class TestGenerator implements Generator
                 } elseif ($statement instanceof QueryStatement) {
                     $this->addRefreshDatabaseTrait($controller);
                     if (Blueprint::isLaravel8OrHigher()) {
-                        $setup['data'][] = sprintf('$%s = %s::factory()->times(3)->create();', Str::plural($variable), $model);
+                        $setup['data'][] = sprintf('$%s = %s::factory()->count(3)->create();', Str::plural($variable), $model);
                     } else {
                         $setup['data'][] = sprintf('$%s = factory(%s::class, 3)->create();', Str::plural($variable), $model);
                     }
