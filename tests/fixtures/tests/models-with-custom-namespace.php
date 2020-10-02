@@ -133,6 +133,6 @@ class CategoryControllerTest extends TestCase
 
         $response->assertNoContent();
 
-        $this->assertDeleted($category);
+        $this->assertSoftDeleted($category);
     }
 }

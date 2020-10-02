@@ -446,7 +446,13 @@ class TestGenerator implements Generator
                         } else {
                             $setup['data'][] = sprintf('$%s = factory(%s::class)->create();', $variable, $model);
                         }
-                        $assertions['generic'][] = sprintf('$this->assertDeleted($%s);', $variable);
+                        /** @var \Blueprint\Models\Model $local_model */
+                        $local_model = $this->tree->modelForContext($model);
+                        if (! is_null($local_model) && $local_model->usesSoftDeletes()) {
+                            $assertions['generic'][] = sprintf('$this->assertSoftDeleted($%s);', $variable);
+                        } else {
+                            $assertions['generic'][] = sprintf('$this->assertDeleted($%s);', $variable);
+                        }
                     } elseif ($statement->operation() === 'update') {
                         $assertions['sanity'][] = sprintf('$%s->refresh();', $variable);
 
