@@ -85,19 +85,19 @@ jobs:
           max_attempts: 5
           command: cd /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example; composer require --dev laravel-shift/blueprint @dev; composer require jasonmccreary/laravel-test-assertions;
 
+      - name: Run migrate:refresh
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 5
+          max_attempts: 5
+          command: cd /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example; php artisan migrate:refresh --force
+
       - name: Run blueprint:build
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 5
           max_attempts: 5
           command: cd /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example; php artisan blueprint:build /home/runner/work/blueprint/blueprint/tests/fixtures/drafts/readme-example.yaml
-
-      - name: Run migrate:refresh
-        uses: nick-invision/retry@v1
-        with:
-          timeout_minutes: 5
-          max_attempts: 5
-          command: cd /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example; php artisan migrate:refresh
 
       - name: Run PHPUnit
         uses: nick-invision/retry@v1
