@@ -36,7 +36,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.inputs.name }}
+          ref: ${{ github.event.inputs.ref }}
 
       - name: Determine composer cache directory
         id: determine-composer-cache-directory
