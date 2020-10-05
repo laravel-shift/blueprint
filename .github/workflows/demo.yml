@@ -1,0 +1,116 @@
+name: Demo
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "The branch, tag or SHA to checkout."
+        required: false
+        default: ""
+
+jobs:
+  build:
+    name: PHP ${{ matrix.php-version }} - L${{ matrix.laravel-version }} - ${{ matrix.os }}
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: laravel
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: [7.3, 7.4]
+        laravel-version: [6, 7, 8]
+        os: [ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    continue-on-error: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.ref }}
+
+      - name: Determine composer cache directory
+        id: determine-composer-cache-directory
+        run: 'echo "::set-output name=directory::$(composer config cache-dir)"'
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.determine-composer-cache-directory.outputs.directory }}
+          key: dependencies-os-${{ matrix.os }}-php-${{ matrix.php-version }}-laravel-${{ matrix.laravel-version }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: dependencies-os-${{ matrix.os }}-php-${{ matrix.php-version }}-laravel-${{ matrix.laravel-version }}-composer-
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, gd
+          coverage: none
+          tools: composer:v2
+          ini-values: "memory_limit=-1"
+
+      - name: Setup problem matchers for PHP
+        run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+
+      - name: Setup problem matchers for PHPUnit
+        run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+
+      - name: Create a Laravel app
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 5
+          max_attempts: 5
+          command: composer create-project --prefer-dist laravel/laravel:${{ matrix.laravel-version }}.* /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example
+
+      - name: Link local repository
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 5
+          max_attempts: 5
+          command: 'composer config repositories.local "{\"type\": \"path\", \"url\": \"/home/runner/work/blueprint/blueprint\"}" --file /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example/composer.json'
+
+      - name: Install Blueprint & laravel-test-assertions
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 5
+          max_attempts: 5
+          command: cd /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example; composer require --dev laravel-shift/blueprint @dev; composer require jasonmccreary/laravel-test-assertions;
+
+      - name: Run migrate:refresh
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 5
+          max_attempts: 5
+          command: cd /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example; php artisan migrate:refresh --force
+
+      - name: Run blueprint:build
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 5
+          max_attempts: 5
+          command: cd /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example; php artisan blueprint:build /home/runner/work/blueprint/blueprint/tests/fixtures/drafts/readme-example.yaml
+
+      - name: Run PHPUnit
+        uses: nick-invision/retry@v1
+        if: ${{ matrix.laravel-version == 6 }}
+        with:
+          timeout_minutes: 5
+          max_attempts: 5
+          command: cd /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example; pwd; vendor/bin/phpunit --verbose
+
+      - name: Run artisan test
+        uses: nick-invision/retry@v1
+        if: ${{ matrix.laravel-version != 6 }}
+        with:
+          timeout_minutes: 5
+          max_attempts: 5
+          command: cd /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example; php artisan test
