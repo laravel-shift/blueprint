@@ -461,7 +461,8 @@ class TestGenerator implements Generator
                             $local_model = $this->tree->modelForContext($model);
                             foreach ($request_data as $key => $datum) {
                                 if (! is_null($local_model) && $local_model->hasColumn($key) && $local_model->column($key)->dataType() === 'date') {
-                                    $assertions['generic'][] = sprintf('$this->assertEquals(%s, $%s->%s->format(\'Y-m-d\'));', $datum, $variable, $key);
+                                    $this->addImport($controller, 'Carbon\\Carbon');
+                                    $assertions['generic'][] = sprintf('$this->assertEquals(Carbon::parse(%s), $%s->%s);', $datum, $variable, $key);
                                 } else {
                                     $assertions['generic'][] = sprintf('$this->assertEquals(%s, $%s->%s);', $datum, $variable, $key);
                                 }
