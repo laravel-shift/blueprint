@@ -4,6 +4,7 @@ namespace Tests\Feature\Http\Controllers;
 
 use App\Certificate;
 use App\CertificateType;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use JMac\Testing\Traits\AdditionalAssertions;
@@ -131,7 +132,7 @@ class CertificateControllerTest extends TestCase
         $this->assertEquals($certificate_type->id, $certificate->certificate_type_id);
         $this->assertEquals($reference, $certificate->reference);
         $this->assertEquals($document, $certificate->document);
-        $this->assertEquals($expiry_date, $certificate->expiry_date);
+        $this->assertEquals(Carbon::parse($expiry_date), $certificate->expiry_date);
     }
 
 
