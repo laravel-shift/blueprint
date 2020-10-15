@@ -22,6 +22,8 @@ composer require --dev laravel-shift/blueprint
 
 Blueprint will automatically register itself using [package discovery](https://laravel.com/docs/packages#package-discovery).
 
+_**Additional Configuration**: If you are running Laravel 8, or registering class-based routes or using the `app/Models` folder, you will need to configure Blueprint. Please review the [Blueprint Docs](https://blueprint.laravelshift.com/docs/advanced-configuration/) for additional guidance._
+
 ## Basic Usage
 Blueprint comes with a set of artisan commands. The one you'll use the most is the `blueprint:build` command to generate the Laravel components:
 
