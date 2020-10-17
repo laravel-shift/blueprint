@@ -1,0 +1,6 @@
+models:
+  Lookup\Region:
+    name_en: string:255 nullable
+    softDeletes
+    relationships:
+      belongsToMany: Lookup\City
