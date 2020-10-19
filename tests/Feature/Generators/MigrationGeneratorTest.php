@@ -553,6 +553,63 @@ class MigrationGeneratorTest extends TestCase
     /**
      * @test
      */
+    public function output_creates_pivot_table_migration_correctly_when_model_name_contains_path_prefix()
+    {
+        $this->files->expects('stub')
+            ->with('migration.stub')
+            ->andReturn($this->stub('migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $model_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_regions_table.php');
+        $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_city_region_table.php');
+
+        $this->files->expects('exists')->twice()->andReturn(false);
+
+        $this->files->expects('put')
+            ->with($model_migration, $this->fixture('migrations/with-path-prefix-table-name-region.php'));
+        $this->files->expects('put')
+            ->with($pivot_migration, $this->fixture('migrations/with-path-prefix-table-name-city-region.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/with-path-prefix.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     * @environment-setup useLaravel6
+     */
+    public function output_creates_pivot_table_migration_correctly_when_model_name_contains_path_prefix_laravel6()
+    {
+        $this->files->expects('stub')
+            ->with('migration.stub')
+            ->andReturn($this->stub('migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $model_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_regions_table.php');
+        $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_city_region_table.php');
+
+        $this->files->expects('exists')->twice()->andReturn(false);
+
+        $this->files->expects('put')
+            ->with($model_migration, $this->fixture('migrations/with-path-prefix-table-name-region-laravel6.php'));
+        $this->files->expects('put')
+            ->with($pivot_migration, $this->fixture('migrations/with-path-prefix-table-name-city-region-laravel6.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/with-path-prefix.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
     public function output_creates_foreign_keys_with_nullable_chained_correctly()
     {
         $this->app->config->set('blueprint.on_delete', 'null');

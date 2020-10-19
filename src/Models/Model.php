@@ -155,7 +155,7 @@ class Model
 
     public function addPivotTable(string $reference)
     {
-        $segments = [$this->name(), $reference];
+        $segments = [$this->name(), class_basename($reference)];
         sort($segments);
         $this->pivotTables[] = $segments;
     }
@@ -164,7 +164,7 @@ class Model
     {
         return $this->indexes;
     }
-    
+
     public function addIndex(Index $index)
     {
         $this->indexes[] = $index;
