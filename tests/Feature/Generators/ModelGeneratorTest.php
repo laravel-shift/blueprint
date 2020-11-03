@@ -69,12 +69,6 @@ class ModelGeneratorTest extends TestCase
             ->with('model.casts.stub')
             ->andReturn($this->stub('model.casts.stub'));
 
-        if (in_array($definition, ['drafts/readme-example.yaml', 'drafts/all-column-types.yaml'])) {
-            $this->files->expects('stub')
-                ->with('model.dates.stub')
-                ->andReturn($this->stub('model.dates.stub'));
-        }
-
         $this->files->shouldReceive('stub')
             ->with('model.method.stub')
             ->andReturn($this->stub('model.method.stub'));
@@ -214,9 +208,6 @@ class ModelGeneratorTest extends TestCase
             ->with('model.casts.stub')
             ->andReturn($this->stub('model.casts.stub'))
             ->twice();
-        $this->files->expects('stub')
-            ->with('model.dates.stub')
-            ->andReturn(file_get_contents('stubs/model.dates.stub'));
         $this->files->expects('stub')
             ->with('model.method.stub')
             ->andReturn($this->stub('model.method.stub'))
@@ -420,12 +411,6 @@ class ModelGeneratorTest extends TestCase
         $this->files->expects('stub')
             ->with('model.casts.stub')
             ->andReturn($this->stub('model.casts.stub'));
-
-        if ($definition === 'drafts/readme-example.yaml') {
-            $this->files->expects('stub')
-                ->with('model.dates.stub')
-                ->andReturn($this->stub('model.dates.stub'));
-        }
 
         $this->files->shouldReceive('stub')
             ->with('model.method.stub')
