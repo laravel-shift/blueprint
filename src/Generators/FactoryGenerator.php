@@ -77,7 +77,7 @@ class FactoryGenerator implements Generator
         if (Blueprint::isLaravel8OrHigher()) {
             $stub = str_replace('use {{ namespacedModel }};', $this->buildImports($model), $stub);
         } else {
-            $stub = str_replace('use Faker\Generator as Faker;'.PHP_EOL.'use {{ namespacedModel }};', $this->buildImports($model), $stub);
+            $stub = str_replace("use Faker\Generator as Faker;\nuse {{ namespacedModel }};", $this->buildImports($model), $stub);
         }
 
         return $stub;
