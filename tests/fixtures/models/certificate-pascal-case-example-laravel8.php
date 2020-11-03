@@ -31,15 +31,7 @@ class Certificate extends Model
     protected $casts = [
         'id' => 'integer',
         'certificate_type_id' => 'integer',
-    ];
-
-    /**
-     * The attributes that should be mutated to dates.
-     *
-     * @var array
-     */
-    protected $dates = [
-        'expiry_date',
+        'expiry_date' => 'date',
     ];
 
 

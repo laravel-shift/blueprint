@@ -28,16 +28,8 @@ class Post extends Model
      */
     protected $casts = [
         'id' => 'integer',
+        'published_at' => 'timestamp',
         'author_id' => 'integer',
-    ];
-
-    /**
-     * The attributes that should be mutated to dates.
-     *
-     * @var array
-     */
-    protected $dates = [
-        'published_at',
     ];
 
 
