@@ -75,12 +75,18 @@ class AllType extends Model
     protected $casts = [
         'bigInteger' => 'integer',
         'boolean' => 'boolean',
+        'date' => 'date',
+        'dateTime' => 'datetime',
+        'dateTimeTz' => 'datetime',
         'decimal' => 'decimal',
         'double' => 'double',
         'float' => 'float',
         'json' => 'array',
         'mediumInteger' => 'integer',
+        'nullableTimestamps' => 'timestamp',
         'smallInteger' => 'integer',
+        'timestamp' => 'timestamp',
+        'timestampTz' => 'timestamp',
         'tinyInteger' => 'integer',
         'unsignedBigInteger' => 'integer',
         'unsignedDecimal' => 'decimal',
@@ -88,20 +94,6 @@ class AllType extends Model
         'unsignedMediumInteger' => 'integer',
         'unsignedSmallInteger' => 'integer',
         'unsignedTinyInteger' => 'integer',
-    ];
-
-    /**
-     * The attributes that should be mutated to dates.
-     *
-     * @var array
-     */
-    protected $dates = [
-        'date',
-        'dateTime',
-        'dateTimeTz',
-        'nullableTimestamps',
-        'timestamp',
-        'timestampTz',
     ];
 
 
