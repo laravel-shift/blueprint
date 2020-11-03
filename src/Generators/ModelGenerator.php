@@ -141,9 +141,11 @@ class ModelGenerator implements Generator
             $properties .= PHP_EOL.str_replace('[]', $this->pretty_print_array($columns), $this->files->stub('model.casts.stub'));
         }
 
-        $columns = $this->dateColumns($model->columns());
-        if (! empty($columns)) {
-            $properties .= PHP_EOL.str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model.dates.stub'));
+        if (! Blueprint::isLaravel8OrHigher()) {
+            $columns = $this->dateColumns($model->columns());
+            if (! empty($columns)) {
+                $properties .= PHP_EOL.str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model.dates.stub'));
+            }
         }
 
         return trim($properties);
@@ -285,6 +287,20 @@ class ModelGenerator implements Generator
 
     private function castForColumn(Column $column)
     {
+        if (Blueprint::isLaravel8OrHigher()) {
+            if ($column->dataType() === 'date') {
+                return 'date';
+            }
+
+            if (stripos($column->dataType(), 'datetime') !== false) {
+                return 'datetime';
+            }
+
+            if (stripos($column->dataType(), 'timestamp') !== false) {
+                return 'timestamp';
+            }
+        }
+
         if (stripos($column->dataType(), 'integer') || $column->dataType() === 'id') {
             return 'integer';
         }
