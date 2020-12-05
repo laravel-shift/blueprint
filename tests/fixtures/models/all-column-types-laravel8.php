@@ -95,10 +95,4 @@ class AllType extends Model
         'unsignedSmallInteger' => 'integer',
         'unsignedTinyInteger' => 'integer',
     ];
-
-
-    public function uuid()
-    {
-        return $this->belongsTo(\App\Uuid::class);
-    }
 }
