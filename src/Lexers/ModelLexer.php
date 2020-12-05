@@ -184,10 +184,10 @@ class ModelLexer implements Lexer
             $model->addColumn($column);
 
             $foreign = collect($column->modifiers())->filter(function ($modifier) {
-                return (is_array($modifier) && key($modifier) === 'foreign') || $modifier === 'foreign';
+                return collect($modifier)->containsStrict('foreign') || collect($modifier)->has('foreign');
             })->flatten()->first();
 
-            if ($column->name() !== 'id' && (in_array($column->dataType(), ['id', 'uuid']) || $foreign)) {
+            if (($column->name() !== 'id') && ($column->dataType() === 'id') || $foreign) {
                 $reference = $column->name();
 
                 if ($foreign && $foreign !== 'foreign') {

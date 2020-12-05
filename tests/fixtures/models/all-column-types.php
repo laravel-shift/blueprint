@@ -100,10 +100,4 @@ class AllType extends Model
         'timestamp',
         'timestampTz',
     ];
-
-
-    public function uuid()
-    {
-        return $this->belongsTo(\App\Uuid::class);
-    }
 }

@@ -1,0 +1,9 @@
+models:
+  AgeCohort:
+    id
+    timestamps
+    name: string:100
+    description: string:500 nullable
+    min_age: integer nullable
+    max_age: integer nullable
+    uuid: uuid unique

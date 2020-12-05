@@ -661,6 +661,7 @@ class ModelGeneratorTest extends TestCase
             ['drafts/resource-statements.yaml', 'app/User.php', 'models/resource-statements.php'],
             ['drafts/all-column-types.yaml', 'app/AllType.php', 'models/all-column-types.php'],
             ['drafts/alias-relationships.yaml', 'app/Salesman.php', 'models/alias-relationships.php'],
+            ['drafts/uuid-shorthand-invalid-relationship.yaml', 'app/AgeCohort.php', 'models/uuid-shorthand-invalid-relationship.php'],
         ];
     }
 
@@ -687,6 +688,7 @@ class ModelGeneratorTest extends TestCase
             ['drafts/resource-statements.yaml', 'app/User.php', 'models/resource-statements-laravel8.php'],
             ['drafts/all-column-types.yaml', 'app/AllType.php', 'models/all-column-types-laravel8.php'],
             ['drafts/alias-relationships.yaml', 'app/Salesman.php', 'models/alias-relationships-laravel8.php'],
+            ['drafts/uuid-shorthand-invalid-relationship.yaml', 'app/AgeCohort.php', 'models/uuid-shorthand-invalid-relationship-laravel8.php'],
         ];
     }
 
