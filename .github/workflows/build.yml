@@ -9,7 +9,7 @@ on:
     - cron: "0 0 * * *"
 
 env:
-  COMPOSER_FLAGS: "--ansi --no-interaction --no-progress --no-suggest --prefer-dist -o -n"
+  COMPOSER_FLAGS: "--ansi --no-interaction --no-progress --prefer-dist -o -n"
 
 jobs:
   tests:
@@ -127,8 +127,9 @@ jobs:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COVERALLS_SERVICE_JOB_ID: ${{ github.run_id }}
         run: |
-          composer require twinh/php-coveralls ${{ env.COMPOSER_FLAGS }};
-          vendor/bin/php-coveralls --coverage_clover=clover.xml -v;
+          composer require twinh/php-coveralls -n;
+          cat clover.xml;
+          vendor/bin/php-coveralls --json_path=coveralls.json --coverage_clover=clover.xml -v;
 
   coveralls:
     needs: tests
