@@ -77,7 +77,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-version }}
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, gd
-          coverage: none
+          coverage: pcov
           ini-values: "memory_limit=-1"
 
       - name: Setup problem matchers for PHP
@@ -118,4 +118,11 @@ jobs:
           command: composer require "laravel/framework:${{ matrix.laravel-version }}.*" --no-update
 
       - name: Run tests
-        run: vendor/bin/phpunit --verbose
+        run: vendor/bin/phpunit --verbose --coverage-clover clover.xml
+
+      - name: Upload coverage to Coveralls
+        if: success() && matrix.os == 'ubuntu-latest' && matrix.php-version == '7.4' && matrix.laravel-version == '8'
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COVERALLS_SERVICE_JOB_ID: ${{ github.run_id }}
+        run: composer require cedx/coveralls ${{ env.COMPOSER_FLAGS }}; vendor/bin/coveralls clover.xml

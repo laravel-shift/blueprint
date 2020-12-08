@@ -1,5 +1,6 @@
 <p align="right">
     <a href="https://github.com/laravel-shift/blueprint/actions"><img src="https://github.com/laravel-shift/blueprint/workflows/Build/badge.svg" alt="Build Status"></a>
+    <a href='https://coveralls.io/github/laravel-shift/blueprint'><img src='https://coveralls.io/repos/github/laravel-shift/blueprint/badge.svg' alt='Coverage Status' /></a>
     <a href="https://packagist.org/packages/laravel-shift/blueprint"><img src="https://poser.pugx.org/laravel-shift/blueprint/v/stable.svg" alt="Latest Stable Version"></a>
     <a href="https://github.com/badges/poser/blob/master/LICENSE"><img src="https://poser.pugx.org/laravel-shift/blueprint/license.svg" alt="License"></a>
 </p>
