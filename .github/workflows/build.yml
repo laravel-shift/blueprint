@@ -121,8 +121,21 @@ jobs:
         run: vendor/bin/phpunit --verbose --coverage-clover clover.xml
 
       - name: Upload coverage to Coveralls
-        if: success() && matrix.os == 'ubuntu-latest' && matrix.php-version == '7.4' && matrix.laravel-version == '8'
         env:
+          COVERALLS_FLAG_NAME: build-${{ github.run_id }}-php-${{ matrix.php-version }}-laravel-${{ matrix.laravel-version }}-os-${{ matrix.os }}
+          COVERALLS_PARALLEL: true
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COVERALLS_SERVICE_JOB_ID: ${{ github.run_id }}
-        run: composer require cedx/coveralls ${{ env.COMPOSER_FLAGS }}; vendor/bin/coveralls clover.xml
+        run: |
+          composer global require twinh/php-coveralls ${{ env.COMPOSER_FLAGS }};
+          php-coveralls --coverage_clover=clover.xml -v;
+
+  coveralls:
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel-finished: true
