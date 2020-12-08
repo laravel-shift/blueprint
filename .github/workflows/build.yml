@@ -122,10 +122,9 @@ jobs:
 
       - name: Upload coverage to Coveralls
         env:
-          COVERALLS_FLAG_NAME: build-${{ github.run_id }}-php-${{ matrix.php-version }}-laravel-${{ matrix.laravel-version }}-os-${{ matrix.os }}
           COVERALLS_PARALLEL: true
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COVERALLS_SERVICE_JOB_ID: ${{ github.run_id }}
+          COVERALLS_FLAG_NAME: build-${{ github.run_id }}-php-${{ matrix.php-version }}-laravel-${{ matrix.laravel-version }}-os-${{ matrix.os }}
         run: |
           composer global require twinh/php-coveralls -n;
           php-coveralls --json_path=coveralls.json --coverage_clover=clover.xml -v;
