@@ -511,7 +511,7 @@ class TestGenerator implements Generator
             $test_case = str_replace('{{ method }}', $test_case_name, $test_case);
             $test_case = str_replace('{{ body }}', trim($body), $test_case);
 
-            if(Blueprint::supportsReturnTypeHits()){
+            if (Blueprint::supportsReturnTypeHits()) {
                 $test_case = str_replace("$test_case_name()", "$test_case_name(): void", $test_case);
                 $test_case = str_replace("uses_form_request_validation()", "uses_form_request_validation(): void", $test_case);
             }

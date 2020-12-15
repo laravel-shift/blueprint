@@ -163,7 +163,7 @@ class ControllerGenerator implements Generator
                 $method = str_replace('{{ body }}', trim($body), $method);
             }
 
-            if(Blueprint::supportsReturnTypeHits()){
+            if (Blueprint::supportsReturnTypeHits()) {
                 $method = str_replace('request)', 'request): \Illuminate\Http\Response', $method);
             }
 

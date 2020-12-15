@@ -34,8 +34,8 @@ abstract class StatementGenerator implements Generator
             $stub = (str_replace('{{ body }}', '//', $constructor));
         } else {
             $stub = $this->buildProperties($statement->data()) . PHP_EOL . PHP_EOL;
-            if(Blueprint::supportsReturnTypeHits()){
-                $constructor = str_replace('__construct()','__construct(): void', $constructor);
+            if (Blueprint::supportsReturnTypeHits()) {
+                $constructor = str_replace('__construct()', '__construct(): void', $constructor);
             }
             $stub .= str_replace('__construct()', '__construct(' . $this->buildParameters($statement->data()) . ')', $constructor);
             $stub = str_replace('{{ body }}', $this->buildAssignments($statement->data()), $stub);

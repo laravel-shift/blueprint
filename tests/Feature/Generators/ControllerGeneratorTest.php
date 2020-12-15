@@ -181,7 +181,7 @@ class ControllerGeneratorTest extends TestCase
             ->with('controller.method.stub')
             ->andReturn($this->stub('controller.method.stub'));
 
-            $this->files->expects('exists')
+        $this->files->expects('exists')
             ->with('app/Http/Controllers')
             ->andReturnFalse();
 

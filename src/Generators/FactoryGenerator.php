@@ -82,7 +82,7 @@ class FactoryGenerator implements Generator
             ], "use", $stub);
         }
 
-        if(Blueprint::supportsReturnTypeHits()){
+        if (Blueprint::supportsReturnTypeHits()) {
             $stub = str_replace('definition()', 'definition(): array', $stub);
         }
 
