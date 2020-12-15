@@ -1,0 +1,5 @@
+models:
+  cooltable:
+    timestamps: false
+    coolcool: id foreign:coolcool.id index:custom_index_coolcool
+    foobar: id foreign:foobars.id index:custom_index_foobar
