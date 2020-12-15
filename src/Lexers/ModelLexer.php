@@ -241,10 +241,10 @@ class ModelLexer implements Lexer
 
             if (isset(self::$modifiers[strtolower($value)])) {
                 $modifierAttributes = $parts[1] ?? null;
-                if ($modifierAttributes === null) {
+                if (is_null($modifierAttributes)) {
                     $modifiers[] = self::$modifiers[strtolower($value)];
                 } else {
-                    $modifiers[] = [self::$modifiers[strtolower($value)] => $modifierAttributes];
+                    $modifiers[] = [self::$modifiers[strtolower($value)] => preg_replace('~^[\'"]?(.*?)[\'"]?$~', '$1', $modifierAttributes)];
                 }
             }
         }

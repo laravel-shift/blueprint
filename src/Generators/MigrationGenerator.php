@@ -198,7 +198,7 @@ class MigrationGenerator implements Generator
 
             foreach ($modifiers as $modifier) {
                 if (is_array($modifier)) {
-                    $column_definition .= '->'.key($modifier).'('.current($modifier).')';
+                    $column_definition .= sprintf("->%s('%s')", key($modifier), addslashes(current($modifier)));
                 } elseif ($modifier === 'unsigned' && Str::startsWith($dataType, 'unsigned')) {
                     continue;
                 } elseif ($modifier === 'nullable' && Str::startsWith($dataType, 'nullable')) {

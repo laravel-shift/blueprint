@@ -198,11 +198,11 @@ class FactoryGenerator implements Generator
                     $definition
                 );
             } elseif (in_array($column->dataType(), ['json', 'jsonb'])) {
-                $default = $column->defaultValue() ?? "'{}'";
+                $default = $column->defaultValue() ?? "{}";
                 if (Blueprint::isLaravel8OrHigher()) {
-                    $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => {$default}," . PHP_EOL;
+                    $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => '{$default}'," . PHP_EOL;
                 } else {
-                    $definition .= str_repeat(self::INDENT, 2) . "'{$column->name()}' => {$default}," . PHP_EOL;
+                    $definition .= str_repeat(self::INDENT, 2) . "'{$column->name()}' => '{$default}'," . PHP_EOL;
                 }
             } elseif ($column->dataType() === 'morphs') {
                 if ($column->isNullable()) {

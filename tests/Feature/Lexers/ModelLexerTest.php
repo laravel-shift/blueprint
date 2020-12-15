@@ -664,11 +664,12 @@ class ModelLexerTest extends TestCase
             ['default:0.00', 'default', 0.00],
             ['default:0', 'default', 0],
             ['default:string', 'default', 'string'],
-            ["default:'empty'", 'default', "'empty'"],
-            ['default:""', 'default', '""'],
+            ["default:'empty'", 'default', 'empty'],
+            ['default:""', 'default', ''],
             ['charset:utf8', 'charset', 'utf8'],
             ['collation:utf8_unicode', 'collation', 'utf8_unicode'],
-            ['default:"space between"', 'default', '"space between"'],
+            ['default:"space between"', 'default', 'space between'],
+            ["default:'[]'", 'default', '[]'],
         ];
     }
 }
