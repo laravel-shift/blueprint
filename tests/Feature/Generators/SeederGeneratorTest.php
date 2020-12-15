@@ -71,6 +71,7 @@ class SeederGeneratorTest extends TestCase
     }
     /**
      * @test
+     * @environment-setup useLaravel8
      */
     public function output_using_return_types()
     {
