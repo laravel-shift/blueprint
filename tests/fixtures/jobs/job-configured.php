@@ -19,7 +19,7 @@ class SyncMedia implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($post): void
+    public function __construct($post)
     {
         $this->post = $post;
     }
