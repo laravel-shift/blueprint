@@ -81,6 +81,10 @@ class FormRequestGenerator implements Generator
         $stub = str_replace('{{ class }}', $name, $stub);
         $stub = str_replace('{{ rules }}', $this->buildRules($context, $validateStatement), $stub);
 
+        if (Blueprint::supportsReturnTypeHits()) {
+            $stub = str_replace(['authorize()','rules()'], ['authorize(): bool','rules(): array'], $stub);
+        }
+
         return $stub;
     }
 
