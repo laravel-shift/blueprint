@@ -51,7 +51,7 @@ class ModelGeneratorTest extends TestCase
      */
     public function output_generates_models($definition, $path, $model)
     {
-        if($model === 'models/return-type-declarations.php'){
+        if ($model === 'models/return-type-declarations.php') {
             $this->app['config']->set('blueprint.use_return_types', true);
         }
         $this->files->expects('stub')
