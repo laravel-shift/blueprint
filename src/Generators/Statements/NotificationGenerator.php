@@ -65,6 +65,22 @@ class NotificationGenerator extends StatementGenerator
         $stub = str_replace('{{ class }}', $sendStatement->mail(), $stub);
         $stub = str_replace('{{ properties }}', $this->buildConstructor($sendStatement), $stub);
 
+        if (Blueprint::supportsReturnTypeHits()) {
+            $stub = str_replace(
+                [
+                    'via($notifiable)',
+                    'toMail($notifiable)',
+                    'toArray($notifiable)',
+                ],
+                [
+                    'via($notifiable): array',
+                    sprintf('toMail($notifiable): %s', $sendStatement->mail()),
+                    'toArray($notifiable): array'
+                ],
+                $stub
+            );
+        }
+
         return $stub;
     }
 }
