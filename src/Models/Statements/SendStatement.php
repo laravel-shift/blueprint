@@ -29,7 +29,7 @@ class SendStatement
      */
     private $type;
 
-    public function __construct(string $mail, string $to = null, array $data = [], string $type)
+    public function __construct(string $mail, string $to = null, array $data, string $type)
     {
         $this->mail = $mail;
         $this->data = $data;
