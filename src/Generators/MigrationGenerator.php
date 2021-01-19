@@ -26,6 +26,13 @@ class MigrationGenerator implements Generator
         'no_action' => "->onDelete('no action')",
     ];
 
+    const ON_UPDATE_CLAUSES = [
+        'cascade' => "->onUpdate('cascade')",
+        'restrict' => "->onUpdate('restrict')",
+        'null' => "->onUpdate('set null')",
+        'no_action' => "->onUpdate('no action')",
+    ];
+
     const UNSIGNABLE_TYPES = [
         'bigInteger',
         'decimal',
@@ -191,6 +198,7 @@ class MigrationGenerator implements Generator
                 $modifiers = collect($modifiers)->reject(function ($modifier) {
                     return (is_array($modifier) && key($modifier) === 'foreign')
                         || (is_array($modifier) && key($modifier) === 'onDelete')
+                        || (is_array($modifier) && key($modifier) === 'onUpdate')
                         || $modifier === 'foreign'
                         || ($modifier === 'nullable' && $this->isLaravel7orNewer());
                 });
@@ -288,6 +296,10 @@ class MigrationGenerator implements Generator
         $on_delete_clause = $on_delete_clause ? $on_delete_clause['onDelete'] : config('blueprint.on_delete', 'cascade');
         $on_delete_suffix = self::ON_DELETE_CLAUSES[$on_delete_clause];
 
+        $on_update_clause = collect($modifiers)->firstWhere('onUpdate');
+        $on_update_clause = $on_update_clause ? $on_update_clause['onUpdate'] : config('blueprint.on_update', 'cascade');
+        $on_update_suffix = self::ON_UPDATE_CLAUSES[$on_update_clause];
+
         if ($this->isLaravel7orNewer() && $type === 'id') {
             $prefix = in_array('nullable', $modifiers)
                 ? '$table->foreignId'."('{$column_name}')->nullable()"
@@ -296,17 +308,21 @@ class MigrationGenerator implements Generator
             if ($on_delete_clause === 'cascade') {
                 $on_delete_suffix = '->cascadeOnDelete()';
             }
+            if ($on_update_clause === 'cascade') {
+                $on_update_suffix = '->cascadeOnUpdate()';
+            }
+
             if ($column_name === Str::singular($table).'_'.$column) {
-                return self::INDENT."{$prefix}->constrained(){$on_delete_suffix}";
+                return self::INDENT."{$prefix}->constrained(){$on_delete_suffix}{$on_update_suffix}";
             }
             if ($column === 'id') {
-                return self::INDENT."{$prefix}->constrained('{$table}'){$on_delete_suffix}";
+                return self::INDENT."{$prefix}->constrained('{$table}'){$on_delete_suffix}{$on_update_suffix}";
             }
 
-            return self::INDENT."{$prefix}->constrained('{$table}', '{$column}'){$on_delete_suffix}";
+            return self::INDENT."{$prefix}->constrained('{$table}', '{$column}'){$on_delete_suffix}{$on_update_suffix}";
         }
 
-        return self::INDENT.'$table->foreign'."('{$column_name}')->references('{$column}')->on('{$table}'){$on_delete_suffix}";
+        return self::INDENT.'$table->foreign'."('{$column_name}')->references('{$column}')->on('{$table}'){$on_delete_suffix}{$on_update_suffix}";
     }
 
     protected function disableForeignKeyConstraints($stub): string
