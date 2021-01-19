@@ -73,6 +73,7 @@ return [
     'use_constraints' => false,
 
     'on_delete' => 'cascade',
+    'on_update' => 'cascade',
 
     /*
     |--------------------------------------------------------------------------
