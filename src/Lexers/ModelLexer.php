@@ -96,6 +96,7 @@ class ModelLexer implements Lexer
         'primary' => 'primary',
         'foreign' => 'foreign',
         'ondelete' => 'onDelete',
+        'onupdate' => 'onUpdate',
         'comment' => 'comment',
     ];
 
