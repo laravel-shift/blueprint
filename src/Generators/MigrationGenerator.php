@@ -400,6 +400,6 @@ class MigrationGenerator implements Generator
             return true;
         }
 
-        return in_array($column->dataType(), ['id', 'uuid']) && config('blueprint.use_constraints');
+        return in_array($column->dataType(), ['id']) && config('blueprint.use_constraints');
     }
 }
