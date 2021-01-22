@@ -52,11 +52,7 @@ class RouteGenerator implements Generator
         $routes = '';
         $methods = array_keys($controller->methods());
 
-        $useTuples = config('blueprint.generate_fqcn_route');
-
-        $className = $useTuples
-            ? $controller->fullyQualifiedClassName() . '::class'
-            : '\'' . str_replace('App\Http\Controllers\\', '', $controller->fullyQualifiedClassName()) . '\'';
+        $className = $this->getClassName($controller);
 
         $slug = Str::kebab($controller->prefix());
 
@@ -83,17 +79,38 @@ class RouteGenerator implements Generator
 
         $methods = array_diff($methods, Controller::$resourceMethods);
         foreach ($methods as $method) {
-            if ($useTuples) {
-                $action = "[{$className}, '{$method}']";
-            } else {
-                $classNameNoQuotes = trim($className, '\'');
-                $action = "'{$classNameNoQuotes}@{$method}'";
-            }
-
-            $routes .= sprintf("Route::get('%s/%s', %s);", $slug, Str::kebab($method), $action);
+            $routes .= $this->buildRouteLine($className, $slug, $method);
             $routes .= PHP_EOL;
         }
 
         return trim($routes);
+    }
+
+    protected function useTuples()
+    {
+        return config('blueprint.generate_fqcn_route');
+    }
+
+    protected function getClassName(Controller $controller)
+    {
+        return $this->useTuples()
+            ? $controller->fullyQualifiedClassName() . '::class'
+            : '\'' . str_replace('App\Http\Controllers\\', '', $controller->fullyQualifiedClassName()) . '\'';
+    }
+
+    protected function buildRouteLine($className, $slug, $method)
+    {
+        if ($method === '__invoke') {
+            return sprintf("Route::get('%s', %s);", $slug, $className);
+        }
+
+        if ($this->useTuples()) {
+            $action = "[{$className}, '{$method}']";
+        } else {
+            $classNameNoQuotes = trim($className, '\'');
+            $action = "'{$classNameNoQuotes}@{$method}'";
+        }
+
+        return sprintf("Route::get('%s/%s', %s);", $slug, Str::kebab($method), $action);
     }
 }

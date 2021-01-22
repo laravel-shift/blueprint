@@ -8,3 +8,6 @@ controllers:
   Some:
     whatever:
       redirect: some.index
+  Report:
+    __invoke:
+      render: report

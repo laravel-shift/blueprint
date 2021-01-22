@@ -12,3 +12,7 @@ controllers:
   Subscriptions:
     resume:
       redirect: subscriptions.index
+
+  Report:
+    __invoke:
+      render: report
