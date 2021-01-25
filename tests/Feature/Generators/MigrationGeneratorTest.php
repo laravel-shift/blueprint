@@ -780,6 +780,64 @@ class MigrationGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$post_migration, $user_migration, $image_migration]], $this->subject->output($tree));
     }
 
+    /**
+     * @test
+     */
+    public function output_does_not_generate_relationship_for_uuid()
+    {
+        $this->app->config->set('blueprint.use_constraints', true);
+
+        $this->files->expects('stub')
+            ->with('migration.stub')
+            ->andReturn($this->stub('migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $timestamp_path = 'database/migrations/' . $now->format('Y_m_d_His') . '_create_vats_table.php';
+
+        $this->files->expects('exists')
+            ->with($timestamp_path)
+            ->andReturn(false);
+
+        $this->files->expects('put')
+            ->with($timestamp_path, $this->fixture('migrations/uuid-without-relationship.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/uuid-without-relationship.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function output_generates_constraint_for_uuid()
+    {
+        $this->app->config->set('blueprint.use_constraints', true);
+
+        $this->files->expects('stub')
+            ->with('migration.stub')
+            ->andReturn($this->stub('migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $timestamp_path = 'database/migrations/' . $now->format('Y_m_d_His') . '_create_people_table.php';
+
+        $this->files->expects('exists')
+            ->with($timestamp_path)
+            ->andReturn(false);
+
+        $this->files->expects('put')
+            ->with($timestamp_path, $this->fixture('migrations/uuid-shorthand-constraint.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/uuid-shorthand.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
+    }
+
     public function modelTreeDataProvider()
     {
         return [
@@ -797,6 +855,7 @@ class MigrationGeneratorTest extends TestCase
             ['drafts/disable-auto-columns.yaml', 'database/migrations/timestamp_create_states_table.php', 'migrations/disable-auto-columns.php'],
             ['drafts/uuid-shorthand.yaml', 'database/migrations/timestamp_create_people_table.php', 'migrations/uuid-shorthand.php'],
             ['drafts/uuid-shorthand-invalid-relationship.yaml', 'database/migrations/timestamp_create_age_cohorts_table.php', 'migrations/uuid-shorthand-invalid-relationship.php'],
+            ['drafts/uuid-without-relationship.yaml', 'database/migrations/timestamp_create_vats_table.php', 'migrations/uuid-without-relationship.php'],
             ['drafts/unconventional-foreign-key.yaml', 'database/migrations/timestamp_create_states_table.php', 'migrations/unconventional-foreign-key.php'],
             ['drafts/resource-statements.yaml', 'database/migrations/timestamp_create_users_table.php', 'migrations/resource-statements.php'],
             ['drafts/enum-options.yaml', 'database/migrations/timestamp_create_messages_table.php', 'migrations/enum-options.php'],

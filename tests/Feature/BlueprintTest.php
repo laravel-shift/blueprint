@@ -130,6 +130,7 @@ class BlueprintTest extends TestCase
                 'Person' => [
                     'id' => 'uuid primary',
                     'timestamps' => 'timestamps',
+                    'company_id' => 'uuid',
                 ],
             ],
         ], $this->subject->parse($blueprint));
