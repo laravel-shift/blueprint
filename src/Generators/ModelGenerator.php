@@ -162,6 +162,7 @@ class ModelGenerator implements Generator
         }
 
         foreach ($model->relationships() as $type => $references) {
+            $custom_template = $template;
             foreach ($references as $reference) {
                 $key = null;
                 $class = null;
@@ -207,7 +208,14 @@ class ModelGenerator implements Generator
                 } elseif (in_array($type, ['hasMany', 'belongsToMany', 'morphMany'])) {
                     $method_name = Str::plural($column_name);
                 }
-                $method = str_replace('{{ method }}', Str::camel($method_name), $template);
+                if (Blueprint::supportsReturnTypeHits()) {
+                    $custom_template = str_replace(
+                        '{{ method }}()',
+                        '{{ method }}(): ' . Str::of('\Illuminate\Database\Eloquent\Relations\\')->append(Str::studly($type)),
+                        $custom_template
+                    );
+                }
+                $method = str_replace('{{ method }}', Str::camel($method_name), $custom_template);
                 $method = str_replace('null', $relationship, $method);
 
                 $phpDoc = str_replace('{{ namespacedReturnClass }}', '\Illuminate\Database\Eloquent\Relations\\'.Str::ucfirst($type), $commentTemplate);

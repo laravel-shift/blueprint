@@ -30,6 +30,16 @@ class Blueprint
         return str_replace('\\', '/', config('blueprint.app_path'));
     }
 
+    public static function supportsReturnTypeHits()
+    {
+        return boolval(config('blueprint.use_return_types')) && self::isPHP7OrHigher();
+    }
+
+    public static function isPHP7OrHigher()
+    {
+        return version_compare(PHP_VERSION, '7.0.0', '>=');
+    }
+
     public static function isLaravel8OrHigher()
     {
         return version_compare(App::version(), '8.0.0', '>=');

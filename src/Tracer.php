@@ -69,8 +69,7 @@ class Tracer
         }
 
         $reflectionClass = new \ReflectionClass($class);
-        if (
-            !$reflectionClass->isSubclassOf(\Illuminate\Database\Eloquent\Model::class) ||
+        if (!$reflectionClass->isSubclassOf(\Illuminate\Database\Eloquent\Model::class) ||
             (class_exists('Jenssegers\Mongodb\Eloquent\Model') &&
                 $reflectionClass->isSubclassOf('Jenssegers\Mongodb\Eloquent\Model'))
         ) {

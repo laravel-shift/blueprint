@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Generators;
 
-use Blueprint\Tree;
-use Tests\TestCase;
 use Blueprint\Blueprint;
 use Blueprint\Generators\FactoryGenerator;
+use Blueprint\Tree;
 use Illuminate\Support\Facades\App;
+use Tests\TestCase;
 
 /**
  * @see FactoryGenerator
@@ -137,6 +137,31 @@ class FactoryGeneratorTest extends TestCase
 
         $this->files->expects('put')
             ->with('database/factories/PostFactory.php', $this->fixture('factories/fake-nullables-laravel8.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['database/factories/PostFactory.php']], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     * @environment-setup useLaravel8
+     */
+    public function output_using_return_types()
+    {
+        $this->app['config']->set('blueprint.use_return_types', true);
+
+        $this->files->expects('stub')
+            ->with($this->factoryStub)
+            ->andReturn($this->stub($this->factoryStub));
+
+        $this->files->expects('exists')
+            ->with('database/factories')
+            ->andReturnTrue();
+
+        $this->files->expects('put')
+            ->with('database/factories/PostFactory.php', $this->fixture('factories/return-type-declarations-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);

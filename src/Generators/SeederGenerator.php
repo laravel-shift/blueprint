@@ -63,6 +63,11 @@ class SeederGenerator implements Generator
         } else {
             $stub = str_replace('{{ body }}', $this->build($model), $stub);
         }
+
+        if (Blueprint::supportsReturnTypeHits()) {
+            $stub = str_replace('public function run()', 'public function run(): void', $stub);
+        }
+
         return $stub;
     }
 

@@ -54,6 +54,10 @@ class MigrationGeneratorTest extends TestCase
      */
     public function output_writes_migration_for_model_tree($definition, $path, $migration)
     {
+        if ($migration  === 'migrations/return-type-declarations.php') {
+            $this->app['config']->set('blueprint.use_return_types', true);
+        }
+
         $this->files->expects('stub')
             ->with('migration.stub')
             ->andReturn($this->stub('migration.stub'));
@@ -82,6 +86,10 @@ class MigrationGeneratorTest extends TestCase
      */
     public function output_updates_migration_for_model_tree($definition, $path, $migration)
     {
+        if ($migration  === 'migrations/return-type-declarations.php') {
+            $this->app['config']->set('blueprint.use_return_types', true);
+        }
+
         $this->files->expects('stub')
             ->with('migration.stub')
             ->andReturn($this->stub('migration.stub'));

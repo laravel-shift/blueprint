@@ -223,6 +223,36 @@ class FormRequestGeneratorTest extends TestCase
     /**
      * @test
      */
+    public function output_using_return_types()
+    {
+        $this->app['config']->set('blueprint.namespace', 'Some\\Other\\App');
+        $this->app['config']->set('blueprint.app_path', 'src/path');
+        $this->app['config']->set('blueprint.use_return_types', true);
+
+        $this->files->expects('stub')
+            ->with('request.stub')
+            ->andReturn($this->stub('request.stub'));
+
+        $this->files->expects('exists')
+            ->with('src/path/Http/Requests')
+            ->andReturns(false);
+        $this->files->expects('exists')
+            ->with('src/path/Http/Requests/PostStoreRequest.php')
+            ->andReturnFalse();
+        $this->files->expects('makeDirectory')
+            ->with('src/path/Http/Requests', 0755, true);
+        $this->files->expects('put')
+            ->with('src/path/Http/Requests/PostStoreRequest.php', $this->fixture('form-requests/return-type-declarations.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['src/path/Http/Requests/PostStoreRequest.php']], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
     public function output_generates_test_for_controller_tree_using_cached_model()
     {
         $this->files->expects('stub')

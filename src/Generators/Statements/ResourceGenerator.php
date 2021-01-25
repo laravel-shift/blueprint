@@ -86,6 +86,9 @@ class ResourceGenerator implements Generator
         $stub = str_replace('{{ resource }}', $resource->collection() ? 'resource collection' : 'resource', $stub);
         $stub = str_replace('{{ body }}', $this->buildData($resource), $stub);
 
+        if (Blueprint::supportsReturnTypeHits()) {
+            $stub = str_replace('toArray($request)', 'toArray($request): array', $stub);
+        }
         return $stub;
     }
 

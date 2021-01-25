@@ -89,6 +89,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Method Return Type Declarations
+    |--------------------------------------------------------------------------
+    |
+    | Enable or disable method return typehinting for blueprint generated
+    | methods. Enabling this will enforce code strictness which increases
+    | readability of code and will lower maintenance cost. This will only
+    | Work for projects running PHP v7.0 or higher.
+    |
+    */
+    'use_return_types' => false,
+
+    /*
+    |--------------------------------------------------------------------------
     | Use Guarded
     |--------------------------------------------------------------------------
     |

@@ -150,4 +150,34 @@ class MailGeneratorTest extends TestCase
 
         $this->assertEquals(['created' => ['src/path/Mail/ReviewPost.php']], $this->subject->output($tree));
     }
+
+    /**
+     * @test
+     */
+    public function output_using_return_types()
+    {
+        $this->app['config']->set('blueprint.namespace', 'Some\\Other\\App');
+        $this->app['config']->set('blueprint.app_path', 'src/path');
+        $this->app['config']->set('blueprint.use_return_types', true);
+
+        $this->files->expects('stub')
+            ->with('mail.stub')
+            ->andReturn($this->stub('mail.stub'));
+
+        $this->files->expects('exists')
+            ->with('src/path/Mail')
+            ->andReturnFalse();
+        $this->files->expects('exists')
+            ->with('src/path/Mail/ReviewPost.php')
+            ->andReturnFalse();
+        $this->files->expects('makeDirectory')
+            ->with('src/path/Mail', 0755, true);
+        $this->files->expects('put')
+            ->with('src/path/Mail/ReviewPost.php', $this->fixture('mailables/return-type-declarations.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['src/path/Mail/ReviewPost.php']], $this->subject->output($tree));
+    }
 }

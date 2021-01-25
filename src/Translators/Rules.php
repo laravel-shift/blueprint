@@ -2,11 +2,29 @@
 
 namespace Blueprint\Translators;
 
-use Illuminate\Support\Str;
 use Blueprint\Models\Column;
+use Illuminate\Support\Str;
 
 class Rules
 {
+    const INTEGER_TYPES = [
+            'integer',
+            'tinyInteger',
+            'smallInteger',
+            'mediumInteger',
+            'bigInteger',
+            'increments',
+            'tinyIncrements',
+            'smallIncrements',
+            'mediumIncrements',
+            'bigIncrements',
+            'unsignedBigInteger',
+            'unsignedInteger',
+            'unsignedMediumInteger',
+            'unsignedSmallInteger',
+            'unsignedTinyInteger',
+    ];
+
     public static function fromColumn(string $context, Column $column)
     {
         $rules = [];
@@ -25,23 +43,7 @@ class Rules
             $rules = array_merge($rules, ['integer', 'exists:' . Str::plural($reference) . ',id']);
         }
 
-        if (in_array($column->dataType(), [
-            'integer',
-            'tinyInteger',
-            'smallInteger',
-            'mediumInteger',
-            'bigInteger',
-            'increments',
-            'tinyIncrements',
-            'smallIncrements',
-            'mediumIncrements',
-            'bigIncrements',
-            'unsignedBigInteger',
-            'unsignedInteger',
-            'unsignedMediumInteger',
-            'unsignedSmallInteger',
-            'unsignedTinyInteger',
-        ])) {
+        if (in_array($column->dataType(), self::INTEGER_TYPES)) {
             array_push($rules, 'integer');
 
             if (Str::startsWith($column->dataType(), 'unsigned')) {

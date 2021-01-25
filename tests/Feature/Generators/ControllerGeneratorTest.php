@@ -164,6 +164,39 @@ class ControllerGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['src/path/Other/Http/UserController.php']], $this->subject->output($tree));
     }
 
+
+    /**
+     * @test
+     * @environment-setup useLaravel8
+     */
+    public function output_using_return_types()
+    {
+        $this->app['config']->set('blueprint.use_return_types', true);
+
+        $this->files->expects('stub')
+            ->with('controller.class.stub')
+            ->andReturn($this->stub('controller.class.stub'));
+
+        $this->files->expects('stub')
+            ->with('controller.method.stub')
+            ->andReturn($this->stub('controller.method.stub'));
+
+        $this->files->expects('exists')
+            ->with('app/Http/Controllers')
+            ->andReturnFalse();
+
+        $this->files->expects('makeDirectory')
+            ->with('app/Http/Controllers', 0755, true);
+
+        $this->files->expects('put')
+            ->with('app/Http/Controllers/PostController.php', $this->fixture('controllers/return-type-declarations.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['app/Http/Controllers/PostController.php']], $this->subject->output($tree));
+    }
+
     public function controllerTreeDataProvider()
     {
         return [
