@@ -17,8 +17,8 @@ class CreateCooltablesTable extends Migration
 
         Schema::create('cooltables', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('coolcool')->constrained('coolcool')->cascadeOnDelete()->index('custom_index_coolcool');
-            $table->foreignId('foobar')->constrained('foobars')->cascadeOnDelete()->index('custom_index_foobar');
+            $table->foreignId('coolcool')->constrained('coolcool')->index('custom_index_coolcool');
+            $table->foreignId('foobar')->constrained('foobars')->index('custom_index_foobar');
         });
 
         Schema::enableForeignKeyConstraints();

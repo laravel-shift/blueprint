@@ -16,8 +16,8 @@ class CreateDiaryJourneyTable extends Migration
         Schema::disableForeignKeyConstraints();
 
         Schema::create('diary_journey', function (Blueprint $table) {
-            $table->foreignId('diary_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('journey_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('diary_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('journey_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
         });
 
         Schema::enableForeignKeyConstraints();
