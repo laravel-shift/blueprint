@@ -299,13 +299,13 @@ class MigrationGenerator implements Generator
 
         $on_delete_suffix = $on_update_suffix = null;
         $on_delete_clause = collect($modifiers)->firstWhere('onDelete');
-        if(config('blueprint.use_constraints') || $on_delete_clause){
+        if (config('blueprint.use_constraints') || $on_delete_clause) {
             $on_delete_clause = $on_delete_clause ? $on_delete_clause['onDelete'] : config('blueprint.on_delete', 'cascade');
             $on_delete_suffix = self::ON_DELETE_CLAUSES[$on_delete_clause];
         }
 
         $on_update_clause = collect($modifiers)->firstWhere('onUpdate');
-        if(config('blueprint.use_constraints') || $on_update_clause){
+        if (config('blueprint.use_constraints') || $on_update_clause) {
             $on_update_clause = $on_update_clause ? $on_update_clause['onUpdate'] : config('blueprint.on_update', 'cascade');
             $on_update_suffix = self::ON_UPDATE_CLAUSES[$on_update_clause];
         }
