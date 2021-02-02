@@ -16,10 +16,10 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->string('external_id')->nullable()->index();
             $table->uuid('subscription_id');
-            $table->foreign('journey_id')->references('id')->on('subscriptions')->onDelete('cascade');
+            $table->foreign('journey_id')->references('id')->on('subscriptions');
             $table->timestamp('expires_at')->nullable()->index();
             $table->json('meta')->default('[]');
             $table->timestamps();

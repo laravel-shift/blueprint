@@ -620,6 +620,7 @@ class MigrationGeneratorTest extends TestCase
      */
     public function output_creates_foreign_keys_with_nullable_chained_correctly()
     {
+        $this->app->config->set('blueprint.use_constraints', true);
         $this->app->config->set('blueprint.on_delete', 'null');
 
         $this->files->expects('stub')
@@ -649,6 +650,7 @@ class MigrationGeneratorTest extends TestCase
      */
     public function output_creates_foreign_keys_with_nullable_chained_correctly_laravel6()
     {
+        $this->app->config->set('blueprint.use_constraints', true);
         $this->app->config->set('blueprint.on_delete', 'null');
 
         $this->files->expects('stub')

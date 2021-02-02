@@ -17,10 +17,10 @@ class CreateOrdersTable extends Migration
 
         Schema::create('orders', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained();
             $table->string('external_id')->nullable()->index();
             $table->uuid('sub_id');
-            $table->foreign('sub_id')->references('id')->on('subscriptions')->onDelete('cascade');
+            $table->foreign('sub_id')->references('id')->on('subscriptions');
             $table->timestamp('expires_at')->nullable()->index();
             $table->json('meta')->default('[]');
             $table->timestamps();
