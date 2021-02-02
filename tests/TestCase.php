@@ -3,9 +3,15 @@
 namespace Tests;
 
 use Blueprint\BlueprintServiceProvider;
+use Illuminate\Support\Facades\File;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
+    public static function tearDownAfterClass(): void
+    {
+        File::cleanDirectory(base_path('stubs'));
+    }
+
     protected function getEnvironmentSetUp($app)
     {
         $app['config']->set('blueprint.namespace', 'App');
@@ -17,14 +23,31 @@ class TestCase extends \Orchestra\Testbench\TestCase
         $app['config']->set('blueprint.fake_nullables', true);
     }
 
-    public function fixture(string $path)
+    protected function fixture(string $path)
     {
-        return file_get_contents(__DIR__ . '/' . 'fixtures' . '/' . ltrim($path, '/'));
+        return File::get(realpath('./tests/fixtures/'. ltrim($path, '/')));
     }
 
-    public function stub(string $path)
+    protected function stub(string $name)
     {
-        return file_get_contents(__DIR__ . '/../' . 'stubs' . '/' . ltrim($path, '/'));
+        $filename = ltrim($name, '/');
+
+        $directory = collect([
+            base_path('stubs'),
+
+            base_path('./../../../../stubs'), // TODO: remove, used for Testing v1 stubs dir
+
+            base_path('./../../../../vendor/laravel/framework/src/Illuminate/Foundation/Console/stubs'),
+            base_path('./../../../../vendor/laravel/framework/src/Illuminate/Routing/Console/stubs'),
+            base_path('./../../../../vendor/laravel/framework/src/Illuminate/Database/Migrations/stubs'),
+            base_path('./../../../../vendor/laravel/framework/src/Illuminate/Database/Console/Factories/stubs'),
+            base_path('./../../../../vendor/laravel/framework/src/Illuminate/Database/Console/Seeds/stubs'),
+
+        ])->first(function($directory) use($filename) {
+            return File::isFile($directory .'/'. $filename);
+        });
+
+        return File::get($directory .'/'. $filename);
     }
 
     protected function getPackageProviders($app)
