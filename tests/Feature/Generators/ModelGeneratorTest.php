@@ -676,6 +676,7 @@ class ModelGeneratorTest extends TestCase
             ['drafts/relationships.yaml', 'app/Comment.php', 'models/relationships-phpdoc.php'],
             ['drafts/disable-auto-columns.yaml', 'app/State.php', 'models/disable-auto-columns-phpdoc.php'],
             ['drafts/foreign-key-shorthand.yaml', 'app/Comment.php', 'models/foreign-key-shorthand-phpdoc.php'],
+            ['drafts/optimize.yaml', 'app/Optimize.php', 'models/optimize.php'],
         ];
     }
 
