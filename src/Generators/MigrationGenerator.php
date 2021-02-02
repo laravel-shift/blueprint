@@ -205,7 +205,7 @@ class MigrationGenerator implements Generator
                 if (is_array($modifier)) {
                     $modifierKey = key($modifier);
                     $modifierValue = addslashes(current($modifier));
-                    if (in_array($dataType, ['boolean', 'tinyinteger'], true) && $modifierKey === 'default') {
+                    if (in_array($dataType, ['boolean', 'tinyinteger']) && $modifierKey === 'default') {
                         $column_definition .= sprintf("->%s(%s)", $modifierKey, $modifierValue);
                     } else {
                         $column_definition .= sprintf("->%s('%s')", $modifierKey, $modifierValue);
