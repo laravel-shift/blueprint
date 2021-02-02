@@ -211,7 +211,13 @@ class MigrationGenerator implements Generator
 
             foreach ($modifiers as $modifier) {
                 if (is_array($modifier)) {
-                    $column_definition .= sprintf("->%s('%s')", key($modifier), addslashes(current($modifier)));
+                    $modifierKey = key($modifier);
+                    $modifierValue = addslashes(current($modifier));
+                    if (in_array($dataType, ['boolean', 'tinyinteger']) && $modifierKey === 'default') {
+                        $column_definition .= sprintf("->%s(%s)", $modifierKey, $modifierValue);
+                    } else {
+                        $column_definition .= sprintf("->%s('%s')", $modifierKey, $modifierValue);
+                    }
                 } elseif ($modifier === 'unsigned' && Str::startsWith($dataType, 'unsigned')) {
                     continue;
                 } elseif ($modifier === 'nullable' && Str::startsWith($dataType, 'nullable')) {
