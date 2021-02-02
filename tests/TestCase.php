@@ -43,7 +43,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
             base_path('./../../../../vendor/laravel/framework/src/Illuminate/Database/Console/Factories/stubs'),
             base_path('./../../../../vendor/laravel/framework/src/Illuminate/Database/Console/Seeds/stubs'),
 
-        ])->first(function($directory) use($filename) {
+        ])->first(function ($directory) use ($filename) {
             return File::isFile($directory .'/'. $filename);
         });
 
