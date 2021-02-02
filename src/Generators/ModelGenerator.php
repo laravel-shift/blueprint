@@ -91,8 +91,30 @@ class ModelGenerator implements Generator
         $phpDoc .= PHP_EOL;
         /** @var Column $column */
         foreach ($model->columns() as $column) {
-            $phpDoc .= sprintf(' * @property %s $%s', $this->phpDataType($column->dataType()), $column->name());
-            $phpDoc .= PHP_EOL;
+            if ($column->dataType() === 'morphs') {
+                $phpDoc .= ' * @property int $'. $column->name() . '_id';
+                $phpDoc .= PHP_EOL;
+                $phpDoc .= ' * @property string $'. $column->name() . '_type';
+                $phpDoc .= PHP_EOL;
+            } elseif ($column->dataType() === 'nullableMorphs') {
+                $phpDoc .= ' * @property int|null $'. $column->name() . '_id';
+                $phpDoc .= PHP_EOL;
+                $phpDoc .= ' * @property string|null $'. $column->name() . '_type';
+                $phpDoc .= PHP_EOL;
+            } elseif ($column->dataType() === 'uuidMorphs') {
+                $phpDoc .= ' * @property string $'. $column->name() . '_id';
+                $phpDoc .= PHP_EOL;
+                $phpDoc .= ' * @property string $'. $column->name() . '_type';
+                $phpDoc .= PHP_EOL;
+            } elseif ($column->dataType() === 'nullableUuidMorphs') {
+                $phpDoc .= ' * @property string|null $'. $column->name() . '_id';
+                $phpDoc .= PHP_EOL;
+                $phpDoc .= ' * @property string|null $'. $column->name() . '_type';
+                $phpDoc .= PHP_EOL;
+            } else {
+                $phpDoc .= sprintf(' * @property %s $%s', $this->phpDataType($column->dataType()), $column->name());
+                $phpDoc .= PHP_EOL;
+            }
         }
 
         if ($model->usesSoftDeletes()) {
