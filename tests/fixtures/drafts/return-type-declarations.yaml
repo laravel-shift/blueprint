@@ -1,0 +1,17 @@
+models:
+  Term:
+    uuid: string unique
+    name: json
+    description: json nullable
+    meta: json nullable
+    user_id: id nullable foreign onDelete:null onUpdate:cascade
+    team_id: id foreign onDelete:cascade onUpdate:cascade
+    published: boolean default:1
+    type: string nullable default:booking
+    softDeletes
+    relationships:
+      belongsToMany: Organizer, Event
+
+controllers:
+  Term:
+    resource

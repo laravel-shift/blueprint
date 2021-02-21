@@ -4,10 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Salesman extends Model
+class Term extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -15,7 +16,14 @@ class Salesman extends Model
      * @var array
      */
     protected $fillable = [
+        'uuid',
         'name',
+        'description',
+        'meta',
+        'user_id',
+        'team_id',
+        'published',
+        'type',
     ];
 
     /**
@@ -25,21 +33,32 @@ class Salesman extends Model
      */
     protected $casts = [
         'id' => 'integer',
+        'name' => 'array',
+        'description' => 'array',
+        'meta' => 'array',
+        'user_id' => 'integer',
+        'team_id' => 'integer',
+        'published' => 'boolean',
     ];
 
 
-    public function lead(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function organizers(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->hasOne(\App\User::class);
+        return $this->belongsToMany(\App\Organizer::class);
     }
 
-    public function methodNames(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function events(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->hasMany(\App\ClassName::class);
+        return $this->belongsToMany(\App\Event::class);
     }
 
-    public function methodName(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(\App\ClassName::class);
+        return $this->belongsTo(\App\User::class);
+    }
+
+    public function team(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\App\Team::class);
     }
 }
