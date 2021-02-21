@@ -164,7 +164,7 @@ class ControllerGenerator implements Generator
             }
 
             if (Blueprint::supportsReturnTypeHits()) {
-                $method = str_replace('request)', 'request): \Illuminate\Http\Response', $method);
+                $method = str_replace(')'.PHP_EOL, '): \Illuminate\Http\Response'.PHP_EOL, $method);
             }
 
             $methods .= PHP_EOL.$method;
