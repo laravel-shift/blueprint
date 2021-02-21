@@ -189,12 +189,12 @@ class ControllerGeneratorTest extends TestCase
             ->with('app/Http/Controllers', 0755, true);
 
         $this->files->expects('put')
-            ->with('app/Http/Controllers/PostController.php', $this->fixture('controllers/return-type-declarations.php'));
+            ->with('app/Http/Controllers/TermController.php', $this->fixture('controllers/return-type-declarations.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/return-type-declarations.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['app/Http/Controllers/PostController.php']], $this->subject->output($tree));
+        $this->assertEquals(['created' => ['app/Http/Controllers/TermController.php']], $this->subject->output($tree));
     }
 
     public function controllerTreeDataProvider()
