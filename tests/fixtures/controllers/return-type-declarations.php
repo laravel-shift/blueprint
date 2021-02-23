@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\NewPost;
-use App\Http\Requests\PostStoreRequest;
-use App\Jobs\SyncMedia;
-use App\Mail\ReviewPost;
-use App\Post;
+use App\Http\Requests\TermStoreRequest;
+use App\Http\Requests\TermUpdateRequest;
+use App\Term;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 
-class PostController extends Controller
+class TermController extends Controller
 {
     /**
      * @param \Illuminate\Http\Request $request
@@ -18,27 +15,76 @@ class PostController extends Controller
      */
     public function index(Request $request): \Illuminate\Http\Response
     {
-        $posts = Post::all();
+        $terms = Term::all();
 
-        return view('post.index', compact('posts'));
+        return view('term.index', compact('terms'));
     }
 
     /**
-     * @param \App\Http\Requests\PostStoreRequest $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(PostStoreRequest $request): \Illuminate\Http\Response
+    public function create(Request $request): \Illuminate\Http\Response
     {
-        $post = Post::create($request->validated());
+        return view('term.create');
+    }
 
-        Mail::to($post->author->email)->send(new ReviewPost($post));
+    /**
+     * @param \App\Http\Requests\TermStoreRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(TermStoreRequest $request): \Illuminate\Http\Response
+    {
+        $term = Term::create($request->validated());
 
-        SyncMedia::dispatch($post);
+        $request->session()->flash('term.id', $term->id);
 
-        event(new NewPost($post));
+        return redirect()->route('term.index');
+    }
 
-        $request->session()->flash('post.title', $post->title);
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Term $term
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Request $request, Term $term): \Illuminate\Http\Response
+    {
+        return view('term.show', compact('term'));
+    }
 
-        return redirect()->route('post.index');
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Term $term
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Request $request, Term $term): \Illuminate\Http\Response
+    {
+        return view('term.edit', compact('term'));
+    }
+
+    /**
+     * @param \App\Http\Requests\TermUpdateRequest $request
+     * @param \App\Term $term
+     * @return \Illuminate\Http\Response
+     */
+    public function update(TermUpdateRequest $request, Term $term): \Illuminate\Http\Response
+    {
+        $term->update($request->validated());
+
+        $request->session()->flash('term.id', $term->id);
+
+        return redirect()->route('term.index');
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Term $term
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request, Term $term): \Illuminate\Http\Response
+    {
+        $term->delete();
+
+        return redirect()->route('term.index');
     }
 }

@@ -184,8 +184,8 @@ class ModelGenerator implements Generator
         }
 
         foreach ($model->relationships() as $type => $references) {
-            $custom_template = $template;
             foreach ($references as $reference) {
+                $custom_template = $template;
                 $key = null;
                 $class = null;
 
@@ -230,6 +230,7 @@ class ModelGenerator implements Generator
                 } elseif (in_array($type, ['hasMany', 'belongsToMany', 'morphMany'])) {
                     $method_name = Str::plural($column_name);
                 }
+
                 if (Blueprint::supportsReturnTypeHits()) {
                     $custom_template = str_replace(
                         '{{ method }}()',
