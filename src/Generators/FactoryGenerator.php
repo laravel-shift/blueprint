@@ -82,6 +82,10 @@ class FactoryGenerator implements Generator
             ], "use", $stub);
         }
 
+        if (Blueprint::supportsReturnTypeHits()) {
+            $stub = str_replace('definition()', 'definition(): array', $stub);
+        }
+
         $stub = str_replace('use {{ namespacedModel }};', $this->buildImports($model), $stub);
 
         return $stub;

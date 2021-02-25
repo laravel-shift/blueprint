@@ -91,8 +91,30 @@ class ModelGenerator implements Generator
         $phpDoc .= PHP_EOL;
         /** @var Column $column */
         foreach ($model->columns() as $column) {
-            $phpDoc .= sprintf(' * @property %s $%s', $this->phpDataType($column->dataType()), $column->name());
-            $phpDoc .= PHP_EOL;
+            if ($column->dataType() === 'morphs') {
+                $phpDoc .= ' * @property int $'. $column->name() . '_id';
+                $phpDoc .= PHP_EOL;
+                $phpDoc .= ' * @property string $'. $column->name() . '_type';
+                $phpDoc .= PHP_EOL;
+            } elseif ($column->dataType() === 'nullableMorphs') {
+                $phpDoc .= ' * @property int|null $'. $column->name() . '_id';
+                $phpDoc .= PHP_EOL;
+                $phpDoc .= ' * @property string|null $'. $column->name() . '_type';
+                $phpDoc .= PHP_EOL;
+            } elseif ($column->dataType() === 'uuidMorphs') {
+                $phpDoc .= ' * @property string $'. $column->name() . '_id';
+                $phpDoc .= PHP_EOL;
+                $phpDoc .= ' * @property string $'. $column->name() . '_type';
+                $phpDoc .= PHP_EOL;
+            } elseif ($column->dataType() === 'nullableUuidMorphs') {
+                $phpDoc .= ' * @property string|null $'. $column->name() . '_id';
+                $phpDoc .= PHP_EOL;
+                $phpDoc .= ' * @property string|null $'. $column->name() . '_type';
+                $phpDoc .= PHP_EOL;
+            } else {
+                $phpDoc .= sprintf(' * @property %s $%s', $this->phpDataType($column->dataType()), $column->name());
+                $phpDoc .= PHP_EOL;
+            }
         }
 
         if ($model->usesSoftDeletes()) {
@@ -163,6 +185,7 @@ class ModelGenerator implements Generator
 
         foreach ($model->relationships() as $type => $references) {
             foreach ($references as $reference) {
+                $custom_template = $template;
                 $key = null;
                 $class = null;
 
@@ -207,7 +230,15 @@ class ModelGenerator implements Generator
                 } elseif (in_array($type, ['hasMany', 'belongsToMany', 'morphMany'])) {
                     $method_name = Str::plural($column_name);
                 }
-                $method = str_replace('{{ method }}', Str::camel($method_name), $template);
+
+                if (Blueprint::supportsReturnTypeHits()) {
+                    $custom_template = str_replace(
+                        '{{ method }}()',
+                        '{{ method }}(): ' . Str::of('\Illuminate\Database\Eloquent\Relations\\')->append(Str::studly($type)),
+                        $custom_template
+                    );
+                }
+                $method = str_replace('{{ method }}', Str::camel($method_name), $custom_template);
                 $method = str_replace('null', $relationship, $method);
 
                 $phpDoc = str_replace('{{ namespacedReturnClass }}', '\Illuminate\Database\Eloquent\Relations\\'.Str::ucfirst($type), $commentTemplate);

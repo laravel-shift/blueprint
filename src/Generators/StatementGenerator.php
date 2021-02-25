@@ -2,6 +2,7 @@
 
 namespace Blueprint\Generators;
 
+use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 
 abstract class StatementGenerator implements Generator

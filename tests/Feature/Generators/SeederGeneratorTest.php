@@ -69,6 +69,28 @@ class SeederGeneratorTest extends TestCase
 
         $this->assertEquals(['created' => ['database/seeders/PostSeeder.php', 'database/seeders/CommentSeeder.php']], $this->subject->output($tree));
     }
+    /**
+     * @test
+     * @environment-setup useLaravel8
+     */
+    public function output_using_return_types()
+    {
+        $this->app['config']->set('blueprint.use_return_types', true);
+
+        $this->files->expects('stub')
+            ->with($this->seederStub)
+            ->andReturn($this->stub($this->seederStub));
+
+        $this->files->expects('put')
+            ->with('database/seeders/PostSeeder.php', $this->fixture('seeders/PostSeeder-return-type-declarations.php'));
+        $this->files->expects('put')
+            ->with('database/seeders/CommentSeeder.php', $this->fixture('seeders/CommentSeeder-return-type-declarations.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['database/seeders/PostSeeder.php', 'database/seeders/CommentSeeder.php']], $this->subject->output($tree));
+    }
 
     /**
      * @test

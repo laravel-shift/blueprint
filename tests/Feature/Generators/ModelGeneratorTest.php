@@ -51,6 +51,9 @@ class ModelGeneratorTest extends TestCase
      */
     public function output_generates_models($definition, $path, $model)
     {
+        if ($model === 'models/return-type-declarations.php') {
+            $this->app['config']->set('blueprint.use_return_types', true);
+        }
         $this->files->expects('stub')
             ->with($this->modelStub)
             ->andReturn($this->stub($this->modelStub));
@@ -673,6 +676,7 @@ class ModelGeneratorTest extends TestCase
             ['drafts/relationships.yaml', 'app/Comment.php', 'models/relationships-phpdoc.php'],
             ['drafts/disable-auto-columns.yaml', 'app/State.php', 'models/disable-auto-columns-phpdoc.php'],
             ['drafts/foreign-key-shorthand.yaml', 'app/Comment.php', 'models/foreign-key-shorthand-phpdoc.php'],
+            ['drafts/optimize.yaml', 'app/Optimize.php', 'models/optimize.php'],
         ];
     }
 
@@ -688,6 +692,7 @@ class ModelGeneratorTest extends TestCase
             ['drafts/resource-statements.yaml', 'app/User.php', 'models/resource-statements-laravel8.php'],
             ['drafts/all-column-types.yaml', 'app/AllType.php', 'models/all-column-types-laravel8.php'],
             ['drafts/alias-relationships.yaml', 'app/Salesman.php', 'models/alias-relationships-laravel8.php'],
+            ['drafts/return-type-declarations.yaml', 'app/Term.php', 'models/return-type-declarations.php'],
             ['drafts/uuid-shorthand-invalid-relationship.yaml', 'app/AgeCohort.php', 'models/uuid-shorthand-invalid-relationship-laravel8.php'],
         ];
     }

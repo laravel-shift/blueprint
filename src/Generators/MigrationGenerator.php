@@ -2,6 +2,7 @@
 
 namespace Blueprint\Generators;
 
+use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Model;
 use Blueprint\Tree;
@@ -24,6 +25,13 @@ class MigrationGenerator implements Generator
         'restrict' => "->onDelete('restrict')",
         'null' => "->onDelete('set null')",
         'no_action' => "->onDelete('no action')",
+    ];
+
+    const ON_UPDATE_CLAUSES = [
+        'cascade' => "->onUpdate('cascade')",
+        'restrict' => "->onUpdate('restrict')",
+        'null' => "->onUpdate('set null')",
+        'no_action' => "->onUpdate('no action')",
     ];
 
     const UNSIGNABLE_TYPES = [
@@ -105,6 +113,10 @@ class MigrationGenerator implements Generator
         $stub = str_replace('{{ class }}', $this->getClassName($model), $stub);
         $stub = str_replace('{{ table }}', $model->tableName(), $stub);
         $stub = str_replace('{{ definition }}', $this->buildDefinition($model), $stub);
+
+        if (Blueprint::supportsReturnTypeHits()) {
+            $stub =  str_replace(['up()','down()'], ['up(): void','down(): void'], $stub);
+        }
 
         if ($this->hasForeignKeyConstraints) {
             $stub = $this->disableForeignKeyConstraints($stub);
@@ -191,6 +203,7 @@ class MigrationGenerator implements Generator
                 $modifiers = collect($modifiers)->reject(function ($modifier) {
                     return (is_array($modifier) && key($modifier) === 'foreign')
                         || (is_array($modifier) && key($modifier) === 'onDelete')
+                        || (is_array($modifier) && key($modifier) === 'onUpdate')
                         || $modifier === 'foreign'
                         || ($modifier === 'nullable' && $this->isLaravel7orNewer());
                 });
@@ -198,7 +211,13 @@ class MigrationGenerator implements Generator
 
             foreach ($modifiers as $modifier) {
                 if (is_array($modifier)) {
-                    $column_definition .= sprintf("->%s('%s')", key($modifier), addslashes(current($modifier)));
+                    $modifierKey = key($modifier);
+                    $modifierValue = addslashes(current($modifier));
+                    if (in_array($dataType, ['boolean', 'tinyinteger']) && $modifierKey === 'default') {
+                        $column_definition .= sprintf("->%s(%s)", $modifierKey, $modifierValue);
+                    } else {
+                        $column_definition .= sprintf("->%s('%s')", $modifierKey, $modifierValue);
+                    }
                 } elseif ($modifier === 'unsigned' && Str::startsWith($dataType, 'unsigned')) {
                     continue;
                 } elseif ($modifier === 'nullable' && Str::startsWith($dataType, 'nullable')) {
@@ -284,9 +303,18 @@ class MigrationGenerator implements Generator
             $table = Str::lower(Str::plural($attributes[0]));
         }
 
+        $on_delete_suffix = $on_update_suffix = null;
         $on_delete_clause = collect($modifiers)->firstWhere('onDelete');
-        $on_delete_clause = $on_delete_clause ? $on_delete_clause['onDelete'] : config('blueprint.on_delete', 'cascade');
-        $on_delete_suffix = self::ON_DELETE_CLAUSES[$on_delete_clause];
+        if (config('blueprint.use_constraints') || $on_delete_clause) {
+            $on_delete_clause = $on_delete_clause ? $on_delete_clause['onDelete'] : config('blueprint.on_delete', 'cascade');
+            $on_delete_suffix = self::ON_DELETE_CLAUSES[$on_delete_clause];
+        }
+
+        $on_update_clause = collect($modifiers)->firstWhere('onUpdate');
+        if (config('blueprint.use_constraints') || $on_update_clause) {
+            $on_update_clause = $on_update_clause ? $on_update_clause['onUpdate'] : config('blueprint.on_update', 'cascade');
+            $on_update_suffix = self::ON_UPDATE_CLAUSES[$on_update_clause];
+        }
 
         if ($this->isLaravel7orNewer() && $type === 'id') {
             $prefix = in_array('nullable', $modifiers)
@@ -296,17 +324,21 @@ class MigrationGenerator implements Generator
             if ($on_delete_clause === 'cascade') {
                 $on_delete_suffix = '->cascadeOnDelete()';
             }
+            if ($on_update_clause === 'cascade') {
+                $on_update_suffix = '->cascadeOnUpdate()';
+            }
+
             if ($column_name === Str::singular($table).'_'.$column) {
-                return self::INDENT."{$prefix}->constrained(){$on_delete_suffix}";
+                return self::INDENT."{$prefix}->constrained(){$on_delete_suffix}{$on_update_suffix}";
             }
             if ($column === 'id') {
-                return self::INDENT."{$prefix}->constrained('{$table}'){$on_delete_suffix}";
+                return self::INDENT."{$prefix}->constrained('{$table}'){$on_delete_suffix}{$on_update_suffix}";
             }
 
-            return self::INDENT."{$prefix}->constrained('{$table}', '{$column}'){$on_delete_suffix}";
+            return self::INDENT."{$prefix}->constrained('{$table}', '{$column}'){$on_delete_suffix}{$on_update_suffix}";
         }
 
-        return self::INDENT.'$table->foreign'."('{$column_name}')->references('{$column}')->on('{$table}'){$on_delete_suffix}";
+        return self::INDENT.'$table->foreign'."('{$column_name}')->references('{$column}')->on('{$table}'){$on_delete_suffix}{$on_update_suffix}";
     }
 
     protected function disableForeignKeyConstraints($stub): string
@@ -400,6 +432,7 @@ class MigrationGenerator implements Generator
             return true;
         }
 
-        return in_array($column->dataType(), ['id', 'uuid']) && config('blueprint.use_constraints');
+        return config('blueprint.use_constraints')
+            && ($column->dataType() === 'id' || $column->dataType() === 'uuid' && Str::endsWith($column->name(), '_id'));
     }
 }

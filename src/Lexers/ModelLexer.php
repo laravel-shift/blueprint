@@ -96,6 +96,7 @@ class ModelLexer implements Lexer
         'primary' => 'primary',
         'foreign' => 'foreign',
         'ondelete' => 'onDelete',
+        'onupdate' => 'onUpdate',
         'comment' => 'comment',
     ];
 
@@ -187,7 +188,10 @@ class ModelLexer implements Lexer
                 return collect($modifier)->containsStrict('foreign') || collect($modifier)->has('foreign');
             })->flatten()->first();
 
-            if (($column->name() !== 'id') && ($column->dataType() === 'id') || $foreign) {
+            if (($column->name() !== 'id' && $column->dataType() === 'id')
+                || ($column->dataType() === 'uuid' && Str::endsWith($column->name(), '_id'))
+                || $foreign
+            ) {
                 $reference = $column->name();
 
                 if ($foreign && $foreign !== 'foreign') {

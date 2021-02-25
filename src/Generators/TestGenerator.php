@@ -507,8 +507,14 @@ class TestGenerator implements Generator
             $body .= PHP_EOL.PHP_EOL;
             $body .= implode(PHP_EOL.PHP_EOL, array_map([$this, 'buildLines'], array_filter($assertions)));
 
-            $test_case = str_replace('{{ method }}', $this->buildTestCaseName($name, $tested_bits), $test_case);
+            $test_case_name = $this->buildTestCaseName($name, $tested_bits);
+            $test_case = str_replace('{{ method }}', $test_case_name, $test_case);
             $test_case = str_replace('{{ body }}', trim($body), $test_case);
+
+            if (Blueprint::supportsReturnTypeHits()) {
+                $test_case = str_replace("$test_case_name()", "$test_case_name(): void", $test_case);
+                $test_case = str_replace("uses_form_request_validation()", "uses_form_request_validation(): void", $test_case);
+            }
 
             $test_cases .= PHP_EOL.$test_case.PHP_EOL;
         }

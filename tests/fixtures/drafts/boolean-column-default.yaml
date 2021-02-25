@@ -1,0 +1,8 @@
+models:
+  Post:
+    title: string:400
+    content: longtext
+    show: boolean default:1
+    hide: boolean default:0
+    draft: boolean default:true
+    published: boolean default:false

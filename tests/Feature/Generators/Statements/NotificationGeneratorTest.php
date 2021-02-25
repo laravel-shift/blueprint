@@ -154,6 +154,36 @@ class NotificationGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['src/path/Notification/ReviewNotification.php']], $this->subject->output($tree));
     }
 
+    /**
+     * @test
+     */
+    public function output_using_return_types()
+    {
+        $this->app['config']->set('blueprint.namespace', 'Some\\Other\\App');
+        $this->app['config']->set('blueprint.app_path', 'src/path');
+        $this->app['config']->set('blueprint.use_return_types', true);
+
+        $this->files->expects('stub')
+            ->with('notification.stub')
+            ->andReturn($this->stub('notification.stub'));
+
+        $this->files->expects('exists')
+            ->with('src/path/Notification')
+            ->andReturnFalse();
+        $this->files->expects('exists')
+            ->with('src/path/Notification/ReviewNotification.php')
+            ->andReturnFalse();
+        $this->files->expects('makeDirectory')
+            ->with('src/path/Notification', 0755, true);
+        $this->files->expects('put')
+            ->with('src/path/Notification/ReviewNotification.php', $this->fixture('notifications/return-type-declarations.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example-notification-facade.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['src/path/Notification/ReviewNotification.php']], $this->subject->output($tree));
+    }
+
     public function notificationDraftProvider()
     {
         return [

@@ -129,6 +129,7 @@ class JobGeneratorTest extends TestCase
     {
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
         $this->app['config']->set('blueprint.app_path', 'src/path');
+        $this->app['config']->set('blueprint.use_return_types', true);
 
         $this->files->expects('stub')
             ->with('job.stub')
