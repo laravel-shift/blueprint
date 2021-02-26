@@ -52,12 +52,12 @@ class JobGenerator extends StatementGenerator
 
     protected function getPath(string $name)
     {
-        return Blueprint::appPath().'/Jobs/'.$name.'.php';
+        return Blueprint::appPath() . '/Jobs/' . $name . '.php';
     }
 
     protected function populateStub(string $stub, DispatchStatement $dispatchStatement)
     {
-        $stub = str_replace('{{ namespace }}', config('blueprint.namespace').'\\Jobs', $stub);
+        $stub = str_replace('{{ namespace }}', config('blueprint.namespace') . '\\Jobs', $stub);
         $stub = str_replace('{{ class }}', $dispatchStatement->job(), $stub);
         $stub = str_replace('{{ properties }}', $this->buildConstructor($dispatchStatement), $stub);
 

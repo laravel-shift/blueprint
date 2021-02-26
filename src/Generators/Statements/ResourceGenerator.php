@@ -42,7 +42,7 @@ class ResourceGenerator implements Generator
                         continue;
                     }
 
-                    $path = $this->getPath(($controller->namespace() ? $controller->namespace().'/' : '').$statement->name());
+                    $path = $this->getPath(($controller->namespace() ? $controller->namespace() . '/' : '') . $statement->name());
 
                     if ($this->files->exists($path)) {
                         continue;
@@ -69,14 +69,14 @@ class ResourceGenerator implements Generator
 
     protected function getPath(string $name)
     {
-        return Blueprint::appPath().'/Http/Resources/'.$name.'.php';
+        return Blueprint::appPath() . '/Http/Resources/' . $name . '.php';
     }
 
     protected function populateStub(string $stub, Controller $controller, ResourceStatement $resource)
     {
         $namespace = config('blueprint.namespace')
-            .'\\Http\\Resources'
-            .($controller->namespace() ? '\\'.$controller->namespace() : '');
+            . '\\Http\\Resources'
+            . ($controller->namespace() ? '\\' . $controller->namespace() : '');
 
         $stub = str_replace('{{ namespace }}', $namespace, $stub);
         $stub = str_replace('{{ import }}', $resource->collection() ? 'Illuminate\\Http\\Resources\\Json\\ResourceCollection' : 'Illuminate\\Http\\Resources\\Json\\JsonResource', $stub);
@@ -102,7 +102,7 @@ class ResourceGenerator implements Generator
         $data = [];
         if ($resource->collection()) {
             $data[] = 'return [';
-            $data[] = self::INDENT.'\'data\' => $this->collection,';
+            $data[] = self::INDENT . '\'data\' => $this->collection,';
             $data[] = '        ];';
 
             return implode(PHP_EOL, $data);
@@ -110,7 +110,7 @@ class ResourceGenerator implements Generator
 
         $data[] = 'return [';
         foreach ($this->visibleColumns($model) as $column) {
-            $data[] = self::INDENT.'\''.$column.'\' => $this->'.$column.',';
+            $data[] = self::INDENT . '\'' . $column . '\' => $this->' . $column . ',';
         }
         $data[] = '        ];';
 

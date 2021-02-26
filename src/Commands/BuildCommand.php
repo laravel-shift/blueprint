@@ -53,7 +53,7 @@ class BuildCommand extends Command
         $file = $this->argument('draft') ?? $this->defaultDraftFile();
 
         if (!$this->files->exists($file)) {
-            $this->error('Draft file could not be found: '.($file ?: 'draft.yaml'));
+            $this->error('Draft file could not be found: ' . ($file ?: 'draft.yaml'));
             return 1;
         }
 
@@ -65,9 +65,9 @@ class BuildCommand extends Command
         $generated = $this->builder->execute($blueprint, $this->files, $file, $only, $skip, $overwriteMigrations);
 
         collect($generated)->each(function ($files, $action) {
-            $this->line(Str::studly($action).':', $this->outputStyle($action));
+            $this->line(Str::studly($action) . ':', $this->outputStyle($action));
             collect($files)->each(function ($file) {
-                $this->line('- '.$file);
+                $this->line('- ' . $file);
             });
 
             $this->line('');

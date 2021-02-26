@@ -15,7 +15,8 @@ use Tests\Traits\MocksFilesystem;
  */
 class TraceCommandTest extends TestCase
 {
-    use MockeryPHPUnitIntegration, MocksFilesystem;
+    use MockeryPHPUnitIntegration;
+    use MocksFilesystem;
 
     /** @test */
     public function it_shows_error_if_no_model_found()

@@ -54,14 +54,14 @@ class ModelGenerator implements Generator
     {
         if (Blueprint::isLaravel8OrHigher()) {
             $stub = str_replace('{{ namespace }}', $model->fullyQualifiedNamespace(), $stub);
-            $stub = str_replace(PHP_EOL.'class {{ class }}', $this->buildClassPhpDoc($model).PHP_EOL.'class {{ class }}', $stub);
+            $stub = str_replace(PHP_EOL . 'class {{ class }}', $this->buildClassPhpDoc($model) . PHP_EOL . 'class {{ class }}', $stub);
             $stub = str_replace('{{ class }}', $model->name(), $stub);
 
             $body = $this->buildProperties($model);
-            $body .= PHP_EOL.PHP_EOL;
+            $body .= PHP_EOL . PHP_EOL;
             $body .= $this->buildRelationships($model);
 
-            $stub = str_replace('use HasFactory;', 'use HasFactory;'.PHP_EOL.PHP_EOL.'    '.trim($body), $stub);
+            $stub = str_replace('use HasFactory;', 'use HasFactory;' . PHP_EOL . PHP_EOL . '    ' . trim($body), $stub);
 
             $stub = $this->addTraits($model, $stub);
         } else {
@@ -70,7 +70,7 @@ class ModelGenerator implements Generator
             $stub = str_replace('{{ PHPDoc }}', $this->buildClassPhpDoc($model), $stub);
 
             $body = $this->buildProperties($model);
-            $body .= PHP_EOL.PHP_EOL;
+            $body .= PHP_EOL . PHP_EOL;
             $body .= $this->buildRelationships($model);
 
             $stub = str_replace('{{ body }}', trim($body), $stub);
@@ -92,24 +92,24 @@ class ModelGenerator implements Generator
         /** @var Column $column */
         foreach ($model->columns() as $column) {
             if ($column->dataType() === 'morphs') {
-                $phpDoc .= ' * @property int $'. $column->name() . '_id';
+                $phpDoc .= ' * @property int $' . $column->name() . '_id';
                 $phpDoc .= PHP_EOL;
-                $phpDoc .= ' * @property string $'. $column->name() . '_type';
+                $phpDoc .= ' * @property string $' . $column->name() . '_type';
                 $phpDoc .= PHP_EOL;
             } elseif ($column->dataType() === 'nullableMorphs') {
-                $phpDoc .= ' * @property int|null $'. $column->name() . '_id';
+                $phpDoc .= ' * @property int|null $' . $column->name() . '_id';
                 $phpDoc .= PHP_EOL;
-                $phpDoc .= ' * @property string|null $'. $column->name() . '_type';
+                $phpDoc .= ' * @property string|null $' . $column->name() . '_type';
                 $phpDoc .= PHP_EOL;
             } elseif ($column->dataType() === 'uuidMorphs') {
-                $phpDoc .= ' * @property string $'. $column->name() . '_id';
+                $phpDoc .= ' * @property string $' . $column->name() . '_id';
                 $phpDoc .= PHP_EOL;
-                $phpDoc .= ' * @property string $'. $column->name() . '_type';
+                $phpDoc .= ' * @property string $' . $column->name() . '_type';
                 $phpDoc .= PHP_EOL;
             } elseif ($column->dataType() === 'nullableUuidMorphs') {
-                $phpDoc .= ' * @property string|null $'. $column->name() . '_id';
+                $phpDoc .= ' * @property string|null $' . $column->name() . '_id';
                 $phpDoc .= PHP_EOL;
-                $phpDoc .= ' * @property string|null $'. $column->name() . '_type';
+                $phpDoc .= ' * @property string|null $' . $column->name() . '_type';
                 $phpDoc .= PHP_EOL;
             } else {
                 $phpDoc .= sprintf(' * @property %s $%s', $this->phpDataType($column->dataType()), $column->name());
@@ -147,7 +147,7 @@ class ModelGenerator implements Generator
         } else {
             $columns = $this->fillableColumns($model->columns());
             if (! empty($columns)) {
-                $properties .= PHP_EOL.str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model.fillable.stub'));
+                $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model.fillable.stub'));
             } else {
                 $properties .= $this->files->stub('model.fillable.stub');
             }
@@ -155,18 +155,18 @@ class ModelGenerator implements Generator
 
         $columns = $this->hiddenColumns($model->columns());
         if (! empty($columns)) {
-            $properties .= PHP_EOL.str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model.hidden.stub'));
+            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model.hidden.stub'));
         }
 
         $columns = $this->castableColumns($model->columns());
         if (! empty($columns)) {
-            $properties .= PHP_EOL.str_replace('[]', $this->pretty_print_array($columns), $this->files->stub('model.casts.stub'));
+            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns), $this->files->stub('model.casts.stub'));
         }
 
         if (! Blueprint::isLaravel8OrHigher()) {
             $columns = $this->dateColumns($model->columns());
             if (! empty($columns)) {
-                $properties .= PHP_EOL.str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model.dates.stub'));
+                $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model.dates.stub'));
             }
         }
 
@@ -214,15 +214,15 @@ class ModelGenerator implements Generator
                 if ($type === 'morphTo') {
                     $relationship = sprintf('$this->%s()', $type);
                 } elseif ($type === 'morphMany' || $type === 'morphOne') {
-                    $relation = Str::lower(Str::singular($column_name)).'able';
-                    $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, '\\'.$model->fullyQualifiedNamespace().'\\'.$class_name, $relation);
+                    $relation = Str::lower(Str::singular($column_name)) . 'able';
+                    $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $class_name, $relation);
                 } elseif (! is_null($key)) {
-                    $relationship = sprintf('$this->%s(%s::class, \'%s\', \'%s\')', $type, '\\'.$model->fullyQualifiedNamespace().'\\'.$class_name, $column_name, $key);
+                    $relationship = sprintf('$this->%s(%s::class, \'%s\', \'%s\')', $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $class_name, $column_name, $key);
                 } elseif (! is_null($class) && $type === 'belongsToMany') {
-                    $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, '\\'.$model->fullyQualifiedNamespace().'\\'.$class_name, $column_name);
+                    $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $class_name, $column_name);
                     $column_name = $class;
                 } else {
-                    $relationship = sprintf('$this->%s(%s::class)', $type, '\\'.$model->fullyQualifiedNamespace().'\\'.$class_name);
+                    $relationship = sprintf('$this->%s(%s::class)', $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $class_name);
                 }
 
                 if ($type === 'morphTo') {
@@ -241,9 +241,9 @@ class ModelGenerator implements Generator
                 $method = str_replace('{{ method }}', Str::camel($method_name), $custom_template);
                 $method = str_replace('null', $relationship, $method);
 
-                $phpDoc = str_replace('{{ namespacedReturnClass }}', '\Illuminate\Database\Eloquent\Relations\\'.Str::ucfirst($type), $commentTemplate);
+                $phpDoc = str_replace('{{ namespacedReturnClass }}', '\Illuminate\Database\Eloquent\Relations\\' . Str::ucfirst($type), $commentTemplate);
 
-                $methods .= PHP_EOL.$phpDoc.$method;
+                $methods .= PHP_EOL . $phpDoc . $method;
             }
         }
 
@@ -254,7 +254,7 @@ class ModelGenerator implements Generator
     {
         $path = str_replace('\\', '/', Blueprint::relativeNamespace($model->fullyQualifiedClassName()));
 
-        return Blueprint::appPath().'/'.$path.'.php';
+        return Blueprint::appPath() . '/' . $path . '.php';
     }
 
     protected function addTraits(Model $model, $stub)
@@ -263,11 +263,11 @@ class ModelGenerator implements Generator
             return $stub;
         }
 
-        $stub = str_replace('use Illuminate\\Database\\Eloquent\\Model;', 'use Illuminate\\Database\\Eloquent\\Model;'.PHP_EOL.'use Illuminate\\Database\\Eloquent\\SoftDeletes;', $stub);
+        $stub = str_replace('use Illuminate\\Database\\Eloquent\\Model;', 'use Illuminate\\Database\\Eloquent\\Model;' . PHP_EOL . 'use Illuminate\\Database\\Eloquent\\SoftDeletes;', $stub);
         if (Blueprint::isLaravel8OrHigher()) {
             $stub = Str::replaceFirst('use HasFactory', 'use HasFactory, SoftDeletes', $stub);
         } else {
-            $stub = Str::replaceFirst('{', '{'.PHP_EOL.'    use SoftDeletes;'.PHP_EOL, $stub);
+            $stub = Str::replaceFirst('{', '{' . PHP_EOL . '    use SoftDeletes;' . PHP_EOL, $stub);
         }
 
         return $stub;
@@ -342,7 +342,7 @@ class ModelGenerator implements Generator
 
         if (in_array($column->dataType(), ['decimal', 'unsignedDecimal'])) {
             if ($column->attributes()) {
-                return 'decimal:'.$column->attributes()[1];
+                return 'decimal:' . $column->attributes()[1];
             }
 
             return 'decimal';

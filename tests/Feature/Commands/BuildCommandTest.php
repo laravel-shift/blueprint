@@ -13,7 +13,8 @@ use Tests\Traits\MocksFilesystem;
  */
 class BuildCommandTest extends TestCase
 {
-    use MockeryPHPUnitIntegration, MocksFilesystem;
+    use MockeryPHPUnitIntegration;
+    use MocksFilesystem;
 
     /** @test */
     public function it_uses_the_default_draft_file()

@@ -15,7 +15,8 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
  */
 class InitCommandTest extends TestCase
 {
-    use MockeryPHPUnitIntegration, MocksFilesystem;
+    use MockeryPHPUnitIntegration;
+    use MocksFilesystem;
 
 
     /**

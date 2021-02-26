@@ -60,7 +60,7 @@ class ViewGenerator implements Generator
 
     protected function getPath(string $view)
     {
-        return 'resources/views/'.str_replace('.', '/', $view).'.blade.php';
+        return 'resources/views/' . str_replace('.', '/', $view) . '.blade.php';
     }
 
     protected function populateStub(string $stub, RenderStatement $renderStatement)

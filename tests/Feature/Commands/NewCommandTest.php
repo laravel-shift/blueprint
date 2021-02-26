@@ -11,7 +11,8 @@ use Tests\Traits\MocksFilesystem;
  */
 class NewCommandTest extends TestCase
 {
-    use MockeryPHPUnitIntegration, MocksFilesystem;
+    use MockeryPHPUnitIntegration;
+    use MocksFilesystem;
 
     /**
      * @test

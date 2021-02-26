@@ -61,7 +61,7 @@ class EraseCommand extends Command
             }
 
             collect($files)->each(function ($file) {
-                $this->line('- '.$file);
+                $this->line('- ' . $file);
             });
 
             $this->line('');
