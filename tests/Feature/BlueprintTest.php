@@ -114,6 +114,9 @@ class BlueprintTest extends TestCase
                 'Context' => [
                     'resource' => 'web',
                 ],
+                'Report' => [
+                    'invokable' => 'default'
+                ],
             ],
         ], $this->subject->parse($blueprint));
     }

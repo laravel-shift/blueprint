@@ -1,4 +1,5 @@
 controllers:
   Report:
     __invoke:
+      fire: ReportGenerated
       render: report

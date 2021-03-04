@@ -111,6 +111,8 @@ class RouteGeneratorTest extends TestCase
             ['drafts/cruddy.yaml', 'routes/cruddy.php'],
             ['drafts/non-cruddy.yaml', 'routes/non-cruddy.php'],
             ['drafts/respond-statements.yaml', 'routes/respond-statements.php'],
+            ['drafts/invokable-controller.yaml', 'routes/invokable-controller.php'],
+            ['drafts/invokable-controller-shorthand.yaml', 'routes/invokable-controller.php'],
         ];
     }
 }
