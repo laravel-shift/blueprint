@@ -7,3 +7,4 @@ models:
     status: set:archived,deleted
     foo: morphs
     bar: morphs nullable
+    tag: string:3

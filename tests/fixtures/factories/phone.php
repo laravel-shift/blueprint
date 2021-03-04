@@ -14,5 +14,6 @@ $factory->define(Phone::class, function (Faker $faker) {
         'status' => $faker->randomElement(["archived","deleted"]),
         'foo_id' => $faker->randomDigitNotNull,
         'foo_type' => $faker->word,
+        'tag' => $faker->regexify('[A-Za-z0-9]{3}'),
     ];
 });
