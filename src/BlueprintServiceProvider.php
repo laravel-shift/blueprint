@@ -7,6 +7,7 @@ use Blueprint\Builder;
 use Blueprint\Commands\BuildCommand;
 use Blueprint\Commands\EraseCommand;
 use Blueprint\Commands\NewCommand;
+use Blueprint\Commands\InitCommand;
 use Blueprint\Commands\TraceCommand;
 use Blueprint\Contracts\Generator;
 use Blueprint\FileMixins;
@@ -67,6 +68,9 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
         $this->app->bind('command.blueprint.new', function ($app) {
             return new NewCommand($app['files']);
         });
+        $this->app->bind('command.blueprint.init', function ($app) {
+            return new InitCommand();
+        });
 
         $this->app->singleton(Blueprint::class, function ($app) {
             $blueprint = new Blueprint();
@@ -86,6 +90,7 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
             'command.blueprint.erase',
             'command.blueprint.trace',
             'command.blueprint.new',
+            'command.blueprint.init',
         ]);
     }
 
@@ -101,6 +106,7 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
             'command.blueprint.erase',
             'command.blueprint.trace',
             'command.blueprint.new',
+            'command.blueprint.init',
             Blueprint::class,
         ];
     }

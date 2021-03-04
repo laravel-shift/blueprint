@@ -42,7 +42,7 @@ class Tree
         }
 
         $matches = array_filter(array_keys($this->models), function ($key) use ($context) {
-            return Str::endsWith($key, '/'.Str::studly($context));
+            return Str::endsWith($key, '/' . Str::studly($context));
         });
 
         if (count($matches) === 1) {
@@ -57,7 +57,7 @@ class Tree
         }
 
         $matches = array_filter(array_keys($this->models), function ($key) use ($context) {
-            return Str::endsWith($key, '\\'.Str::studly($context));
+            return Str::endsWith($key, '\\' . Str::studly($context));
         });
 
         if (count($matches) === 1) {
@@ -66,10 +66,10 @@ class Tree
 
         $fqn = config('blueprint.namespace');
         if (config('blueprint.models_namespace')) {
-            $fqn .= '\\'.config('blueprint.models_namespace');
+            $fqn .= '\\' . config('blueprint.models_namespace');
         }
 
-        return $fqn.'\\'.$context;
+        return $fqn . '\\' . $context;
     }
 
     public function toArray()

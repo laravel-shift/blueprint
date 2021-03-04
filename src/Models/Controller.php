@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Blueprint\Models;
 
 use Illuminate\Support\Str;

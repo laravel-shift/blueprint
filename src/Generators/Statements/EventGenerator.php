@@ -56,12 +56,12 @@ class EventGenerator extends StatementGenerator
 
     protected function getPath(string $name)
     {
-        return Blueprint::appPath().'/Events/'.$name.'.php';
+        return Blueprint::appPath() . '/Events/' . $name . '.php';
     }
 
     protected function populateStub(string $stub, FireStatement $fireStatement)
     {
-        $stub = str_replace('{{ namespace }}', config('blueprint.namespace').'\\Events', $stub);
+        $stub = str_replace('{{ namespace }}', config('blueprint.namespace') . '\\Events', $stub);
         $stub = str_replace('{{ class }}', $fireStatement->event(), $stub);
         $stub = str_replace('{{ properties }}', $this->buildConstructor($fireStatement), $stub);
 

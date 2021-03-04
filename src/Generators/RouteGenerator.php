@@ -28,14 +28,14 @@ class RouteGenerator implements Generator
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree->controllers() as $controller) {
             $type = $controller->isApiResource() ? 'api' : 'web';
-            $routes[$type] .= PHP_EOL.PHP_EOL.$this->buildRoutes($controller);
+            $routes[$type] .= PHP_EOL . PHP_EOL . $this->buildRoutes($controller);
         }
 
         $paths = [];
 
         foreach (array_filter($routes) as $type => $definitions) {
-            $path = 'routes/'.$type.'.php';
-            $this->files->append($path, $definitions.PHP_EOL);
+            $path = 'routes/' . $type . '.php';
+            $this->files->append($path, $definitions . PHP_EOL);
             $paths[] = $path;
         }
 
@@ -78,7 +78,7 @@ class RouteGenerator implements Generator
                 }
             }
 
-            $routes .= ';'.PHP_EOL;
+            $routes .= ';' . PHP_EOL;
         }
 
         $methods = array_diff($methods, Controller::$resourceMethods);

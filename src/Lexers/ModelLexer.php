@@ -188,7 +188,8 @@ class ModelLexer implements Lexer
                 return collect($modifier)->containsStrict('foreign') || collect($modifier)->has('foreign');
             })->flatten()->first();
 
-            if (($column->name() !== 'id' && $column->dataType() === 'id')
+            if (
+                ($column->name() !== 'id' && $column->dataType() === 'id')
                 || ($column->dataType() === 'uuid' && Str::endsWith($column->name(), '_id'))
                 || $foreign
             ) {

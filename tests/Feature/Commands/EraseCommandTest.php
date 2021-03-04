@@ -13,7 +13,8 @@ use Tests\Traits\MocksFilesystem;
  */
 class EraseCommandTest extends TestCase
 {
-    use MockeryPHPUnitIntegration, MocksFilesystem;
+    use MockeryPHPUnitIntegration;
+    use MocksFilesystem;
 
     /** @test */
     public function it_parses_and_update_the_trace_file()

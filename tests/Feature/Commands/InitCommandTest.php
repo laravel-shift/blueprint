@@ -2,17 +2,22 @@
 
 namespace Tests\Feature\Commands;
 
-use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use Blueprint\Commands\NewCommand;
+use Illuminate\Contracts\Console\Kernel;
 use Tests\TestCase;
 use Tests\Traits\MocksFilesystem;
+use Illuminate\Support\Facades\Artisan;
+use Mockery;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
 /**
- * @covers \Blueprint\Commands\NewCommand
+ * @covers \Blueprint\Commands\InitCommand
  */
-class NewCommandTest extends TestCase
+class InitCommandTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
     use MocksFilesystem;
+
 
     /**
      * @test
@@ -30,11 +35,13 @@ class NewCommandTest extends TestCase
 
         $this->files->shouldReceive('exists')->with('app');
 
-        $this->artisan('blueprint:new')
+        $this->artisan('blueprint:init')
             ->assertExitCode(0);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_does_not_create_a_draft_file_if_one_exists_already()
     {
         $this->files->shouldReceive('exists')
@@ -44,7 +51,7 @@ class NewCommandTest extends TestCase
         $this->files->shouldReceive('exists')
             ->with('app');
 
-        $this->artisan('blueprint:new')
+        $this->artisan('blueprint:init')
             ->assertExitCode(0);
     }
 }

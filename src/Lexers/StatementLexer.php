@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Blueprint\Lexers;
 
 use Blueprint\Contracts\Lexer;

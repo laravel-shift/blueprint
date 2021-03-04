@@ -73,7 +73,7 @@ class SeederGenerator implements Generator
 
     protected function getClassName(string $model)
     {
-        return $model.'Seeder';
+        return $model . 'Seeder';
     }
 
     protected function build(string $model)
@@ -91,7 +91,7 @@ class SeederGenerator implements Generator
         sort($imports);
 
         return implode(PHP_EOL, array_map(function ($class) {
-            return 'use '.$class.';';
+            return 'use ' . $class . ';';
         }, $imports));
     }
 
@@ -103,9 +103,9 @@ class SeederGenerator implements Generator
     private function getPath($model)
     {
         if (Blueprint::isLaravel8OrHigher()) {
-            return 'database/seeders/'.$model.'Seeder.php';
+            return 'database/seeders/' . $model . 'Seeder.php';
         }
 
-        return 'database/seeds/'.$model.'Seeder.php';
+        return 'database/seeds/' . $model . 'Seeder.php';
     }
 }

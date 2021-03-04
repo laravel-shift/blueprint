@@ -304,7 +304,7 @@ class ModelLexerTest extends TestCase
         $tokens = [
             'models' => [
                 'Model' => [
-                    'column' => $definition.' nullable',
+                    'column' => $definition . ' nullable',
                 ],
             ],
         ];
