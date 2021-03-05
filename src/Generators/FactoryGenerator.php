@@ -245,6 +245,10 @@ class FactoryGenerator implements Generator
                     $faker = 'word';
                 }
 
+                if (($faker === 'word') && (!empty($column->attributes()))) {
+                    $faker = sprintf("regexify('[A-Za-z0-9]{%s}')", current($column->attributes()));
+                }
+
                 if (Blueprint::isLaravel8OrHigher()) {
                     $definition .= '$this->faker->' . $faker;
                 } else {
