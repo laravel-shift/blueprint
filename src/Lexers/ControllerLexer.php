@@ -43,7 +43,7 @@ class ControllerLexer implements Lexer
             }
 
             if (isset($definition['invokable'])) {
-                $definition['invokable'] === 'default'
+                $definition['invokable'] === true
                     ? $definition['__invoke'] = ['render' => Str::camel($this->getControllerModelName($controller))]
                     : $definition['__invoke'] = $definition['invokable'];
 

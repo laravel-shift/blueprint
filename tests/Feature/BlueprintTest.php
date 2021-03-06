@@ -115,7 +115,7 @@ class BlueprintTest extends TestCase
                     'resource' => 'web',
                 ],
                 'Report' => [
-                    'invokable' => 'default'
+                    'invokable' => true
                 ],
             ],
         ], $this->subject->parse($blueprint));
