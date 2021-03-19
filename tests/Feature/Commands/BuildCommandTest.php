@@ -66,7 +66,7 @@ class BuildCommandTest extends TestCase
     }
 
     /** @test */
-    public function it_shows_the_generated_files_groupbed_by_actions()
+    public function it_shows_the_generated_files_grouped_by_actions()
     {
         $this->files->shouldReceive('exists')
             ->with('draft.yaml')
