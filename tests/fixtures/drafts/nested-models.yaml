@@ -1,0 +1,14 @@
+models:
+  QuestionType:
+    description: string
+
+  Appointment/AppointmentType:
+    name: string
+
+  Screening/Report:
+    name: string
+
+  Screening/ScreeningQuestion:
+    report_id: id
+    appointment_type_id: id
+    question_type_id: id

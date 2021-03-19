@@ -46,7 +46,7 @@ class Tree
         });
 
         if (count($matches) === 1) {
-            return $this->models[$matches[0]];
+            return $this->models[current($matches)];
         }
     }
 

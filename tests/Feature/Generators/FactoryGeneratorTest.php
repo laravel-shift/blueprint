@@ -173,6 +173,42 @@ class FactoryGeneratorTest extends TestCase
      * @test
      * @environment-setup useLaravel8
      */
+    public function output_generates_references_for_nested_models()
+    {
+        $this->files->expects('stub')
+            ->with($this->factoryStub)
+            ->andReturn($this->stub($this->factoryStub));
+
+        $this->files->expects('exists')
+            ->times(4)
+            ->andReturnTrue();
+
+        $this->files->expects('put')
+            ->with('database/factories/QuestionTypeFactory.php', \Mockery::type('string'));
+        $this->files->expects('put')
+            ->with('database/factories/Appointment/AppointmentTypeFactory.php', \Mockery::type('string'));
+        $this->files->expects('put')
+            ->with('database/factories/Screening/ReportFactory.php', \Mockery::type('string'));
+        $this->files->expects('put')
+            ->with('database/factories/Screening/ScreeningQuestionFactory.php', $this->fixture('factories/nested-models-laravel8.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/nested-models.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals([
+            'created' => [
+                'database/factories/QuestionTypeFactory.php',
+                'database/factories/Appointment/AppointmentTypeFactory.php',
+                'database/factories/Screening/ReportFactory.php',
+                'database/factories/Screening/ScreeningQuestionFactory.php',
+            ],
+        ], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     * @environment-setup useLaravel8
+     */
     public function output_respects_configuration()
     {
         $this->app['config']->set('blueprint.namespace', 'Some\\App');

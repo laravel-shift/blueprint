@@ -585,6 +585,55 @@ class ModelGeneratorTest extends TestCase
      * @test
      * @environment-setup useLaravel8
      */
+    public function output_generates_models_with_namespaces_correctly()
+    {
+        $this->app['config']->set('blueprint.models_namespace', 'Models');
+
+        $this->files->expects('stub')
+            ->with($this->modelStub)
+            ->andReturn($this->stub($this->modelStub));
+        $this->files->expects('stub')
+            ->times(4)
+            ->with('model.fillable.stub')
+            ->andReturn($this->stub('model.fillable.stub'));
+        $this->files->expects('stub')
+            ->times(4)
+            ->with('model.casts.stub')
+            ->andReturn($this->stub('model.casts.stub'));
+        $this->files->expects('stub')
+            ->times(4)
+            ->with('model.method.stub')
+            ->andReturn($this->stub('model.method.stub'));
+
+        $this->files->expects('exists')
+            ->times(4)
+            ->andReturnTrue();
+        $this->files->expects('put')
+            ->with('app/Models/QuestionType.php', \Mockery::type('string'));
+        $this->files->expects('put')
+            ->with('app/Models/Appointment/AppointmentType.php', \Mockery::type('string'));
+        $this->files->expects('put')
+            ->with('app/Models/Screening/Report.php', \Mockery::type('string'));
+        $this->files->expects('put')
+            ->with('app/Models/Screening/ScreeningQuestion.php', $this->fixture('models/nested-models-laravel8.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/nested-models.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals([
+            'created' => [
+                'app/Models/QuestionType.php',
+                'app/Models/Appointment/AppointmentType.php',
+                'app/Models/Screening/Report.php',
+                'app/Models/Screening/ScreeningQuestion.php',
+            ],
+        ], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     * @environment-setup useLaravel8
+     */
     public function output_generates_models_with_custom_namespace_correctly()
     {
         $definition = 'drafts/custom-models-namespace.yaml';
