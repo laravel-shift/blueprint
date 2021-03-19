@@ -854,6 +854,7 @@ class MigrationGeneratorTest extends TestCase
             ['drafts/readme-example.yaml', 'database/migrations/timestamp_create_posts_table.php', 'migrations/readme-example.php'],
             ['drafts/model-identities.yaml', 'database/migrations/timestamp_create_relationships_table.php', 'migrations/identity-columns.php'],
             ['drafts/model-modifiers.yaml', 'database/migrations/timestamp_create_modifiers_table.php', 'migrations/model-modifiers.php'],
+            ['drafts/model-numeric-defaults.yaml', 'database/migrations/timestamp_create_numerics_table.php', 'migrations/model-numeric-defaults.php'],
             ['drafts/soft-deletes.yaml', 'database/migrations/timestamp_create_comments_table.php', 'migrations/soft-deletes.php'],
             ['drafts/with-timezones.yaml', 'database/migrations/timestamp_create_comments_table.php', 'migrations/with-timezones.php'],
             ['drafts/relationships.yaml', 'database/migrations/timestamp_create_comments_table.php', 'migrations/relationships.php'],

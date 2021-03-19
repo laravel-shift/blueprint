@@ -213,7 +213,7 @@ class MigrationGenerator implements Generator
                 if (is_array($modifier)) {
                     $modifierKey = key($modifier);
                     $modifierValue = addslashes(current($modifier));
-                    if (in_array($dataType, ['boolean', 'tinyinteger']) && $modifierKey === 'default') {
+                    if ($modifierKey === 'default' && ($modifierValue === 'null' || $dataType === 'boolean' || $this->isNumericDefault($dataType, $modifierValue))) {
                         $column_definition .= sprintf("->%s(%s)", $modifierKey, $modifierValue);
                     } else {
                         $column_definition .= sprintf("->%s('%s')", $modifierKey, $modifierValue);
@@ -434,5 +434,21 @@ class MigrationGenerator implements Generator
 
         return config('blueprint.use_constraints')
             && ($column->dataType() === 'id' || $column->dataType() === 'uuid' && Str::endsWith($column->name(), '_id'));
+    }
+
+    protected function isNumericDefault(string $type, string $value): bool
+    {
+        if (! is_numeric($value)) {
+            return false;
+        }
+
+        if (Str::startsWith($type, 'unsigned')) {
+            $type = Str::after($type, 'unsigned');
+        }
+
+        return collect(self::UNSIGNABLE_TYPES)
+            ->contains(function ($value) use ($type) {
+                return strtolower($value) === strtolower($type);
+            });
     }
 }

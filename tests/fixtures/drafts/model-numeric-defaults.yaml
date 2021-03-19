@@ -1,0 +1,13 @@
+models:
+  Numeric:
+    id: increments
+    foo: bigInteger default:100
+    bar: boolean default:0
+    baz: decimal default:1.0
+    qui: integer default:1
+    qux: mediumInteger default:1
+    quux: smallInteger default:1
+    corge: tinyInteger default:1
+    grault: unsignedInteger default:1
+    garply: integer default:null nullable
+    waldo: unsignedDecimal default:i
