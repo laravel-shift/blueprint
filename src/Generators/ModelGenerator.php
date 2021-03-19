@@ -14,6 +14,9 @@ class ModelGenerator implements Generator
     /** @var \Illuminate\Contracts\Filesystem\Filesystem */
     private $files;
 
+    /** @var Tree */
+    private $tree;
+
     public function __construct($files)
     {
         $this->files = $files;
@@ -21,6 +24,8 @@ class ModelGenerator implements Generator
 
     public function output(Tree $tree): array
     {
+        $this->tree = $tree;
+
         $output = [];
 
         if (Blueprint::isLaravel8OrHigher()) {
@@ -210,19 +215,20 @@ class ModelGenerator implements Generator
                 }
 
                 $class_name = Str::studly($class ?? $method_name);
+                $fqcn = $this->fullyQualifyModelReference($class_name) ?? $model->fullyQualifiedNamespace() . '\\' . $class_name;
 
                 if ($type === 'morphTo') {
                     $relationship = sprintf('$this->%s()', $type);
                 } elseif ($type === 'morphMany' || $type === 'morphOne') {
                     $relation = Str::lower(Str::singular($column_name)) . 'able';
-                    $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $class_name, $relation);
-                } elseif (! is_null($key)) {
-                    $relationship = sprintf('$this->%s(%s::class, \'%s\', \'%s\')', $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $class_name, $column_name, $key);
-                } elseif (! is_null($class) && $type === 'belongsToMany') {
-                    $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $class_name, $column_name);
+                    $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, '\\' . $fqcn, $relation);
+                } elseif (!is_null($key)) {
+                    $relationship = sprintf('$this->%s(%s::class, \'%s\', \'%s\')', $type, '\\' . $fqcn, $column_name, $key);
+                } elseif (!is_null($class) && $type === 'belongsToMany') {
+                    $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, '\\' . $fqcn, $column_name);
                     $column_name = $class;
                 } else {
-                    $relationship = sprintf('$this->%s(%s::class)', $type, '\\' . $model->fullyQualifiedNamespace() . '\\' . $class_name);
+                    $relationship = sprintf('$this->%s(%s::class)', $type, '\\' . $fqcn);
                 }
 
                 if ($type === 'morphTo') {
@@ -407,5 +413,21 @@ class ModelGenerator implements Generator
         ];
 
         return $php_data_types[strtolower($dataType)] ?? 'string';
+    }
+
+    private function fullyQualifyModelReference(string $model_name)
+    {
+        // TODO: get model_name from tree.
+        // If not found, assume parallel namespace as controller.
+        // Use respond-statement.php as test case.
+
+        /** @var \Blueprint\Models\Model $model */
+        $model = $this->tree->modelForContext($model_name);
+
+        if (isset($model)) {
+            return $model->fullyQualifiedClassName();
+        }
+
+        return null;
     }
 }

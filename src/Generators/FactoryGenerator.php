@@ -17,6 +17,9 @@ class FactoryGenerator implements Generator
     /** @var \Illuminate\Contracts\Filesystem\Filesystem */
     private $files;
 
+    /** @var Tree */
+    private $tree;
+
     private $imports = [];
 
     public function __construct($files)
@@ -26,6 +29,8 @@ class FactoryGenerator implements Generator
 
     public function output(Tree $tree): array
     {
+        $this->tree = $tree;
+
         $output = [];
 
         if (Blueprint::isLaravel8OrHigher()) {
@@ -127,9 +132,10 @@ class FactoryGenerator implements Generator
                 }
 
                 $class = Str::studly(Str::singular($table));
+                $reference = $this->fullyQualifyModelReference($class) ?? $model;
 
                 if (Blueprint::isLaravel8OrHigher()) {
-                    $this->addImport($model, $model->fullyQualifiedNamespace() . '\\' . $class);
+                    $this->addImport($model, $reference->fullyQualifiedNamespace() . '\\' . $class);
                 }
                 if ($key === 'id') {
                     if (Blueprint::isLaravel8OrHigher()) {
@@ -138,7 +144,7 @@ class FactoryGenerator implements Generator
                         $definition .= ',' . PHP_EOL;
                     } else {
                         $definition .= str_repeat(self::INDENT, 2) . "'{$column->name()}' => ";
-                        $definition .= sprintf('factory(%s::class)', '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);
+                        $definition .= sprintf('factory(%s::class)', '\\' . $reference->fullyQualifiedNamespace() . '\\' . $class);
                         $definition .= ',' . PHP_EOL;
                     }
                 } else {
@@ -157,14 +163,15 @@ class FactoryGenerator implements Generator
             } elseif ($column->dataType() === 'id' || ($column->dataType() === 'uuid' && Str::endsWith($column->name(), '_id'))) {
                 $name = Str::beforeLast($column->name(), '_id');
                 $class = Str::studly($column->attributes()[0] ?? $name);
+                $reference = $this->fullyQualifyModelReference($class) ?? $model;
 
                 if (Blueprint::isLaravel8OrHigher()) {
-                    $this->addImport($model, $model->fullyQualifiedNamespace() . '\\' . $class);
+                    $this->addImport($model, $reference->fullyQualifiedNamespace() . '\\' . $class);
                     $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
                     $definition .= sprintf('%s::factory()', $class);
                 } else {
                     $definition .= str_repeat(self::INDENT, 2) . "'{$column->name()}' => ";
-                    $definition .= sprintf('factory(%s::class)', '\\' . $model->fullyQualifiedNamespace() . '\\' . $class);
+                    $definition .= sprintf('factory(%s::class)', '\\' . $reference->fullyQualifiedNamespace() . '\\' . $class);
                 }
                 $definition .= ',' . PHP_EOL;
             } elseif (in_array($column->dataType(), ['enum', 'set']) && !empty($column->attributes())) {
@@ -285,5 +292,10 @@ class FactoryGenerator implements Generator
         return array_filter($columns, function (Column $column) {
             return !in_array('nullable', $column->modifiers());
         });
+    }
+
+    private function fullyQualifyModelReference(string $model_name)
+    {
+        return $this->tree->modelForContext($model_name);
     }
 }
