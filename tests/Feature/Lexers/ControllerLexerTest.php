@@ -364,7 +364,6 @@ class ControllerLexerTest extends TestCase
 
         $methods = $controller->methods();
         $this->assertCount(3, $methods);
-
         $this->assertCount(1, $methods['index']);
         $this->assertEquals('custom-index-statements', $methods['index'][0]);
         $this->assertCount(1, $methods['show']);
@@ -420,5 +419,32 @@ class ControllerLexerTest extends TestCase
         $this->assertEquals('GalleryController', $controller->className());
         $this->assertCount(5, $controller->methods());
         $this->assertTrue($controller->isApiResource());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_an_invokable_controller()
+    {
+        $tokens = [
+            'controllers' => [
+                'Report' => [
+                    '__invoke' => [
+                        'render' => 'report'
+                    ]
+                ]
+            ]
+        ];
+
+        $this->statementLexer->shouldReceive('analyze');
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual['controllers']);
+
+        $controller = $actual['controllers']['Report'];
+        $this->assertEquals('ReportController', $controller->className());
+        $this->assertCount(1, $controller->methods());
+        $this->assertFalse($controller->isApiResource());
     }
 }

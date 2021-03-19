@@ -1,0 +1,3 @@
+
+
+Route::get('report', 'ReportController');

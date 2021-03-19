@@ -7,3 +7,5 @@ models:
 controllers:
   Context:
     resource
+  Report:
+    invokable

@@ -42,6 +42,14 @@ class ControllerLexer implements Lexer
                 $definition = array_merge($resource_definition, $definition);
             }
 
+            if (isset($definition['invokable'])) {
+                $definition['invokable'] === true
+                    ? $definition['__invoke'] = ['render' => Str::camel($this->getControllerModelName($controller))]
+                    : $definition['__invoke'] = $definition['invokable'];
+
+                unset($definition['invokable']);
+            }
+
             foreach ($definition as $method => $body) {
                 $controller->addMethod($method, $this->statementLexer->analyze($body));
             }
@@ -61,7 +69,7 @@ class ControllerLexer implements Lexer
             ->mapWithKeys(function ($statements, $method) use ($controller) {
                 return [
                     str_replace('api.', '', $method) => collect($statements)->map(function ($statement) use ($controller) {
-                        $model = Str::singular($controller->prefix());
+                        $model = $this->getControllerModelName($controller);
 
                         return str_replace(
                             ['[singular]', '[plural]'],
@@ -72,6 +80,11 @@ class ControllerLexer implements Lexer
                 ];
             })
             ->toArray();
+    }
+
+    private function getControllerModelName(Controller $controller)
+    {
+        return Str::singular($controller->prefix());
     }
 
     private function resourceTokens()
