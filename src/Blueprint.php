@@ -66,7 +66,7 @@ class Blueprint
         }, $content);
 
         $content = preg_replace_callback('/^(\s+)invokable?$/mi', function ($matches) {
-            return $matches[1].'invokable: true';
+            return $matches[1] . 'invokable: true';
         }, $content);
 
         $content = preg_replace_callback('/^(\s+)uuid(: true)?$/mi', function ($matches) {
