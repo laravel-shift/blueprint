@@ -3,9 +3,21 @@
 namespace Tests;
 
 use Blueprint\BlueprintServiceProvider;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\File;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
+    /** @var Filesystem */
+    protected $files;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->files = File::partialMock();
+    }
+
     protected function getEnvironmentSetUp($app)
     {
         $app['config']->set('blueprint.namespace', 'App');
