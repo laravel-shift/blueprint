@@ -8,7 +8,7 @@ trait MocksFilesystem
     {
         parent::setUp();
 
-        $this->files = $this->mock(\Illuminate\Filesystem\Filesystem::class);
-        $this->swap('files', $this->files);
+        // $this->files = $this->mock(\Illuminate\Filesystem\Filesystem::class);
+        // $this->swap('files', $this->files);
     }
 }
