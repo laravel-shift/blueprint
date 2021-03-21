@@ -8,21 +8,20 @@ use Blueprint\Models\Controller;
 use Blueprint\Models\Statements\ValidateStatement;
 use Blueprint\Translators\Rules;
 use Blueprint\Tree;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
 class FormRequestGenerator implements Generator
 {
     private const INDENT = '            ';
 
-    /**
-     * @var \Illuminate\Contracts\Filesystem\Filesystem
-     */
-    private $files;
+    /** @var Filesystem */
+    protected $files;
 
     /** @var Tree */
     private $tree;
 
-    public function __construct($files)
+    public function __construct(Filesystem $files)
     {
         $this->files = $files;
     }

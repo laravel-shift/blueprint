@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Symfony\Component\Finder\SplFileInfo;
+use Illuminate\Filesystem\Filesystem;
 
 class MigrationGenerator implements Generator
 {
@@ -43,14 +44,14 @@ class MigrationGenerator implements Generator
         'tinyInteger',
     ];
 
-    /** @var \Illuminate\Contracts\Filesystem\Filesystem */
-    private $files;
+    /** @var Filesystem */
+    protected $files;
 
     private $output = [];
 
     private $hasForeignKeyConstraints = false;
 
-    public function __construct($files)
+    public function __construct(Filesystem $files)
     {
         $this->files = $files;
     }

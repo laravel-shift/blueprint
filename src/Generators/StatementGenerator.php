@@ -4,20 +4,17 @@ namespace Blueprint\Generators;
 
 use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
+use Illuminate\Filesystem\Filesystem;
 
 abstract class StatementGenerator implements Generator
 {
-    /**
-     * @var \Illuminate\Contracts\Filesystem\Filesystem
-     */
+    /** @var Filesystem */
     protected $files;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $new_instance = 'new instance';
 
-    public function __construct($files)
+    public function __construct(Filesystem $files)
     {
         $this->files = $files;
     }

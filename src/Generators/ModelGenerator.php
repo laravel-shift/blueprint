@@ -7,17 +7,18 @@ use Blueprint\Contracts\Generator;
 use Blueprint\Models\Column;
 use Blueprint\Models\Model;
 use Blueprint\Tree;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
 class ModelGenerator implements Generator
 {
-    /** @var \Illuminate\Contracts\Filesystem\Filesystem */
-    private $files;
+    /** @var Filesystem */
+    protected $files;
 
     /** @var Tree */
     private $tree;
 
-    public function __construct($files)
+    public function __construct(Filesystem $files)
     {
         $this->files = $files;
     }

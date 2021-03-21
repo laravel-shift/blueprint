@@ -5,18 +5,19 @@ namespace Blueprint\Generators;
 use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Tree;
+use Illuminate\Filesystem\Filesystem;
 
 class SeederGenerator implements Generator
 {
-    /** @var \Illuminate\Contracts\Filesystem\Filesystem */
-    private $files;
+    /** @var Filesystem */
+    protected $files;
 
     /** @var Tree */
     private $tree;
 
     private $imports = [];
 
-    public function __construct($files)
+    public function __construct(Filesystem $files)
     {
         $this->files = $files;
     }

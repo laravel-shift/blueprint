@@ -20,6 +20,7 @@ use Blueprint\Models\Statements\ValidateStatement;
 use Blueprint\Tree;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
+use Illuminate\Filesystem\Filesystem;
 use Shift\Faker\Registry as FakerRegistry;
 
 class TestGenerator implements Generator
@@ -30,8 +31,8 @@ class TestGenerator implements Generator
     const TESTS_DELETE = 8;
     const TESTS_RESPONDS = 16;
 
-    /** @var \Illuminate\Contracts\Filesystem\Filesystem */
-    private $files;
+    /** @var Filesystem */
+    protected $files;
 
     /** @var Tree */
     private $tree;
@@ -40,7 +41,7 @@ class TestGenerator implements Generator
     private $stubs = [];
     private $traits = [];
 
-    public function __construct($files)
+    public function __construct(Filesystem $files)
     {
         $this->files = $files;
     }

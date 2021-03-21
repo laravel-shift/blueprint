@@ -5,15 +5,14 @@ namespace Blueprint\Generators\Statements;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Statements\RenderStatement;
 use Blueprint\Tree;
+use Illuminate\Filesystem\Filesystem;
 
 class ViewGenerator implements Generator
 {
-    /**
-     * @var \Illuminate\Contracts\Filesystem\Filesystem
-     */
-    private $files;
+    /** @var Filesystem */
+    protected $files;
 
-    public function __construct($files)
+    public function __construct(Filesystem $files)
     {
         $this->files = $files;
     }

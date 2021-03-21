@@ -23,13 +23,9 @@ class EraseCommand extends Command
      */
     protected $description = 'Erase components created from last Blueprint build';
 
-    /** @var Filesystem $files */
+    /** @var Filesystem */
     protected $files;
 
-    /**
-     * @param Filesystem $files
-     * @param \Illuminate\Contracts\View\Factory $view
-     */
     public function __construct(Filesystem $files)
     {
         parent::__construct();

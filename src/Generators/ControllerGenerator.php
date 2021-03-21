@@ -17,21 +17,22 @@ use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
 use Blueprint\Tree;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
 class ControllerGenerator implements Generator
 {
     const INDENT = '        ';
 
-    /** @var \Illuminate\Contracts\Filesystem\Filesystem */
-    private $files;
+    /** @var Filesystem */
+    protected $files;
 
     private $imports = [];
 
     /** @var Tree */
     private $tree;
 
-    public function __construct($files)
+    public function __construct(Filesystem $files)
     {
         $this->files = $files;
     }

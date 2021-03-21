@@ -9,19 +9,19 @@ use Blueprint\Models\Model;
 use Blueprint\Models\Statements\ResourceStatement;
 use Blueprint\Tree;
 use Illuminate\Support\Str;
+use Illuminate\Filesystem\Filesystem;
 
 class ResourceGenerator implements Generator
 {
     const INDENT = '            ';
-    /**
-     * @var \Illuminate\Contracts\Filesystem\Filesystem
-     */
-    private $files;
+
+    /** @var Filesystem */
+    protected $files;
 
     /** @var Tree */
     private $tree;
 
-    public function __construct($files)
+    public function __construct(Filesystem $files)
     {
         $this->files = $files;
     }
