@@ -15,7 +15,7 @@ class TestGeneratorTest extends TestCase
 {
     private $blueprint;
 
-    private $files;
+    protected $files;
 
     /** @var TestGenerator */
     private $subject;
@@ -24,7 +24,6 @@ class TestGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->files = \Mockery::mock();
         $this->subject = new TestGenerator($this->files);
 
         $this->blueprint = new Blueprint();

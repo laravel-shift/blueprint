@@ -15,7 +15,7 @@ class RouteGeneratorTest extends TestCase
 {
     private $blueprint;
 
-    private $files;
+    protected $files;
 
     /** @var RouteGenerator */
     private $subject;
@@ -24,7 +24,6 @@ class RouteGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->files = \Mockery::mock();
         $this->subject = new RouteGenerator($this->files);
 
         $this->blueprint = new Blueprint();

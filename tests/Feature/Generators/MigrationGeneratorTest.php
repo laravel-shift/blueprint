@@ -17,7 +17,7 @@ class MigrationGeneratorTest extends TestCase
 {
     private $blueprint;
 
-    private $files;
+    protected $files;
 
     /** @var MigrationGenerator */
     private $subject;
@@ -26,7 +26,6 @@ class MigrationGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->files = \Mockery::mock();
         $this->subject = new MigrationGenerator($this->files);
 
         $this->blueprint = new Blueprint();

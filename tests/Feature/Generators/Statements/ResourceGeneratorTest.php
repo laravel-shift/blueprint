@@ -15,7 +15,7 @@ class ResourceGeneratorTest extends TestCase
 {
     private $blueprint;
 
-    private $files;
+    protected $files;
 
     /** @var ResourceGenerator */
     private $subject;
@@ -24,7 +24,6 @@ class ResourceGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->files = \Mockery::mock();
         $this->subject = new ResourceGenerator($this->files);
 
         $this->blueprint = new Blueprint();

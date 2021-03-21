@@ -12,7 +12,7 @@ class ModelGeneratorTest extends TestCase
 {
     private $blueprint;
 
-    private $files;
+    protected $files;
 
     /** @var ModelGenerator */
     private $subject;
@@ -21,7 +21,6 @@ class ModelGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->files = \Mockery::mock();
         $this->modelStub = version_compare(App::version(), '8.0.0', '>=') ? 'model.class.stub' : 'model.class.no-factory.stub';
         $this->subject = new ModelGenerator($this->files);
 

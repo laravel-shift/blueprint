@@ -6,9 +6,9 @@ use Blueprint\Blueprint;
 use Blueprint\Builder;
 use Blueprint\Commands\TraceCommand;
 use Blueprint\Tracer;
+use Illuminate\Support\Facades\File;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Tests\TestCase;
-use Tests\Traits\MocksFilesystem;
 
 /**
  * @covers \Blueprint\Commands\TraceCommand
@@ -16,7 +16,6 @@ use Tests\Traits\MocksFilesystem;
 class TraceCommandTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
-    use MocksFilesystem;
 
     /** @test */
     public function it_shows_error_if_no_model_found()

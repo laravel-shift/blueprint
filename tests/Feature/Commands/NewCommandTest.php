@@ -4,7 +4,6 @@ namespace Tests\Feature\Commands;
 
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Tests\TestCase;
-use Tests\Traits\MocksFilesystem;
 
 /**
  * @covers \Blueprint\Commands\NewCommand
@@ -12,7 +11,6 @@ use Tests\Traits\MocksFilesystem;
 class NewCommandTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
-    use MocksFilesystem;
 
     /**
      * @test

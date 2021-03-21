@@ -23,13 +23,12 @@ class SeederGeneratorTest extends TestCase
     private $subject;
 
 
-    private $files;
+    protected $files;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->files = \Mockery::mock();
         $this->seederStub = version_compare(App::version(), '8.0.0', '>=') ? 'seeder.stub' : 'seeder.no-factory.stub';
         $this->subject = new SeederGenerator($this->files);
 

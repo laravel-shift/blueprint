@@ -6,7 +6,6 @@ use Blueprint\Blueprint;
 use Blueprint\Tracer;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Tests\TestCase;
-use Tests\Traits\MocksFilesystem;
 
 /**
  * @covers \Blueprint\Commands\EraseCommand
@@ -14,7 +13,6 @@ use Tests\Traits\MocksFilesystem;
 class EraseCommandTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
-    use MocksFilesystem;
 
     /** @test */
     public function it_parses_and_update_the_trace_file()

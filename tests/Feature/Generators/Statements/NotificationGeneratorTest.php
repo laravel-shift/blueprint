@@ -15,7 +15,7 @@ class NotificationGeneratorTest extends TestCase
 {
     private $blueprint;
 
-    private $files;
+    protected $files;
 
     /** @var NotificationGenerator */
     private $subject;
@@ -24,7 +24,6 @@ class NotificationGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->files = \Mockery::mock();
         $this->subject = new NotificationGenerator($this->files);
 
         $this->blueprint = new Blueprint();

@@ -5,7 +5,6 @@ namespace Tests\Feature\Commands;
 use Blueprint\Commands\NewCommand;
 use Illuminate\Contracts\Console\Kernel;
 use Tests\TestCase;
-use Tests\Traits\MocksFilesystem;
 use Illuminate\Support\Facades\Artisan;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
@@ -16,8 +15,6 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 class InitCommandTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
-    use MocksFilesystem;
-
 
     /**
      * @test

@@ -4,7 +4,6 @@ namespace Tests\Unit;
 
 use Blueprint\Blueprint;
 use Blueprint\Builder;
-use Illuminate\Filesystem\Filesystem;
 use Tests\TestCase;
 
 /**

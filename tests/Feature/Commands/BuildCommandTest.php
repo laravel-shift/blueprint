@@ -6,7 +6,6 @@ use Blueprint\Blueprint;
 use Blueprint\Builder;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Tests\TestCase;
-use Tests\Traits\MocksFilesystem;
 
 /**
  * @covers \Blueprint\Commands\BuildCommand
@@ -14,7 +13,6 @@ use Tests\Traits\MocksFilesystem;
 class BuildCommandTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
-    use MocksFilesystem;
 
     /** @test */
     public function it_uses_the_default_draft_file()

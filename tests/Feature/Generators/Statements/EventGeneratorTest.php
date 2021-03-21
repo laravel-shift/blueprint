@@ -15,7 +15,7 @@ class EventGeneratorTest extends TestCase
 {
     private $blueprint;
 
-    private $files;
+    protected $files;
 
     /** @var EventGenerator */
     private $subject;
@@ -24,7 +24,6 @@ class EventGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->files = \Mockery::mock();
         $this->subject = new EventGenerator($this->files);
 
         $this->blueprint = new Blueprint();

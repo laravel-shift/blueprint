@@ -15,7 +15,7 @@ class FormRequestGeneratorTest extends TestCase
 {
     private $blueprint;
 
-    private $files;
+    protected $files;
 
     /** @var FormRequestGenerator */
     private $subject;
@@ -24,7 +24,6 @@ class FormRequestGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->files = \Mockery::mock();
         $this->subject = new FormRequestGenerator($this->files);
 
         $this->blueprint = new Blueprint();

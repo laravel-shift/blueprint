@@ -6,6 +6,7 @@ use Blueprint\Blueprint;
 use Blueprint\Generators\ControllerGenerator;
 use Blueprint\Lexers\StatementLexer;
 use Blueprint\Tree;
+use Illuminate\Support\Facades\File;
 use Tests\TestCase;
 
 /**
@@ -15,7 +16,7 @@ class ControllerGeneratorTest extends TestCase
 {
     private $blueprint;
 
-    private $files;
+    protected $files;
 
     /** @var ControllerGenerator */
     private $subject;
@@ -24,7 +25,8 @@ class ControllerGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->files = \Mockery::mock();
+        // $this->files = File::partialMock();
+
         $this->subject = new ControllerGenerator($this->files);
 
         $this->blueprint = new Blueprint();

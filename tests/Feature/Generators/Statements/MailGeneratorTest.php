@@ -15,7 +15,7 @@ class MailGeneratorTest extends TestCase
 {
     private $blueprint;
 
-    private $files;
+    protected $files;
 
     /** @var MailGenerator */
     private $subject;
@@ -24,7 +24,6 @@ class MailGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->files = \Mockery::mock();
         $this->subject = new MailGenerator($this->files);
 
         $this->blueprint = new Blueprint();
