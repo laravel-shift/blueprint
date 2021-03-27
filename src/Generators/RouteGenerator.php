@@ -51,10 +51,13 @@ class RouteGenerator implements Generator
     {
         $routes = '';
         $methods = array_keys($controller->methods());
-
         $className = $this->getClassName($controller);
-
         $slug = Str::kebab($controller->prefix());
+
+        foreach (array_diff($methods, Controller::$resourceMethods) as $method) {
+            $routes .= $this->buildRouteLine($className, $slug, $method);
+            $routes .= PHP_EOL;
+        }
 
         $resource_methods = array_intersect($methods, Controller::$resourceMethods);
         if (count($resource_methods)) {
@@ -75,12 +78,6 @@ class RouteGenerator implements Generator
             }
 
             $routes .= ';' . PHP_EOL;
-        }
-
-        $methods = array_diff($methods, Controller::$resourceMethods);
-        foreach ($methods as $method) {
-            $routes .= $this->buildRouteLine($className, $slug, $method);
-            $routes .= PHP_EOL;
         }
 
         return trim($routes);

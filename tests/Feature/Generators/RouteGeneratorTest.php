@@ -37,9 +37,9 @@ class RouteGeneratorTest extends TestCase
      */
     public function output_generates_nothing_for_empty_tree()
     {
-        $this->files->shouldNotHaveReceived('append');
-
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
+
+        $this->files->shouldNotHaveReceived('append');
     }
 
     /**
