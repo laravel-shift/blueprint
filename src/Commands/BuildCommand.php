@@ -82,7 +82,7 @@ class BuildCommand extends Command
     protected function getArguments()
     {
         return [
-            ['draft', InputArgument::OPTIONAL, 'The path to the draft file, default: draft.yaml or draft.yaml', []],
+            ['draft', InputArgument::OPTIONAL, 'The path to the draft file, default: draft.yaml or draft.yml', []],
         ];
     }
 
