@@ -2,14 +2,16 @@
 
 namespace Blueprint\Models\Statements;
 
-use function str_replace;
-
 class SessionStatement
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     private $operation;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $reference;
 
     public function __construct(string $operation, string $reference)
@@ -30,7 +32,7 @@ class SessionStatement
 
     public function output()
     {
-        $code  = '$request->session()->' . $this->operation() . '(';
+        $code = '$request->session()->' . $this->operation() . '(';
         $code .= "'" . $this->reference() . "', ";
         $code .= '$' . str_replace('.', '->', $this->reference());
         $code .= ');';

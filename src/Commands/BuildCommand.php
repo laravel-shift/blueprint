@@ -9,10 +9,6 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputArgument;
 
-use function collect;
-use function file_exists;
-use function resolve;
-
 class BuildCommand extends Command
 {
     /**
@@ -40,25 +36,29 @@ class BuildCommand extends Command
     /** @var Builder */
     private $builder;
 
+    /**
+     * @param Filesystem $filesystem
+     * @param Builder    $builder
+     */
     public function __construct(Filesystem $filesystem, Builder $builder)
     {
         parent::__construct();
 
         $this->filesystem = $filesystem;
-        $this->builder    = $builder;
+        $this->builder = $builder;
     }
 
     public function handle()
     {
         $file = $this->argument('draft') ?? $this->defaultDraftFile();
 
-        if (! $this->filesystem->exists($file)) {
+        if (!$this->filesystem->exists($file)) {
             $this->error('Draft file could not be found: ' . ($file ?: 'draft.yaml'));
             return 1;
         }
 
-        $only                = $this->option('only') ?: '';
-        $skip                = $this->option('skip') ?: '';
+        $only = $this->option('only') ?: '';
+        $skip = $this->option('skip') ?: '';
         $overwriteMigrations = $this->option('overwrite-migrations') ?: false;
 
         $blueprint = resolve(Blueprint::class);

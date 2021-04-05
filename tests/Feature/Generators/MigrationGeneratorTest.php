@@ -4,13 +4,11 @@ namespace Tests\Feature\Generators;
 
 use Blueprint\Blueprint;
 use Blueprint\Generators\MigrationGenerator;
-use Blueprint\Lexers\ModelLexer;
 use Blueprint\Tree;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
 use Symfony\Component\Finder\SplFileInfo;
 use Tests\TestCase;
-
-use function str_replace;
 
 /**
  * @see MigrationGenerator
@@ -31,7 +29,7 @@ class MigrationGeneratorTest extends TestCase
         $this->subject = new MigrationGenerator($this->files);
 
         $this->blueprint = new Blueprint();
-        $this->blueprint->registerLexer(new ModelLexer());
+        $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
         $this->blueprint->registerGenerator($this->subject);
     }
 
@@ -55,7 +53,7 @@ class MigrationGeneratorTest extends TestCase
      */
     public function output_writes_migration_for_model_tree($definition, $path, $migration)
     {
-        if ($migration === 'migrations/return-type-declarations.php') {
+        if ($migration  === 'migrations/return-type-declarations.php') {
             $this->app['config']->set('blueprint.use_return_types', true);
         }
 
@@ -76,7 +74,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($timestamp_path, $this->fixture($migration));
 
         $tokens = $this->blueprint->parse($this->fixture($definition), $definition !== 'drafts/indexes.yaml');
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
     }
@@ -87,7 +85,7 @@ class MigrationGeneratorTest extends TestCase
      */
     public function output_updates_migration_for_model_tree($definition, $path, $migration)
     {
-        if ($migration === 'migrations/return-type-declarations.php') {
+        if ($migration  === 'migrations/return-type-declarations.php') {
             $this->app['config']->set('blueprint.use_return_types', true);
         }
 
@@ -113,7 +111,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($yesterday_path, $this->fixture($migration));
 
         $tokens = $this->blueprint->parse($this->fixture($definition), $definition !== 'drafts/indexes.yaml');
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['updated' => [$yesterday_path]], $this->subject->output($tree, true));
     }
@@ -138,7 +136,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($timestamp_path, $this->fixture('migrations/foreign-key-shorthand.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/foreign-key-shorthand.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
     }
@@ -155,7 +153,7 @@ class MigrationGeneratorTest extends TestCase
         $now = Carbon::now();
         Carbon::setTestNow($now);
 
-        $post_path    = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_posts_table.php');
+        $post_path = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_posts_table.php');
         $comment_path = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_comments_table.php');
 
         $this->filesystem->expects('exists')->twice()->andReturn(false);
@@ -166,7 +164,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($comment_path, $this->fixture('migrations/comments.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/multiple-models.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$post_path, $comment_path]], $this->subject->output($tree));
     }
@@ -183,8 +181,8 @@ class MigrationGeneratorTest extends TestCase
         $now = Carbon::now();
         Carbon::setTestNow($now);
 
-        $broker_path             = str_replace('timestamp', $now->copy()->subSeconds(2)->format('Y_m_d_His'), 'database/migrations/timestamp_create_brokers_table.php');
-        $broker_type_path        = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_broker_types_table.php');
+        $broker_path = str_replace('timestamp', $now->copy()->subSeconds(2)->format('Y_m_d_His'), 'database/migrations/timestamp_create_brokers_table.php');
+        $broker_type_path = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_broker_types_table.php');
         $broker_broker_type_path = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_broker_broker_type_table.php');
 
         $this->filesystem->expects('exists')->times(3)->andReturn(false);
@@ -197,7 +195,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($broker_broker_type_path, $this->fixture('migrations/pascal-case-model-names-broker-broker-type.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/pascal-case-model-names.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$broker_path, $broker_type_path, $broker_broker_type_path]], $this->subject->output($tree));
     }
@@ -223,7 +221,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($timestamp_path, $this->fixture('migrations/identity-columns-big-increments.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/model-identities.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
     }
@@ -250,7 +248,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($model_migration, $this->fixture('migrations/relationships-constraints.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/relationships.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$model_migration]], $this->subject->output($tree));
     }
@@ -278,7 +276,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($model_migration, $this->fixture('migrations/relationships-constraints-laravel6.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/relationships.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$model_migration]], $this->subject->output($tree));
     }
@@ -306,7 +304,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($pivot_migration, $this->fixture('migrations/belongs-to-many-pivot.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/belongs-to-many.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
     }
@@ -342,7 +340,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($pivot_migration, $this->fixture('migrations/belongs-to-many-pivot.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/belongs-to-many.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['updated' => [$model_migration, $pivot_migration]], $this->subject->output($tree, true));
     }
@@ -372,7 +370,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($pivot_migration, $this->fixture('migrations/belongs-to-many-pivot-laravel6.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/belongs-to-many.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
     }
@@ -403,7 +401,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($pivot_migration, $this->fixture('migrations/belongs-to-many-pivot-key-constraints.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/belongs-to-many.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
     }
@@ -434,7 +432,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($pivot_migration, $this->fixture('migrations/belongs-to-many-pivot-key-constraints-laravel6.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/belongs-to-many.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
     }
@@ -452,8 +450,8 @@ class MigrationGeneratorTest extends TestCase
         Carbon::setTestNow($now);
 
         $company_migration = str_replace('timestamp', $now->copy()->subSeconds(2)->format('Y_m_d_His'), 'database/migrations/timestamp_create_companies_table.php');
-        $people_migration  = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_people_table.php');
-        $pivot_migration   = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_company_person_table.php');
+        $people_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_people_table.php');
+        $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_company_person_table.php');
 
         $this->filesystem->expects('exists')->times(3)->andReturn(false);
 
@@ -465,7 +463,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($pivot_migration, $this->fixture('migrations/belongs-to-many-duplicated-pivot.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/belongs-to-many-duplicated-pivot.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$company_migration, $people_migration, $pivot_migration]], $this->subject->output($tree));
     }
@@ -484,8 +482,8 @@ class MigrationGeneratorTest extends TestCase
         Carbon::setTestNow($now);
 
         $company_migration = str_replace('timestamp', $now->copy()->subSeconds(2)->format('Y_m_d_His'), 'database/migrations/timestamp_create_companies_table.php');
-        $people_migration  = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_people_table.php');
-        $pivot_migration   = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_company_person_table.php');
+        $people_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_people_table.php');
+        $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_company_person_table.php');
 
         $this->filesystem->expects('exists')->times(3)->andReturn(false);
 
@@ -497,7 +495,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($pivot_migration, $this->fixture('migrations/belongs-to-many-duplicated-pivot-laravel6.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/belongs-to-many-duplicated-pivot.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$company_migration, $people_migration, $pivot_migration]], $this->subject->output($tree));
     }
@@ -525,7 +523,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($pivot_migration, $this->fixture('migrations/custom-pivot-table-name-test.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/custom-pivot-table-name.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
     }
@@ -554,7 +552,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($pivot_migration, $this->fixture('migrations/custom-pivot-table-name-test-laravel6.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/custom-pivot-table-name.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
     }
@@ -582,7 +580,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($pivot_migration, $this->fixture('migrations/with-path-prefix-table-name-city-region.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/with-path-prefix.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
     }
@@ -611,7 +609,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($pivot_migration, $this->fixture('migrations/with-path-prefix-table-name-city-region-laravel6.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/with-path-prefix.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
     }
@@ -640,7 +638,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($model_migration, $this->fixture('migrations/nullable-chaining.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/nullable-chaining.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$model_migration]], $this->subject->output($tree));
     }
@@ -670,7 +668,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($model_migration, $this->fixture('migrations/nullable-chaining-laravel6.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/nullable-chaining.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$model_migration]], $this->subject->output($tree));
     }
@@ -696,7 +694,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($model_migration, $this->fixture('migrations/foreign-key-on-delete.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/foreign-key-on-delete.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$model_migration]], $this->subject->output($tree));
     }
@@ -723,7 +721,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($model_migration, $this->fixture('migrations/foreign-key-on-delete-laravel6.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/foreign-key-on-delete.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$model_migration]], $this->subject->output($tree));
     }
@@ -740,8 +738,8 @@ class MigrationGeneratorTest extends TestCase
         $now = Carbon::now();
         Carbon::setTestNow($now);
 
-        $post_migration  = str_replace('timestamp', $now->copy()->subSeconds(2)->format('Y_m_d_His'), 'database/migrations/timestamp_create_posts_table.php');
-        $user_migration  = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_users_table.php');
+        $post_migration = str_replace('timestamp', $now->copy()->subSeconds(2)->format('Y_m_d_His'), 'database/migrations/timestamp_create_posts_table.php');
+        $user_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_users_table.php');
         $image_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_images_table.php');
 
         $this->filesystem->expects('exists')->times(3)->andReturn(false);
@@ -754,7 +752,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($image_migration, $this->fixture('migrations/polymorphic_relationships_images_table.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/polymorphic-relationships.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$post_migration, $user_migration, $image_migration]], $this->subject->output($tree));
     }
@@ -772,8 +770,8 @@ class MigrationGeneratorTest extends TestCase
         $now = Carbon::now();
         Carbon::setTestNow($now);
 
-        $post_migration  = str_replace('timestamp', $now->copy()->subSeconds(2)->format('Y_m_d_His'), 'database/migrations/timestamp_create_posts_table.php');
-        $user_migration  = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_users_table.php');
+        $post_migration = str_replace('timestamp', $now->copy()->subSeconds(2)->format('Y_m_d_His'), 'database/migrations/timestamp_create_posts_table.php');
+        $user_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_users_table.php');
         $image_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_images_table.php');
 
         $this->filesystem->expects('exists')->times(3)->andReturn(false);
@@ -786,7 +784,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($image_migration, $this->fixture('migrations/polymorphic_relationships_images_table_laravel6.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/polymorphic-relationships.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$post_migration, $user_migration, $image_migration]], $this->subject->output($tree));
     }
@@ -815,7 +813,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($timestamp_path, $this->fixture('migrations/uuid-without-relationship.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/uuid-without-relationship.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
     }
@@ -844,7 +842,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($timestamp_path, $this->fixture('migrations/uuid-shorthand-constraint.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/uuid-shorthand.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
     }

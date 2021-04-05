@@ -4,7 +4,6 @@ namespace Tests\Feature\Generators\Statements;
 
 use Blueprint\Blueprint;
 use Blueprint\Generators\Statements\NotificationGenerator;
-use Blueprint\Lexers\ControllerLexer;
 use Blueprint\Lexers\StatementLexer;
 use Blueprint\Tree;
 use Tests\TestCase;
@@ -28,7 +27,7 @@ class NotificationGeneratorTest extends TestCase
         $this->subject = new NotificationGenerator($this->files);
 
         $this->blueprint = new Blueprint();
-        $this->blueprint->registerLexer(new ControllerLexer(new StatementLexer()));
+        $this->blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new StatementLexer()));
         $this->blueprint->registerGenerator($this->subject);
     }
 
@@ -58,7 +57,7 @@ class NotificationGeneratorTest extends TestCase
         $this->filesystem->shouldNotHaveReceived('put');
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/render-statements.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([], $this->subject->output($tree));
     }
@@ -98,7 +97,7 @@ class NotificationGeneratorTest extends TestCase
             ->with('app/Notification/PublishedPostNotification.php', $this->fixture('notifications/published-post.php'));
 
         $tokens = $this->blueprint->parse($this->fixture($draft));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['app/Notification/ReviewPostNotification.php', 'app/Notification/PublishedPostNotification.php']], $this->subject->output($tree));
     }
@@ -120,7 +119,7 @@ class NotificationGeneratorTest extends TestCase
             ->andReturnTrue();
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/send-statements-notification-facade.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([], $this->subject->output($tree));
     }
@@ -149,7 +148,7 @@ class NotificationGeneratorTest extends TestCase
             ->with('src/path/Notification/ReviewNotification.php', $this->fixture('notifications/notification-configured.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example-notification-facade.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['src/path/Notification/ReviewNotification.php']], $this->subject->output($tree));
     }
@@ -179,7 +178,7 @@ class NotificationGeneratorTest extends TestCase
             ->with('src/path/Notification/ReviewNotification.php', $this->fixture('notifications/return-type-declarations.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example-notification-facade.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['src/path/Notification/ReviewNotification.php']], $this->subject->output($tree));
     }
@@ -188,7 +187,7 @@ class NotificationGeneratorTest extends TestCase
     {
         return [
             ['drafts/send-statements-notification-facade.yaml'],
-            ['drafts/send-statements-notification-model.yaml'],
+            ['drafts/send-statements-notification-model.yaml']
         ];
     }
 }

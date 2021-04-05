@@ -4,24 +4,24 @@ namespace Tests\Feature\Generators;
 
 use Blueprint\Blueprint;
 use Blueprint\Generators\SeederGenerator;
-use Blueprint\Lexers\ModelLexer;
-use Blueprint\Lexers\SeederLexer;
 use Blueprint\Tree;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Tests\TestCase;
-
-use function version_compare;
 
 /**
  * @see SeederGenerator
  */
 class SeederGeneratorTest extends TestCase
 {
-    /** @var Blueprint */
+    /**
+     * @var Blueprint
+     */
     private $blueprint;
 
     /** @var SeederGenerator */
     private $subject;
+
 
     protected $files;
 
@@ -30,11 +30,11 @@ class SeederGeneratorTest extends TestCase
         parent::setUp();
 
         $this->seederStub = version_compare(App::version(), '8.0.0', '>=') ? 'seeder.stub' : 'seeder.no-factory.stub';
-        $this->subject    = new SeederGenerator($this->files);
+        $this->subject = new SeederGenerator($this->files);
 
         $this->blueprint = new Blueprint();
-        $this->blueprint->registerLexer(new ModelLexer());
-        $this->blueprint->registerLexer(new SeederLexer());
+        $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
+        $this->blueprint->registerLexer(new \Blueprint\Lexers\SeederLexer());
         $this->blueprint->registerGenerator($this->subject);
     }
 
@@ -64,11 +64,10 @@ class SeederGeneratorTest extends TestCase
             ->with('database/seeders/CommentSeeder.php', $this->fixture('seeders/CommentSeeder-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['database/seeders/PostSeeder.php', 'database/seeders/CommentSeeder.php']], $this->subject->output($tree));
     }
-
     /**
      * @test
      * @environment-setup useLaravel8
@@ -87,7 +86,7 @@ class SeederGeneratorTest extends TestCase
             ->with('database/seeders/CommentSeeder.php', $this->fixture('seeders/CommentSeeder-return-type-declarations.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['database/seeders/PostSeeder.php', 'database/seeders/CommentSeeder.php']], $this->subject->output($tree));
     }
@@ -108,7 +107,7 @@ class SeederGeneratorTest extends TestCase
             ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['database/seeds/PostSeeder.php', 'database/seeds/CommentSeeder.php']], $this->subject->output($tree));
     }
@@ -129,7 +128,7 @@ class SeederGeneratorTest extends TestCase
             ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['database/seeds/PostSeeder.php', 'database/seeds/CommentSeeder.php']], $this->subject->output($tree));
     }
@@ -149,8 +148,8 @@ class SeederGeneratorTest extends TestCase
         $this->filesystem->expects('put')
             ->with('database/seeders/CommentSeeder.php', $this->fixture('seeders/CommentSeeder-laravel8.php'));
 
-        $tokens        = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
-        $tree          = $this->blueprint->analyze($tokens)->toArray();
+        $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
+        $tree = $this->blueprint->analyze($tokens)->toArray();
         $tree['cache'] = $tree['models'];
         unset($tree['models']);
         $tree = new Tree($tree);
@@ -173,8 +172,8 @@ class SeederGeneratorTest extends TestCase
         $this->filesystem->expects('put')
             ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
 
-        $tokens        = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
-        $tree          = $this->blueprint->analyze($tokens)->toArray();
+        $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
+        $tree = $this->blueprint->analyze($tokens)->toArray();
         $tree['cache'] = $tree['models'];
         unset($tree['models']);
         $tree = new Tree($tree);
@@ -197,8 +196,8 @@ class SeederGeneratorTest extends TestCase
         $this->filesystem->expects('put')
             ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
 
-        $tokens        = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
-        $tree          = $this->blueprint->analyze($tokens)->toArray();
+        $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
+        $tree = $this->blueprint->analyze($tokens)->toArray();
         $tree['cache'] = $tree['models'];
         unset($tree['models']);
         $tree = new Tree($tree);

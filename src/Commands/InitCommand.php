@@ -2,7 +2,6 @@
 
 namespace Blueprint\Commands;
 
-use Blueprint\Commands\NewCommand;
 use Illuminate\Console\Command;
 
 class InitCommand extends Command
@@ -28,6 +27,6 @@ class InitCommand extends Command
      */
     public function handle()
     {
-        $this->call(NewCommand::class);
+        $this->call(\Blueprint\Commands\NewCommand::class);
     }
 }

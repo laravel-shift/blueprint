@@ -4,7 +4,6 @@ namespace Tests\Feature\Generators\Statements;
 
 use Blueprint\Blueprint;
 use Blueprint\Generators\Statements\ViewGenerator;
-use Blueprint\Lexers\ControllerLexer;
 use Blueprint\Lexers\StatementLexer;
 use Blueprint\Tree;
 use Tests\TestCase;
@@ -28,7 +27,7 @@ class ViewGeneratorTest extends TestCase
         $this->subject = new ViewGenerator($this->files);
 
         $this->blueprint = new Blueprint();
-        $this->blueprint->registerLexer(new ControllerLexer(new StatementLexer()));
+        $this->blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new StatementLexer()));
         $this->blueprint->registerGenerator($this->subject);
     }
 
@@ -58,7 +57,7 @@ class ViewGeneratorTest extends TestCase
         $this->filesystem->shouldNotHaveReceived('put');
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/controllers-only.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([], $this->subject->output($tree));
     }
@@ -100,7 +99,7 @@ class ViewGeneratorTest extends TestCase
             ->with('resources/views/post/show.blade.php', $this->fixture('views/post.show.blade.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/render-statements.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['resources/views/user/index.blade.php', 'resources/views/user/create.blade.php', 'resources/views/post/show.blade.php']], $this->subject->output($tree));
     }
@@ -125,7 +124,7 @@ class ViewGeneratorTest extends TestCase
             ->andReturnTrue();
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/render-statements.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([], $this->subject->output($tree));
     }

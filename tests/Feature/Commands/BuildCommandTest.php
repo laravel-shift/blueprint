@@ -7,9 +7,6 @@ use Blueprint\Builder;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Tests\TestCase;
 
-use function collect;
-use function resolve;
-
 /**
  * @covers \Blueprint\Commands\BuildCommand
  */
@@ -79,7 +76,7 @@ class BuildCommandTest extends TestCase
                 "created" => [
                     "file1",
                     "file2",
-                ],
+                ]
             ]));
         $this->artisan('blueprint:build')
             ->assertExitCode(0)

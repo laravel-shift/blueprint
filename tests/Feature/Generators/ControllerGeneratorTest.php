@@ -4,13 +4,10 @@ namespace Tests\Feature\Generators;
 
 use Blueprint\Blueprint;
 use Blueprint\Generators\ControllerGenerator;
-use Blueprint\Lexers\ControllerLexer;
-use Blueprint\Lexers\ModelLexer;
 use Blueprint\Lexers\StatementLexer;
 use Blueprint\Tree;
+use Illuminate\Support\Facades\File;
 use Tests\TestCase;
-
-use function dirname;
 
 /**
  * @see ControllerGenerator
@@ -29,8 +26,8 @@ class ControllerGeneratorTest extends TestCase
         $this->subject = new ControllerGenerator($this->filesystem);
 
         $this->blueprint = new Blueprint();
-        $this->blueprint->registerLexer(new ModelLexer());
-        $this->blueprint->registerLexer(new ControllerLexer(new StatementLexer()));
+        $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
+        $this->blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new StatementLexer()));
         $this->blueprint->registerGenerator($this->subject);
     }
 
@@ -68,7 +65,7 @@ class ControllerGeneratorTest extends TestCase
             ->with($path, $this->fixture($controller));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
@@ -78,7 +75,7 @@ class ControllerGeneratorTest extends TestCase
     public function output_generates_controllers_with_models_with_custom_namespace_correctly()
     {
         $definition = 'drafts/custom-models-namespace.yaml';
-        $path       = 'app/Http/Controllers/TagController.php';
+        $path = 'app/Http/Controllers/TagController.php';
         $controller = 'controllers/custom-models-namespace.php';
 
         $this->app['config']->set('blueprint.models_namespace', 'Models');
@@ -97,7 +94,7 @@ class ControllerGeneratorTest extends TestCase
             ->with($path, $this->fixture($controller));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
@@ -115,7 +112,7 @@ class ControllerGeneratorTest extends TestCase
             ->andReturn($this->stub('controller.method.stub'))
             ->twice();
 
-        $certificateController     = 'app/Http/Controllers/CertificateController.php';
+        $certificateController = 'app/Http/Controllers/CertificateController.php';
         $certificateTypeController = 'app/Http/Controllers/CertificateTypeController.php';
 
         $this->filesystem->expects('exists')
@@ -131,7 +128,7 @@ class ControllerGeneratorTest extends TestCase
             ->with($certificateTypeController, $this->fixture('controllers/certificate-type-controller.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/pascal-case.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
         $this->assertEquals(['created' => [$certificateController, $certificateTypeController]], $this->subject->output($tree));
     }
 
@@ -160,10 +157,11 @@ class ControllerGeneratorTest extends TestCase
             ->with('src/path/Other/Http/UserController.php', $this->fixture('controllers/controller-configured.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/simple-controller.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['src/path/Other/Http/UserController.php']], $this->subject->output($tree));
     }
+
 
     /**
      * @test
@@ -192,7 +190,7 @@ class ControllerGeneratorTest extends TestCase
             ->with('app/Http/Controllers/TermController.php', $this->fixture('controllers/return-type-declarations.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/return-type-declarations.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['app/Http/Controllers/TermController.php']], $this->subject->output($tree));
     }

@@ -4,24 +4,22 @@ namespace Blueprint\Models\Statements;
 
 use Illuminate\Support\Str;
 
-use function array_map;
-use function explode;
-use function implode;
-use function in_array;
-use function sprintf;
-
 class RedirectStatement
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     private $route;
 
-    /** @var array */
+    /**
+     * @var array
+     */
     private $data;
 
     public function __construct(string $route, array $data = [])
     {
         $this->route = $route;
-        $this->data  = $data;
+        $this->data = $data;
     }
 
     public function route()
@@ -37,6 +35,7 @@ class RedirectStatement
         return $this->data;
     }
 
+
     public function output()
     {
         $code = "return redirect()->route('" . $this->route() . "'";
@@ -50,17 +49,16 @@ class RedirectStatement
             }
         }
 
-        return $code . ');';
+        $code .= ');';
+
+        return $code;
     }
 
     private function buildParameters(array $data)
     {
-        $parameters = array_map(
-            function ($parameter) {
-                return '$' . $parameter;
-            },
-            $data
-        );
+        $parameters = array_map(function ($parameter) {
+            return '$' . $parameter;
+        }, $data);
 
         return implode(', ', $parameters);
     }

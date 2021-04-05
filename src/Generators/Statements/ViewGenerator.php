@@ -3,17 +3,15 @@
 namespace Blueprint\Generators\Statements;
 
 use Blueprint\Contracts\Generator;
-use Blueprint\Models\Controller;
 use Blueprint\Models\Statements\RenderStatement;
 use Blueprint\Tree;
 use Illuminate\Filesystem\Filesystem;
 
-use function dirname;
-use function str_replace;
-
 class ViewGenerator implements Generator
 {
-    /** @var Filesystem */
+    /**
+     * @var Filesystem
+     */
     protected $filesystem;
 
     public function __construct(Filesystem $filesystem)
@@ -28,7 +26,7 @@ class ViewGenerator implements Generator
         $stub = $this->filesystem->stub('view.stub');
 
         /**
- * @var Controller $controller
+ * @var \Blueprint\Models\Controller $controller
 */
         foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {

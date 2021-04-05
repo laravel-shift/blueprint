@@ -4,23 +4,25 @@ namespace Tests\Feature\Lexers;
 
 use Blueprint\Lexers\ControllerLexer;
 use Blueprint\Lexers\StatementLexer;
-use Mockery;
-use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 
 class ControllerLexerTest extends TestCase
 {
-    /** @var ControllerLexer */
+    /**
+     * @var ControllerLexer
+     */
     private $subject;
 
-    /** @var MockInterface */
+    /**
+     * @var \Mockery\MockInterface
+     */
     private $statementLexer;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->statementLexer = Mockery::mock(StatementLexer::class);
+        $this->statementLexer = \Mockery::mock(StatementLexer::class);
 
         $this->subject = new ControllerLexer($this->statementLexer);
     }
@@ -40,39 +42,39 @@ class ControllerLexerTest extends TestCase
     {
         $tokens = [
             'controllers' => [
-                'PostController'    => [
+                'PostController' => [
                     'index' => [
-                        'query'  => 'all:posts',
-                        'render' => 'post.index with posts',
+                        'query' => 'all:posts',
+                        'render' => 'post.index with posts'
                     ],
-                    'show'  => [
+                    'show' => [
                         'find' => 'id',
-                    ],
+                    ]
                 ],
                 'CommentController' => [
                     'index' => [
-                        'redirect' => 'home',
+                        'redirect' => 'home'
                     ],
-                ],
-            ],
+                ]
+            ]
         ];
 
         $this->statementLexer->shouldReceive('analyze')
             ->with([
-                'query'  => 'all:posts',
-                'render' => 'post.index with posts',
+                'query' => 'all:posts',
+                'render' => 'post.index with posts'
             ])
             ->andReturn(['index-statement-1', 'index-statement-2']);
 
         $this->statementLexer->shouldReceive('analyze')
             ->with([
-                'find' => 'id',
+                'find' => 'id'
             ])
             ->andReturn(['show-statement-1']);
 
         $this->statementLexer->shouldReceive('analyze')
             ->with([
-                'redirect' => 'home',
+                'redirect' => 'home'
             ])
             ->andReturn(['index-statement-1']);
 
@@ -111,58 +113,58 @@ class ControllerLexerTest extends TestCase
         $tokens = [
             'controllers' => [
                 'Comment' => [
-                    'resource' => 'web',
-                ],
-            ],
+                    'resource' => 'web'
+                ]
+            ]
         ];
 
         $this->statementLexer->shouldReceive('analyze')
             ->with([
-                'query'  => 'all:comments',
-                'render' => 'comment.index with comments',
+                'query' => 'all:comments',
+                'render' => 'comment.index with comments'
             ])
             ->andReturn(['index-statements']);
 
         $this->statementLexer->shouldReceive('analyze')
             ->with([
-                'render' => 'comment.create',
+                'render' => 'comment.create'
             ])
             ->andReturn(['create-statements']);
 
         $this->statementLexer->shouldReceive('analyze')
             ->with([
                 'validate' => 'comment',
-                'save'     => 'comment',
-                'flash'    => 'comment.id',
-                'redirect' => 'comment.index',
+                'save' => 'comment',
+                'flash' => 'comment.id',
+                'redirect' => 'comment.index'
             ])
             ->andReturn(['store-statements']);
 
         $this->statementLexer->shouldReceive('analyze')
             ->with([
-                'render' => 'comment.show with:comment',
+                'render' => 'comment.show with:comment'
             ])
             ->andReturn(['show-statements']);
 
         $this->statementLexer->shouldReceive('analyze')
             ->with([
-                'render' => 'comment.edit with:comment',
+                'render' => 'comment.edit with:comment'
             ])
             ->andReturn(['edit-statements']);
 
         $this->statementLexer->shouldReceive('analyze')
             ->with([
                 'validate' => 'comment',
-                'update'   => 'comment',
-                'flash'    => 'comment.id',
-                'redirect' => 'comment.index',
+                'update' => 'comment',
+                'flash' => 'comment.id',
+                'redirect' => 'comment.index'
             ])
             ->andReturn(['update-statements']);
 
         $this->statementLexer->shouldReceive('analyze')
             ->with([
-                'delete'   => 'comment',
-                'redirect' => 'comment.index',
+                'delete' => 'comment',
+                'redirect' => 'comment.index'
             ])
             ->andReturn(['destroy-statements']);
 
@@ -200,34 +202,34 @@ class ControllerLexerTest extends TestCase
         $tokens = [
             'controllers' => [
                 'Comment' => [
-                    'resource' => 'api.index, api.store, api.show, api.update',
-                ],
-            ],
+                    'resource' => 'api.index, api.store, api.show, api.update'
+                ]
+            ]
         ];
 
         $this->statementLexer->expects('analyze')
             ->with([
-                'query'    => 'all:comments',
-                'resource' => 'collection:comments',
+                'query' => 'all:comments',
+                'resource' => 'collection:comments'
             ])
             ->andReturn(['api-index-statements']);
         $this->statementLexer->expects('analyze')
             ->with([
                 'validate' => 'comment',
-                'save'     => 'comment',
-                'resource' => 'comment',
+                'save' => 'comment',
+                'resource' => 'comment'
             ])
             ->andReturn(['api-store-statements']);
         $this->statementLexer->expects('analyze')
             ->with([
-                'resource' => 'comment',
+                'resource' => 'comment'
             ])
             ->andReturn(['api-show-statements']);
         $this->statementLexer->expects('analyze')
             ->with([
                 'validate' => 'comment',
-                'update'   => 'comment',
-                'resource' => 'comment',
+                'update' => 'comment',
+                'resource' => 'comment'
             ])
             ->andReturn(['api-update-statements']);
 
@@ -260,37 +262,37 @@ class ControllerLexerTest extends TestCase
         $tokens = [
             'controllers' => [
                 'User' => [
-                    'resource' => 'index, edit, update, destroy',
-                ],
-            ],
+                    'resource' => 'index, edit, update, destroy'
+                ]
+            ]
         ];
 
         $this->statementLexer->expects('analyze')
             ->with([
-                'query'  => 'all:users',
-                'render' => 'user.index with users',
+                'query' => 'all:users',
+                'render' => 'user.index with users'
             ])
             ->andReturn(['index-statements']);
 
         $this->statementLexer->shouldReceive('analyze')
             ->with([
-                'render' => 'user.edit with:user',
+                'render' => 'user.edit with:user'
             ])
             ->andReturn(['edit-statements']);
 
         $this->statementLexer->shouldReceive('analyze')
             ->with([
                 'validate' => 'user',
-                'update'   => 'user',
-                'flash'    => 'user.id',
-                'redirect' => 'user.index',
+                'update' => 'user',
+                'flash' => 'user.id',
+                'redirect' => 'user.index'
             ])
             ->andReturn(['update-statements']);
 
         $this->statementLexer->shouldReceive('analyze')
             ->with([
-                'delete'   => 'user',
-                'redirect' => 'user.index',
+                'delete' => 'user',
+                'redirect' => 'user.index'
             ])
             ->andReturn(['destroy-statements']);
 
@@ -323,33 +325,33 @@ class ControllerLexerTest extends TestCase
             'controllers' => [
                 'User' => [
                     'resource' => 'index, show',
-                    'index'    => [
-                        'query'   => 'all',
+                    'index' => [
+                        'query' => 'all',
                         'respond' => 'users',
                     ],
-                    'custom'   => [
+                    'custom' => [
                         'statement' => 'expression',
                     ],
-                ],
-            ],
+                ]
+            ]
         ];
 
         $this->statementLexer->shouldReceive('analyze')
             ->with([
-                'query'   => 'all',
-                'respond' => 'users',
+                'query' => 'all',
+                'respond' => 'users'
             ])
             ->andReturn(['custom-index-statements']);
 
         $this->statementLexer->shouldReceive('analyze')
             ->with([
-                'render' => 'user.show with:user',
+                'render' => 'user.show with:user'
             ])
             ->andReturn(['show-statements']);
 
         $this->statementLexer->shouldReceive('analyze')
             ->with([
-                'statement' => 'expression',
+                'statement' => 'expression'
             ])
             ->andReturn(['custom-statements']);
 
@@ -377,19 +379,19 @@ class ControllerLexerTest extends TestCase
     {
         $tokens = [
             'controllers' => [
-                'Page'     => [
+                'Page' => [
                     'resource' => 'web',
                 ],
-                'File'     => [
+                'File' => [
                     'resource' => 'api',
                 ],
                 'Category' => [
                     'resource' => 'web',
                 ],
-                'Gallery'  => [
+                'Gallery' => [
                     'resource' => 'api',
                 ],
-            ],
+            ]
         ];
 
         $this->statementLexer->shouldReceive('analyze');
@@ -428,10 +430,10 @@ class ControllerLexerTest extends TestCase
             'controllers' => [
                 'Report' => [
                     '__invoke' => [
-                        'render' => 'report',
-                    ],
-                ],
-            ],
+                        'render' => 'report'
+                    ]
+                ]
+            ]
         ];
 
         $this->statementLexer->shouldReceive('analyze');

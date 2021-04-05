@@ -2,24 +2,20 @@
 
 namespace Blueprint\Generators;
 
+use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Illuminate\Filesystem\Filesystem;
 
-use function array_map;
-use function array_reduce;
-use function implode;
-use function is_null;
-use function str_replace;
-use function trim;
-
-use const PHP_EOL;
-
 abstract class StatementGenerator implements Generator
 {
-    /** @var Filesystem */
+    /**
+     * @var Filesystem
+     */
     protected $filesystem;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $new_instance = 'new instance';
 
     public function __construct(Filesystem $filesystem)
@@ -36,11 +32,11 @@ abstract class StatementGenerator implements Generator
         }
 
         if (empty($statement->data())) {
-            $stub = str_replace('{{ body }}', '//', $constructor);
+            $stub = (str_replace('{{ body }}', '//', $constructor));
         } else {
-            $stub  = $this->buildProperties($statement->data()) . PHP_EOL . PHP_EOL;
+            $stub = $this->buildProperties($statement->data()) . PHP_EOL . PHP_EOL;
             $stub .= str_replace('__construct()', '__construct(' . $this->buildParameters($statement->data()) . ')', $constructor);
-            $stub  = str_replace('{{ body }}', $this->buildAssignments($statement->data()), $stub);
+            $stub = str_replace('{{ body }}', $this->buildAssignments($statement->data()), $stub);
         }
 
         return trim($stub);

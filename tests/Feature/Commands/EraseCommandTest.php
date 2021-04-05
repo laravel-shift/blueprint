@@ -7,8 +7,6 @@ use Blueprint\Tracer;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Tests\TestCase;
 
-use function resolve;
-
 /**
  * @covers \Blueprint\Commands\EraseCommand
  */

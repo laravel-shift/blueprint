@@ -2,15 +2,16 @@
 
 namespace Blueprint\Models\Statements;
 
-use function array_map;
-use function implode;
-
 class RenderStatement
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     private $view;
 
-    /** @var array */
+    /**
+     * @var array
+     */
     private $data;
 
     public function __construct(string $view, array $data = [])
@@ -47,12 +48,9 @@ class RenderStatement
 
     private function buildParameters(array $data)
     {
-        $parameters = array_map(
-            function ($parameter) {
-                return "'" . $parameter . "'";
-            },
-            $data
-        );
+        $parameters = array_map(function ($parameter) {
+            return "'" . $parameter . "'";
+        }, $data);
 
         return implode(', ', $parameters);
     }

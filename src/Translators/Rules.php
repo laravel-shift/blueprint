@@ -5,40 +5,31 @@ namespace Blueprint\Translators;
 use Blueprint\Models\Column;
 use Illuminate\Support\Str;
 
-use function array_merge;
-use function array_push;
-use function implode;
-use function in_array;
-use function intval;
-use function str_pad;
-use function substr_replace;
-use function trim;
-
 class Rules
 {
     const INTEGER_TYPES = [
-        'integer',
-        'tinyInteger',
-        'smallInteger',
-        'mediumInteger',
-        'bigInteger',
-        'increments',
-        'tinyIncrements',
-        'smallIncrements',
-        'mediumIncrements',
-        'bigIncrements',
-        'unsignedBigInteger',
-        'unsignedInteger',
-        'unsignedMediumInteger',
-        'unsignedSmallInteger',
-        'unsignedTinyInteger',
+            'integer',
+            'tinyInteger',
+            'smallInteger',
+            'mediumInteger',
+            'bigInteger',
+            'increments',
+            'tinyIncrements',
+            'smallIncrements',
+            'mediumIncrements',
+            'bigIncrements',
+            'unsignedBigInteger',
+            'unsignedInteger',
+            'unsignedMediumInteger',
+            'unsignedSmallInteger',
+            'unsignedTinyInteger',
     ];
 
     public static function fromColumn(string $context, Column $column)
     {
         $rules = [];
 
-        if (! in_array('nullable', $column->modifiers())) {
+        if (!in_array('nullable', $column->modifiers())) {
             array_push($rules, 'required');
         }
 
@@ -49,7 +40,7 @@ class Rules
 
         if ($column->dataType() === 'id' && ($column->attributes() || Str::endsWith($column->name(), '_id'))) {
             $reference = $column->attributes()[0] ?? Str::beforeLast($column->name(), '_id');
-            $rules     = array_merge($rules, ['integer', 'exists:' . Str::plural($reference) . ',id']);
+            $rules = array_merge($rules, ['integer', 'exists:' . Str::plural($reference) . ',id']);
         }
 
         if (in_array($column->dataType(), self::INTEGER_TYPES)) {
@@ -71,7 +62,7 @@ class Rules
                 array_push($rules, 'gt:0');
             }
 
-            if (! empty($column->attributes())) {
+            if (!empty($column->attributes())) {
                 array_push($rules, self::betweenRuleForColumn($column));
             }
         }
@@ -109,10 +100,11 @@ class Rules
         return 'string';
     }
 
+
     private static function betweenRuleForColumn(Column $column)
     {
         $precision = $column->attributes()[0];
-        $scale     = $column->attributes()[1] ?? 0;
+        $scale = $column->attributes()[1] ?? 0;
 
         $value = substr_replace(str_pad("", $precision, '9'), ".", $precision - $scale, 0);
 

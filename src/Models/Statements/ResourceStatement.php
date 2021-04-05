@@ -6,20 +6,26 @@ use Illuminate\Support\Str;
 
 class ResourceStatement
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     private $reference;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     private $collection = false;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     private $paginate = false;
 
     public function __construct(string $reference, bool $collection = false, bool $paginate = false)
     {
-        $this->reference  = $reference;
+        $this->reference = $reference;
         $this->collection = $collection;
-        $this->paginate   = $paginate;
+        $this->paginate = $paginate;
     }
 
     public function name(): string
@@ -48,7 +54,7 @@ class ResourceStatement
 
     public function output(): string
     {
-        $code  = 'return new ' . $this->name();
+        $code = 'return new ' . $this->name();
         $code .= '($' . $this->reference();
 
         if ($this->paginate()) {

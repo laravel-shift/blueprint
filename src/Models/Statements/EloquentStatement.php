@@ -4,27 +4,28 @@ namespace Blueprint\Models\Statements;
 
 use Illuminate\Support\Str;
 
-use function array_map;
-use function implode;
-use function sprintf;
-use function str_replace;
-
 class EloquentStatement
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     private $operation;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $reference;
 
-    /** @var array */
+    /**
+     * @var array
+     */
     private $columns;
 
     public function __construct(string $operation, ?string $reference, array $columns = [])
     {
         $this->operation = $operation;
         $this->reference = $reference;
-        $this->columns   = $columns;
+        $this->columns = $columns;
     }
 
     public function operation(): string
@@ -45,11 +46,11 @@ class EloquentStatement
     public function output(string $controller_prefix, string $context, bool $using_validation = false): string
     {
         $model = $this->determineModel($controller_prefix);
-        $code  = '';
+        $code = '';
 
         if ($this->operation() == 'save') {
             if ($context === 'store') {
-                $code  = "$" . Str::camel($model);
+                $code = "$" . Str::camel($model);
                 $code .= ' = ';
                 $code .= $model;
 
@@ -64,16 +65,10 @@ class EloquentStatement
         }
 
         if ($this->operation() == 'update') {
-            if (! empty($this->columns())) {
-                $columns = implode(
-                    ', ',
-                    array_map(
-                        function ($column) {
-                            return sprintf("'%s' => \$%s", $column, $column);
-                        },
-                        $this->columns()
-                    )
-                );
+            if (!empty($this->columns())) {
+                $columns = implode(', ', array_map(function ($column) {
+                    return sprintf("'%s' => \$%s", $column, $column);
+                }, $this->columns()));
 
                 $code = "$" . Str::camel($model) . '->update([' . $columns . ']);';
             } elseif ($using_validation) {
@@ -88,7 +83,7 @@ class EloquentStatement
                 $model = $this->extractModel();
             }
 
-            $code  = "$" . Str::camel($model);
+            $code = "$" . Str::camel($model);
             $code .= ' = ';
             $code .= $model;
             $code .= '::find($' . $this->columnName($this->reference()) . ');';
@@ -96,7 +91,7 @@ class EloquentStatement
 
         if ($this->operation() === 'delete') {
             if ($this->usesQualifiedReference()) {
-                $code  = $this->extractModel();
+                $code = $this->extractModel();
                 $code .= '::destroy($' . str_replace('.', '->', $this->reference()) . ');';
             } else {
                 // TODO: only for certain contexts or no matter what given simple reference?

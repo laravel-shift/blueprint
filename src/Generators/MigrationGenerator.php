@@ -4,40 +4,13 @@ namespace Blueprint\Generators;
 
 use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
-use Blueprint\Models\Column;
 use Blueprint\Models\Model;
 use Blueprint\Tree;
 use Carbon\Carbon;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Symfony\Component\Finder\SplFileInfo;
-
-use function addslashes;
-use function array_map;
-use function collect;
-use function config;
-use function count;
-use function current;
-use function explode;
-use function implode;
-use function in_array;
-use function is_array;
-use function is_null;
-use function is_numeric;
-use function json_encode;
-use function key;
-use function sort;
-use function sprintf;
-use function str_contains;
-use function str_pad;
-use function str_replace;
-use function strtolower;
-use function trim;
-use function ucfirst;
-use function version_compare;
-
-use const PHP_EOL;
+use Illuminate\Filesystem\Filesystem;
 
 class MigrationGenerator implements Generator
 {
@@ -49,16 +22,16 @@ class MigrationGenerator implements Generator
     ];
 
     const ON_DELETE_CLAUSES = [
-        'cascade'   => "->onDelete('cascade')",
-        'restrict'  => "->onDelete('restrict')",
-        'null'      => "->onDelete('set null')",
+        'cascade' => "->onDelete('cascade')",
+        'restrict' => "->onDelete('restrict')",
+        'null' => "->onDelete('set null')",
         'no_action' => "->onDelete('no action')",
     ];
 
     const ON_UPDATE_CLAUSES = [
-        'cascade'   => "->onUpdate('cascade')",
-        'restrict'  => "->onUpdate('restrict')",
-        'null'      => "->onUpdate('set null')",
+        'cascade' => "->onUpdate('cascade')",
+        'restrict' => "->onUpdate('restrict')",
+        'null' => "->onUpdate('set null')",
         'no_action' => "->onUpdate('no action')",
     ];
 
@@ -71,7 +44,9 @@ class MigrationGenerator implements Generator
         'tinyInteger',
     ];
 
-    /** @var Filesystem */
+    /**
+     * @var Filesystem
+     */
     protected $filesystem;
 
     private $output = [];
@@ -90,14 +65,14 @@ class MigrationGenerator implements Generator
         $stub = $this->filesystem->stub('migration.stub');
 
         /**
- * @var Model $model
+ * @var \Blueprint\Models\Model $model
 */
         foreach ($tree->models() as $model) {
             $tables['tableNames'][$model->tableName()] = $this->populateStub($stub, $model);
 
             if (! empty($model->pivotTables())) {
                 foreach ($model->pivotTables() as $pivotSegments) {
-                    $pivotTableName                             = $this->getPivotTableName($pivotSegments);
+                    $pivotTableName = $this->getPivotTableName($pivotSegments);
                     $tables['pivotTableNames'][$pivotTableName] = $this->populatePivotStub($stub, $pivotSegments);
                 }
             }
@@ -115,12 +90,12 @@ class MigrationGenerator implements Generator
     {
         $output = [];
 
-        $sequential_timestamp = Carbon::now()->copy()->subSeconds(
+        $sequential_timestamp = \Carbon\Carbon::now()->copy()->subSeconds(
             collect($tables['tableNames'])->merge($tables['pivotTableNames'])->count()
         );
 
         foreach ($tables['tableNames'] as $tableName => $data) {
-            $path   = $this->getTablePath($tableName, $sequential_timestamp->addSecond(), $overwrite);
+            $path = $this->getTablePath($tableName, $sequential_timestamp->addSecond(), $overwrite);
             $action = $this->filesystem->exists($path) ? 'updated' : 'created';
             $this->filesystem->put($path, $data);
 
@@ -128,7 +103,7 @@ class MigrationGenerator implements Generator
         }
 
         foreach ($tables['pivotTableNames'] as $tableName => $data) {
-            $path   = $this->getTablePath($tableName, $sequential_timestamp->addSecond(), $overwrite);
+            $path = $this->getTablePath($tableName, $sequential_timestamp->addSecond(), $overwrite);
             $action = $this->filesystem->exists($path) ? 'updated' : 'created';
             $this->filesystem->put($path, $data);
 
@@ -145,7 +120,7 @@ class MigrationGenerator implements Generator
         $stub = str_replace('{{ definition }}', $this->buildDefinition($model), $stub);
 
         if (Blueprint::supportsReturnTypeHits()) {
-            $stub = str_replace(['up()', 'down()'], ['up(): void', 'down(): void'], $stub);
+            $stub =  str_replace(['up()','down()'], ['up(): void','down(): void'], $stub);
         }
 
         if ($this->hasForeignKeyConstraints) {
@@ -173,7 +148,7 @@ class MigrationGenerator implements Generator
         $definition = '';
 
         /**
- * @var Column $column
+ * @var \Blueprint\Models\Column $column
 */
         foreach ($model->columns() as $column) {
             $dataType = $column->dataType();
@@ -213,12 +188,12 @@ class MigrationGenerator implements Generator
 
             $modifiers = $column->modifiers();
 
-            $foreign          = '';
+            $foreign = '';
             $foreign_modifier = $column->isForeignKey();
 
             if ($this->shouldAddForeignKeyConstraint($column)) {
                 $this->hasForeignKeyConstraints = true;
-                $foreign                        = $this->buildForeignKey(
+                $foreign = $this->buildForeignKey(
                     $column->name(),
                     $foreign_modifier === 'foreign' ? null : $foreign_modifier,
                     $column->dataType(),
@@ -228,7 +203,7 @@ class MigrationGenerator implements Generator
 
                 if ($column->dataType() === 'id' && $this->isLaravel7orNewer()) {
                     $column_definition = $foreign;
-                    $foreign           = '';
+                    $foreign = '';
                 }
 
                 // TODO: unset the proper modifier
@@ -245,7 +220,7 @@ class MigrationGenerator implements Generator
 
             foreach ($modifiers as $modifier) {
                 if (is_array($modifier)) {
-                    $modifierKey   = key($modifier);
+                    $modifierKey = key($modifier);
                     $modifierValue = addslashes(current($modifier));
                     if ($modifierKey === 'default' && ($modifierValue === 'null' || $dataType === 'boolean' || $this->isNumericDefault($dataType, $modifierValue))) {
                         $column_definition .= sprintf("->%s(%s)", $modifierKey, $modifierValue);
@@ -279,7 +254,7 @@ class MigrationGenerator implements Generator
         }
 
         foreach ($model->indexes() as $index) {
-            $index_definition  = self::INDENT;
+            $index_definition = self::INDENT;
             $index_definition .= '$table->' . $index->type();
             if (count($index->columns()) > 1) {
                 $index_definition .= "(['" . implode("', '", $index->columns()) . "']);" . PHP_EOL;
@@ -300,10 +275,10 @@ class MigrationGenerator implements Generator
         $definition = '';
 
         foreach ($segments as $segment) {
-            $column     = Str::before(Str::snake($segment), ':');
+            $column = Str::before(Str::snake($segment), ':');
             $references = 'id';
-            $on         = Str::plural($column);
-            $foreign    = Str::singular($column) . '_' . $references;
+            $on = Str::plural($column);
+            $foreign = Str::singular($column) . '_' . $references;
 
             if (! $this->isLaravel7orNewer()) {
                 $definition .= self::INDENT . '$table->unsignedBigInteger(\'' . $foreign . '\');' . PHP_EOL;
@@ -311,7 +286,7 @@ class MigrationGenerator implements Generator
 
             if (config('blueprint.use_constraints')) {
                 $this->hasForeignKeyConstraints = true;
-                $definition                    .= $this->buildForeignKey($foreign, $on, 'id') . ';' . PHP_EOL;
+                $definition .= $this->buildForeignKey($foreign, $on, 'id') . ';' . PHP_EOL;
             } elseif ($this->isLaravel7orNewer()) {
                 $definition .= self::INDENT . '$table->foreignId(\'' . $foreign . '\');' . PHP_EOL;
             }
@@ -323,13 +298,13 @@ class MigrationGenerator implements Generator
     protected function buildForeignKey(string $column_name, ?string $on, string $type, array $attributes = [], array $modifiers = [])
     {
         if (is_null($on)) {
-            $table  = Str::plural(Str::beforeLast($column_name, '_'));
+            $table = Str::plural(Str::beforeLast($column_name, '_'));
             $column = Str::afterLast($column_name, '_');
         } elseif (Str::contains($on, '.')) {
             [$table, $column] = explode('.', $on);
-            $table            = Str::snake($table);
+            $table = Str::snake($table);
         } else {
-            $table  = Str::plural($on);
+            $table = Str::plural($on);
             $column = Str::afterLast($column_name, '_');
         }
 
@@ -396,7 +371,7 @@ class MigrationGenerator implements Generator
 
     protected function getTablePath($tableName, Carbon $timestamp, $overwrite = false)
     {
-        $dir  = 'database/migrations/';
+        $dir = 'database/migrations/';
         $name = '_create_' . $tableName . '_table.php';
 
         if ($overwrite) {
@@ -449,7 +424,9 @@ class MigrationGenerator implements Generator
             )->first();
 
         if ($isCustom) {
-            return Str::after($isCustom, ':');
+            $table = Str::after($isCustom, ':');
+
+            return $table;
         }
 
         $segments = array_map(
@@ -463,7 +440,7 @@ class MigrationGenerator implements Generator
         return strtolower(implode('_', $segments));
     }
 
-    private function shouldAddForeignKeyConstraint(Column $column)
+    private function shouldAddForeignKeyConstraint(\Blueprint\Models\Column $column)
     {
         if ($column->name() === 'id') {
             return false;

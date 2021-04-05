@@ -2,20 +2,21 @@
 
 namespace Blueprint\Models\Statements;
 
-use function array_map;
-use function implode;
-
 class DispatchStatement
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     private $job;
 
-    /** @var array */
+    /**
+     * @var array
+     */
     private $data;
 
     public function __construct(string $job, array $data = [])
     {
-        $this->job  = $job;
+        $this->job = $job;
         $this->data = $data;
     }
 
@@ -47,12 +48,9 @@ class DispatchStatement
 
     private function buildParameters(array $data)
     {
-        $parameters = array_map(
-            function ($parameter) {
-                return '$' . $parameter;
-            },
-            $data
-        );
+        $parameters = array_map(function ($parameter) {
+            return '$' . $parameter;
+        }, $data);
 
         return implode(', ', $parameters);
     }

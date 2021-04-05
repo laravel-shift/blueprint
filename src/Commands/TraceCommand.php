@@ -8,9 +8,6 @@ use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
-use function count;
-use function resolve;
-
 class TraceCommand extends Command
 {
     /**
@@ -27,18 +24,22 @@ class TraceCommand extends Command
      */
     protected $description = 'Create definitions for existing models to reference in new drafts';
 
-    /** @var Filesystem $filesystem */
+    /** @var Filesystem $files */
     protected $filesystem;
 
     /** @var Tracer */
     private $tracer;
 
+    /**
+     * @param Filesystem $filesystem
+     * @param Tracer     $tracer
+     */
     public function __construct(Filesystem $filesystem, Tracer $tracer)
     {
         parent::__construct();
 
         $this->filesystem = $filesystem;
-        $this->tracer     = $tracer;
+        $this->tracer = $tracer;
     }
 
     /**
@@ -48,7 +49,7 @@ class TraceCommand extends Command
      */
     public function handle()
     {
-        $blueprint   = resolve(Blueprint::class);
+        $blueprint = resolve(Blueprint::class);
         $definitions = $this->tracer->execute($blueprint, $this->filesystem);
 
         if (empty($definitions)) {

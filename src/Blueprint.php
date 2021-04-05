@@ -8,25 +8,9 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Symfony\Component\Yaml\Yaml;
 
-use function array_merge;
-use function array_merge_recursive;
-use function boolval;
-use function collect;
-use function config;
-use function count;
-use function get_class;
-use function ltrim;
-use function preg_replace;
-use function preg_replace_callback;
-use function str_replace;
-use function strtolower;
-use function version_compare;
-
-use const PHP_VERSION;
-
 class Blueprint
 {
-    private $lexers     = [];
+    private $lexers = [];
     private $generators = [];
 
     public static function relativeNamespace(string $fullyQualifiedClassName)
@@ -115,7 +99,7 @@ class Blueprint
     public function analyze(array $tokens)
     {
         $registry = [
-            'models'      => [],
+            'models' => [],
             'controllers' => [],
         ];
 

@@ -4,13 +4,8 @@ namespace Blueprint\Generators\Statements;
 
 use Blueprint\Blueprint;
 use Blueprint\Generators\StatementGenerator;
-use Blueprint\Models\Controller;
 use Blueprint\Models\Statements\DispatchStatement;
 use Blueprint\Tree;
-
-use function config;
-use function dirname;
-use function str_replace;
 
 class JobGenerator extends StatementGenerator
 {
@@ -23,7 +18,7 @@ class JobGenerator extends StatementGenerator
         $stub = $this->filesystem->stub('job.stub');
 
         /**
- * @var Controller $controller
+ * @var \Blueprint\Models\Controller $controller
 */
         foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {

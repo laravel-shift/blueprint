@@ -9,27 +9,20 @@ use Blueprint\Models\Model;
 use Blueprint\Models\Statements\ResourceStatement;
 use Blueprint\Tree;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Str;
-
-use function array_diff;
-use function array_keys;
-use function config;
-use function dirname;
-use function implode;
-use function str_replace;
-
-use const PHP_EOL;
 
 class ResourceGenerator implements Generator
 {
     const INDENT = '            ';
 
-    /** @var Filesystem */
+    /**
+     * @var Filesystem
+     */
     protected $filesystem;
 
-    /** @var Tree */
+    /**
+     * @var Tree
+     */
     private $tree;
 
     public function __construct(Filesystem $filesystem)
@@ -46,7 +39,7 @@ class ResourceGenerator implements Generator
         $stub = $this->filesystem->stub('resource.stub');
 
         /**
- * @var Controller $controller
+ * @var \Blueprint\Models\Controller $controller
 */
         foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
@@ -92,7 +85,7 @@ class ResourceGenerator implements Generator
             . ($controller->namespace() ? '\\' . $controller->namespace() : '');
 
         $stub = str_replace('{{ namespace }}', $namespace, $stub);
-        $stub = str_replace('{{ import }}', $resource->collection() ? ResourceCollection::class : JsonResource::class, $stub);
+        $stub = str_replace('{{ import }}', $resource->collection() ? 'Illuminate\\Http\\Resources\\Json\\ResourceCollection' : 'Illuminate\\Http\\Resources\\Json\\JsonResource', $stub);
         $stub = str_replace('{{ parentClass }}', $resource->collection() ? 'ResourceCollection' : 'JsonResource', $stub);
         $stub = str_replace('{{ class }}', $resource->name(), $stub);
         $stub = str_replace('{{ parentClass }}', $resource->collection() ? 'ResourceCollection' : 'JsonResource', $stub);
@@ -110,7 +103,7 @@ class ResourceGenerator implements Generator
         $context = Str::singular($resource->reference());
 
         /**
- * @var Model $model
+ * @var \Blueprint\Models\Model $model
 */
         $model = $this->tree->modelForContext($context);
 
@@ -137,8 +130,8 @@ class ResourceGenerator implements Generator
         return array_diff(
             array_keys($model->columns()),
             [
-                'password',
-                'remember_token',
+            'password',
+            'remember_token',
             ]
         );
     }

@@ -2,21 +2,24 @@
 
 namespace Blueprint\Models\Statements;
 
-use function ctype_digit;
-use function sprintf;
+use Illuminate\Support\Str;
 
 class RespondStatement
 {
-    /** @var int */
+    /**
+     * @var int
+     */
     private $status = 200;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $content;
 
     public function __construct(string $data)
     {
         if (ctype_digit($data)) {
-            $this->status = (int) $data;
+            $this->status = (int)$data;
         } else {
             $this->content = $data;
         }

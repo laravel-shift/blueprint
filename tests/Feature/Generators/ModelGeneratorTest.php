@@ -4,20 +4,15 @@ namespace Tests\Feature\Generators;
 
 use Blueprint\Blueprint;
 use Blueprint\Generators\ModelGenerator;
-use Blueprint\Lexers\ModelLexer;
 use Blueprint\Tree;
 use Illuminate\Support\Facades\App;
-use Mockery;
 use Tests\TestCase;
-
-use function dirname;
-use function in_array;
-use function str_replace;
-use function version_compare;
 
 class ModelGeneratorTest extends TestCase
 {
     private $blueprint;
+
+    protected $files;
 
     /** @var ModelGenerator */
     private $subject;
@@ -27,10 +22,10 @@ class ModelGeneratorTest extends TestCase
         parent::setUp();
 
         $this->modelStub = version_compare(App::version(), '8.0.0', '>=') ? 'model.class.stub' : 'model.class.no-factory.stub';
-        $this->subject   = new ModelGenerator($this->filesystem);
+        $this->subject = new ModelGenerator($this->files);
 
         $this->blueprint = new Blueprint();
-        $this->blueprint->registerLexer(new ModelLexer());
+        $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
         $this->blueprint->registerGenerator($this->subject);
     }
 
@@ -91,7 +86,7 @@ class ModelGeneratorTest extends TestCase
             ->with($path, $this->fixture($model));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
@@ -142,7 +137,7 @@ class ModelGeneratorTest extends TestCase
             ->with($path, $this->fixture(str_replace('models', 'models', $model)));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
@@ -193,7 +188,7 @@ class ModelGeneratorTest extends TestCase
             ->with($path, $this->fixture(str_replace('models', 'models', $model)));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
@@ -220,7 +215,7 @@ class ModelGeneratorTest extends TestCase
             ->andReturn($this->stub('model.method.stub'))
             ->twice();
 
-        $certificateModel     = 'app/Certificate.php';
+        $certificateModel = 'app/Certificate.php';
         $certificateTypeModel = 'app/CertificateType.php';
 
         $this->filesystem->expects('exists')
@@ -236,7 +231,7 @@ class ModelGeneratorTest extends TestCase
             ->with($certificateTypeModel, $this->fixture('models/certificate-type-pascal-case-example-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/pascal-case.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$certificateModel, $certificateTypeModel]], $this->subject->output($tree));
     }
@@ -267,7 +262,7 @@ class ModelGeneratorTest extends TestCase
             ->with('app/Subscription.php', $this->fixture('models/model-relationships-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/model-relationships.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['app/Subscription.php']], $this->subject->output($tree));
     }
@@ -313,7 +308,7 @@ class ModelGeneratorTest extends TestCase
             ->with('app/Image.php', $this->fixture('models/image-polymorphic-relationship-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/polymorphic-relationships.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['app/Post.php', 'app/User.php', 'app/Image.php']], $this->subject->output($tree));
     }
@@ -347,7 +342,7 @@ class ModelGeneratorTest extends TestCase
             ->with('app/State.php', $this->fixture('models/disable-auto-columns-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/disable-auto-columns.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['app/State.php']], $this->subject->output($tree));
     }
@@ -387,7 +382,7 @@ class ModelGeneratorTest extends TestCase
             ->with('src/path/Models/Comment.php', $this->fixture('models/model-configured-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/relationships.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['src/path/Models/Comment.php']], $this->subject->output($tree));
     }
@@ -435,7 +430,7 @@ class ModelGeneratorTest extends TestCase
             ->with($path, $this->fixture($model));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
@@ -489,7 +484,7 @@ class ModelGeneratorTest extends TestCase
             ->with($path, $this->fixture(str_replace('models', 'models', $model)));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
@@ -543,7 +538,7 @@ class ModelGeneratorTest extends TestCase
             ->with($path, $this->fixture(str_replace('models', 'models', $model)));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
@@ -580,7 +575,7 @@ class ModelGeneratorTest extends TestCase
             ->with('app/Comment.php', $this->fixture('models/model-guarded-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/model-guarded.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['app/Comment.php']], $this->subject->output($tree));
     }
@@ -613,16 +608,16 @@ class ModelGeneratorTest extends TestCase
             ->times(4)
             ->andReturnTrue();
         $this->filesystem->expects('put')
-            ->with('app/Models/QuestionType.php', Mockery::type('string'));
+            ->with('app/Models/QuestionType.php', \Mockery::type('string'));
         $this->filesystem->expects('put')
-            ->with('app/Models/Appointment/AppointmentType.php', Mockery::type('string'));
+            ->with('app/Models/Appointment/AppointmentType.php', \Mockery::type('string'));
         $this->filesystem->expects('put')
-            ->with('app/Models/Screening/Report.php', Mockery::type('string'));
+            ->with('app/Models/Screening/Report.php', \Mockery::type('string'));
         $this->filesystem->expects('put')
             ->with('app/Models/Screening/ScreeningQuestion.php', $this->fixture('models/nested-models-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/nested-models.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([
             'created' => [
@@ -641,8 +636,8 @@ class ModelGeneratorTest extends TestCase
     public function output_generates_models_with_custom_namespace_correctly()
     {
         $definition = 'drafts/custom-models-namespace.yaml';
-        $path       = 'app/Models/Tag.php';
-        $model      = 'models/custom-models-namespace-laravel8.php';
+        $path = 'app/Models/Tag.php';
+        $model = 'models/custom-models-namespace-laravel8.php';
 
         $this->app['config']->set('blueprint.models_namespace', 'Models');
 
@@ -666,7 +661,7 @@ class ModelGeneratorTest extends TestCase
             ->with($path, $this->fixture($model));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
@@ -700,7 +695,7 @@ class ModelGeneratorTest extends TestCase
             ->with('app/User.php', $this->fixture('models/custom-pivot-table-name-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/custom-pivot-table-name.yaml'));
-        $tree   = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['app/User.php']], $this->subject->output($tree));
     }

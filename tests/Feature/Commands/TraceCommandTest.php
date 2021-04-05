@@ -3,11 +3,12 @@
 namespace Tests\Feature\Commands;
 
 use Blueprint\Blueprint;
+use Blueprint\Builder;
+use Blueprint\Commands\TraceCommand;
 use Blueprint\Tracer;
+use Illuminate\Support\Facades\File;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Tests\TestCase;
-
-use function resolve;
 
 /**
  * @covers \Blueprint\Commands\TraceCommand
@@ -38,7 +39,7 @@ class TraceCommandTest extends TestCase
         $tracer->shouldReceive('execute')
             ->with(resolve(Blueprint::class), $this->files)
             ->andReturn([
-                "Model"      => [],
+                "Model" => [],
                 "OtherModel" => [],
             ]);
 

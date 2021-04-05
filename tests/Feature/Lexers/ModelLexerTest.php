@@ -7,7 +7,9 @@ use Tests\TestCase;
 
 class ModelLexerTest extends TestCase
 {
-    /** @var ModelLexer */
+    /**
+     * @var ModelLexer
+     */
     private $subject;
 
     protected function setUp(): void
@@ -24,7 +26,7 @@ class ModelLexerTest extends TestCase
     {
         $this->assertEquals([
             'models' => [],
-            'cache'  => [],
+            'cache' => [],
         ], $this->subject->analyze([]));
     }
 
@@ -35,12 +37,12 @@ class ModelLexerTest extends TestCase
     {
         $tokens = [
             'models' => [
-                'ModelOne'   => [
-                    'id'   => 'id',
+                'ModelOne' => [
+                    'id' => 'id',
                     'name' => 'string nullable',
                 ],
-                'ModelTwo'   => [
-                    'count'      => 'integer',
+                'ModelTwo' => [
+                    'count' => 'integer',
                     'timestamps' => 'timestamps',
                 ],
                 'ModelThree' => [
@@ -222,7 +224,7 @@ class ModelLexerTest extends TestCase
             'models' => [
                 'Model' => [
                     'sequence' => 'unsignedbiginteger autoincrement',
-                    'content'  => 'longtext',
+                    'content' => 'longtext',
                     'saved_at' => 'timestamptz usecurrent',
                 ],
             ],
@@ -387,7 +389,7 @@ class ModelLexerTest extends TestCase
         $tokens = [
             'models' => [
                 'Model' => [
-                    'post_id'   => 'foreign',
+                    'post_id' => 'foreign',
                     'author_id' => 'foreign:user',
                 ],
             ],
@@ -424,11 +426,11 @@ class ModelLexerTest extends TestCase
         $tokens = [
             'models' => [
                 'Model' => [
-                    'post_id'   => 'id foreign',
+                    'post_id' => 'id foreign',
                     'author_id' => 'id foreign:users',
-                    'uid'       => 'id:user foreign:users.id',
-                    'cntry_id'  => 'foreign:countries',
-                    'ccid'      => 'foreign:countries.code',
+                    'uid' => 'id:user foreign:users.id',
+                    'cntry_id' => 'foreign:countries',
+                    'ccid' => 'foreign:countries.code',
                 ],
             ],
         ];
@@ -494,17 +496,17 @@ class ModelLexerTest extends TestCase
         $tokens = [
             'models' => [
                 'NewModel' => [
-                    'id'   => 'id',
+                    'id' => 'id',
                     'name' => 'string nullable',
                 ],
             ],
-            'cache'  => [
+            'cache' => [
                 'CachedModelOne' => [
-                    'count'      => 'integer',
+                    'count' => 'integer',
                     'timestamps' => 'timestamps',
                 ],
                 'CachedModelTwo' => [
-                    'id'   => 'id',
+                    'id' => 'id',
                     'name' => 'string nullable',
                 ],
             ],
@@ -569,13 +571,13 @@ class ModelLexerTest extends TestCase
         $tokens = [
             'models' => [
                 'Subscription' => [
-                    'different_id'  => 'id:user',
-                    'title'         => 'string',
-                    'price'         => 'float',
+                    'different_id' => 'id:user',
+                    'title' => 'string',
+                    'price' => 'float',
                     'relationships' => [
                         'belongsToMany' => 'Team',
-                        'hasmany'       => 'Order',
-                        'hasOne'        => 'Duration, Transaction:tid',
+                        'hasmany' => 'Order',
+                        'hasOne' => 'Duration, Transaction:tid',
                     ],
                 ],
             ],
@@ -614,7 +616,7 @@ class ModelLexerTest extends TestCase
                 'Model' => [
                     'relationships' => [
                         'morphTo' => 'Morphable',
-                    ],
+                    ]
                 ],
             ],
         ];
