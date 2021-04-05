@@ -15,9 +15,11 @@ class EventGenerator extends StatementGenerator
     {
         $output = [];
 
-        $stub = $this->files->stub('event.stub');
+        $stub = $this->filesystem->stub('event.stub');
 
-        /** @var \Blueprint\Models\Controller $controller */
+        /**
+ * @var \Blueprint\Models\Controller $controller
+*/
         foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
@@ -31,15 +33,15 @@ class EventGenerator extends StatementGenerator
 
                     $path = $this->getPath($statement->event());
 
-                    if ($this->files->exists($path)) {
+                    if ($this->filesystem->exists($path)) {
                         continue;
                     }
 
-                    if (! $this->files->exists(dirname($path))) {
-                        $this->files->makeDirectory(dirname($path), 0755, true);
+                    if (! $this->filesystem->exists(dirname($path))) {
+                        $this->filesystem->makeDirectory(dirname($path), 0755, true);
                     }
 
-                    $this->files->put($path, $this->populateStub($stub, $statement));
+                    $this->filesystem->put($path, $this->populateStub($stub, $statement));
 
                     $output['created'][] = $path;
                 }

@@ -31,20 +31,20 @@ class BuildCommand extends Command
     protected $description = 'Build components from a Blueprint draft';
 
     /** @var Filesystem */
-    protected $files;
+    protected $filesystem;
 
     /** @var Builder */
     private $builder;
 
     /**
-     * @param Filesystem $files
-     * @param Builder $builder
+     * @param Filesystem $filesystem
+     * @param Builder    $builder
      */
-    public function __construct(Filesystem $files, Builder $builder)
+    public function __construct(Filesystem $filesystem, Builder $builder)
     {
         parent::__construct();
 
-        $this->files = $files;
+        $this->filesystem = $filesystem;
         $this->builder = $builder;
     }
 
@@ -52,7 +52,7 @@ class BuildCommand extends Command
     {
         $file = $this->argument('draft') ?? $this->defaultDraftFile();
 
-        if (!$this->files->exists($file)) {
+        if (!$this->filesystem->exists($file)) {
             $this->error('Draft file could not be found: ' . ($file ?: 'draft.yaml'));
             return 1;
         }
@@ -62,16 +62,20 @@ class BuildCommand extends Command
         $overwriteMigrations = $this->option('overwrite-migrations') ?: false;
 
         $blueprint = resolve(Blueprint::class);
-        $generated = $this->builder->execute($blueprint, $this->files, $file, $only, $skip, $overwriteMigrations);
+        $generated = $this->builder->execute($blueprint, $this->filesystem, $file, $only, $skip, $overwriteMigrations);
 
-        collect($generated)->each(function ($files, $action) {
-            $this->line(Str::studly($action) . ':', $this->outputStyle($action));
-            collect($files)->each(function ($file) {
-                $this->line('- ' . $file);
-            });
+        collect($generated)->each(
+            function ($files, $action) {
+                $this->line(Str::studly($action) . ':', $this->outputStyle($action));
+                collect($files)->each(
+                    function ($file) {
+                        $this->line('- ' . $file);
+                    }
+                );
 
-            $this->line('');
-        });
+                $this->line('');
+            }
+        );
     }
 
     /**

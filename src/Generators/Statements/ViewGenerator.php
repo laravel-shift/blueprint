@@ -9,21 +9,25 @@ use Illuminate\Filesystem\Filesystem;
 
 class ViewGenerator implements Generator
 {
-    /** @var Filesystem */
-    protected $files;
+    /**
+     * @var Filesystem
+     */
+    protected $filesystem;
 
-    public function __construct(Filesystem $files)
+    public function __construct(Filesystem $filesystem)
     {
-        $this->files = $files;
+        $this->filesystem = $filesystem;
     }
 
     public function output(Tree $tree): array
     {
         $output = [];
 
-        $stub = $this->files->stub('view.stub');
+        $stub = $this->filesystem->stub('view.stub');
 
-        /** @var \Blueprint\Models\Controller $controller */
+        /**
+ * @var \Blueprint\Models\Controller $controller
+*/
         foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
@@ -33,16 +37,16 @@ class ViewGenerator implements Generator
 
                     $path = $this->getPath($statement->view());
 
-                    if ($this->files->exists($path)) {
+                    if ($this->filesystem->exists($path)) {
                         // TODO: mark skipped...
                         continue;
                     }
 
-                    if (! $this->files->exists(dirname($path))) {
-                        $this->files->makeDirectory(dirname($path), 0755, true);
+                    if (! $this->filesystem->exists(dirname($path))) {
+                        $this->filesystem->makeDirectory(dirname($path), 0755, true);
                     }
 
-                    $this->files->put($path, $this->populateStub($stub, $statement));
+                    $this->filesystem->put($path, $this->populateStub($stub, $statement));
 
                     $output['created'][] = $path;
                 }

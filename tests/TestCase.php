@@ -4,10 +4,14 @@ namespace Tests;
 
 use Blueprint\BlueprintServiceProvider;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
+    /** @var Filesystem */
+    protected $filesystem;
+
     /** @var Filesystem */
     protected $files;
 
@@ -15,7 +19,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
     {
         parent::setUp();
 
-        $this->files = File::spy();
+        $this->files = $this->filesystem = File::spy();
     }
 
     protected function getEnvironmentSetUp($app)

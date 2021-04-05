@@ -15,9 +15,11 @@ class NotificationGenerator extends StatementGenerator
     {
         $output = [];
 
-        $stub = $this->files->stub('notification.stub');
+        $stub = $this->filesystem->stub('notification.stub');
 
-        /** @var \Blueprint\Models\Controller $controller */
+        /**
+ * @var \Blueprint\Models\Controller $controller
+*/
         foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
@@ -31,15 +33,15 @@ class NotificationGenerator extends StatementGenerator
 
                     $path = $this->getPath($statement->mail());
 
-                    if ($this->files->exists($path)) {
+                    if ($this->filesystem->exists($path)) {
                         continue;
                     }
 
-                    if (!$this->files->exists(dirname($path))) {
-                        $this->files->makeDirectory(dirname($path), 0755, true);
+                    if (!$this->filesystem->exists(dirname($path))) {
+                        $this->filesystem->makeDirectory(dirname($path), 0755, true);
                     }
 
-                    $this->files->put($path, $this->populateStub($stub, $statement));
+                    $this->filesystem->put($path, $this->populateStub($stub, $statement));
 
                     $output['created'][] = $path;
                 }

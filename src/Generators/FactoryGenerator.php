@@ -15,17 +15,21 @@ class FactoryGenerator implements Generator
 {
     const INDENT = '    ';
 
-    /** @var Filesystem */
-    protected $files;
+    /**
+     * @var Filesystem
+     */
+    protected $filesystem;
 
-    /** @var Tree */
+    /**
+     * @var Tree
+     */
     private $tree;
 
     private $imports = [];
 
-    public function __construct(Filesystem $files)
+    public function __construct(Filesystem $filesystem)
     {
-        $this->files = $files;
+        $this->filesystem = $filesystem;
     }
 
     public function output(Tree $tree): array
@@ -35,12 +39,14 @@ class FactoryGenerator implements Generator
         $output = [];
 
         if (Blueprint::isLaravel8OrHigher()) {
-            $stub = $this->files->stub('factory.stub');
+            $stub = $this->filesystem->stub('factory.stub');
         } else {
-            $stub = $this->files->stub('factory.closure.stub');
+            $stub = $this->filesystem->stub('factory.closure.stub');
         }
 
-        /** @var \Blueprint\Models\Model $model */
+        /**
+ * @var \Blueprint\Models\Model $model
+*/
         foreach ($tree->models() as $model) {
             if (!Blueprint::isLaravel8OrHigher()) {
                 $this->addImport($model, 'Faker\Generator as Faker');
@@ -49,11 +55,11 @@ class FactoryGenerator implements Generator
 
             $path = $this->getPath($model);
 
-            if (!$this->files->exists(dirname($path))) {
-                $this->files->makeDirectory(dirname($path), 0755, true);
+            if (!$this->filesystem->exists(dirname($path))) {
+                $this->filesystem->makeDirectory(dirname($path), 0755, true);
             }
 
-            $this->files->put($path, $this->populateStub($stub, $model));
+            $this->filesystem->put($path, $this->populateStub($stub, $model));
 
             $output['created'][] = $path;
         }
@@ -82,10 +88,14 @@ class FactoryGenerator implements Generator
         $stub = str_replace('//', $this->buildDefinition($model), $stub);
 
         if (!Blueprint::isLaravel8OrHigher()) {
-            $stub = str_replace([
+            $stub = str_replace(
+                [
                 "use Faker\Generator as Faker;\r\nuse",
                 "use Faker\Generator as Faker;\nuse"
-            ], "use", $stub);
+                ],
+                "use",
+                $stub
+            );
         }
 
         if (Blueprint::supportsReturnTypeHits()) {
@@ -103,7 +113,9 @@ class FactoryGenerator implements Generator
 
         $fillable = $this->fillableColumns($model->columns());
 
-        /** @var \Blueprint\Models\Column $column */
+        /**
+ * @var \Blueprint\Models\Column $column
+*/
         foreach ($fillable as $column) {
             if ($column->name() === 'id') {
                 continue;
@@ -274,9 +286,15 @@ class FactoryGenerator implements Generator
         $imports = array_unique($this->imports[$model->name()]);
         sort($imports);
 
-        return implode(PHP_EOL, array_map(function ($class) {
-            return 'use ' . $class . ';';
-        }, $imports));
+        return implode(
+            PHP_EOL,
+            array_map(
+                function ($class) {
+                    return 'use ' . $class . ';';
+                },
+                $imports
+            )
+        );
     }
 
     private function addImport(Model $model, $class)
@@ -290,9 +308,12 @@ class FactoryGenerator implements Generator
             return $columns;
         }
 
-        return array_filter($columns, function (Column $column) {
-            return !in_array('nullable', $column->modifiers());
-        });
+        return array_filter(
+            $columns,
+            function (Column $column) {
+                return !in_array('nullable', $column->modifiers());
+            }
+        );
     }
 
     private function fullyQualifyModelReference(string $model_name)

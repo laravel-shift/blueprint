@@ -37,11 +37,11 @@ class FactoryGeneratorTest extends TestCase
      */
     public function output_writes_nothing_for_empty_tree()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->factoryStub)
             ->andReturn($this->stub($this->factoryStub));
 
-        $this->files->shouldNotHaveReceived('put');
+        $this->filesystem->shouldNotHaveReceived('put');
 
         $this->assertEquals([], $this->subject->output(new Tree(['models' => []])));
     }
@@ -53,15 +53,15 @@ class FactoryGeneratorTest extends TestCase
      */
     public function output_writes_factory_for_model_tree($definition, $path, $factory)
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->factoryStub)
             ->andReturn($this->stub($this->factoryStub));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('database/factories')
             ->andReturnTrue();
 
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with($path, $this->fixture($factory));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
@@ -77,15 +77,15 @@ class FactoryGeneratorTest extends TestCase
      */
     public function output_writes_factory_for_model_tree_l7($definition, $path, $factory)
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->factoryStub)
             ->andReturn($this->stub($this->factoryStub));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('database/factories')
             ->andReturnTrue();
 
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with($path, $this->fixture($factory));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
@@ -101,15 +101,15 @@ class FactoryGeneratorTest extends TestCase
      */
     public function output_writes_factory_for_model_tree_l6($definition, $path, $factory)
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->factoryStub)
             ->andReturn($this->stub($this->factoryStub));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('database/factories')
             ->andReturnTrue();
 
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with($path, $this->fixture($factory));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
@@ -126,15 +126,15 @@ class FactoryGeneratorTest extends TestCase
     {
         $this->app['config']->set('blueprint.fake_nullables', false);
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->factoryStub)
             ->andReturn($this->stub($this->factoryStub));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('database/factories')
             ->andReturnTrue();
 
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('database/factories/PostFactory.php', $this->fixture('factories/fake-nullables-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
@@ -151,15 +151,15 @@ class FactoryGeneratorTest extends TestCase
     {
         $this->app['config']->set('blueprint.use_return_types', true);
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->factoryStub)
             ->andReturn($this->stub($this->factoryStub));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('database/factories')
             ->andReturnTrue();
 
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('database/factories/PostFactory.php', $this->fixture('factories/return-type-declarations-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
@@ -174,21 +174,21 @@ class FactoryGeneratorTest extends TestCase
      */
     public function output_generates_references_for_nested_models()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->factoryStub)
             ->andReturn($this->stub($this->factoryStub));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->times(4)
             ->andReturnTrue();
 
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('database/factories/QuestionTypeFactory.php', \Mockery::type('string'));
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('database/factories/Appointment/AppointmentTypeFactory.php', \Mockery::type('string'));
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('database/factories/Screening/ReportFactory.php', \Mockery::type('string'));
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('database/factories/Screening/ScreeningQuestionFactory.php', $this->fixture('factories/nested-models-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/nested-models.yaml'));
@@ -213,15 +213,15 @@ class FactoryGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
         $this->app['config']->set('blueprint.models_namespace', 'Models');
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->factoryStub)
             ->andReturn($this->stub($this->factoryStub));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('database/factories')
             ->andReturnTrue();
 
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('database/factories/PostFactory.php', $this->fixture('factories/post-configured-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/post.yaml'));
@@ -236,17 +236,17 @@ class FactoryGeneratorTest extends TestCase
      */
     public function output_creates_directory_for_nested_components()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->factoryStub)
             ->andReturn($this->stub($this->factoryStub));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('database/factories/Admin')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
+        $this->filesystem->expects('makeDirectory')
             ->with('database/factories/Admin', 0755, true);
 
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('database/factories/Admin/UserFactory.php', $this->fixture('factories/nested-components-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/nested-components.yaml'));

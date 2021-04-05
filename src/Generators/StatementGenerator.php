@@ -8,15 +8,19 @@ use Illuminate\Filesystem\Filesystem;
 
 abstract class StatementGenerator implements Generator
 {
-    /** @var Filesystem */
-    protected $files;
+    /**
+     * @var Filesystem
+     */
+    protected $filesystem;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $new_instance = 'new instance';
 
-    public function __construct(Filesystem $files)
+    public function __construct(Filesystem $filesystem)
     {
-        $this->files = $files;
+        $this->filesystem = $filesystem;
     }
 
     protected function buildConstructor($statement)
@@ -24,7 +28,7 @@ abstract class StatementGenerator implements Generator
         static $constructor = null;
 
         if (is_null($constructor)) {
-            $constructor = str_replace('new instance', $this->new_instance, $this->files->stub('constructor.stub'));
+            $constructor = str_replace('new instance', $this->new_instance, $this->filesystem->stub('constructor.stub'));
         }
 
         if (empty($statement->data())) {
@@ -40,27 +44,42 @@ abstract class StatementGenerator implements Generator
 
     protected function buildProperties(array $data)
     {
-        return trim(array_reduce($data, function ($output, $property) {
-            $output .= '    public $' . $property . ';' . PHP_EOL . PHP_EOL;
+        return trim(
+            array_reduce(
+                $data,
+                function ($output, $property) {
+                    $output .= '    public $' . $property . ';' . PHP_EOL . PHP_EOL;
 
-            return $output;
-        }, ''));
+                    return $output;
+                },
+                ''
+            )
+        );
     }
 
     protected function buildAssignments(array $data)
     {
-        return trim(array_reduce($data, function ($output, $property) {
-            $output .= '        $this->' . $property . ' = $' . $property . ';' . PHP_EOL;
+        return trim(
+            array_reduce(
+                $data,
+                function ($output, $property) {
+                    $output .= '        $this->' . $property . ' = $' . $property . ';' . PHP_EOL;
 
-            return $output;
-        }, ''));
+                    return $output;
+                },
+                ''
+            )
+        );
     }
 
     protected function buildParameters(array $data)
     {
-        $parameters = array_map(function ($parameter) {
-            return '$' . $parameter;
-        }, $data);
+        $parameters = array_map(
+            function ($parameter) {
+                return '$' . $parameter;
+            },
+            $data
+        );
 
         return implode(', ', $parameters);
     }

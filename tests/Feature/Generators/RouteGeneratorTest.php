@@ -36,7 +36,7 @@ class RouteGeneratorTest extends TestCase
      */
     public function output_generates_nothing_for_empty_tree()
     {
-        $this->files->shouldNotHaveReceived('append');
+        $this->filesystem->shouldNotHaveReceived('append');
 
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
@@ -48,7 +48,7 @@ class RouteGeneratorTest extends TestCase
     public function output_generates_web_routes($definition, $routes)
     {
         $path = 'routes/web.php';
-        $this->files->expects('append')
+        $this->filesystem->expects('append')
             ->with($path, $this->fixture($routes));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
@@ -62,7 +62,7 @@ class RouteGeneratorTest extends TestCase
      */
     public function output_generates_api_routes()
     {
-        $this->files->expects('append')
+        $this->filesystem->expects('append')
             ->with('routes/api.php', $this->fixture('routes/api-routes.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/api-routes-example.yaml'));
@@ -76,9 +76,9 @@ class RouteGeneratorTest extends TestCase
      */
     public function output_generates_routes_for_mixed_resources()
     {
-        $this->files->expects('append')
+        $this->filesystem->expects('append')
             ->with('routes/api.php', $this->fixture('routes/multiple-resource-controllers-api.php'));
-        $this->files->expects('append')
+        $this->filesystem->expects('append')
             ->with('routes/web.php', $this->fixture('routes/multiple-resource-controllers-web.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/multiple-resource-controllers.yaml'));
@@ -94,7 +94,7 @@ class RouteGeneratorTest extends TestCase
     {
         config(['blueprint.generate_fqcn_route' => true]);
 
-        $this->files->expects('append')
+        $this->filesystem->expects('append')
             ->with('routes/web.php', $this->fixture('routes/routes-tuples.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/routes-tuples.yaml'));

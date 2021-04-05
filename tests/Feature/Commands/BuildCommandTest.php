@@ -17,7 +17,7 @@ class BuildCommandTest extends TestCase
     /** @test */
     public function it_uses_the_default_draft_file()
     {
-        $this->files->shouldReceive('exists')
+        $this->filesystem->shouldReceive('exists')
             ->with('draft.yaml')
             ->andReturnTrue();
 
@@ -34,7 +34,7 @@ class BuildCommandTest extends TestCase
     /** @test */
     public function it_passes_the_command_args_to_the_builder_in_right_order()
     {
-        $this->files->shouldReceive('exists')
+        $this->filesystem->shouldReceive('exists')
             ->with('test.yml')
             ->andReturnTrue();
 
@@ -51,7 +51,7 @@ class BuildCommandTest extends TestCase
     /** @test */
     public function it_fails_if_the_draft_file_not_exists()
     {
-        $this->files->shouldReceive('exists')
+        $this->filesystem->shouldReceive('exists')
             ->with('test.yml')
             ->andReturnFalse();
 
@@ -66,7 +66,7 @@ class BuildCommandTest extends TestCase
     /** @test */
     public function it_shows_the_generated_files_grouped_by_actions()
     {
-        $this->files->shouldReceive('exists')
+        $this->filesystem->shouldReceive('exists')
             ->with('draft.yaml')
             ->andReturnTrue();
         $builder = $this->mock(Builder::class);
