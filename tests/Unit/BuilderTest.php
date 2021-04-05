@@ -5,8 +5,10 @@ namespace Tests\Unit;
 use Blueprint\Blueprint;
 use Blueprint\Builder;
 use Blueprint\Tree;
-use Illuminate\Filesystem\Filesystem;
+use Mockery;
 use Tests\TestCase;
+
+use const PHP_EOL;
 
 class BuilderTest extends TestCase
 {
@@ -15,14 +17,14 @@ class BuilderTest extends TestCase
      */
     public function execute_builds_draft_content()
     {
-        $draft = 'draft blueprint content';
-        $tokens = ['some', 'blueprint', 'tokens'];
-        $registry = new Tree(['controllers' => [1, 2, 3]]);
-        $only = [];
-        $skip = [];
+        $draft     = 'draft blueprint content';
+        $tokens    = ['some', 'blueprint', 'tokens'];
+        $registry  = new Tree(['controllers' => [1, 2, 3]]);
+        $only      = [];
+        $skip      = [];
         $generated = ['created' => [1, 2], 'updated' => [3]];
 
-        $blueprint = \Mockery::mock(Blueprint::class);
+        $blueprint = Mockery::mock(Blueprint::class);
         $blueprint->expects('parse')
             ->with($draft, true)
             ->andReturn($tokens);
@@ -55,21 +57,21 @@ class BuilderTest extends TestCase
      */
     public function execute_uses_cache_and_remembers_models()
     {
-        $cache = [
-            'models' => [4, 5, 6],
+        $cache     = [
+            'models'  => [4, 5, 6],
             'created' => [4],
             'unknown' => [6],
         ];
-        $draft = 'draft blueprint content';
-        $tokens = [
-            'models' => [1, 2, 3]
+        $draft     = 'draft blueprint content';
+        $tokens    = [
+            'models' => [1, 2, 3],
         ];
-        $registry = new Tree(['registry']);
-        $only = [];
-        $skip = [];
+        $registry  = new Tree(['registry']);
+        $only      = [];
+        $skip      = [];
         $generated = ['created' => [1, 2], 'updated' => [3]];
 
-        $blueprint = \Mockery::mock(Blueprint::class);
+        $blueprint = Mockery::mock(Blueprint::class);
         $blueprint->expects('parse')
             ->with($draft, true)
             ->andReturn($tokens);
@@ -86,7 +88,7 @@ class BuilderTest extends TestCase
             ->with([
                 'created' => [1, 2],
                 'updated' => [3],
-                'models' => [4, 5, 6, 1, 2, 3]
+                'models'  => [4, 5, 6, 1, 2, 3],
             ])
             ->andReturn('cacheable blueprint content');
 
@@ -112,21 +114,21 @@ class BuilderTest extends TestCase
      */
     public function execute_calls_builder_without_stripping_dashes_for_draft_file_with_indexes_defined()
     {
-        $draft = 'models:';
+        $draft  = 'models:';
         $draft .= PHP_EOL . '  Post:';
         $draft .= PHP_EOL . '    indexes:';
         $draft .= PHP_EOL . '      - index: author_id';
         $draft .= PHP_EOL . '      - index: author_id, published_at';
 
-        $tokens = [
-            'models' => [1, 2, 3]
+        $tokens    = [
+            'models' => [1, 2, 3],
         ];
-        $registry = new Tree(['registry']);
-        $only = [];
-        $skip = [];
+        $registry  = new Tree(['registry']);
+        $only      = [];
+        $skip      = [];
         $generated = ['created' => [1, 2], 'updated' => [3]];
 
-        $blueprint = \Mockery::mock(Blueprint::class);
+        $blueprint = Mockery::mock(Blueprint::class);
         $blueprint->expects('parse')
             ->with($draft, false)
             ->andReturn($tokens);
@@ -140,7 +142,7 @@ class BuilderTest extends TestCase
             ->with([
                 'created' => [1, 2],
                 'updated' => [3],
-                'models' => [1, 2, 3]
+                'models'  => [1, 2, 3],
             ])
             ->andReturn('cacheable blueprint content');
 

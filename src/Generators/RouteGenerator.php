@@ -5,13 +5,25 @@ namespace Blueprint\Generators;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Controller;
 use Blueprint\Tree;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
+
+use function array_diff;
+use function array_filter;
+use function array_intersect;
+use function array_keys;
+use function config;
+use function count;
+use function implode;
+use function sprintf;
+use function str_replace;
+use function trim;
+
+use const PHP_EOL;
 
 class RouteGenerator implements Generator
 {
-    /**
-     * @var \Illuminate\Filesystem\Filesystem
-     */
+    /** @var Filesystem */
     private $filesystem;
 
     public function __construct($filesystem)
@@ -28,10 +40,10 @@ class RouteGenerator implements Generator
         $routes = ['api' => '', 'web' => ''];
 
         /**
- * @var \Blueprint\Models\Controller $controller
-*/
+         * @var Controller $controller
+         */
         foreach ($tree->controllers() as $controller) {
-            $type = $controller->isApiResource() ? 'api' : 'web';
+            $type           = $controller->isApiResource() ? 'api' : 'web';
             $routes[$type] .= PHP_EOL . PHP_EOL . $this->buildRoutes($controller);
         }
 
@@ -53,7 +65,7 @@ class RouteGenerator implements Generator
 
     protected function buildRoutes(Controller $controller)
     {
-        $routes = '';
+        $routes  = '';
         $methods = array_keys($controller->methods());
 
         $className = $this->getClassName($controller);
@@ -112,7 +124,7 @@ class RouteGenerator implements Generator
             $action = "[{$className}, '{$method}']";
         } else {
             $classNameNoQuotes = trim($className, '\'');
-            $action = "'{$classNameNoQuotes}@{$method}'";
+            $action            = "'{$classNameNoQuotes}@{$method}'";
         }
 
         return sprintf("Route::get('%s/%s', %s);", $slug, Str::kebab($method), $action);

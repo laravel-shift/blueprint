@@ -11,18 +11,35 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use Shift\Faker\Registry as FakerRegistry;
 
+use function array_filter;
+use function array_map;
+use function array_unique;
+use function config;
+use function current;
+use function dirname;
+use function explode;
+use function implode;
+use function in_array;
+use function intval;
+use function json_encode;
+use function max;
+use function min;
+use function sort;
+use function sprintf;
+use function str_repeat;
+use function str_replace;
+use function trim;
+
+use const PHP_EOL;
+
 class FactoryGenerator implements Generator
 {
     const INDENT = '    ';
 
-    /**
-     * @var Filesystem
-     */
+    /** @var Filesystem */
     protected $filesystem;
 
-    /**
-     * @var Tree
-     */
+    /** @var Tree */
     private $tree;
 
     private $imports = [];
@@ -45,17 +62,17 @@ class FactoryGenerator implements Generator
         }
 
         /**
- * @var \Blueprint\Models\Model $model
+ * @var Model $model
 */
         foreach ($tree->models() as $model) {
-            if (!Blueprint::isLaravel8OrHigher()) {
+            if (! Blueprint::isLaravel8OrHigher()) {
                 $this->addImport($model, 'Faker\Generator as Faker');
             }
             $this->addImport($model, $model->fullyQualifiedClassName());
 
             $path = $this->getPath($model);
 
-            if (!$this->filesystem->exists(dirname($path))) {
+            if (! $this->filesystem->exists(dirname($path))) {
                 $this->filesystem->makeDirectory(dirname($path), 0755, true);
             }
 
@@ -87,11 +104,11 @@ class FactoryGenerator implements Generator
         $stub = str_replace('{{ model }}', $model->name(), $stub);
         $stub = str_replace('//', $this->buildDefinition($model), $stub);
 
-        if (!Blueprint::isLaravel8OrHigher()) {
+        if (! Blueprint::isLaravel8OrHigher()) {
             $stub = str_replace(
                 [
-                "use Faker\Generator as Faker;\r\nuse",
-                "use Faker\Generator as Faker;\nuse"
+                    "use Faker\Generator as Faker;\r\nuse",
+                    "use Faker\Generator as Faker;\nuse",
                 ],
                 "use",
                 $stub
@@ -114,7 +131,7 @@ class FactoryGenerator implements Generator
         $fillable = $this->fillableColumns($model->columns());
 
         /**
- * @var \Blueprint\Models\Column $column
+ * @var Column $column
 */
         foreach ($fillable as $column) {
             if ($column->name() === 'id') {
@@ -128,7 +145,7 @@ class FactoryGenerator implements Generator
             $foreign = $column->isForeignKey();
             if ($foreign) {
                 $table = Str::beforeLast($column->name(), '_id');
-                $key = 'id';
+                $key   = 'id';
 
                 if (Str::contains($foreign, '.')) {
                     [$table, $key] = explode('.', $foreign);
@@ -139,12 +156,12 @@ class FactoryGenerator implements Generator
                         $key = Str::after($column->name(), $foreign . '_');
                     } elseif (Str::startsWith($column->name(), Str::snake(Str::singular($foreign)) . '_')) {
                         $key = Str::after($column->name(), Str::snake(Str::singular($foreign)) . '_');
-                    } elseif (!Str::endsWith($column->name(), '_id')) {
+                    } elseif (! Str::endsWith($column->name(), '_id')) {
                         $key = $column->name();
                     }
                 }
 
-                $class = Str::studly(Str::singular($table));
+                $class     = Str::studly(Str::singular($table));
                 $reference = $this->fullyQualifyModelReference($class) ?? $model;
 
                 if (Blueprint::isLaravel8OrHigher()) {
@@ -174,8 +191,8 @@ class FactoryGenerator implements Generator
                     }
                 }
             } elseif ($column->dataType() === 'id' || ($column->dataType() === 'uuid' && Str::endsWith($column->name(), '_id'))) {
-                $name = Str::beforeLast($column->name(), '_id');
-                $class = Str::studly($column->attributes()[0] ?? $name);
+                $name      = Str::beforeLast($column->name(), '_id');
+                $class     = Str::studly($column->attributes()[0] ?? $name);
                 $reference = $this->fullyQualifyModelReference($class) ?? $model;
 
                 if (Blueprint::isLaravel8OrHigher()) {
@@ -187,7 +204,7 @@ class FactoryGenerator implements Generator
                     $definition .= sprintf('factory(%s::class)', '\\' . $reference->fullyQualifiedNamespace() . '\\' . $class);
                 }
                 $definition .= ',' . PHP_EOL;
-            } elseif (in_array($column->dataType(), ['enum', 'set']) && !empty($column->attributes())) {
+            } elseif (in_array($column->dataType(), ['enum', 'set']) && ! empty($column->attributes())) {
                 $faker = FakerRegistry::fakerData($column->name()) ?? FakerRegistry::fakerDataType($column->dataType());
                 if (Blueprint::isLaravel8OrHigher()) {
                     $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
@@ -197,7 +214,7 @@ class FactoryGenerator implements Generator
                     $definition .= '$faker->' . $faker;
                 }
                 $definition .= ',' . PHP_EOL;
-                $definition = str_replace(
+                $definition  = str_replace(
                     "/** {$column->dataType()}_attributes **/",
                     json_encode($column->attributes()),
                     $definition
@@ -214,11 +231,11 @@ class FactoryGenerator implements Generator
                 $definition .= ',' . PHP_EOL;
 
                 $precision = min([65, intval($column->attributes()[0] ?? 10)]);
-                $scale = min([30, max([0, intval($column->attributes()[1] ?? 0)])]);
+                $scale     = min([30, max([0, intval($column->attributes()[1] ?? 0)])]);
 
                 $definition = str_replace(
                     "/** {$column->dataType()}_attributes **/",
-                    implode(', ', [$scale, 0, (str_repeat(9, $precision - $scale) . '.' . str_repeat(9, $scale))]),
+                    implode(', ', [$scale, 0, str_repeat(9, $precision - $scale) . '.' . str_repeat(9, $scale)]),
                     $definition
                 );
             } elseif (in_array($column->dataType(), ['json', 'jsonb'])) {
@@ -243,7 +260,7 @@ class FactoryGenerator implements Generator
                 if (Blueprint::isLaravel8OrHigher()) {
                     $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
                 } else {
-                    $this->addImport($model, 'Illuminate\Support\Str');
+                    $this->addImport($model, Str::class);
                     $definition .= str_repeat(self::INDENT, 2) . "'{$column->name()}' => ";
                 }
                 $definition .= 'Str::random(10)';
@@ -265,7 +282,7 @@ class FactoryGenerator implements Generator
                     $faker = 'word';
                 }
 
-                if (($faker === 'word') && (!empty($column->attributes()))) {
+                if (($faker === 'word') && (! empty($column->attributes()))) {
                     $faker = sprintf("regexify('[A-Za-z0-9]{%s}')", current($column->attributes()));
                 }
 
@@ -311,7 +328,7 @@ class FactoryGenerator implements Generator
         return array_filter(
             $columns,
             function (Column $column) {
-                return !in_array('nullable', $column->modifiers());
+                return ! in_array('nullable', $column->modifiers());
             }
         );
     }

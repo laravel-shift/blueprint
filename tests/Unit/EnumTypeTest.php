@@ -2,8 +2,7 @@
 
 namespace Tests\Unit;
 
-use Blueprint\Blueprint;
-use Blueprint\Builder;
+use Blueprint\EnumType;
 use Tests\TestCase;
 
 /**
@@ -17,7 +16,7 @@ class EnumTypeTest extends TestCase
      */
     public function it_returns_options_for_enum($definition, $expected)
     {
-        $this->assertEquals($expected, \Blueprint\EnumType::extractOptions($definition));
+        $this->assertEquals($expected, EnumType::extractOptions($definition));
     }
 
     public function enumOptionsDataProvider()
@@ -25,7 +24,7 @@ class EnumTypeTest extends TestCase
         return [
             ["enum('1','2','3')", [1, 2, 3]],
             ["enum('One','Two','Three')", ['One', 'Two', 'Three']],
-            ["enum('Spaced and quoted names','John Doe','Connon O''Brien','O''Doul')", ['"Spaced and quoted names"', '"John Doe"','"Connon O\'Brien"', 'O\'Doul']],
+            ["enum('Spaced and quoted names','John Doe','Connon O''Brien','O''Doul')", ['"Spaced and quoted names"', '"John Doe"', '"Connon O\'Brien"', 'O\'Doul']],
         ];
     }
 }

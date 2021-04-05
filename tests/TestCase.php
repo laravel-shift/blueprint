@@ -6,14 +6,15 @@ use Blueprint\BlueprintServiceProvider;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
+use Mockery;
+
+use function file_get_contents;
+use function ltrim;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
     /** @var Filesystem */
     protected $filesystem;
-
-    /** @var Filesystem */
-    protected $files;
 
     protected function setUp(): void
     {
@@ -52,31 +53,31 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
     protected function useLaravel6($app)
     {
-        $appMock = \Mockery::mock($app);
+        $appMock = Mockery::mock($app);
         $appMock->shouldReceive('version')
             ->withNoArgs()
             ->andReturn('6.0.0');
 
-        \App::swap($appMock);
+        App::swap($appMock);
     }
 
     protected function useLaravel7($app)
     {
-        $appMock = \Mockery::mock($app);
+        $appMock = Mockery::mock($app);
         $appMock->shouldReceive('version')
             ->withNoArgs()
             ->andReturn('7.0.0');
 
-        \App::swap($appMock);
+        App::swap($appMock);
     }
 
     protected function useLaravel8($app)
     {
-        $appMock = \Mockery::mock($app);
+        $appMock = Mockery::mock($app);
         $appMock->shouldReceive('version')
             ->withNoArgs()
             ->andReturn('8.0.0');
 
-        \App::swap($appMock);
+        App::swap($appMock);
     }
 }

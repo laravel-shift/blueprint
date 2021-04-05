@@ -4,6 +4,13 @@ namespace Blueprint;
 
 use Illuminate\Support\Str;
 
+use function array_filter;
+use function array_keys;
+use function array_merge;
+use function config;
+use function count;
+use function current;
+
 class Tree
 {
     private $tree;
@@ -41,9 +48,12 @@ class Tree
             return $this->models[Str::studly($context)];
         }
 
-        $matches = array_filter(array_keys($this->models), function ($key) use ($context) {
-            return Str::endsWith($key, '/' . Str::studly($context));
-        });
+        $matches = array_filter(
+            array_keys($this->models),
+            function ($key) use ($context) {
+                return Str::endsWith($key, '/' . Str::studly($context));
+            }
+        );
 
         if (count($matches) === 1) {
             return $this->models[current($matches)];
@@ -56,9 +66,12 @@ class Tree
             return $this->models[$context]->fullyQualifiedClassName();
         }
 
-        $matches = array_filter(array_keys($this->models), function ($key) use ($context) {
-            return Str::endsWith($key, '\\' . Str::studly($context));
-        });
+        $matches = array_filter(
+            array_keys($this->models),
+            function ($key) use ($context) {
+                return Str::endsWith($key, '\\' . Str::studly($context));
+            }
+        );
 
         if (count($matches) === 1) {
             return $this->models[current($matches)]->fullyQualifiedClassName();

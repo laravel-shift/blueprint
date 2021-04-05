@@ -4,9 +4,13 @@ namespace Tests\Feature\Generators;
 
 use Blueprint\Blueprint;
 use Blueprint\Generators\FactoryGenerator;
+use Blueprint\Lexers\ModelLexer;
 use Blueprint\Tree;
 use Illuminate\Support\Facades\App;
+use Mockery;
 use Tests\TestCase;
+
+use function version_compare;
 
 /**
  * @see FactoryGenerator
@@ -25,10 +29,10 @@ class FactoryGeneratorTest extends TestCase
         parent::setUp();
 
         $this->factoryStub = version_compare(App::version(), '8.0.0', '>=') ? 'factory.stub' : 'factory.closure.stub';
-        $this->subject = new FactoryGenerator($this->files);
+        $this->subject     = new FactoryGenerator($this->files);
 
         $this->blueprint = new Blueprint();
-        $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
+        $this->blueprint->registerLexer(new ModelLexer());
         $this->blueprint->registerGenerator($this->subject);
     }
 
@@ -65,7 +69,7 @@ class FactoryGeneratorTest extends TestCase
             ->with($path, $this->fixture($factory));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
@@ -89,7 +93,7 @@ class FactoryGeneratorTest extends TestCase
             ->with($path, $this->fixture($factory));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
@@ -113,7 +117,7 @@ class FactoryGeneratorTest extends TestCase
             ->with($path, $this->fixture($factory));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
@@ -138,7 +142,7 @@ class FactoryGeneratorTest extends TestCase
             ->with('database/factories/PostFactory.php', $this->fixture('factories/fake-nullables-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['database/factories/PostFactory.php']], $this->subject->output($tree));
     }
@@ -163,7 +167,7 @@ class FactoryGeneratorTest extends TestCase
             ->with('database/factories/PostFactory.php', $this->fixture('factories/return-type-declarations-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['database/factories/PostFactory.php']], $this->subject->output($tree));
     }
@@ -183,16 +187,16 @@ class FactoryGeneratorTest extends TestCase
             ->andReturnTrue();
 
         $this->filesystem->expects('put')
-            ->with('database/factories/QuestionTypeFactory.php', \Mockery::type('string'));
+            ->with('database/factories/QuestionTypeFactory.php', Mockery::type('string'));
         $this->filesystem->expects('put')
-            ->with('database/factories/Appointment/AppointmentTypeFactory.php', \Mockery::type('string'));
+            ->with('database/factories/Appointment/AppointmentTypeFactory.php', Mockery::type('string'));
         $this->filesystem->expects('put')
-            ->with('database/factories/Screening/ReportFactory.php', \Mockery::type('string'));
+            ->with('database/factories/Screening/ReportFactory.php', Mockery::type('string'));
         $this->filesystem->expects('put')
             ->with('database/factories/Screening/ScreeningQuestionFactory.php', $this->fixture('factories/nested-models-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/nested-models.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([
             'created' => [
@@ -225,7 +229,7 @@ class FactoryGeneratorTest extends TestCase
             ->with('database/factories/PostFactory.php', $this->fixture('factories/post-configured-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/post.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['database/factories/PostFactory.php']], $this->subject->output($tree));
     }
@@ -250,7 +254,7 @@ class FactoryGeneratorTest extends TestCase
             ->with('database/factories/Admin/UserFactory.php', $this->fixture('factories/nested-components-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/nested-components.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['database/factories/Admin/UserFactory.php']], $this->subject->output($tree));
     }

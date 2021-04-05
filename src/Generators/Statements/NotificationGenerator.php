@@ -4,8 +4,14 @@ namespace Blueprint\Generators\Statements;
 
 use Blueprint\Blueprint;
 use Blueprint\Generators\StatementGenerator;
+use Blueprint\Models\Controller;
 use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Tree;
+
+use function config;
+use function dirname;
+use function sprintf;
+use function str_replace;
 
 class NotificationGenerator extends StatementGenerator
 {
@@ -18,16 +24,16 @@ class NotificationGenerator extends StatementGenerator
         $stub = $this->filesystem->stub('notification.stub');
 
         /**
- * @var \Blueprint\Models\Controller $controller
+ * @var Controller $controller
 */
         foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
-                    if (!$statement instanceof SendStatement) {
+                    if (! $statement instanceof SendStatement) {
                         continue;
                     }
 
-                    if (!$statement->isNotification()) {
+                    if (! $statement->isNotification()) {
                         continue;
                     }
 
@@ -37,7 +43,7 @@ class NotificationGenerator extends StatementGenerator
                         continue;
                     }
 
-                    if (!$this->filesystem->exists(dirname($path))) {
+                    if (! $this->filesystem->exists(dirname($path))) {
                         $this->filesystem->makeDirectory(dirname($path), 0755, true);
                     }
 
@@ -77,7 +83,7 @@ class NotificationGenerator extends StatementGenerator
                 [
                     'via($notifiable): array',
                     sprintf('toMail($notifiable): %s', $sendStatement->mail()),
-                    'toArray($notifiable): array'
+                    'toArray($notifiable): array',
                 ],
                 $stub
             );

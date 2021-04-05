@@ -2,6 +2,8 @@
 
 namespace Blueprint;
 
+use function file_exists;
+
 class FileMixins
 {
     private $stubs = [];
@@ -9,8 +11,8 @@ class FileMixins
     public function stub()
     {
         return function ($path) {
-            if (!isset($this->stubs[$path])) {
-                $stubPath = file_exists($customPath = CUSTOM_STUBS_PATH . '/' . $path)
+            if (! isset($this->stubs[$path])) {
+                $stubPath           = file_exists($customPath = CUSTOM_STUBS_PATH . '/' . $path)
                           ? $customPath
                           : STUBS_PATH . '/' . $path;
                 $this->stubs[$path] = $this->get($stubPath);

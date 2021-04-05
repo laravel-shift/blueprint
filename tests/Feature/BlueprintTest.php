@@ -6,17 +6,21 @@ use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Contracts\Lexer;
 use Blueprint\Tree;
+use Mockery;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Tests\TestCase;
+
+use function config;
+use function get_class;
+use function range;
+use function str_replace;
 
 /**
  * @see Blueprint
  */
 class BlueprintTest extends TestCase
 {
-    /**
-     * @var Blueprint
-     */
+    /** @var Blueprint */
     private $subject;
 
     protected function setUp(): void
@@ -39,7 +43,7 @@ class BlueprintTest extends TestCase
                     'column' => 'datatype modifier',
                 ],
                 'ModelTwo' => [
-                    'column' => 'datatype',
+                    'column'         => 'datatype',
                     'another_column' => 'datatype modifier',
                 ],
             ],
@@ -51,17 +55,17 @@ class BlueprintTest extends TestCase
         $blueprint = $this->fixture('drafts/seeders.yaml');
 
         $this->assertEquals([
-            'models' => [
-                'Post' => [
-                    'title' => 'string:400',
-                    'content' => 'longtext',
+            'models'  => [
+                'Post'    => [
+                    'title'        => 'string:400',
+                    'content'      => 'longtext',
                     'published_at' => 'nullable timestamp',
                 ],
                 'Comment' => [
-                    'post_id' => 'id',
-                    'content' => 'longtext',
+                    'post_id'  => 'id',
+                    'content'  => 'longtext',
                     'approved' => 'boolean',
-                    'user_id' => 'id',
+                    'user_id'  => 'id',
                 ],
             ],
             'seeders' => 'Post, Comment',
@@ -78,7 +82,7 @@ class BlueprintTest extends TestCase
         $this->assertEquals([
             'controllers' => [
                 'UserController' => [
-                    'index' => [
+                    'index'  => [
                         'action' => 'detail',
                     ],
                     'create' => [
@@ -87,7 +91,7 @@ class BlueprintTest extends TestCase
                 ],
                 'RoleController' => [
                     'index' => [
-                        'action' => 'detail',
+                        'action'         => 'detail',
                         'another_action' => 'so much detail',
                     ],
                 ],
@@ -103,19 +107,19 @@ class BlueprintTest extends TestCase
         $blueprint = $this->fixture('drafts/shorthands.yaml');
 
         $this->assertEquals([
-            'models' => [
+            'models'      => [
                 'Name' => [
                     'softdeletes' => 'softDeletes',
-                    'id' => 'id',
-                    'timestamps' => 'timestamps',
+                    'id'          => 'id',
+                    'timestamps'  => 'timestamps',
                 ],
             ],
             'controllers' => [
                 'Context' => [
                     'resource' => 'web',
                 ],
-                'Report' => [
-                    'invokable' => true
+                'Report'  => [
+                    'invokable' => true,
                 ],
             ],
         ], $this->subject->parse($blueprint));
@@ -131,7 +135,7 @@ class BlueprintTest extends TestCase
         $this->assertEquals([
             'models' => [
                 'Person' => [
-                    'id' => 'uuid primary',
+                    'id'         => 'uuid primary',
                     'timestamps' => 'timestamps',
                     'company_id' => 'uuid',
                 ],
@@ -150,7 +154,7 @@ class BlueprintTest extends TestCase
             'models' => [
                 'Comment' => [
                     'softdeletestz' => 'softDeletesTz',
-                    'timestampstz' => 'timestampstz',
+                    'timestampstz'  => 'timestampstz',
                 ],
             ],
         ], $this->subject->parse($blueprint));
@@ -165,19 +169,19 @@ class BlueprintTest extends TestCase
 
         $this->assertEquals([
             'models' => [
-                'Proper' => [
-                    'id' => 'id',
+                'Proper'   => [
+                    'id'          => 'id',
                     'softdeletes' => 'softDeletes',
-                    'timestamps' => 'timestamps',
+                    'timestamps'  => 'timestamps',
                 ],
-                'Lower' => [
-                    'id' => 'id',
-                    'softdeletes' => 'softdeletes',
+                'Lower'    => [
+                    'id'           => 'id',
+                    'softdeletes'  => 'softdeletes',
                     'timestampstz' => 'timestampstz',
                 ],
                 'Timezone' => [
                     'softdeletestz' => 'softdeletestz',
-                    'timestampstz' => 'timestampsTz',
+                    'timestampstz'  => 'timestampsTz',
                 ],
             ],
         ], $this->subject->parse($blueprint));
@@ -194,7 +198,7 @@ class BlueprintTest extends TestCase
             'models' => [
                 'Comment' => [
                     'softdeletestz' => 'softDeletesTz',
-                    'timestampstz' => 'timestampstz',
+                    'timestampstz'  => 'timestampstz',
                 ],
             ],
         ], $this->subject->parse($blueprint));
@@ -208,27 +212,27 @@ class BlueprintTest extends TestCase
         $blueprint = $this->fixture('drafts/readme-example.yaml');
 
         $this->assertEquals([
-            'models' => [
+            'models'      => [
                 'Post' => [
-                    'title' => 'string:400',
-                    'content' => 'longtext',
+                    'title'        => 'string:400',
+                    'content'      => 'longtext',
                     'published_at' => 'nullable timestamp',
-                    'author_id' => 'id:user',
+                    'author_id'    => 'id:user',
                 ],
             ],
             'controllers' => [
                 'Post' => [
                     'index' => [
-                        'query' => 'all',
+                        'query'  => 'all',
                         'render' => 'post.index with:posts',
                     ],
                     'store' => [
                         'validate' => 'title, content, author_id',
-                        'save' => 'post',
-                        'send' => 'ReviewPost to:post.author.email with:post',
+                        'save'     => 'post',
+                        'send'     => 'ReviewPost to:post.author.email with:post',
                         'dispatch' => 'SyncMedia with:post',
-                        'fire' => 'NewPost with:post',
-                        'flash' => 'post.title',
+                        'fire'     => 'NewPost with:post',
+                        'flash'    => 'post.title',
                         'redirect' => 'post.index',
                     ],
                 ],
@@ -243,35 +247,35 @@ class BlueprintTest extends TestCase
     {
         $definition = $this->fixture('drafts/readme-example.yaml');
 
-        $LF = "\n";
-        $CR = "\r";
+        $LF   = "\n";
+        $CR   = "\r";
         $CRLF = "\r\n";
 
-        $definition_mac_eol = str_replace($LF, $CR, $definition);
+        $definition_mac_eol     = str_replace($LF, $CR, $definition);
         $definition_windows_eol = str_replace($LF, $CRLF, $definition);
 
         $expected = [
-            'models' => [
+            'models'      => [
                 'Post' => [
-                    'title' => 'string:400',
-                    'content' => 'longtext',
+                    'title'        => 'string:400',
+                    'content'      => 'longtext',
                     'published_at' => 'nullable timestamp',
-                    'author_id' => 'id:user',
+                    'author_id'    => 'id:user',
                 ],
             ],
             'controllers' => [
                 'Post' => [
                     'index' => [
-                        'query' => 'all',
+                        'query'  => 'all',
                         'render' => 'post.index with:posts',
                     ],
                     'store' => [
                         'validate' => 'title, content, author_id',
-                        'save' => 'post',
-                        'send' => 'ReviewPost to:post.author.email with:post',
+                        'save'     => 'post',
+                        'send'     => 'ReviewPost to:post.author.email with:post',
                         'dispatch' => 'SyncMedia with:post',
-                        'fire' => 'NewPost with:post',
-                        'flash' => 'post.title',
+                        'fire'     => 'NewPost with:post',
+                        'flash'    => 'post.title',
                         'redirect' => 'post.index',
                     ],
                 ],
@@ -290,21 +294,21 @@ class BlueprintTest extends TestCase
         $definition = $this->fixture('drafts/readme-example-dashes.yaml');
 
         $expected = [
-            'models' => [
+            'models'      => [
                 'Post' => [
-                    'title' => 'string:400',
+                    'title'   => 'string:400',
                     'content' => 'longtext',
                 ],
             ],
             'controllers' => [
                 'Post' => [
                     'index' => [
-                        'query' => 'all:posts',
+                        'query'  => 'all:posts',
                         'render' => 'post.index with:posts',
                     ],
                     'store' => [
                         'validate' => 'title, content',
-                        'save' => 'post',
+                        'save'     => 'post',
                         'redirect' => 'post.index',
                     ],
                 ],
@@ -347,7 +351,7 @@ class BlueprintTest extends TestCase
 
         $this->assertEquals(
             [
-                'models' => [],
+                'models'      => [],
                 'controllers' => [],
             ],
             $this->subject->analyze($tokens)->toArray()
@@ -359,7 +363,7 @@ class BlueprintTest extends TestCase
      */
     public function analyze_uses_register_lexers_to_analyze_tokens()
     {
-        $lexer = \Mockery::mock(Lexer::class);
+        $lexer  = Mockery::mock(Lexer::class);
         $tokens = ['tokens' => ['are', 'here']];
         $lexer->expects('analyze')
             ->with($tokens)
@@ -368,9 +372,9 @@ class BlueprintTest extends TestCase
         $this->subject->registerLexer($lexer);
 
         $this->assertEquals([
-            'models' => [],
+            'models'      => [],
             'controllers' => [],
-            'mock' => 'lexer',
+            'mock'        => 'lexer',
         ], $this->subject->analyze($tokens)->toArray());
     }
 
@@ -379,8 +383,8 @@ class BlueprintTest extends TestCase
      */
     public function generate_uses_registered_generators_and_returns_generated_files()
     {
-        $generatorOne = \Mockery::mock(Generator::class);
-        $tree = new Tree(['branch' => ['code', 'attributes']]);
+        $generatorOne = Mockery::mock(Generator::class);
+        $tree         = new Tree(['branch' => ['code', 'attributes']]);
 
         $generatorOne->expects('output')
             ->with($tree, false)
@@ -396,7 +400,7 @@ class BlueprintTest extends TestCase
                 'types',
             ]);
 
-        $generatorTwo = \Mockery::mock(Generator::class);
+        $generatorTwo = Mockery::mock(Generator::class);
         $generatorTwo->expects('output')
             ->with($tree, false)
             ->andReturn([
@@ -426,12 +430,12 @@ class BlueprintTest extends TestCase
      */
     public function generate_uses_swapped_generator_and_returns_generated_files()
     {
-        $generatorOne = \Mockery::mock(Generator::class);
-        $tree = new Tree(['branch' => ['code', 'attributes']]);
+        $generatorOne = Mockery::mock(Generator::class);
+        $tree         = new Tree(['branch' => ['code', 'attributes']]);
 
         $generatorOne->expects('output')->never();
 
-        $generatorSwap = \Mockery::mock(Generator::class);
+        $generatorSwap = Mockery::mock(Generator::class);
         $generatorSwap->expects('output')
             ->with($tree, false)
             ->andReturn([
@@ -461,8 +465,8 @@ class BlueprintTest extends TestCase
      */
     public function generate_only_one_specific_type()
     {
-        $generatorFoo = \Mockery::mock(Generator::class);
-        $tree = new Tree(['branch' => ['code', 'attributes']]);
+        $generatorFoo = Mockery::mock(Generator::class);
+        $tree         = new Tree(['branch' => ['code', 'attributes']]);
 
         $only = ['bar'];
         $skip = [];
@@ -476,7 +480,7 @@ class BlueprintTest extends TestCase
         $generatorFoo->shouldReceive('types')
             ->andReturn(['foo']);
 
-        $generatorBar = \Mockery::mock(Generator::class);
+        $generatorBar = Mockery::mock(Generator::class);
         $generatorBar->shouldReceive('output')
             ->with($tree, false)
             ->andReturn([
@@ -486,7 +490,7 @@ class BlueprintTest extends TestCase
         $generatorBar->shouldReceive('types')
             ->andReturn(['bar']);
 
-        $generatorBaz = \Mockery::mock(Generator::class);
+        $generatorBaz = Mockery::mock(Generator::class);
         $generatorBaz->shouldReceive('output')
             ->with($tree, false)
             ->andReturn([
@@ -512,8 +516,8 @@ class BlueprintTest extends TestCase
      */
     public function generate_only_specific_types()
     {
-        $generatorFoo = \Mockery::mock(Generator::class);
-        $tree = new Tree(['branch' => ['code', 'attributes']]);
+        $generatorFoo = Mockery::mock(Generator::class);
+        $tree         = new Tree(['branch' => ['code', 'attributes']]);
 
         $only = ['foo', 'bar'];
         $skip = [];
@@ -527,7 +531,7 @@ class BlueprintTest extends TestCase
         $generatorFoo->shouldReceive('types')
             ->andReturn(['foo']);
 
-        $generatorBar = \Mockery::mock(Generator::class);
+        $generatorBar = Mockery::mock(Generator::class);
         $generatorBar->shouldReceive('output')
             ->with($tree, false)
             ->andReturn([
@@ -537,7 +541,7 @@ class BlueprintTest extends TestCase
         $generatorBar->shouldReceive('types')
             ->andReturn(['bar']);
 
-        $generatorBaz = \Mockery::mock(Generator::class);
+        $generatorBaz = Mockery::mock(Generator::class);
         $generatorBaz->shouldReceive('output')
             ->with($tree, false)
             ->andReturn([
@@ -563,8 +567,8 @@ class BlueprintTest extends TestCase
      */
     public function generate_should_skip_one_specific_type()
     {
-        $generatorFoo = \Mockery::mock(Generator::class);
-        $tree = new Tree(['branch' => ['code', 'attributes']]);
+        $generatorFoo = Mockery::mock(Generator::class);
+        $tree         = new Tree(['branch' => ['code', 'attributes']]);
 
         $only = [];
         $skip = ['bar'];
@@ -578,7 +582,7 @@ class BlueprintTest extends TestCase
         $generatorFoo->shouldReceive('types')
             ->andReturn(['foo']);
 
-        $generatorBar = \Mockery::mock(Generator::class);
+        $generatorBar = Mockery::mock(Generator::class);
         $generatorBar->shouldReceive('output')
             ->with($tree, false)
             ->andReturn([
@@ -588,7 +592,7 @@ class BlueprintTest extends TestCase
         $generatorBar->shouldReceive('types')
             ->andReturn(['bar']);
 
-        $generatorBaz = \Mockery::mock(Generator::class);
+        $generatorBaz = Mockery::mock(Generator::class);
         $generatorBaz->shouldReceive('output')
             ->with($tree, false)
             ->andReturn([
@@ -614,8 +618,8 @@ class BlueprintTest extends TestCase
      */
     public function generate_should_skip_specific_types()
     {
-        $generatorFoo = \Mockery::mock(Generator::class);
-        $tree = new Tree(['branch' => ['code', 'attributes']]);
+        $generatorFoo = Mockery::mock(Generator::class);
+        $tree         = new Tree(['branch' => ['code', 'attributes']]);
 
         $only = [];
         $skip = ['bar', 'baz'];
@@ -629,7 +633,7 @@ class BlueprintTest extends TestCase
         $generatorFoo->shouldReceive('types')
             ->andReturn(['foo']);
 
-        $generatorBar = \Mockery::mock(Generator::class);
+        $generatorBar = Mockery::mock(Generator::class);
         $generatorBar->shouldReceive('output')
             ->with($tree)
             ->andReturn([
@@ -639,7 +643,7 @@ class BlueprintTest extends TestCase
         $generatorBar->shouldReceive('types')
             ->andReturn(['bar']);
 
-        $generatorBaz = \Mockery::mock(Generator::class);
+        $generatorBaz = Mockery::mock(Generator::class);
         $generatorBaz->shouldReceive('output')
             ->with($tree, false)
             ->andReturn([

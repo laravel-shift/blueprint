@@ -2,12 +2,8 @@
 
 namespace Tests\Feature\Commands;
 
-use Blueprint\Commands\NewCommand;
-use Illuminate\Contracts\Console\Kernel;
-use Tests\TestCase;
-use Illuminate\Support\Facades\Artisan;
-use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use Tests\TestCase;
 
 /**
  * @covers \Blueprint\Commands\InitCommand

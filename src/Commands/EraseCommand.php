@@ -5,7 +5,9 @@ namespace Blueprint\Commands;
 use Blueprint\Blueprint;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Facades\Artisan;
+
+use function collect;
+use function resolve;
 
 class EraseCommand extends Command
 {

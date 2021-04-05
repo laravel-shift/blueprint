@@ -9,7 +9,7 @@ class Index
 
     public function __construct(string $type, array $columns = [])
     {
-        $this->type = $type;
+        $this->type    = $type;
         $this->columns = $columns;
     }
 

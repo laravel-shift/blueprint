@@ -7,19 +7,36 @@ use Blueprint\Contracts\Generator;
 use Blueprint\Models\Column;
 use Blueprint\Models\Model;
 use Blueprint\Tree;
+use Carbon\Carbon;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
+use function array_diff;
+use function array_filter;
+use function array_intersect;
+use function array_keys;
+use function array_map;
+use function config;
+use function dirname;
+use function explode;
+use function in_array;
+use function is_null;
+use function preg_replace;
+use function sprintf;
+use function str_replace;
+use function stripos;
+use function strtolower;
+use function trim;
+use function var_export;
+
+use const PHP_EOL;
+
 class ModelGenerator implements Generator
 {
-    /**
-     * @var Filesystem
-     */
+    /** @var Filesystem */
     protected $filesystem;
 
-    /**
-     * @var Tree
-     */
+    /** @var Tree */
     private $tree;
 
     public function __construct(Filesystem $filesystem)
@@ -40,7 +57,7 @@ class ModelGenerator implements Generator
         }
 
         /**
- * @var \Blueprint\Models\Model $model
+ * @var Model $model
 */
         foreach ($tree->models() as $model) {
             $path = $this->getPath($model);
@@ -69,7 +86,7 @@ class ModelGenerator implements Generator
             $stub = str_replace(PHP_EOL . 'class {{ class }}', $this->buildClassPhpDoc($model) . PHP_EOL . 'class {{ class }}', $stub);
             $stub = str_replace('{{ class }}', $model->name(), $stub);
 
-            $body = $this->buildProperties($model);
+            $body  = $this->buildProperties($model);
             $body .= PHP_EOL . PHP_EOL;
             $body .= $this->buildRelationships($model);
 
@@ -81,7 +98,7 @@ class ModelGenerator implements Generator
             $stub = str_replace('{{ class }}', $model->name(), $stub);
             $stub = str_replace('{{ PHPDoc }}', $this->buildClassPhpDoc($model), $stub);
 
-            $body = $this->buildProperties($model);
+            $body  = $this->buildProperties($model);
             $body .= PHP_EOL . PHP_EOL;
             $body .= $this->buildRelationships($model);
 
@@ -98,7 +115,7 @@ class ModelGenerator implements Generator
             return '';
         }
 
-        $phpDoc = PHP_EOL;
+        $phpDoc  = PHP_EOL;
         $phpDoc .= '/**';
         $phpDoc .= PHP_EOL;
         /**
@@ -189,8 +206,8 @@ class ModelGenerator implements Generator
 
     protected function buildRelationships(Model $model)
     {
-        $methods = '';
-        $template = $this->filesystem->stub('model.method.stub');
+        $methods         = '';
+        $template        = $this->filesystem->stub('model.method.stub');
         $commentTemplate = '';
 
         if (config('blueprint.generate_phpdocs')) {
@@ -200,15 +217,15 @@ class ModelGenerator implements Generator
         foreach ($model->relationships() as $type => $references) {
             foreach ($references as $reference) {
                 $custom_template = $template;
-                $key = null;
-                $class = null;
+                $key             = null;
+                $class           = null;
 
                 $column_name = $reference;
                 $method_name = Str::beforeLast($reference, '_id');
 
                 if (Str::contains($reference, ':')) {
                     [$foreign_reference, $column_name] = explode(':', $reference);
-                    $method_name = Str::beforeLast($column_name, '_id');
+                    $method_name                       = Str::beforeLast($column_name, '_id');
 
                     if (Str::contains($foreign_reference, '.')) {
                         [$class, $key] = explode('.', $foreign_reference);
@@ -224,18 +241,18 @@ class ModelGenerator implements Generator
                 }
 
                 $class_name = Str::studly($class ?? $method_name);
-                $fqcn = $this->fullyQualifyModelReference($class_name) ?? $model->fullyQualifiedNamespace() . '\\' . $class_name;
+                $fqcn       = $this->fullyQualifyModelReference($class_name) ?? $model->fullyQualifiedNamespace() . '\\' . $class_name;
 
                 if ($type === 'morphTo') {
                     $relationship = sprintf('$this->%s()', $type);
                 } elseif ($type === 'morphMany' || $type === 'morphOne') {
-                    $relation = Str::lower(Str::singular($column_name)) . 'able';
+                    $relation     = Str::lower(Str::singular($column_name)) . 'able';
                     $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, '\\' . $fqcn, $relation);
-                } elseif (!is_null($key)) {
+                } elseif (! is_null($key)) {
                     $relationship = sprintf('$this->%s(%s::class, \'%s\', \'%s\')', $type, '\\' . $fqcn, $column_name, $key);
-                } elseif (!is_null($class) && $type === 'belongsToMany') {
+                } elseif (! is_null($class) && $type === 'belongsToMany') {
                     $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, '\\' . $fqcn, $column_name);
-                    $column_name = $class;
+                    $column_name  = $class;
                 } else {
                     $relationship = sprintf('$this->%s(%s::class)', $type, '\\' . $fqcn);
                 }
@@ -274,7 +291,7 @@ class ModelGenerator implements Generator
 
     protected function addTraits(Model $model, $stub)
     {
-        if (!$model->usesSoftDeletes()) {
+        if (! $model->usesSoftDeletes()) {
             return $stub;
         }
 
@@ -293,11 +310,11 @@ class ModelGenerator implements Generator
         return array_diff(
             array_keys($columns),
             [
-            'id',
-            'deleted_at',
-            'created_at',
-            'updated_at',
-            'remember_token',
+                'id',
+                'deleted_at',
+                'created_at',
+                'updated_at',
+                'remember_token',
             ]
         );
     }
@@ -307,8 +324,8 @@ class ModelGenerator implements Generator
         return array_intersect(
             array_keys($columns),
             [
-            'password',
-            'remember_token',
+                'password',
+                'remember_token',
             ]
         );
     }
@@ -395,41 +412,41 @@ class ModelGenerator implements Generator
     private function phpDataType(string $dataType)
     {
         static $php_data_types = [
-            'id' => 'int',
-            'uuid' => 'string',
-            'bigincrements' => 'int',
-            'biginteger' => 'int',
-            'boolean' => 'bool',
-            'date' => '\Carbon\Carbon',
-            'datetime' => '\Carbon\Carbon',
-            'datetimetz' => '\Carbon\Carbon',
-            'decimal' => 'float',
-            'double' => 'double',
-            'float' => 'float',
-            'increments' => 'int',
-            'integer' => 'int',
-            'mediumincrements' => 'int',
-            'mediuminteger' => 'int',
-            'nullabletimestamps' => '\Carbon\Carbon',
-            'smallincrements' => 'int',
-            'smallinteger' => 'int',
-            'softdeletes' => '\Carbon\Carbon',
-            'softdeletestz' => '\Carbon\Carbon',
-            'time' => '\Carbon\Carbon',
-            'timetz' => '\Carbon\Carbon',
-            'timestamp' => '\Carbon\Carbon',
-            'timestamptz' => '\Carbon\Carbon',
-            'timestamps' => '\Carbon\Carbon',
-            'timestampstz' => '\Carbon\Carbon',
-            'tinyincrements' => 'integer',
-            'tinyinteger' => 'int',
-            'unsignedbiginteger' => 'int',
-            'unsigneddecimal' => 'float',
-            'unsignedinteger' => 'int',
+            'id'                    => 'int',
+            'uuid'                  => 'string',
+            'bigincrements'         => 'int',
+            'biginteger'            => 'int',
+            'boolean'               => 'bool',
+            'date'                  => '\Carbon\Carbon',
+            'datetime'              => '\Carbon\Carbon',
+            'datetimetz'            => '\Carbon\Carbon',
+            'decimal'               => 'float',
+            'double'                => 'double',
+            'float'                 => 'float',
+            'increments'            => 'int',
+            'integer'               => 'int',
+            'mediumincrements'      => 'int',
+            'mediuminteger'         => 'int',
+            'nullabletimestamps'    => '\Carbon\Carbon',
+            'smallincrements'       => 'int',
+            'smallinteger'          => 'int',
+            'softdeletes'           => '\Carbon\Carbon',
+            'softdeletestz'         => '\Carbon\Carbon',
+            'time'                  => '\Carbon\Carbon',
+            'timetz'                => '\Carbon\Carbon',
+            'timestamp'             => '\Carbon\Carbon',
+            'timestamptz'           => '\Carbon\Carbon',
+            'timestamps'            => '\Carbon\Carbon',
+            'timestampstz'          => '\Carbon\Carbon',
+            'tinyincrements'        => 'integer',
+            'tinyinteger'           => 'int',
+            'unsignedbiginteger'    => 'int',
+            'unsigneddecimal'       => 'float',
+            'unsignedinteger'       => 'int',
             'unsignedmediuminteger' => 'int',
-            'unsignedsmallinteger' => 'int',
-            'unsignedtinyinteger' => 'int',
-            'year' => 'int',
+            'unsignedsmallinteger'  => 'int',
+            'unsignedtinyinteger'   => 'int',
+            'year'                  => 'int',
         ];
 
         return $php_data_types[strtolower($dataType)] ?? 'string';
@@ -442,7 +459,7 @@ class ModelGenerator implements Generator
         // Use respond-statement.php as test case.
 
         /**
- * @var \Blueprint\Models\Model $model
+ * @var Model $model
 */
         $model = $this->tree->modelForContext($model_name);
 

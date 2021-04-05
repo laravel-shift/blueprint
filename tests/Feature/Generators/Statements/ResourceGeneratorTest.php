@@ -4,9 +4,13 @@ namespace Tests\Feature\Generators\Statements;
 
 use Blueprint\Blueprint;
 use Blueprint\Generators\Statements\ResourceGenerator;
+use Blueprint\Lexers\ControllerLexer;
+use Blueprint\Lexers\ModelLexer;
 use Blueprint\Lexers\StatementLexer;
 use Blueprint\Tree;
 use Tests\TestCase;
+
+use function file_get_contents;
 
 /**
  * @see ResourceGenerator
@@ -27,8 +31,8 @@ class ResourceGeneratorTest extends TestCase
         $this->subject = new ResourceGenerator($this->files);
 
         $this->blueprint = new Blueprint();
-        $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
-        $this->blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new StatementLexer()));
+        $this->blueprint->registerLexer(new ModelLexer());
+        $this->blueprint->registerLexer(new ControllerLexer(new StatementLexer()));
         $this->blueprint->registerGenerator($this->subject);
     }
 
@@ -58,7 +62,7 @@ class ResourceGeneratorTest extends TestCase
         $this->filesystem->shouldNotHaveReceived('put');
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/controllers-only.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([], $this->subject->output($tree));
     }
@@ -95,7 +99,7 @@ class ResourceGeneratorTest extends TestCase
             ->with('app/Http/Resources/UserCollection.php', $this->fixture('resources/user-collection.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/resource-statements.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['app/Http/Resources/UserCollection.php', 'app/Http/Resources/UserResource.php']], $this->subject->output($tree));
     }
@@ -129,7 +133,7 @@ class ResourceGeneratorTest extends TestCase
             ->with('app/Http/Resources/Api/CertificateCollection.php', $this->fixture('resources/certificate-collection.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/api-routes-example.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([
             'created' => ['app/Http/Resources/Api/CertificateCollection.php', 'app/Http/Resources/Api/CertificateResource.php'],

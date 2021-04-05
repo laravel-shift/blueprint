@@ -4,9 +4,13 @@ namespace Tests\Feature\Generators;
 
 use Blueprint\Blueprint;
 use Blueprint\Generators\TestGenerator;
+use Blueprint\Lexers\ControllerLexer;
+use Blueprint\Lexers\ModelLexer;
 use Blueprint\Lexers\StatementLexer;
 use Blueprint\Tree;
 use Tests\TestCase;
+
+use function dirname;
 
 /**
  * @see TestGenerator
@@ -25,8 +29,8 @@ class TestGeneratorTest extends TestCase
         $this->subject = new TestGenerator($this->filesystem);
 
         $this->blueprint = new Blueprint();
-        $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
-        $this->blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new StatementLexer()));
+        $this->blueprint->registerLexer(new ModelLexer());
+        $this->blueprint->registerLexer(new ControllerLexer(new StatementLexer()));
         $this->blueprint->registerGenerator($this->subject);
     }
 
@@ -68,7 +72,7 @@ class TestGeneratorTest extends TestCase
             ->with($path, $this->fixture($test));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
@@ -97,15 +101,15 @@ class TestGeneratorTest extends TestCase
             ->with($path, $this->fixture($test));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
     /**
-    * @test
-    * @environment-setup useLaravel7
-    */
+     * @test
+     * @environment-setup useLaravel7
+     */
     public function output_works_for_pascal_case_definition()
     {
         $this->filesystem->expects('stub')
@@ -116,7 +120,7 @@ class TestGeneratorTest extends TestCase
             ->with('test.case.stub')
             ->andReturn($this->stub('test.case.stub'));
 
-        $certificateControllerTest = 'tests/Feature/Http/Controllers/CertificateControllerTest.php';
+        $certificateControllerTest     = 'tests/Feature/Http/Controllers/CertificateControllerTest.php';
         $certificateTypeControllerTest = 'tests/Feature/Http/Controllers/CertificateTypeControllerTest.php';
 
         $this->filesystem->expects('exists')
@@ -132,14 +136,14 @@ class TestGeneratorTest extends TestCase
             ->with($certificateTypeControllerTest, $this->fixture('tests/certificate-type-pascal-case-example.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/pascal-case.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
         $this->assertEquals(['created' => [$certificateControllerTest, $certificateTypeControllerTest]], $this->subject->output($tree));
     }
 
     /**
-    * @test
-    * @environment-setup useLaravel8
-    */
+     * @test
+     * @environment-setup useLaravel8
+     */
     public function output_works_for_pascal_case_definition_l8()
     {
         $this->filesystem->expects('stub')
@@ -150,7 +154,7 @@ class TestGeneratorTest extends TestCase
             ->with('test.case.stub')
             ->andReturn($this->stub('test.case.stub'));
 
-        $certificateControllerTest = 'tests/Feature/Http/Controllers/CertificateControllerTest.php';
+        $certificateControllerTest     = 'tests/Feature/Http/Controllers/CertificateControllerTest.php';
         $certificateTypeControllerTest = 'tests/Feature/Http/Controllers/CertificateTypeControllerTest.php';
 
         $this->filesystem->expects('exists')
@@ -166,7 +170,7 @@ class TestGeneratorTest extends TestCase
             ->with($certificateTypeControllerTest, $this->fixture('tests/certificate-type-pascal-case-example-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/pascal-case.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
         $this->assertEquals(['created' => [$certificateControllerTest, $certificateTypeControllerTest]], $this->subject->output($tree));
     }
 
@@ -191,14 +195,14 @@ class TestGeneratorTest extends TestCase
         $this->filesystem->expects('put')
             ->with('tests/Feature/Http/Controllers/UserControllerTest.php', $this->fixture('tests/reference-cache.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('drafts/reference-cache.yaml'));
+        $tokens          = $this->blueprint->parse($this->fixture('drafts/reference-cache.yaml'));
         $tokens['cache'] = [
             'User' => [
-                'email' => 'string',
+                'email'    => 'string',
                 'password' => 'string',
-            ]
+            ],
         ];
-        $tree = $this->blueprint->analyze($tokens);
+        $tree            = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['tests/Feature/Http/Controllers/UserControllerTest.php']], $this->subject->output($tree));
     }
@@ -224,14 +228,14 @@ class TestGeneratorTest extends TestCase
         $this->filesystem->expects('put')
             ->with('tests/Feature/Http/Controllers/UserControllerTest.php', $this->fixture('tests/reference-cache-laravel8.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('drafts/reference-cache.yaml'));
+        $tokens          = $this->blueprint->parse($this->fixture('drafts/reference-cache.yaml'));
         $tokens['cache'] = [
             'User' => [
-                'email' => 'string',
+                'email'    => 'string',
                 'password' => 'string',
-            ]
+            ],
         ];
-        $tree = $this->blueprint->analyze($tokens);
+        $tree            = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['tests/Feature/Http/Controllers/UserControllerTest.php']], $this->subject->output($tree));
     }
@@ -243,8 +247,8 @@ class TestGeneratorTest extends TestCase
     public function output_generates_tests_with_models_with_custom_namespace_correctly()
     {
         $definition = 'drafts/models-with-custom-namespace.yaml';
-        $path = 'tests/Feature/Http/Controllers/CategoryControllerTest.php';
-        $test = 'tests/models-with-custom-namespace.php';
+        $path       = 'tests/Feature/Http/Controllers/CategoryControllerTest.php';
+        $test       = 'tests/models-with-custom-namespace.php';
 
         $this->app['config']->set('blueprint.models_namespace', 'Models');
 
@@ -255,17 +259,21 @@ class TestGeneratorTest extends TestCase
         $this->filesystem->expects('stub')
             ->with('test.case.stub')
             ->andReturn($this->stub('test.case.stub'));
+
         $dirname = dirname($path);
+
         $this->filesystem->expects('exists')
             ->with($dirname)
             ->andReturnFalse();
+
         $this->filesystem->expects('makeDirectory')
         ->with($dirname, 0755, true);
+
         $this->filesystem->expects('put')
             ->with($path, $this->fixture($test));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
@@ -277,8 +285,8 @@ class TestGeneratorTest extends TestCase
     public function output_generates_tests_with_models_with_custom_namespace_correctly_l8()
     {
         $definition = 'drafts/models-with-custom-namespace.yaml';
-        $path = 'tests/Feature/Http/Controllers/CategoryControllerTest.php';
-        $test = 'tests/models-with-custom-namespace-laravel8.php';
+        $path       = 'tests/Feature/Http/Controllers/CategoryControllerTest.php';
+        $test       = 'tests/models-with-custom-namespace-laravel8.php';
 
         $this->app['config']->set('blueprint.models_namespace', 'Models');
 
@@ -299,7 +307,7 @@ class TestGeneratorTest extends TestCase
             ->with($path, $this->fixture($test));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
@@ -311,8 +319,8 @@ class TestGeneratorTest extends TestCase
     public function output_using_return_types()
     {
         $definition = 'drafts/readme-example.yaml';
-        $path = 'tests/Feature/Http/Controllers/PostControllerTest.php';
-        $test = 'tests/return-type-declarations.php';
+        $path       = 'tests/Feature/Http/Controllers/PostControllerTest.php';
+        $test       = 'tests/return-type-declarations.php';
 
         $this->app['config']->set('blueprint.use_return_types', true);
 
@@ -325,6 +333,7 @@ class TestGeneratorTest extends TestCase
             ->andReturn($this->stub('test.case.stub'));
 
         $dirname = dirname($path);
+
         $this->filesystem->expects('exists')
             ->with($dirname)
             ->andReturnFalse();
@@ -336,7 +345,7 @@ class TestGeneratorTest extends TestCase
             ->with($path, $this->fixture($test));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }

@@ -2,6 +2,11 @@
 
 namespace Blueprint\Models;
 
+use function collect;
+use function in_array;
+use function is_array;
+use function key;
+
 class Column
 {
     private $modifiers;
@@ -11,9 +16,9 @@ class Column
 
     public function __construct(string $name, string $dataType = 'string', array $modifiers = [], array $attributes = [])
     {
-        $this->name = $name;
-        $this->dataType = $dataType;
-        $this->modifiers = $modifiers;
+        $this->name       = $name;
+        $this->dataType   = $dataType;
+        $this->modifiers  = $modifiers;
         $this->attributes = $attributes;
     }
 
@@ -39,18 +44,22 @@ class Column
 
     public function isForeignKey()
     {
-        return collect($this->modifiers())->filter(function ($modifier) {
-            return (is_array($modifier) && key($modifier) === 'foreign') || $modifier === 'foreign';
-        })->flatten()->first();
+        return collect($this->modifiers())->filter(
+            function ($modifier) {
+                return (is_array($modifier) && key($modifier) === 'foreign') || $modifier === 'foreign';
+            }
+        )->flatten()->first();
     }
 
     public function defaultValue()
     {
         return collect($this->modifiers())
             ->collapse()
-            ->first(function ($value, $key) {
-                return $key === 'default';
-            });
+            ->first(
+                function ($value, $key) {
+                    return $key === 'default';
+                }
+            );
     }
 
     public function isNullable()

@@ -16,6 +16,14 @@ use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
 use Illuminate\Support\Str;
 
+use function array_pad;
+use function is_null;
+use function preg_match;
+use function preg_split;
+use function str_replace;
+use function substr;
+use function trim;
+
 class StatementLexer implements Lexer
 {
     public function analyze(array $tokens): array
@@ -111,14 +119,14 @@ class StatementLexer implements Lexer
 
         $found = preg_match('/\\s+to:(\\S+)/', $statement, $matches);
         if ($found) {
-            $to = $matches[1];
+            $to        = $matches[1];
             $statement = str_replace($matches[0], '', $statement);
         }
 
         [$object, $with] = $this->extractTokens($statement, 2);
 
         $data = [];
-        if (!empty($with)) {
+        if (! empty($with)) {
             $data = preg_split('/,([ \t]+)?/', substr($with, 5));
         }
 
@@ -135,7 +143,7 @@ class StatementLexer implements Lexer
         [$model, $notification, $with] = $this->extractTokens($statement, 3);
 
         $data = [];
-        if (!empty($with)) {
+        if (! empty($with)) {
             $data = preg_split('/,([ \t]+)?/', substr($with, 5));
         }
 
@@ -153,7 +161,7 @@ class StatementLexer implements Lexer
 
         $data = [];
 
-        if (!empty($with)) {
+        if (! empty($with)) {
             $data = preg_split('/,([ \t]+)?/', substr($with, 5));
         }
 
@@ -190,20 +198,20 @@ class StatementLexer implements Lexer
 
     private function analyzeResource($statement)
     {
-        $reference = $statement;
+        $reference  = $statement;
         $collection = null;
 
         if (Str::contains($statement, ':')) {
             $collection = Str::before($reference, ':');
-            $reference = Str::after($reference, ':');
+            $reference  = Str::after($reference, ':');
         }
 
-        return new ResourceStatement($reference, !is_null($collection), $collection === 'paginate');
+        return new ResourceStatement($reference, ! is_null($collection), $collection === 'paginate');
     }
 
     private function analyzeUpdate($statement)
     {
-        if (!Str::contains($statement, ',')) {
+        if (! Str::contains($statement, ',')) {
             return new EloquentStatement('update', $statement);
         }
 

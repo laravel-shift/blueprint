@@ -5,24 +5,32 @@ namespace Blueprint\Generators\Statements;
 use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Controller;
+use Blueprint\Models\Model;
 use Blueprint\Models\Statements\ValidateStatement;
 use Blueprint\Translators\Rules;
 use Blueprint\Tree;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
+use function array_reduce;
+use function config;
+use function dirname;
+use function explode;
+use function implode;
+use function is_null;
+use function str_replace;
+use function trim;
+
+use const PHP_EOL;
+
 class FormRequestGenerator implements Generator
 {
     private const INDENT = '            ';
 
-    /**
-     * @var Filesystem
-     */
+    /** @var Filesystem */
     protected $filesystem;
 
-    /**
-     * @var Tree
-     */
+    /** @var Tree */
     private $tree;
 
     public function __construct(Filesystem $filesystem)
@@ -39,7 +47,7 @@ class FormRequestGenerator implements Generator
         $stub = $this->filesystem->stub('request.stub');
 
         /**
- * @var \Blueprint\Models\Controller $controller
+ * @var Controller $controller
 */
         foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
@@ -49,8 +57,8 @@ class FormRequestGenerator implements Generator
                     }
 
                     $context = Str::singular($controller->prefix());
-                    $name = $this->getName($context, $method);
-                    $path = $this->getPath($controller, $name);
+                    $name    = $this->getName($context, $method);
+                    $path    = $this->getPath($controller, $name);
 
                     if ($this->filesystem->exists($path)) {
                         continue;
@@ -87,7 +95,7 @@ class FormRequestGenerator implements Generator
         $stub = str_replace('{{ rules }}', $this->buildRules($context, $validateStatement), $stub);
 
         if (Blueprint::supportsReturnTypeHits()) {
-            $stub = str_replace(['authorize()','rules()'], ['authorize(): bool','rules(): array'], $stub);
+            $stub = str_replace(['authorize()', 'rules()'], ['authorize(): bool', 'rules(): array'], $stub);
         }
 
         return $stub;
@@ -137,7 +145,7 @@ class FormRequestGenerator implements Generator
     private function validationRules(string $qualifier, string $column)
     {
         /**
- * @var \Blueprint\Models\Model $model
+ * @var Model $model
 */
         $model = $this->tree->modelForContext($qualifier);
 
@@ -152,7 +160,7 @@ class FormRequestGenerator implements Generator
                 return $rules;
             } else {
                 /**
- * @var \Blueprint\Models\Model $column
+ * @var Model $column
 */
                 foreach ($model->columns() as $column) {
                     if ($column->name() === 'id') {

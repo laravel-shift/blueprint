@@ -21,9 +21,7 @@ use PHPUnit\Framework\TestCase;
  */
 class StatementLexerTest extends TestCase
 {
-    /**
-     * @var StatementLexer
-     */
+    /** @var StatementLexer */
     private $subject;
 
     protected function setUp(): void
@@ -47,7 +45,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_render_statement()
     {
         $tokens = [
-            'render' => 'post.index'
+            'render' => 'post.index',
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -65,7 +63,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_render_statement_with_data()
     {
         $tokens = [
-            'render' => 'post.index with:foo,bar,baz'
+            'render' => 'post.index with:foo,bar,baz',
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -83,7 +81,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_an_event_statement()
     {
         $tokens = [
-            'fire' => 'SomeEvent'
+            'fire' => 'SomeEvent',
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -101,7 +99,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_an_event_statement_with_data()
     {
         $tokens = [
-            'fire' => 'some.event with:foo, bar,  baz'
+            'fire' => 'some.event with:foo, bar,  baz',
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -119,7 +117,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_dispatch_statement()
     {
         $tokens = [
-            'dispatch' => 'ProcessPodcast'
+            'dispatch' => 'ProcessPodcast',
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -137,7 +135,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_dispatch_statement_with_data()
     {
         $tokens = [
-            'dispatch' => 'ProcessPodcast with:foo, bar,        baz'
+            'dispatch' => 'ProcessPodcast with:foo, bar,        baz',
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -155,7 +153,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_send_statement()
     {
         $tokens = [
-            'send' => 'ReviewPost'
+            'send' => 'ReviewPost',
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -175,7 +173,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_send_statement_to_only()
     {
         $tokens = [
-            'send' => 'ReviewPost to:post.author'
+            'send' => 'ReviewPost to:post.author',
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -195,7 +193,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_send_statement_with_only()
     {
         $tokens = [
-            'send' => 'ReviewPost with:foo, bar, baz'
+            'send' => 'ReviewPost with:foo, bar, baz',
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -215,7 +213,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_send_statement_to_and_with()
     {
         $tokens = [
-            'send' => 'ReviewPost to:post.author with:foo, bar, baz'
+            'send' => 'ReviewPost to:post.author with:foo, bar, baz',
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -235,7 +233,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_send_statement_type_notification_facade()
     {
         $tokens = [
-            'send' => 'ReviewNotification'
+            'send' => 'ReviewNotification',
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -255,7 +253,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_send_statement_to_only_type_notification_facade()
     {
         $tokens = [
-            'send' => 'ReviewNotification to:post.author'
+            'send' => 'ReviewNotification to:post.author',
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -275,7 +273,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_send_statement_with_only_type_notification_facade()
     {
         $tokens = [
-            'send' => 'ReviewNotification with:foo, bar, baz'
+            'send' => 'ReviewNotification with:foo, bar, baz',
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -295,7 +293,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_send_statement_to_and_with_type_notification_facade()
     {
         $tokens = [
-            'send' => 'ReviewNotification to:post.author with:foo, bar, baz'
+            'send' => 'ReviewNotification to:post.author with:foo, bar, baz',
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -315,7 +313,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_send_statement_with_type_notification_model()
     {
         $tokens = [
-            'notify' => 'user ReviewNotification'
+            'notify' => 'user ReviewNotification',
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -335,7 +333,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_send_statement_to_only_type_notification_model()
     {
         $tokens = [
-            'notify' => 'post.author ReviewNotification'
+            'notify' => 'post.author ReviewNotification',
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -355,7 +353,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_send_statement_with_only_type_notification_model()
     {
         $tokens = [
-            'notify' => 'user ReviewNotification with:foo, bar, baz'
+            'notify' => 'user ReviewNotification with:foo, bar, baz',
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -375,7 +373,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_send_statement_to_and_with_type_notification_model()
     {
         $tokens = [
-            'notify' => 'post.author ReviewNotification with:foo, bar, baz'
+            'notify' => 'post.author ReviewNotification with:foo, bar, baz',
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -395,7 +393,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_validate_statement()
     {
         $tokens = [
-            'validate' => 'title, author_id, content'
+            'validate' => 'title, author_id, content',
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -413,7 +411,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_an_eloquent_statement($operation, $reference)
     {
         $tokens = [
-            $operation => $reference
+            $operation => $reference,
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -431,7 +429,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_an_update_eloquent_statement_with_columns()
     {
         $tokens = [
-            'update' => 'name, title, age'
+            'update' => 'name, title, age',
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -451,7 +449,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_session_statement($operation, $reference)
     {
         $tokens = [
-            $operation => $reference
+            $operation => $reference,
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -469,7 +467,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_redirect_statement()
     {
         $tokens = [
-            'redirect' => 'route.index'
+            'redirect' => 'route.index',
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -487,7 +485,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_redirect_statement_with_data()
     {
         $tokens = [
-            'redirect' => 'route.show with:foo, bar,        baz'
+            'redirect' => 'route.show with:foo, bar,        baz',
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -505,7 +503,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_response_statement_with_status_code()
     {
         $tokens = [
-            'respond' => '204'
+            'respond' => '204',
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -523,7 +521,7 @@ class StatementLexerTest extends TestCase
     public function it_returns_a_response_statement_with_content()
     {
         $tokens = [
-            'respond' => 'post'
+            'respond' => 'post',
         ];
 
         $actual = $this->subject->analyze($tokens);

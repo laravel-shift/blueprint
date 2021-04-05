@@ -4,6 +4,11 @@ namespace Blueprint;
 
 use Illuminate\Filesystem\Filesystem;
 
+use function array_filter;
+use function array_merge;
+use function explode;
+use function preg_match;
+
 class Builder
 {
     public function execute(Blueprint $blueprint, Filesystem $filesystem, string $draft, string $only = '', string $skip = '', $overwriteMigrations = false)
@@ -13,12 +18,12 @@ class Builder
             $cache = $blueprint->parse($filesystem->get('.blueprint'));
         }
 
-        $contents = $filesystem->get($draft);
+        $contents      = $filesystem->get($draft);
         $using_indexes = preg_match('/^\s+indexes:\R/m', $contents) !== 1;
 
-        $tokens = $blueprint->parse($contents, $using_indexes);
+        $tokens          = $blueprint->parse($contents, $using_indexes);
         $tokens['cache'] = $cache['models'] ?? [];
-        $registry = $blueprint->analyze($tokens);
+        $registry        = $blueprint->analyze($tokens);
 
         $only = array_filter(explode(',', $only));
         $skip = array_filter(explode(',', $skip));

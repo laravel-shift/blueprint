@@ -4,41 +4,40 @@ namespace Blueprint\Models;
 
 use Illuminate\Support\Str;
 
+use function array_slice;
+use function class_basename;
+use function config;
+use function explode;
+use function implode;
+use function str_replace;
+use function trim;
+
 class Controller
 {
     /** @var array */
     public static $resourceMethods = ['index', 'create', 'store', 'edit', 'update', 'show', 'destroy'];
 
-    /** @var array  */
+    /** @var array */
     public static $apiResourceMethods = ['index', 'store', 'update', 'show', 'destroy'];
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $name;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $namespace;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $methods = [];
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $apiResource = false;
 
     /**
-     * Controller constructor.
      * @param $name
      */
     public function __construct(string $name)
     {
-        $this->name = class_basename($name);
+        $this->name      = class_basename($name);
         $this->namespace = trim(implode('\\', array_slice(explode('\\', str_replace('/', '\\', $name)), 0, -1)), '\\');
     }
 
@@ -100,17 +99,11 @@ class Controller
         return $this->name();
     }
 
-    /**
-     * @param bool $apiResource
-     */
     public function setApiResource(bool $apiResource)
     {
         $this->apiResource = $apiResource;
     }
 
-    /**
-     * @return bool
-     */
     public function isApiResource(): bool
     {
         return $this->apiResource;

@@ -4,8 +4,14 @@ namespace Blueprint\Generators\Statements;
 
 use Blueprint\Blueprint;
 use Blueprint\Generators\StatementGenerator;
+use Blueprint\Models\Controller;
 use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Tree;
+
+use function config;
+use function dirname;
+use function sprintf;
+use function str_replace;
 
 class MailGenerator extends StatementGenerator
 {
@@ -18,7 +24,7 @@ class MailGenerator extends StatementGenerator
         $stub = $this->filesystem->stub('mail.stub');
 
         /**
- * @var \Blueprint\Models\Controller $controller
+ * @var Controller $controller
 */
         foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {

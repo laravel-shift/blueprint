@@ -4,6 +4,17 @@ namespace Blueprint;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
+use InvalidArgumentException;
+
+use function array_map;
+use function explode;
+use function implode;
+use function in_array;
+use function preg_match;
+use function preg_replace;
+use function sprintf;
+use function str_replace;
+use function trim;
 
 class EnumType extends Type
 {
@@ -30,8 +41,8 @@ class EnumType extends Type
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
-        if (!in_array($value, $this->values)) {
-            throw new \InvalidArgumentException("Invalid '" . $this->getName() . "' value.");
+        if (! in_array($value, $this->values)) {
+            throw new InvalidArgumentException("Invalid '" . $this->getName() . "' value.");
         }
         return $value;
     }
@@ -49,7 +60,7 @@ class EnumType extends Type
             function ($option) {
                 $raw_value = str_replace("''", "'", trim($option, "'"));
 
-                if (!preg_match('/\s/', $raw_value)) {
+                if (! preg_match('/\s/', $raw_value)) {
                     return $raw_value;
                 }
 

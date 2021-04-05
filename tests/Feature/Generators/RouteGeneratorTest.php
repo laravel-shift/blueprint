@@ -4,9 +4,12 @@ namespace Tests\Feature\Generators;
 
 use Blueprint\Blueprint;
 use Blueprint\Generators\RouteGenerator;
+use Blueprint\Lexers\ControllerLexer;
 use Blueprint\Lexers\StatementLexer;
 use Blueprint\Tree;
 use Tests\TestCase;
+
+use function config;
 
 /**
  * @see RouteGenerator
@@ -27,7 +30,7 @@ class RouteGeneratorTest extends TestCase
         $this->subject = new RouteGenerator($this->files);
 
         $this->blueprint = new Blueprint();
-        $this->blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new StatementLexer()));
+        $this->blueprint->registerLexer(new ControllerLexer(new StatementLexer()));
         $this->blueprint->registerGenerator($this->subject);
     }
 
@@ -52,7 +55,7 @@ class RouteGeneratorTest extends TestCase
             ->with($path, $this->fixture($routes));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['updated' => [$path]], $this->subject->output($tree));
     }
@@ -66,7 +69,7 @@ class RouteGeneratorTest extends TestCase
             ->with('routes/api.php', $this->fixture('routes/api-routes.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/api-routes-example.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['updated' => ['routes/api.php']], $this->subject->output($tree));
     }
@@ -82,7 +85,7 @@ class RouteGeneratorTest extends TestCase
             ->with('routes/web.php', $this->fixture('routes/multiple-resource-controllers-web.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/multiple-resource-controllers.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['updated' => ['routes/api.php', 'routes/web.php']], $this->subject->output($tree));
     }
@@ -98,7 +101,7 @@ class RouteGeneratorTest extends TestCase
             ->with('routes/web.php', $this->fixture('routes/routes-tuples.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/routes-tuples.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
 
         $this->subject->output($tree);
     }

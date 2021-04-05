@@ -4,9 +4,7 @@ namespace Blueprint\Models\Statements;
 
 class ValidateStatement
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     private $data;
 
     public function __construct(array $data)

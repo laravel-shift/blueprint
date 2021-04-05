@@ -2,9 +2,27 @@
 
 namespace Blueprint;
 
+use Blueprint\EnumType;
+use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Types\Type;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Filesystem\Filesystem;
+use ReflectionClass;
+use SplFileInfo;
+
+use function app;
+use function array_map;
+use function class_exists;
+use function collect;
+use function config;
+use function explode;
+use function get_class;
+use function implode;
+use function in_array;
+use function is_null;
+use function ltrim;
+use function str_replace;
+use function strpos;
 
 class Tracer
 {
@@ -49,30 +67,33 @@ class Tracer
             $dir .= '/' . str_replace('\\', '/', config('blueprint.models_namespace'));
         }
 
-        if (!$this->filesystem->exists($dir)) {
+        if (! $this->filesystem->exists($dir)) {
             return [];
         }
 
-        return array_map(function (\SplFIleInfo $file) {
-            return str_replace(
-                [Blueprint::appPath() . '/', '/'],
-                [config('blueprint.namespace') . '\\', '\\'],
-                $file->getPath() . '/' . $file->getBasename('.php')
-            );
-        }, $this->filesystem->allFiles($dir));
+        return array_map(
+            function (SplFileInfo $file) {
+                return str_replace(
+                    [Blueprint::appPath() . '/', '/'],
+                    [config('blueprint.namespace') . '\\', '\\'],
+                    $file->getPath() . '/' . $file->getBasename('.php')
+                );
+            },
+            $this->filesystem->allFiles($dir)
+        );
     }
 
     private function loadModel(string $class)
     {
-        if (!class_exists($class)) {
+        if (! class_exists($class)) {
             return null;
         }
 
-        $reflectionClass = new \ReflectionClass($class);
+        $reflectionClass = new ReflectionClass($class);
         if (
-            !$reflectionClass->isSubclassOf(\Illuminate\Database\Eloquent\Model::class) ||
-            (class_exists('Jenssegers\Mongodb\Eloquent\Model') &&
-                $reflectionClass->isSubclassOf('Jenssegers\Mongodb\Eloquent\Model'))
+            ! $reflectionClass->isSubclassOf(Model::class)
+            || (class_exists('Jenssegers\Mongodb\Eloquent\Model')
+            && $reflectionClass->isSubclassOf('Jenssegers\Mongodb\Eloquent\Model'))
         ) {
             return null;
         }
@@ -82,10 +103,10 @@ class Tracer
 
     private function extractColumns(Model $model)
     {
-        $table = $model->getConnection()->getTablePrefix() . $model->getTable();
+        $table  = $model->getConnection()->getTablePrefix() . $model->getTable();
         $schema = $model->getConnection()->getDoctrineSchemaManager();
 
-        if (!Type::hasType('enum')) {
+        if (! Type::hasType('enum')) {
             Type::addType('enum', EnumType::class);
             $databasePlatform = $schema->getDatabasePlatform();
             $databasePlatform->registerDoctrineTypeMapping('enum', 'enum');
@@ -98,27 +119,33 @@ class Tracer
 
         $columns = $schema->listTableColumns($table, $database);
 
-        $uses_enums = collect($columns)->contains(function ($column) {
-            return $column->getType() instanceof \Blueprint\EnumType;
-        });
+        $uses_enums = collect($columns)->contains(
+            function ($column) {
+                return $column->getType() instanceof EnumType;
+            }
+        );
 
         if ($uses_enums) {
             $definitions = $model->getConnection()->getDoctrineConnection()->fetchAll($schema->getDatabasePlatform()->getListTableColumnsSQL($table, $database));
 
-            collect($columns)->filter(function ($column) {
-                return $column->getType() instanceof \Blueprint\EnumType;
-            })->each(function (&$column, $key) use ($definitions) {
-                $definition = collect($definitions)->where('Field', $key)->first();
+            collect($columns)->filter(
+                function ($column) {
+                    return $column->getType() instanceof EnumType;
+                }
+            )->each(
+                function (&$column, $key) use ($definitions) {
+                    $definition = collect($definitions)->where('Field', $key)->first();
 
-                $column->options = \Blueprint\EnumType::extractOptions($definition['Type']);
-            });
+                    $column->options = EnumType::extractOptions($definition['Type']);
+                }
+            );
         }
 
         return $columns;
     }
 
     /**
-     * @param \Doctrine\DBAL\Schema\Column[] $columns
+     * @param Column[] $columns
      */
     private function mapColumns($columns)
     {
@@ -127,7 +154,7 @@ class Tracer
             ->toArray();
     }
 
-    public static function columns(\Doctrine\DBAL\Schema\Column $column, string $key)
+    public static function columns(Column $column, string $key)
     {
         $attributes = [];
 
@@ -148,7 +175,7 @@ class Tracer
             if ($column->getLength() > 65535) {
                 $type = 'longtext';
             }
-        } elseif ($type === 'enum' && !empty($column->options)) {
+        } elseif ($type === 'enum' && ! empty($column->options)) {
             $type .= ':' . implode(',', $column->options);
         }
 
@@ -160,7 +187,7 @@ class Tracer
             $attributes[] = 'unsigned';
         }
 
-        if (!$column->getNotnull()) {
+        if (! $column->getNotnull()) {
             $attributes[] = 'nullable';
         }
 
@@ -168,7 +195,7 @@ class Tracer
             $attributes[] = 'autoincrement';
         }
 
-        if (!is_null($column->getDefault())) {
+        if (! is_null($column->getDefault())) {
             $attributes[] = 'default:' . $column->getDefault();
         }
 
@@ -178,31 +205,31 @@ class Tracer
     private static function translations(string $type)
     {
         static $mappings = [
-            'array' => 'string',
-            'bigint' => 'biginteger',
-            'binary' => 'binary',
-            'blob' => 'binary',
-            'boolean' => 'boolean',
-            'date' => 'date',
-            'date_immutable' => 'date',
-            'dateinterval' => 'date',
-            'datetime' => 'datetime',
-            'datetime_immutable' => 'datetime',
-            'datetimetz' => 'datetimetz',
+            'array'                => 'string',
+            'bigint'               => 'biginteger',
+            'binary'               => 'binary',
+            'blob'                 => 'binary',
+            'boolean'              => 'boolean',
+            'date'                 => 'date',
+            'date_immutable'       => 'date',
+            'dateinterval'         => 'date',
+            'datetime'             => 'datetime',
+            'datetime_immutable'   => 'datetime',
+            'datetimetz'           => 'datetimetz',
             'datetimetz_immutable' => 'datetimetz',
-            'decimal' => 'decimal',
-            'enum' => 'enum',
-            'float' => 'float',
-            'guid' => 'string',
-            'integer' => 'integer',
-            'json' => 'json',
-            'object' => 'string',
-            'simple_array' => 'string',
-            'smallint' => 'smallinteger',
-            'string' => 'string',
-            'text' => 'text',
-            'time' => 'time',
-            'time_immutable' => 'time',
+            'decimal'              => 'decimal',
+            'enum'                 => 'enum',
+            'float'                => 'float',
+            'guid'                 => 'string',
+            'integer'              => 'integer',
+            'json'                 => 'json',
+            'object'               => 'string',
+            'simple_array'         => 'string',
+            'smallint'             => 'smallinteger',
+            'string'               => 'string',
+            'text'                 => 'text',
+            'time'                 => 'time',
+            'time_immutable'       => 'time',
         ];
 
         return $mappings[$type] ?? 'string';

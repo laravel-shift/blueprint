@@ -8,112 +8,124 @@ use Blueprint\Models\Index;
 use Blueprint\Models\Model;
 use Illuminate\Support\Str;
 
+use function array_map;
+use function collect;
+use function current;
+use function explode;
+use function is_array;
+use function is_null;
+use function key;
+use function preg_replace;
+use function preg_split;
+use function strtolower;
+use function trim;
+
 class ModelLexer implements Lexer
 {
     private static $relationships = [
-        'belongsto' => 'belongsTo',
-        'hasone' => 'hasOne',
-        'hasmany' => 'hasMany',
+        'belongsto'     => 'belongsTo',
+        'hasone'        => 'hasOne',
+        'hasmany'       => 'hasMany',
         'belongstomany' => 'belongsToMany',
-        'morphone' => 'morphOne',
-        'morphmany' => 'morphMany',
-        'morphto' => 'morphTo',
+        'morphone'      => 'morphOne',
+        'morphmany'     => 'morphMany',
+        'morphto'       => 'morphTo',
     ];
 
     private static $dataTypes = [
-        'bigincrements' => 'bigIncrements',
-        'biginteger' => 'bigInteger',
-        'binary' => 'binary',
-        'boolean' => 'boolean',
-        'char' => 'char',
-        'date' => 'date',
-        'datetime' => 'dateTime',
-        'datetimetz' => 'dateTimeTz',
-        'decimal' => 'decimal',
-        'double' => 'double',
-        'enum' => 'enum',
-        'float' => 'float',
-        'geometry' => 'geometry',
-        'geometrycollection' => 'geometryCollection',
-        'increments' => 'increments',
-        'integer' => 'integer',
-        'ipaddress' => 'ipAddress',
-        'json' => 'json',
-        'jsonb' => 'jsonb',
-        'linestring' => 'lineString',
-        'longtext' => 'longText',
-        'macaddress' => 'macAddress',
-        'mediumincrements' => 'mediumIncrements',
-        'mediuminteger' => 'mediumInteger',
-        'mediumtext' => 'mediumText',
-        'morphs' => 'morphs',
-        'uuidmorphs' => 'uuidMorphs',
-        'multilinestring' => 'multiLineString',
-        'multipoint' => 'multiPoint',
-        'multipolygon' => 'multiPolygon',
-        'nullablemorphs' => 'nullableMorphs',
-        'nullableuuidmorphs' => 'nullableUuidMorphs',
-        'nullabletimestamps' => 'nullableTimestamps',
-        'point' => 'point',
-        'polygon' => 'polygon',
-        'remembertoken' => 'rememberToken',
-        'set' => 'set',
-        'smallincrements' => 'smallIncrements',
-        'smallinteger' => 'smallInteger',
-        'softdeletes' => 'softDeletes',
-        'softdeletestz' => 'softDeletesTz',
-        'string' => 'string',
-        'text' => 'text',
-        'time' => 'time',
-        'timetz' => 'timeTz',
-        'timestamp' => 'timestamp',
-        'timestamptz' => 'timestampTz',
-        'timestamps' => 'timestamps',
-        'timestampstz' => 'timestampsTz',
-        'tinyincrements' => 'tinyIncrements',
-        'tinyinteger' => 'tinyInteger',
-        'unsignedbiginteger' => 'unsignedBigInteger',
-        'unsigneddecimal' => 'unsignedDecimal',
-        'unsignedinteger' => 'unsignedInteger',
+        'bigincrements'         => 'bigIncrements',
+        'biginteger'            => 'bigInteger',
+        'binary'                => 'binary',
+        'boolean'               => 'boolean',
+        'char'                  => 'char',
+        'date'                  => 'date',
+        'datetime'              => 'dateTime',
+        'datetimetz'            => 'dateTimeTz',
+        'decimal'               => 'decimal',
+        'double'                => 'double',
+        'enum'                  => 'enum',
+        'float'                 => 'float',
+        'geometry'              => 'geometry',
+        'geometrycollection'    => 'geometryCollection',
+        'increments'            => 'increments',
+        'integer'               => 'integer',
+        'ipaddress'             => 'ipAddress',
+        'json'                  => 'json',
+        'jsonb'                 => 'jsonb',
+        'linestring'            => 'lineString',
+        'longtext'              => 'longText',
+        'macaddress'            => 'macAddress',
+        'mediumincrements'      => 'mediumIncrements',
+        'mediuminteger'         => 'mediumInteger',
+        'mediumtext'            => 'mediumText',
+        'morphs'                => 'morphs',
+        'uuidmorphs'            => 'uuidMorphs',
+        'multilinestring'       => 'multiLineString',
+        'multipoint'            => 'multiPoint',
+        'multipolygon'          => 'multiPolygon',
+        'nullablemorphs'        => 'nullableMorphs',
+        'nullableuuidmorphs'    => 'nullableUuidMorphs',
+        'nullabletimestamps'    => 'nullableTimestamps',
+        'point'                 => 'point',
+        'polygon'               => 'polygon',
+        'remembertoken'         => 'rememberToken',
+        'set'                   => 'set',
+        'smallincrements'       => 'smallIncrements',
+        'smallinteger'          => 'smallInteger',
+        'softdeletes'           => 'softDeletes',
+        'softdeletestz'         => 'softDeletesTz',
+        'string'                => 'string',
+        'text'                  => 'text',
+        'time'                  => 'time',
+        'timetz'                => 'timeTz',
+        'timestamp'             => 'timestamp',
+        'timestamptz'           => 'timestampTz',
+        'timestamps'            => 'timestamps',
+        'timestampstz'          => 'timestampsTz',
+        'tinyincrements'        => 'tinyIncrements',
+        'tinyinteger'           => 'tinyInteger',
+        'unsignedbiginteger'    => 'unsignedBigInteger',
+        'unsigneddecimal'       => 'unsignedDecimal',
+        'unsignedinteger'       => 'unsignedInteger',
         'unsignedmediuminteger' => 'unsignedMediumInteger',
-        'unsignedsmallinteger' => 'unsignedSmallInteger',
-        'unsignedtinyinteger' => 'unsignedTinyInteger',
-        'uuid' => 'uuid',
-        'year' => 'year',
+        'unsignedsmallinteger'  => 'unsignedSmallInteger',
+        'unsignedtinyinteger'   => 'unsignedTinyInteger',
+        'uuid'                  => 'uuid',
+        'year'                  => 'year',
     ];
 
     private static $modifiers = [
         'autoincrement' => 'autoIncrement',
-        'charset' => 'charset',
-        'collation' => 'collation',
-        'default' => 'default',
-        'nullable' => 'nullable',
-        'unsigned' => 'unsigned',
-        'usecurrent' => 'useCurrent',
-        'always' => 'always',
-        'unique' => 'unique',
-        'index' => 'index',
-        'primary' => 'primary',
-        'foreign' => 'foreign',
-        'ondelete' => 'onDelete',
-        'onupdate' => 'onUpdate',
-        'comment' => 'comment',
+        'charset'       => 'charset',
+        'collation'     => 'collation',
+        'default'       => 'default',
+        'nullable'      => 'nullable',
+        'unsigned'      => 'unsigned',
+        'usecurrent'    => 'useCurrent',
+        'always'        => 'always',
+        'unique'        => 'unique',
+        'index'         => 'index',
+        'primary'       => 'primary',
+        'foreign'       => 'foreign',
+        'ondelete'      => 'onDelete',
+        'onupdate'      => 'onUpdate',
+        'comment'       => 'comment',
     ];
 
     public function analyze(array $tokens): array
     {
         $registry = [
             'models' => [],
-            'cache' => [],
+            'cache'  => [],
         ];
 
-        if (!empty($tokens['models'])) {
+        if (! empty($tokens['models'])) {
             foreach ($tokens['models'] as $name => $definition) {
                 $registry['models'][$name] = $this->buildModel($name, $definition);
             }
         }
 
-        if (!empty($tokens['cache'])) {
+        if (! empty($tokens['cache'])) {
             foreach ($tokens['cache'] as $name => $definition) {
                 $registry['cache'][$name] = $this->buildModel($name, $definition);
             }
@@ -175,7 +187,7 @@ class ModelLexer implements Lexer
             unset($columns['indexes']);
         }
 
-        if (!isset($columns['id']) && $model->usesPrimaryKey()) {
+        if (! isset($columns['id']) && $model->usesPrimaryKey()) {
             $column = $this->buildColumn('id', 'id');
             $model->addColumn($column);
         }
@@ -184,9 +196,11 @@ class ModelLexer implements Lexer
             $column = $this->buildColumn($name, $definition);
             $model->addColumn($column);
 
-            $foreign = collect($column->modifiers())->filter(function ($modifier) {
-                return collect($modifier)->containsStrict('foreign') || collect($modifier)->has('foreign');
-            })->flatten()->first();
+            $foreign = collect($column->modifiers())->filter(
+                function ($modifier) {
+                    return collect($modifier)->containsStrict('foreign') || collect($modifier)->has('foreign');
+                }
+            )->flatten()->first();
 
             if (
                 ($column->name() !== 'id' && $column->dataType() === 'id')
@@ -197,7 +211,7 @@ class ModelLexer implements Lexer
 
                 if ($foreign && $foreign !== 'foreign') {
                     $table = $foreign;
-                    $key = 'id';
+                    $key   = 'id';
 
                     if (Str::contains($foreign, '.')) {
                         [$table, $key] = explode('.', $foreign);
@@ -232,14 +246,17 @@ class ModelLexer implements Lexer
                 }
             } elseif (isset(self::$dataTypes[strtolower($value)])) {
                 $attributes = $parts[1] ?? null;
-                $data_type = self::$dataTypes[strtolower($value)];
-                if (!empty($attributes)) {
+                $data_type  = self::$dataTypes[strtolower($value)];
+                if (! empty($attributes)) {
                     $attributes = explode(',', $attributes);
 
                     if ($data_type === 'enum') {
-                        $attributes = array_map(function ($attribute) {
-                            return trim($attribute, '"');
-                        }, $attributes);
+                        $attributes = array_map(
+                            function ($attribute) {
+                                return trim($attribute, '"');
+                            },
+                            $attributes
+                        );
                     }
                 }
             }
@@ -255,9 +272,11 @@ class ModelLexer implements Lexer
         }
 
         if (is_null($data_type)) {
-            $is_foreign_key = collect($modifiers)->contains(function ($modifier) {
-                return (is_array($modifier) && key($modifier) === 'foreign') || $modifier === 'foreign';
-            });
+            $is_foreign_key = collect($modifiers)->contains(
+                function ($modifier) {
+                    return (is_array($modifier) && key($modifier) === 'foreign') || $modifier === 'foreign';
+                }
+            );
 
             $data_type = $is_foreign_key ? 'id' : 'string';
         }

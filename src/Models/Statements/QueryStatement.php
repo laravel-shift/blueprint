@@ -4,29 +4,30 @@ namespace Blueprint\Models\Statements;
 
 use Illuminate\Support\Str;
 
+use function explode;
+use function implode;
+use function in_array;
+use function is_null;
+use function str_replace;
+use function strcasecmp;
+
 class QueryStatement
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $operation;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $clauses;
 
-    /**
-     * @var string
-     */
-    private $model = null;
+    /** @var string */
+    private $model;
 
     public function __construct(string $operation, array $clauses = [])
     {
         $this->operation = $operation;
-        $this->clauses = $clauses;
+        $this->clauses   = $clauses;
 
-        if ($operation === 'all' && !empty($clauses)) {
+        if ($operation === 'all' && ! empty($clauses)) {
             $this->model = Str::studly(Str::singular($clauses[0]));
         }
     }
@@ -70,7 +71,7 @@ class QueryStatement
                 $methods[] = $method . '(' . "'{$column}', $" . str_replace('.', '->', $argument) . ')';
             } elseif ($method === 'pluck') {
                 $pluck_field = $argument;
-                $methods[] = "pluck('{$column}')";
+                $methods[]   = "pluck('{$column}')";
             } elseif ($method === 'order') {
                 $methods[] = "orderBy('{$column}')";
             } else {

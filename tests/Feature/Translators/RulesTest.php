@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Translators;
 
-use Tests\TestCase;
 use Blueprint\Models\Column;
 use Blueprint\Translators\Rules;
+use Tests\TestCase;
 
 /**
  * @see Rules
@@ -189,8 +189,8 @@ class RulesTest extends TestCase
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function forColumn_does_not_return_between_rule_for_decimal_without_precion_and_scale()
     {
         $column = new Column('column', "decimal");
@@ -199,8 +199,8 @@ class RulesTest extends TestCase
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function forColumn_does_not_return_between_rule_for_unsigned_decimal_without_precion_and_scale()
     {
         $unsignedBeforeDecimalColumn = new Column('column', "unsigned decimal");
@@ -213,9 +213,9 @@ class RulesTest extends TestCase
     }
 
     /**
-    * @test
+     * @test
      * @dataProvider noBetweenRuleDataProvider
-    */
+     */
     public function forColumn_does_not_return_between_rule_for_double_without_precion_and_scale($column)
     {
         $this->assertNotContains("between", Rules::fromColumn('context', $column));
@@ -231,9 +231,9 @@ class RulesTest extends TestCase
     }
 
     /**
-    * @test
-    * @dataProvider betweenRuleDataProvider
-    */
+     * @test
+     * @dataProvider betweenRuleDataProvider
+     */
     public function forColumn_returns_between_rule($column, $interval)
     {
         $fromColumn = Rules::fromColumn('context', $column);

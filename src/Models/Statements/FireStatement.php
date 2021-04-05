@@ -2,22 +2,22 @@
 
 namespace Blueprint\Models\Statements;
 
+use function array_map;
+use function implode;
+use function preg_match;
+
 class FireStatement
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $event;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $data;
 
     public function __construct(string $event, array $data = [])
     {
         $this->event = $event;
-        $this->data = $data;
+        $this->data  = $data;
     }
 
     public function event()
@@ -37,7 +37,6 @@ class FireStatement
     {
         return preg_match('/^[a-z0-9.]+$/', $this->event) === 1;
     }
-
 
     public function output()
     {
@@ -65,9 +64,12 @@ class FireStatement
 
     private function buildParameters(array $data)
     {
-        $parameters = array_map(function ($parameter) {
-            return '$' . $parameter;
-        }, $data);
+        $parameters = array_map(
+            function ($parameter) {
+                return '$' . $parameter;
+            },
+            $data
+        );
 
         return implode(', ', $parameters);
     }

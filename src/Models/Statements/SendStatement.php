@@ -2,37 +2,34 @@
 
 namespace Blueprint\Models\Statements;
 
+use function array_map;
+use function implode;
+use function sprintf;
+use function str_replace;
+
 class SendStatement
 {
-    const TYPE_MAIL = 'mail';
+    const TYPE_MAIL                     = 'mail';
     const TYPE_NOTIFICATION_WITH_FACADE = 'notification_with_facade';
-    const TYPE_NOTIFICATION_WITH_MODEL = 'notification_with_model';
+    const TYPE_NOTIFICATION_WITH_MODEL  = 'notification_with_model';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $mail;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $to;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $data;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $type;
 
-    public function __construct(string $mail, string $to = null, array $data, string $type)
+    public function __construct(string $mail, ?string $to = null, array $data, string $type)
     {
         $this->mail = $mail;
         $this->data = $data;
-        $this->to = $to;
+        $this->to   = $to;
         $this->type = $type;
     }
 
@@ -74,7 +71,7 @@ class SendStatement
 
     public function isNotification()
     {
-        return $this->type() === SendStatement::TYPE_NOTIFICATION_WITH_FACADE || $this->type() === SendStatement::TYPE_NOTIFICATION_WITH_MODEL;
+        return $this->type() === self::TYPE_NOTIFICATION_WITH_FACADE || $this->type() === self::TYPE_NOTIFICATION_WITH_MODEL;
     }
 
     private function mailOutput()
@@ -133,9 +130,12 @@ class SendStatement
 
     private function buildParameters(array $data)
     {
-        $parameters = array_map(function ($parameter) {
-            return '$' . $parameter;
-        }, $data);
+        $parameters = array_map(
+            function ($parameter) {
+                return '$' . $parameter;
+            },
+            $data
+        );
 
         return implode(', ', $parameters);
     }

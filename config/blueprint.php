@@ -1,5 +1,20 @@
 <?php
 
+use Blueprint\Generators\ControllerGenerator;
+use Blueprint\Generators\FactoryGenerator;
+use Blueprint\Generators\MigrationGenerator;
+use Blueprint\Generators\ModelGenerator;
+use Blueprint\Generators\RouteGenerator;
+use Blueprint\Generators\SeederGenerator;
+use Blueprint\Generators\Statements\EventGenerator;
+use Blueprint\Generators\Statements\FormRequestGenerator;
+use Blueprint\Generators\Statements\JobGenerator;
+use Blueprint\Generators\Statements\MailGenerator;
+use Blueprint\Generators\Statements\NotificationGenerator;
+use Blueprint\Generators\Statements\ResourceGenerator;
+use Blueprint\Generators\Statements\ViewGenerator;
+use Blueprint\Generators\TestGenerator;
+
 return [
 
     /*
@@ -15,7 +30,6 @@ return [
     */
     'namespace' => 'App',
 
-
     /*
     |--------------------------------------------------------------------------
     | Component Namespaces
@@ -27,9 +41,8 @@ return [
     | your own custom namespace when generating these components.
     |
     */
-    'models_namespace' => '',
+    'models_namespace'      => '',
     'controllers_namespace' => 'Http\\Controllers',
-
 
     /*
     |--------------------------------------------------------------------------
@@ -71,10 +84,8 @@ return [
     |
     */
     'use_constraints' => false,
-
-    'on_delete' => 'cascade',
-    'on_update' => 'cascade',
-
+    'on_delete'       => 'cascade',
+    'on_update'       => 'cascade',
 
     /*
     |--------------------------------------------------------------------------
@@ -114,7 +125,6 @@ return [
     | generated "unguarded" models.
     |
     */
-
     'use_guarded' => false,
 
     /*
@@ -144,20 +154,19 @@ return [
     |
     */
     'generators' => [
-        'controller' => \Blueprint\Generators\ControllerGenerator::class,
-        'factory' => \Blueprint\Generators\FactoryGenerator::class,
-        'migration' => \Blueprint\Generators\MigrationGenerator::class,
-        'model' => \Blueprint\Generators\ModelGenerator::class,
-        'route' => \Blueprint\Generators\RouteGenerator::class,
-        'seeder' => \Blueprint\Generators\SeederGenerator::class,
-        'test' => \Blueprint\Generators\TestGenerator::class,
-        'event' => \Blueprint\Generators\Statements\EventGenerator::class,
-        'form_request' => \Blueprint\Generators\Statements\FormRequestGenerator::class,
-        'job' => \Blueprint\Generators\Statements\JobGenerator::class,
-        'mail' => \Blueprint\Generators\Statements\MailGenerator::class,
-        'notification' => \Blueprint\Generators\Statements\NotificationGenerator::class,
-        'resource' => \Blueprint\Generators\Statements\ResourceGenerator::class,
-        'view' => \Blueprint\Generators\Statements\ViewGenerator::class,
+        'controller'   => ControllerGenerator::class,
+        'factory'      => FactoryGenerator::class,
+        'migration'    => MigrationGenerator::class,
+        'model'        => ModelGenerator::class,
+        'route'        => RouteGenerator::class,
+        'seeder'       => SeederGenerator::class,
+        'test'         => TestGenerator::class,
+        'event'        => EventGenerator::class,
+        'form_request' => FormRequestGenerator::class,
+        'job'          => JobGenerator::class,
+        'mail'         => MailGenerator::class,
+        'notification' => NotificationGenerator::class,
+        'resource'     => ResourceGenerator::class,
+        'view'         => ViewGenerator::class,
     ],
-
 ];

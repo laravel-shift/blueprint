@@ -4,25 +4,34 @@ namespace Blueprint\Models;
 
 use Illuminate\Support\Str;
 
+use function array_slice;
+use function class_basename;
+use function config;
+use function explode;
+use function implode;
+use function sort;
+use function str_replace;
+use function trim;
+
 class Model
 {
     private $name;
     private $namespace;
-    private $primaryKey = 'id';
-    private $timestamps = 'timestamps';
+    private $primaryKey  = 'id';
+    private $timestamps  = 'timestamps';
     private $softDeletes = false;
     private $morphTo;
-    private $columns = [];
+    private $columns       = [];
     private $relationships = [];
-    private $pivotTables = [];
-    private $indexes = [];
+    private $pivotTables   = [];
+    private $indexes       = [];
 
     /**
      * @param $name
      */
     public function __construct($name)
     {
-        $this->name = class_basename($name);
+        $this->name      = class_basename($name);
         $this->namespace = trim(implode('\\', array_slice(explode('\\', str_replace('/', '\\', $name)), 0, -1)), '\\');
     }
 
@@ -142,7 +151,7 @@ class Model
 
     public function addRelationship(string $type, string $reference)
     {
-        if (!isset($this->relationships[$type])) {
+        if (! isset($this->relationships[$type])) {
             $this->relationships[$type] = [];
         }
 

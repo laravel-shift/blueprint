@@ -5,18 +5,25 @@ namespace Blueprint\Generators;
 use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Tree;
+use Illuminate\Database\Seeder;
 use Illuminate\Filesystem\Filesystem;
+
+use function array_map;
+use function array_unique;
+use function class_basename;
+use function implode;
+use function sort;
+use function sprintf;
+use function str_replace;
+
+use const PHP_EOL;
 
 class SeederGenerator implements Generator
 {
-    /**
-     * @var Filesystem
-     */
+    /** @var Filesystem */
     protected $filesystem;
 
-    /**
-     * @var Tree
-     */
+    /** @var Tree */
     private $tree;
 
     private $imports = [];
@@ -61,7 +68,7 @@ class SeederGenerator implements Generator
     {
         $stub = str_replace('{{ class }}', $this->getClassName($model), $stub);
         if (Blueprint::isLaravel8OrHigher()) {
-            $this->addImport($model, 'Illuminate\Database\Seeder');
+            $this->addImport($model, Seeder::class);
 
             $stub = str_replace('//', $this->build($model), $stub);
             $stub = str_replace('use Illuminate\Database\Seeder;', $this->buildImports($model), $stub);

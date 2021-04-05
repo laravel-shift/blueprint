@@ -4,6 +4,7 @@ namespace Tests\Feature\Generators\Statements;
 
 use Blueprint\Blueprint;
 use Blueprint\Generators\Statements\JobGenerator;
+use Blueprint\Lexers\ControllerLexer;
 use Blueprint\Lexers\StatementLexer;
 use Blueprint\Tree;
 use Tests\TestCase;
@@ -27,7 +28,7 @@ class JobGeneratorTest extends TestCase
         $this->subject = new JobGenerator($this->files);
 
         $this->blueprint = new Blueprint();
-        $this->blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new StatementLexer()));
+        $this->blueprint->registerLexer(new ControllerLexer(new StatementLexer()));
         $this->blueprint->registerGenerator($this->subject);
     }
 
@@ -57,7 +58,7 @@ class JobGeneratorTest extends TestCase
         $this->filesystem->shouldNotHaveReceived('put');
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/render-statements.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([], $this->subject->output($tree));
     }
@@ -94,7 +95,7 @@ class JobGeneratorTest extends TestCase
             ->with('app/Jobs/DeleteRole.php', $this->fixture('jobs/delete-user.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/dispatch-statements.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['app/Jobs/CreateUser.php', 'app/Jobs/DeleteRole.php']], $this->subject->output($tree));
     }
@@ -116,7 +117,7 @@ class JobGeneratorTest extends TestCase
             ->andReturnTrue();
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/dispatch-statements.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([], $this->subject->output($tree));
     }
@@ -146,7 +147,7 @@ class JobGeneratorTest extends TestCase
             ->with('src/path/Jobs/SyncMedia.php', $this->fixture('jobs/job-configured.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree   = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['src/path/Jobs/SyncMedia.php']], $this->subject->output($tree));
     }
