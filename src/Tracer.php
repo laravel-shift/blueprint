@@ -126,7 +126,7 @@ class Tracer
         );
 
         if ($uses_enums) {
-            $definitions = $model->getConnection()->getDoctrineConnection()->fetchAll($schema->getDatabasePlatform()->getListTableColumnsSQL($table, $database));
+            $definitions = $model->getConnection()->getDoctrineConnection()->fetchAllAssociative($schema->getDatabasePlatform()->getListTableColumnsSQL($table, $database));
 
             collect($columns)->filter(
                 function ($column) {
