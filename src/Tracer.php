@@ -107,7 +107,9 @@ class Tracer
 
             $fetch = method_exists($connection, 'fetchAllAssociative') ? 'fetchAllAssociative' : 'fetchAll';
 
-            $definitions = $connection->$fetch($schema->getDatabasePlatform()->getListTableColumnsSQL($table, $database));
+            $definitions = $connection->{$fetch}(
+                $schema->getDatabasePlatform()->getListTableColumnsSQL($table, $database)
+            );
 
             collect($columns)->filter(function ($column) {
                 return $column->getType() instanceof \Blueprint\EnumType;
