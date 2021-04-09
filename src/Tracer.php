@@ -103,7 +103,11 @@ class Tracer
         });
 
         if ($uses_enums) {
-            $definitions = $model->getConnection()->getDoctrineConnection()->fetchAllAssociative($schema->getDatabasePlatform()->getListTableColumnsSQL($table, $database));
+            $connection = $model->getConnection()->getDoctrineConnection();
+
+            $fetch = method_exists($connection, 'fetchAllAssociative') ? 'fetchAllAssociative' : 'fetchAll';
+
+            $definitions = $connection->$fetch($schema->getDatabasePlatform()->getListTableColumnsSQL($table, $database));
 
             collect($columns)->filter(function ($column) {
                 return $column->getType() instanceof \Blueprint\EnumType;
