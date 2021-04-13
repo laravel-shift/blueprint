@@ -66,6 +66,7 @@ class MigrationGenerator implements Generator
             $tables['tableNames'][$model->tableName()] = $this->populateStub($stub, $model);
 
             if (! empty($model->pivotTables())) {
+
                 foreach ($model->pivotTables() as $pivotSegments) {
                     $pivotTableName = $this->getPivotTableName($pivotSegments);
                     $tables['pivotTableNames'][$pivotTableName] = $this->populatePivotStub($stub, $pivotSegments);
@@ -411,7 +412,7 @@ class MigrationGenerator implements Generator
         if ($isCustom) {
             $table = Str::after($isCustom, ':');
 
-            return $table;
+            return Str::contains($table, '.') ? Str::before($table, '.') : $table;
         }
 
         $segments = array_map(function ($name) {
