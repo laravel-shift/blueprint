@@ -88,25 +88,6 @@ return [
     |
     */
     'fake_nullables' => true,
-    
-    /*
-    |--------------------------------------------------------------------------
-    | Use full namespaces for models in relationships
-    |--------------------------------------------------------------------------
-    |
-    | When enabled Blueprint will not infer the Model path for the relationships.
-    | You need to write the relations with the full namespace of the models.
-    | So instead of:
-    |   BelongsTo: user
-    |   BelongsToMany: someModel
-    |
-    | - you would write:
-    |
-    |       BelongsTo: App\Folder\User
-    |       BelongsToMany: App\Models\SomeModel
-    |
-    */
-    'relationships_use_model_fqn' => false,
 
     /*
     |--------------------------------------------------------------------------
