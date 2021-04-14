@@ -7,9 +7,7 @@ use Blueprint\Contracts\Generator;
 use Blueprint\Models\Column;
 use Blueprint\Models\Model;
 use Blueprint\Tree;
-use Exception;
 use Illuminate\Support\Str;
-use Illuminate\Support\Arr;
 
 class ModelGenerator implements Generator
 {
@@ -195,64 +193,48 @@ class ModelGenerator implements Generator
                 $custom_template = $template;
                 $key = null;
                 $class = null;
-                $relation_options = [];
-                $options = [];
-                $related_by_namespace = null;
 
-                $column_name = $related_by_namespace = $reference;
-
-                $method_name = Str::beforeLast($this->getMethodNameFromReference($reference), '_id');
-
-                $relationship_string = '$this->%s(%s::class';
+                $column_name = $reference;
+                $method_name = Str::beforeLast($reference, '_id');
 
                 if (Str::contains($reference, ':')) {
-                    [$foreign_reference, $options] = explode(':', $reference);
+                    [$foreign_reference, $column_name] = explode(':', $reference);
+                    $method_name = Str::beforeLast($column_name, '_id');
 
-                    $column_name = str_replace('\\', '', lcfirst(ucwords($foreign_reference, '\\')));
-                    $method_name = Str::beforeLast($foreign_reference, '_id');
+                    if (Str::contains($foreign_reference, '.')) {
+                        [$class, $key] = explode('.', $foreign_reference);
 
-                    $related_by_namespace = $foreign_reference;
-
-                    $options = Str::contains($options, '.') ? explode('.', $options) : [$options];
-
-                }
-
-                if(config('blueprint.relationships_use_model_fqn')) {
-                    $fqcn = Str::startsWith($related_by_namespace, '\\') ? $related_by_namespace : '\\'.$related_by_namespace;
-                } else {
-                    $fqcn = $this->fullyQualifyModelReference($method_name) ?? $model->fullyQualifiedNamespace() . '\\' . $method_name;
-                    $fqcn = Str::startsWith($fqcn, '\\') ? $fqcn : '\\'.$fqcn;
-                    $method_name = $column_name;
-                }
-
-                array_push($relation_options, $type);
-                array_push($relation_options, $fqcn);
-
-                if (empty($options)) {
-                    if($type === 'morphMany' || $type === 'morphOne') {
-                        $options[] = Str::lower(Str::singular($this->getMethodNameFromReference($column_name))) . 'able';
+                        if ($key === 'id') {
+                            $key = null;
+                        } else {
+                            $method_name = Str::lower($class);
+                        }
+                    } else {
+                        $class = $foreign_reference;
                     }
                 }
-                foreach($options as $option) {
-                    $relationship_string .= ', \'%s\'';
-                    array_push($relation_options, $option);
-                }
 
-                $relationship_string .= ')';
+                $class_name = Str::studly($class ?? $method_name);
+                $fqcn = $this->fullyQualifyModelReference($class_name) ?? $model->fullyQualifiedNamespace() . '\\' . $class_name;
 
                 if ($type === 'morphTo') {
                     $relationship = sprintf('$this->%s()', $type);
+                } elseif ($type === 'morphMany' || $type === 'morphOne') {
+                    $relation = Str::lower(Str::singular($column_name)) . 'able';
+                    $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, '\\' . $fqcn, $relation);
+                } elseif (!is_null($key)) {
+                    $relationship = sprintf('$this->%s(%s::class, \'%s\', \'%s\')', $type, '\\' . $fqcn, $column_name, $key);
+                } elseif (!is_null($class) && $type === 'belongsToMany') {
+                    $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, '\\' . $fqcn, $column_name);
+                    $column_name = $class;
                 } else {
-                    $relationship = vsprintf($relationship_string, $relation_options);
+                    $relationship = sprintf('$this->%s(%s::class)', $type, '\\' . $fqcn);
                 }
 
                 if ($type === 'morphTo') {
-                    $method_name = Str::lower($method_name);
+                    $method_name = Str::lower($class_name);
                 } elseif (in_array($type, ['hasMany', 'belongsToMany', 'morphMany'])) {
-
-                    $method_name = config('blueprint.relationships_use_model_fqn') ?
-                        Str::plural($this->getMethodNameFromReference($related_by_namespace)) :
-                            Str::plural($column_name);
+                    $method_name = Str::plural($column_name);
                 }
 
                 if (Blueprint::supportsReturnTypeHits()) {
@@ -262,7 +244,7 @@ class ModelGenerator implements Generator
                         $custom_template
                     );
                 }
-                $method = str_replace('{{ method }}', Str::camel($this->getMethodNameFromReference($method_name)), $custom_template);
+                $method = str_replace('{{ method }}', Str::camel($method_name), $custom_template);
                 $method = str_replace('null', $relationship, $method);
 
                 $phpDoc = str_replace('{{ namespacedReturnClass }}', '\Illuminate\Database\Eloquent\Relations\\' . Str::ucfirst($type), $commentTemplate);
@@ -272,15 +254,6 @@ class ModelGenerator implements Generator
         }
 
         return $methods;
-    }
-
-    private function getMethodNameFromReference($reference) {
-
-        if(config('blueprint.relationships_use_model_fqn')) {
-            return Str::of($reference)->afterLast('\\')->__toString();
-        }
-
-        return $reference;
     }
 
     protected function getPath(Model $model)
