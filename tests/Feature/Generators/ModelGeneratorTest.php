@@ -272,6 +272,38 @@ class ModelGeneratorTest extends TestCase
      * @test
      * @environment-setup useLaravel8
      */
+    public function output_generates_relationships_added_with_full_model_namespace()
+    {
+        $this->files->expects('stub')
+            ->with($this->modelStub)
+            ->andReturn($this->stub($this->modelStub));
+        $this->files->expects('stub')
+            ->with('model.fillable.stub')
+            ->andReturn($this->stub('model.fillable.stub'));
+        $this->files->expects('stub')
+            ->with('model.casts.stub')
+            ->andReturn($this->stub('model.casts.stub'));
+        $this->files->expects('stub')
+            ->with('model.method.stub')
+            ->andReturn($this->stub('model.method.stub'));
+
+        $this->files->expects('exists')
+            ->with('app')
+            ->andReturnTrue();
+
+        $this->files->expects('put')
+            ->with('app/Recurrency.php', $this->fixture('models/model-relationships-with-full-namespace-laravel8.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/model-relationships-with-full-model-namespaces.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['app/Recurrency.php']], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     * @environment-setup useLaravel8
+     */
     public function output_generates_polymorphic_relationships()
     {
         $this->files->expects('stub')

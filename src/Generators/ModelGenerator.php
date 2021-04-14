@@ -190,16 +190,20 @@ class ModelGenerator implements Generator
 
         foreach ($model->relationships() as $type => $references) {
             foreach ($references as $reference) {
+                // if reference starts with \ , we assume developer is using a fully namespaced model
+                $is_model_fqn = Str::startsWith($reference, '\\');
+
                 $custom_template = $template;
                 $key = null;
                 $class = null;
 
                 $column_name = $reference;
-                $method_name = Str::beforeLast($reference, '_id');
+                $method_name = $is_model_fqn ? Str::afterLast($reference, '\\') : Str::beforeLast($reference, '_id');
 
                 if (Str::contains($reference, ':')) {
                     [$foreign_reference, $column_name] = explode(':', $reference);
-                    $method_name = Str::beforeLast($column_name, '_id');
+
+                    $method_name = $is_model_fqn ? Str::afterLast($foreign_reference, '\\') : Str::beforeLast($column_name, '_id');
 
                     if (Str::contains($foreign_reference, '.')) {
                         [$class, $key] = explode('.', $foreign_reference);
@@ -207,34 +211,43 @@ class ModelGenerator implements Generator
                         if ($key === 'id') {
                             $key = null;
                         } else {
-                            $method_name = Str::lower($class);
+                            $method_name = $is_model_fqn ? Str::lower(Str::afterLast($class, '\\')) : Str::lower($class);
                         }
                     } else {
                         $class = $foreign_reference;
                     }
                 }
 
-                $class_name = Str::studly($class ?? $method_name);
-                $fqcn = $this->fullyQualifyModelReference($class_name) ?? $model->fullyQualifiedNamespace() . '\\' . $class_name;
+                // if full model namespace is proviced we will not try to infer it,
+                // we use the namespace as developer gives us
+                if ($is_model_fqn) {
+                    $fqcn = $class ?? $column_name;
+                    $class_name = Str::afterLast($fqcn, '\\');
+                }else{
+                    $class_name = Str::studly($class ?? $method_name);
+                    $fqcn = $this->fullyQualifyModelReference($class_name) ?? $model->fullyQualifiedNamespace() . '\\' . $class_name;
+                }
+
+                $fqcn = Str::startsWith($fqcn, '\\') ? $fqcn : '\\'.$fqcn;
 
                 if ($type === 'morphTo') {
                     $relationship = sprintf('$this->%s()', $type);
                 } elseif ($type === 'morphMany' || $type === 'morphOne') {
                     $relation = Str::lower(Str::singular($column_name)) . 'able';
-                    $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, '\\' . $fqcn, $relation);
+                    $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, $fqcn, $relation);
                 } elseif (!is_null($key)) {
-                    $relationship = sprintf('$this->%s(%s::class, \'%s\', \'%s\')', $type, '\\' . $fqcn, $column_name, $key);
+                    $relationship = sprintf('$this->%s(%s::class, \'%s\', \'%s\')', $type, $fqcn, $column_name, $key);
                 } elseif (!is_null($class) && $type === 'belongsToMany') {
-                    $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, '\\' . $fqcn, $column_name);
+                    $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, $fqcn, $column_name);
                     $column_name = $class;
                 } else {
-                    $relationship = sprintf('$this->%s(%s::class)', $type, '\\' . $fqcn);
+                    $relationship = sprintf('$this->%s(%s::class)', $type, $fqcn);
                 }
 
                 if ($type === 'morphTo') {
                     $method_name = Str::lower($class_name);
                 } elseif (in_array($type, ['hasMany', 'belongsToMany', 'morphMany'])) {
-                    $method_name = Str::plural($column_name);
+                    $method_name = Str::plural($is_model_fqn ? Str::afterLast($column_name, '\\') : $column_name);
                 }
 
                 if (Blueprint::supportsReturnTypeHits()) {
