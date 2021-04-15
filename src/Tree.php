@@ -41,6 +41,10 @@ class Tree
             return $this->models[Str::studly($context)];
         }
 
+        if (isset($this->models[Str::studly(Str::plural($context))])) {
+            return $this->models[Str::studly(Str::plural($context))];
+        }
+
         $matches = array_filter(array_keys($this->models), function ($key) use ($context) {
             return Str::endsWith($key, '/' . Str::studly($context));
         });
