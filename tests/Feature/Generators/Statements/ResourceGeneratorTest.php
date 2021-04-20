@@ -136,4 +136,40 @@ class ResourceGeneratorTest extends TestCase
             'created' => ['app/Http/Resources/Api/CertificateCollection.php', 'app/Http/Resources/Api/CertificateResource.php'],
         ], $this->subject->output($tree));
     }
+
+    /**
+     * @test
+     */
+    public function output_api_resource_pagination()
+    {
+        $this->files->expects('stub')
+            ->with('resource.stub')
+            ->andReturn(file_get_contents('stubs/resource.stub'));
+
+        $this->files->shouldReceive('exists')
+            ->with('app/Http/Resources')
+            ->andReturns(false, true);
+        $this->files->expects('makeDirectory')
+            ->with('app/Http/Resources', 0755, true);
+
+        $this->files->expects('exists')
+            ->times(3)
+            ->with('app/Http/Resources/PostResource.php')
+            ->andReturns(false, true, true);
+        $this->files->expects('put')
+            ->with('app/Http/Resources/PostResource.php', $this->fixture('resources/api-post-resource.php'));
+
+        $this->files->expects('exists')
+            ->with('app/Http/Resources/PostCollection.php')
+            ->andReturns(false);
+        $this->files->expects('put')
+            ->with('app/Http/Resources/PostCollection.php', $this->fixture('resources/api-resource-pagination.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/api-resource-pagination.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals([
+            'created' => ['app/Http/Resources/PostCollection.php', 'app/Http/Resources/PostResource.php'],
+        ], $this->subject->output($tree));
+    }
 }

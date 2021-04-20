@@ -208,6 +208,7 @@ class ControllerGeneratorTest extends TestCase
             ['drafts/respond-statements.yaml', 'app/Http/Controllers/Api/PostController.php', 'controllers/respond-statements.php'],
             ['drafts/resource-statements.yaml', 'app/Http/Controllers/UserController.php', 'controllers/resource-statements.php'],
             ['drafts/save-without-validation.yaml', 'app/Http/Controllers/PostController.php', 'controllers/save-without-validation.php'],
+            ['drafts/api-resource-pagination.yaml', 'app/Http/Controllers/PostController.php', 'controllers/api-resource-pagination.php'],
             ['drafts/api-routes-example.yaml', 'app/Http/Controllers/Api/CertificateController.php', 'controllers/api-routes-example.php'],
             ['drafts/invokable-controller.yaml', 'app/Http/Controllers/ReportController.php', 'controllers/invokable-controller.php'],
             ['drafts/invokable-controller-shorthand.yaml', 'app/Http/Controllers/ReportController.php', 'controllers/invokable-controller-shorthand.php'],
