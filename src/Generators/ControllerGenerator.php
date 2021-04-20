@@ -142,6 +142,20 @@ class ControllerGenerator implements Generator
                     $method = str_replace('* @return \\Illuminate\\Http\\Response', '* @return \\' . $fqcn, $method);
                     $this->addImport($controller, $fqcn);
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
+
+                    if ($statement->paginate()) {
+                        if (! Str::contains($body, '::all();')) {
+                            $queryStatement = new QueryStatement('all', [$statement->reference()]);
+                            $body = implode(PHP_EOL, [
+                                self::INDENT . $queryStatement->output($statement->reference()),
+                                PHP_EOL . $body
+                            ]);
+
+                            $this->addImport($controller, $this->determineModel($controller, $queryStatement->model()));
+                        }
+
+                        $body = str_replace('::all();', '::paginate();', $body);
+                    }
                 } elseif ($statement instanceof RedirectStatement) {
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
                 } elseif ($statement instanceof RespondStatement) {

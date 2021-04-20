@@ -54,15 +54,6 @@ class ResourceStatement
 
     public function output(): string
     {
-        $code = 'return new ' . $this->name();
-        $code .= '($' . $this->reference();
-
-        if ($this->paginate()) {
-            $code .= '->paginate()';
-        }
-
-        $code .= ');';
-
-        return $code;
+        return sprintf('return new %s($%s);', $this->name(), $this->reference());
     }
 }
