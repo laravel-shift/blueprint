@@ -1,0 +1,11 @@
+models:
+  Post:
+    title: string
+    body: text
+controllers:
+  Post:
+    resource: api
+    index:
+      query: all
+      resource: 'paginate:posts'
+seeders: Post
