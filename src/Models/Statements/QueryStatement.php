@@ -26,9 +26,7 @@ class QueryStatement
         $this->operation = $operation;
         $this->clauses = $clauses;
 
-        if ($operation === 'all' && !empty($clauses)) {
-            $this->model = Str::studly(Str::singular($clauses[0]));
-        }
+        $this->determineModel($this->model);
     }
 
     public function operation(): string
@@ -51,11 +49,11 @@ class QueryStatement
         $model = $this->determineModel($controller);
 
         if ($this->operation() === 'all') {
-            if (is_null($this->model())) {
-                return '$' . Str::camel(Str::plural($model)) . ' = ' . $model . '::all();';
-            } else {
-                return '$' . Str::camel($this->clauses()[0]) . ' = ' . $this->model() . '::all();';
-            }
+            return '$' . Str::camel(Str::plural($model)) . ' = ' . $model . '::all();';
+        }
+
+        if ($this->operation() === 'paginate') {
+            return '$' . Str::camel(Str::plural($model)) . ' = ' . $model . '::paginate();';
         }
 
         $methods = [];
@@ -117,15 +115,23 @@ class QueryStatement
             return Str::lower(Str::plural(str_replace('.', '_', $field)));
         }
 
-        return Str::lower('Post' . '_' . Str::plural($field));
+        return Str::lower($this->model . '_' . Str::plural($field));
     }
 
-    private function determineModel(string $prefix)
+    private function determineModel(?string $controller)
     {
-        if (empty($this->model())) {
-            return Str::studly(Str::singular($prefix));
+        if (! is_null($controller) && ! empty($controller)) {
+            $this->model = Str::studly(Str::singular($controller));
         }
 
-        return Str::studly($this->model());
+        if (
+            is_null($this->model()) &&
+            ! empty($this->clauses()) &&
+            ! in_array($this->operation(), ['count','exists'])
+        ) {
+            $this->model = Str::studly(Str::singular(Str::before(Str::after($this->clauses()[0], ':'), '.')));
+        }
+
+        return $this->model();
     }
 }

@@ -589,7 +589,7 @@ class StatementLexerTest extends TestCase
 
         $this->assertEquals('get', $actual[0]->operation());
         $this->assertSame(['where:post.title', 'order:post.created_at'], $actual[0]->clauses());
-        $this->assertNull($actual[0]->model());
+        $this->assertSame('Post', $actual[0]->model());
     }
 
     /**
@@ -608,7 +608,7 @@ class StatementLexerTest extends TestCase
 
         $this->assertEquals('pluck', $actual[0]->operation());
         $this->assertSame(['order:post.created_at', 'pluck:id'], $actual[0]->clauses());
-        $this->assertNull($actual[0]->model());
+        $this->assertSame('Post', $actual[0]->model());
     }
 
     /**
