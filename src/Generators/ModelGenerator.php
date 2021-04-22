@@ -190,7 +190,6 @@ class ModelGenerator implements Generator
 
         foreach ($model->relationships() as $type => $references) {
             foreach ($references as $reference) {
-                // if reference starts with \ , we assume developer is using a fully namespaced model
                 $is_model_fqn = Str::startsWith($reference, '\\');
 
                 $custom_template = $template;
@@ -218,8 +217,6 @@ class ModelGenerator implements Generator
                     }
                 }
 
-                // if full model namespace is proviced we will not try to infer it,
-                // we use the namespace as developer gives us
                 if ($is_model_fqn) {
                     $fqcn = $class ?? $column_name;
                     $class_name = Str::afterLast($fqcn, '\\');
