@@ -223,7 +223,7 @@ class ModelGenerator implements Generator
                 if ($is_model_fqn) {
                     $fqcn = $class ?? $column_name;
                     $class_name = Str::afterLast($fqcn, '\\');
-                }else{
+                } else {
                     $class_name = Str::studly($class ?? $method_name);
                     $fqcn = $this->fullyQualifyModelReference($class_name) ?? $model->fullyQualifiedNamespace() . '\\' . $class_name;
                 }
