@@ -202,16 +202,16 @@ class ModelGenerator implements Generator
                 if (Str::contains($reference, ':')) {
                     [$foreign_reference, $column_name] = explode(':', $reference);
 
-                    $method_name = $is_model_fqn ? Str::afterLast($foreign_reference, '\\') : Str::beforeLast($column_name, '_id');
+                    $method_name = $is_model_fqn ? Str::afterLast(Str::beforeLast($foreign_reference,'.'), '\\') : Str::beforeLast($column_name, '_id');
 
                     if (Str::contains($foreign_reference, '.')) {
                         [$class, $key] = explode('.', $foreign_reference);
 
                         if ($key === 'id') {
                             $key = null;
-                        } else {
-                            $method_name = $is_model_fqn ? Str::lower(Str::afterLast($class, '\\')) : Str::lower($class);
                         }
+                        $method_name = $is_model_fqn ? Str::lower(Str::afterLast($class, '\\')) : Str::lower($class);
+
                     } else {
                         $class = $foreign_reference;
                     }
@@ -230,7 +230,7 @@ class ModelGenerator implements Generator
                 if ($type === 'morphTo') {
                     $relationship = sprintf('$this->%s()', $type);
                 } elseif ($type === 'morphMany' || $type === 'morphOne') {
-                    $relation = Str::lower(Str::singular($column_name)) . 'able';
+                    $relation = Str::lower($is_model_fqn ? Str::singular(Str::afterLast($column_name, '\\')) :  Str::singular($column_name)) . 'able';
                     $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, $fqcn, $relation);
                 } elseif (!is_null($key)) {
                     $relationship = sprintf('$this->%s(%s::class, \'%s\', \'%s\')', $type, $fqcn, $column_name, $key);
@@ -244,7 +244,7 @@ class ModelGenerator implements Generator
                 if ($type === 'morphTo') {
                     $method_name = Str::lower($class_name);
                 } elseif (in_array($type, ['hasMany', 'belongsToMany', 'morphMany'])) {
-                    $method_name = Str::plural($is_model_fqn ? Str::afterLast($column_name, '\\') : $column_name);
+                    $method_name = Str::plural($is_model_fqn ? Str::afterLast($fqcn, '\\') : $column_name);
                 }
 
                 if (Blueprint::supportsReturnTypeHits()) {
