@@ -230,7 +230,7 @@ class ModelGenerator implements Generator
                 if ($type === 'morphTo') {
                     $relationship = sprintf('$this->%s()', $type);
                 } elseif ($type === 'morphMany' || $type === 'morphOne') {
-                    $relation = Str::lower($is_model_fqn ? Str::singular(Str::afterLast($column_name, '\\')) :  Str::singular($column_name)) . 'able';
+                    $relation = Str::lower(Str::singular($column_name)) . 'able';
                     $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, $fqcn, $relation);
                 } elseif (!is_null($key)) {
                     $relationship = sprintf('$this->%s(%s::class, \'%s\', \'%s\')', $type, $fqcn, $column_name, $key);
