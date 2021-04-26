@@ -300,7 +300,7 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Recurrency.php']], $this->subject->output($tree));
     }
 
-     /**
+    /**
      * @test
      * @environment-setup useLaravel8
      */

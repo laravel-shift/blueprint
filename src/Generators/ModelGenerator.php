@@ -202,7 +202,7 @@ class ModelGenerator implements Generator
                 if (Str::contains($reference, ':')) {
                     [$foreign_reference, $column_name] = explode(':', $reference);
 
-                    $method_name = $is_model_fqn ? Str::afterLast(Str::beforeLast($foreign_reference,'.'), '\\') : Str::beforeLast($column_name, '_id');
+                    $method_name = $is_model_fqn ? Str::afterLast(Str::beforeLast($foreign_reference, '.'), '\\') : Str::beforeLast($column_name, '_id');
 
                     if (Str::contains($foreign_reference, '.')) {
                         [$class, $key] = explode('.', $foreign_reference);
