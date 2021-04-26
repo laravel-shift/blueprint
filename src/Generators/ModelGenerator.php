@@ -202,7 +202,7 @@ class ModelGenerator implements Generator
                 if (Str::contains($reference, ':')) {
                     [$foreign_reference, $column_name] = explode(':', $reference);
 
-                    $method_name = $is_model_fqn ? Str::afterLast(Str::beforeLast($foreign_reference, '.'), '\\') : Str::beforeLast($column_name, '_id');
+                    $method_name = Str::beforeLast($column_name, '_id');
 
                     if (Str::contains($foreign_reference, '.')) {
                         [$class, $key] = explode('.', $foreign_reference);
@@ -243,7 +243,7 @@ class ModelGenerator implements Generator
                 if ($type === 'morphTo') {
                     $method_name = Str::lower($class_name);
                 } elseif (in_array($type, ['hasMany', 'belongsToMany', 'morphMany'])) {
-                    $method_name = Str::plural($is_model_fqn ? Str::afterLast($fqcn, '\\') : $column_name);
+                    $method_name = Str::plural($is_model_fqn ? Str::afterLast($column_name, '\\') : $column_name);
                 }
 
                 if (Blueprint::supportsReturnTypeHits()) {

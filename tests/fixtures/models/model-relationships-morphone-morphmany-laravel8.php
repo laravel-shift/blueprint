@@ -29,7 +29,7 @@ class Flag extends Model
     ];
 
 
-    public function order()
+    public function stars()
     {
         return $this->morphOne(\Other\Package\Order::class, 'starable');
     }
@@ -44,7 +44,7 @@ class Flag extends Model
         return $this->morphMany(\Other\Package\Duration::class, 'durationable');
     }
 
-    public function transactions()
+    public function lines()
     {
         return $this->morphMany(\App\MyCustom\Folder\Transaction::class, 'lineable');
     }
