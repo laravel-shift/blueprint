@@ -211,7 +211,6 @@ class ModelGenerator implements Generator
                             $key = null;
                         }
                         $method_name = $is_model_fqn ? Str::lower(Str::afterLast($class, '\\')) : Str::lower($class);
-
                     } else {
                         $class = $foreign_reference;
                     }
