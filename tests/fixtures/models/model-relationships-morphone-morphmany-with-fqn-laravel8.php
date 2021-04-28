@@ -34,11 +34,6 @@ class Flag extends Model
         return $this->morphOne(\Other\Package\Order::class, 'starable');
     }
 
-    public function stars()
-    {
-        return $this->morphOne(\App\Some::class, 'starable');
-    }
-
     public function durations()
     {
         return $this->morphMany(\Other\Package\Duration::class, 'durationable');
@@ -47,11 +42,6 @@ class Flag extends Model
     public function lines()
     {
         return $this->morphMany(\App\MyCustom\Folder\Transaction::class, 'lineable');
-    }
-
-    public function lines()
-    {
-        return $this->morphMany(\App\Some::class, 'lineable');
     }
 
     public function user()

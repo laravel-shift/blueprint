@@ -1,6 +1,0 @@
-models:
-  Flag:
-    user_id: id
-    relationships:
-      morphOne: \Other\Package\Order:stars, some:stars
-      morphMany: \Other\Package\Duration, \App\MyCustom\Folder\Transaction:line, some:line

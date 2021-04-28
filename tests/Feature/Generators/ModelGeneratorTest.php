@@ -324,9 +324,9 @@ class ModelGeneratorTest extends TestCase
             ->andReturnTrue();
 
         $this->files->expects('put')
-            ->with('app/Flag.php', $this->fixture('models/model-relationships-morphone-morphmany-laravel8.php'));
+            ->with('app/Flag.php', $this->fixture('models/model-relationships-morphone-morphmany-with-fqn-laravel8.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('drafts/model-relationships-morphone-morphmany.yaml'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/model-relationships-morphone-morphmany-with-fqn.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['app/Flag.php']], $this->subject->output($tree));
