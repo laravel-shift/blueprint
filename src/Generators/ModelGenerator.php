@@ -202,16 +202,15 @@ class ModelGenerator implements Generator
                 if (Str::contains($reference, ':')) {
                     [$foreign_reference, $column_name] = explode(':', $reference);
 
-                    $method_name = $is_model_fqn ? Str::afterLast($foreign_reference, '\\') : Str::beforeLast($column_name, '_id');
+                    $method_name = Str::beforeLast($column_name, '_id');
 
                     if (Str::contains($foreign_reference, '.')) {
                         [$class, $key] = explode('.', $foreign_reference);
 
                         if ($key === 'id') {
                             $key = null;
-                        } else {
-                            $method_name = $is_model_fqn ? Str::lower(Str::afterLast($class, '\\')) : Str::lower($class);
                         }
+                        $method_name = $is_model_fqn ? Str::lower(Str::afterLast($class, '\\')) : Str::lower($class);
                     } else {
                         $class = $foreign_reference;
                     }
@@ -230,7 +229,7 @@ class ModelGenerator implements Generator
                 if ($type === 'morphTo') {
                     $relationship = sprintf('$this->%s()', $type);
                 } elseif ($type === 'morphMany' || $type === 'morphOne') {
-                    $relation = Str::lower(Str::singular($column_name)) . 'able';
+                    $relation = Str::lower($is_model_fqn ? Str::singular(Str::afterLast($column_name, '\\')) :  Str::singular($column_name)) . 'able';
                     $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, $fqcn, $relation);
                 } elseif (!is_null($key)) {
                     $relationship = sprintf('$this->%s(%s::class, \'%s\', \'%s\')', $type, $fqcn, $column_name, $key);

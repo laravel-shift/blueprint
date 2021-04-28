@@ -304,6 +304,38 @@ class ModelGeneratorTest extends TestCase
      * @test
      * @environment-setup useLaravel8
      */
+    public function output_generates_morphone_morphmany_relation_string_when_using_fqn()
+    {
+        $this->files->expects('stub')
+            ->with($this->modelStub)
+            ->andReturn($this->stub($this->modelStub));
+        $this->files->expects('stub')
+            ->with('model.fillable.stub')
+            ->andReturn($this->stub('model.fillable.stub'));
+        $this->files->expects('stub')
+            ->with('model.casts.stub')
+            ->andReturn($this->stub('model.casts.stub'));
+        $this->files->expects('stub')
+            ->with('model.method.stub')
+            ->andReturn($this->stub('model.method.stub'));
+
+        $this->files->expects('exists')
+            ->with('app')
+            ->andReturnTrue();
+
+        $this->files->expects('put')
+            ->with('app/Flag.php', $this->fixture('models/model-relationships-morphone-morphmany-with-fqn-laravel8.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/model-relationships-morphone-morphmany-with-fqn.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['app/Flag.php']], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     * @environment-setup useLaravel8
+     */
     public function output_generates_polymorphic_relationships()
     {
         $this->files->expects('stub')
