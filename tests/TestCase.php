@@ -57,7 +57,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
             ->withNoArgs()
             ->andReturn('6.0.0');
 
-        \App::swap($appMock);
+        App::swap($appMock);
     }
 
     protected function useLaravel7($app)
@@ -67,7 +67,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
             ->withNoArgs()
             ->andReturn('7.0.0');
 
-        \App::swap($appMock);
+        App::swap($appMock);
     }
 
     protected function useLaravel8($app)
@@ -77,6 +77,6 @@ class TestCase extends \Orchestra\Testbench\TestCase
             ->withNoArgs()
             ->andReturn('8.0.0');
 
-        \App::swap($appMock);
+        App::swap($appMock);
     }
 }
