@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Symfony\Component\Finder\SplFileInfo;
+use Illuminate\Filesystem\Filesystem;
 
 class MigrationGenerator implements Generator
 {
@@ -43,25 +44,29 @@ class MigrationGenerator implements Generator
         'tinyInteger',
     ];
 
-    /** @var \Illuminate\Contracts\Filesystem\Filesystem */
-    private $files;
+    /**
+     * @var Filesystem
+     */
+    protected $filesystem;
 
     private $output = [];
 
     private $hasForeignKeyConstraints = false;
 
-    public function __construct($files)
+    public function __construct(Filesystem $filesystem)
     {
-        $this->files = $files;
+        $this->filesystem = $filesystem;
     }
 
     public function output(Tree $tree, $overwrite = false): array
     {
         $tables = ['tableNames' => [], 'pivotTableNames' => []];
 
-        $stub = $this->files->stub('migration.stub');
+        $stub = $this->filesystem->stub('migration.stub');
 
-        /** @var \Blueprint\Models\Model $model */
+        /**
+ * @var \Blueprint\Models\Model $model
+*/
         foreach ($tree->models() as $model) {
             $tables['tableNames'][$model->tableName()] = $this->populateStub($stub, $model);
 
@@ -91,16 +96,16 @@ class MigrationGenerator implements Generator
 
         foreach ($tables['tableNames'] as $tableName => $data) {
             $path = $this->getTablePath($tableName, $sequential_timestamp->addSecond(), $overwrite);
-            $action = $this->files->exists($path) ? 'updated' : 'created';
-            $this->files->put($path, $data);
+            $action = $this->filesystem->exists($path) ? 'updated' : 'created';
+            $this->filesystem->put($path, $data);
 
             $output[$action][] = $path;
         }
 
         foreach ($tables['pivotTableNames'] as $tableName => $data) {
             $path = $this->getTablePath($tableName, $sequential_timestamp->addSecond(), $overwrite);
-            $action = $this->files->exists($path) ? 'updated' : 'created';
-            $this->files->put($path, $data);
+            $action = $this->filesystem->exists($path) ? 'updated' : 'created';
+            $this->filesystem->put($path, $data);
 
             $output[$action][] = $path;
         }
@@ -142,7 +147,9 @@ class MigrationGenerator implements Generator
     {
         $definition = '';
 
-        /** @var \Blueprint\Models\Column $column */
+        /**
+ * @var \Blueprint\Models\Column $column
+*/
         foreach ($model->columns() as $column) {
             $dataType = $column->dataType();
 
@@ -200,13 +207,15 @@ class MigrationGenerator implements Generator
                 }
 
                 // TODO: unset the proper modifier
-                $modifiers = collect($modifiers)->reject(function ($modifier) {
-                    return (is_array($modifier) && key($modifier) === 'foreign')
+                $modifiers = collect($modifiers)->reject(
+                    function ($modifier) {
+                        return (is_array($modifier) && key($modifier) === 'foreign')
                         || (is_array($modifier) && key($modifier) === 'onDelete')
                         || (is_array($modifier) && key($modifier) === 'onUpdate')
                         || $modifier === 'foreign'
                         || ($modifier === 'nullable' && $this->isLaravel7orNewer());
-                });
+                    }
+                );
             }
 
             foreach ($modifiers as $modifier) {
@@ -366,23 +375,27 @@ class MigrationGenerator implements Generator
         $name = '_create_' . $tableName . '_table.php';
 
         if ($overwrite) {
-            $migrations = collect($this->files->files($dir))
-                ->filter(function (SplFileInfo $file) use ($name) {
-                    return str_contains($file->getFilename(), $name);
-                })
+            $migrations = collect($this->filesystem->files($dir))
+                ->filter(
+                    function (SplFileInfo $file) use ($name) {
+                        return str_contains($file->getFilename(), $name);
+                    }
+                )
                 ->sort();
 
             if ($migrations->isNotEmpty()) {
                 $migration = $migrations->first()->getPathname();
 
                 $migrations->diff($migration)
-                    ->each(function (SplFileInfo $file) {
-                        $path = $file->getPathname();
+                    ->each(
+                        function (SplFileInfo $file) {
+                            $path = $file->getPathname();
 
-                        $this->files->delete($path);
+                            $this->filesystem->delete($path);
 
-                        $this->output['deleted'][] = $path;
-                    });
+                            $this->output['deleted'][] = $path;
+                        }
+                    );
 
                 return $migration;
             }
@@ -404,9 +417,11 @@ class MigrationGenerator implements Generator
     protected function getPivotTableName(array $segments)
     {
         $isCustom = collect($segments)
-            ->filter(function ($segment) {
-                return Str::contains($segment, ':');
-            })->first();
+            ->filter(
+                function ($segment) {
+                    return Str::contains($segment, ':');
+                }
+            )->first();
 
         if ($isCustom) {
             $table = Str::after($isCustom, ':');
@@ -414,9 +429,12 @@ class MigrationGenerator implements Generator
             return $table;
         }
 
-        $segments = array_map(function ($name) {
-            return Str::snake($name);
-        }, $segments);
+        $segments = array_map(
+            function ($name) {
+                return Str::snake($name);
+            },
+            $segments
+        );
         sort($segments);
 
         return strtolower(implode('_', $segments));
@@ -447,8 +465,10 @@ class MigrationGenerator implements Generator
         }
 
         return collect(self::UNSIGNABLE_TYPES)
-            ->contains(function ($value) use ($type) {
-                return strtolower($value) === strtolower($type);
-            });
+            ->contains(
+                function ($value) use ($type) {
+                    return strtolower($value) === strtolower($type);
+                }
+            );
     }
 }

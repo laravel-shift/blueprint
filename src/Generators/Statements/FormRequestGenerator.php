@@ -8,6 +8,7 @@ use Blueprint\Models\Controller;
 use Blueprint\Models\Statements\ValidateStatement;
 use Blueprint\Translators\Rules;
 use Blueprint\Tree;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
 class FormRequestGenerator implements Generator
@@ -15,16 +16,18 @@ class FormRequestGenerator implements Generator
     private const INDENT = '            ';
 
     /**
-     * @var \Illuminate\Contracts\Filesystem\Filesystem
+     * @var Filesystem
      */
-    private $files;
+    protected $filesystem;
 
-    /** @var Tree */
+    /**
+     * @var Tree
+     */
     private $tree;
 
-    public function __construct($files)
+    public function __construct(Filesystem $filesystem)
     {
-        $this->files = $files;
+        $this->filesystem = $filesystem;
     }
 
     public function output(Tree $tree): array
@@ -33,9 +36,11 @@ class FormRequestGenerator implements Generator
 
         $output = [];
 
-        $stub = $this->files->stub('request.stub');
+        $stub = $this->filesystem->stub('request.stub');
 
-        /** @var \Blueprint\Models\Controller $controller */
+        /**
+ * @var \Blueprint\Models\Controller $controller
+*/
         foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
@@ -47,15 +52,15 @@ class FormRequestGenerator implements Generator
                     $name = $this->getName($context, $method);
                     $path = $this->getPath($controller, $name);
 
-                    if ($this->files->exists($path)) {
+                    if ($this->filesystem->exists($path)) {
                         continue;
                     }
 
-                    if (! $this->files->exists(dirname($path))) {
-                        $this->files->makeDirectory(dirname($path), 0755, true);
+                    if (! $this->filesystem->exists(dirname($path))) {
+                        $this->filesystem->makeDirectory(dirname($path), 0755, true);
                     }
 
-                    $this->files->put($path, $this->populateStub($stub, $name, $context, $statement, $controller));
+                    $this->filesystem->put($path, $this->populateStub($stub, $name, $context, $statement, $controller));
 
                     $output['created'][] = $path;
                 }
@@ -90,23 +95,29 @@ class FormRequestGenerator implements Generator
 
     protected function buildRules(string $context, ValidateStatement $validateStatement)
     {
-        return trim(array_reduce($validateStatement->data(), function ($output, $field) use ($context) {
-            [$qualifier, $column] = $this->splitField($field);
+        return trim(
+            array_reduce(
+                $validateStatement->data(),
+                function ($output, $field) use ($context) {
+                    [$qualifier, $column] = $this->splitField($field);
 
-            if (is_null($qualifier)) {
-                $qualifier = $context;
-            }
+                    if (is_null($qualifier)) {
+                        $qualifier = $context;
+                    }
 
-            $validationRules = $this->validationRules($qualifier, $column);
+                    $validationRules = $this->validationRules($qualifier, $column);
 
-            foreach ($validationRules as $name => $rule) {
-                $formattedRule = implode("', '", $rule);
+                    foreach ($validationRules as $name => $rule) {
+                        $formattedRule = implode("', '", $rule);
 
-                $output .= self::INDENT . "'{$name}' => ['{$formattedRule}']," . PHP_EOL;
-            }
+                        $output .= self::INDENT . "'{$name}' => ['{$formattedRule}']," . PHP_EOL;
+                    }
 
-            return $output;
-        }, ''));
+                    return $output;
+                },
+                ''
+            )
+        );
     }
 
     private function getName(string $context, string $method)
@@ -125,7 +136,9 @@ class FormRequestGenerator implements Generator
 
     private function validationRules(string $qualifier, string $column)
     {
-        /** @var \Blueprint\Models\Model $model */
+        /**
+ * @var \Blueprint\Models\Model $model
+*/
         $model = $this->tree->modelForContext($qualifier);
 
         $rules = [];
@@ -138,7 +151,9 @@ class FormRequestGenerator implements Generator
 
                 return $rules;
             } else {
-                /** @var \Blueprint\Models\Model $column */
+                /**
+ * @var \Blueprint\Models\Model $column
+*/
                 foreach ($model->columns() as $column) {
                     if ($column->name() === 'id') {
                         continue;

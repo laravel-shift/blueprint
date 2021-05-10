@@ -22,16 +22,16 @@ class NewCommand extends Command
     protected $description = 'Create a draft.yaml file and load existing models';
 
     /** @var Filesystem $files */
-    protected $files;
+    protected $filesystem;
 
     /**
-     * @param Filesystem $files
+     * @param Filesystem $filesystem
      */
-    public function __construct(Filesystem $files)
+    public function __construct(Filesystem $filesystem)
     {
         parent::__construct();
 
-        $this->files = $files;
+        $this->filesystem = $filesystem;
     }
 
     /**
@@ -41,8 +41,8 @@ class NewCommand extends Command
      */
     public function handle()
     {
-        if (!$this->files->exists('draft.yaml')) {
-            $this->files->put('draft.yaml', $this->files->stub('draft.stub'));
+        if (!$this->filesystem->exists('draft.yaml')) {
+            $this->filesystem->put('draft.yaml', $this->filesystem->stub('draft.stub'));
 
             $this->info('Created example draft.yaml');
         }

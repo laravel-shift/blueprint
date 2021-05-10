@@ -36,17 +36,16 @@ class BuilderTest extends TestCase
             ->with($generated)
             ->andReturn('cacheable blueprint content');
 
-        $file = \Mockery::mock(Filesystem::class);
-        $file->expects('get')
+        $this->filesystem->expects('get')
             ->with('draft.yaml')
             ->andReturn($draft);
-        $file->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('.blueprint')
             ->andReturnFalse();
-        $file->expects('put')
+        $this->filesystem->expects('put')
             ->with('.blueprint', 'cacheable blueprint content');
 
-        $actual = (new Builder())->execute($blueprint, $file, 'draft.yaml');
+        $actual = (new Builder())->execute($blueprint, $this->filesystem, 'draft.yaml');
 
         $this->assertSame($generated, $actual);
     }
@@ -91,20 +90,19 @@ class BuilderTest extends TestCase
             ])
             ->andReturn('cacheable blueprint content');
 
-        $file = \Mockery::mock(Filesystem::class);
-        $file->expects('get')
+        $this->filesystem->expects('get')
             ->with('draft.yaml')
             ->andReturn($draft);
-        $file->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('.blueprint')
             ->andReturnTrue();
-        $file->expects('get')
+        $this->filesystem->expects('get')
             ->with('.blueprint')
             ->andReturn('cached blueprint content');
-        $file->expects('put')
+        $this->filesystem->expects('put')
             ->with('.blueprint', 'cacheable blueprint content');
 
-        $actual = (new Builder())->execute($blueprint, $file, 'draft.yaml');
+        $actual = (new Builder())->execute($blueprint, $this->filesystem, 'draft.yaml');
 
         $this->assertSame($generated, $actual);
     }
@@ -146,17 +144,16 @@ class BuilderTest extends TestCase
             ])
             ->andReturn('cacheable blueprint content');
 
-        $file = \Mockery::mock(Filesystem::class);
-        $file->expects('get')
+        $this->filesystem->expects('get')
             ->with('draft.yaml')
             ->andReturn($draft);
-        $file->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('.blueprint')
             ->andReturnFalse();
-        $file->expects('put')
+        $this->filesystem->expects('put')
             ->with('.blueprint', 'cacheable blueprint content');
 
-        $actual = (new Builder())->execute($blueprint, $file, 'draft.yaml');
+        $actual = (new Builder())->execute($blueprint, $this->filesystem, 'draft.yaml');
 
         $this->assertSame($generated, $actual);
     }

@@ -6,7 +6,6 @@ use Blueprint\Blueprint;
 use Blueprint\Tracer;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Tests\TestCase;
-use Tests\Traits\MocksFilesystem;
 
 /**
  * @covers \Blueprint\Commands\EraseCommand
@@ -14,21 +13,20 @@ use Tests\Traits\MocksFilesystem;
 class EraseCommandTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
-    use MocksFilesystem;
 
     /** @test */
     public function it_parses_and_update_the_trace_file()
     {
-        $this->files->expects('get')
+        $this->filesystem->expects('get')
             ->with('.blueprint')
             ->andReturn("created: created_file.php \nupdated: updated_file.php \nother: test.php");
 
-        $this->files->expects('delete')->with("created_file.php");
+        $this->filesystem->expects('delete')->with("created_file.php");
 
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('.blueprint', "other: test.php\n");
 
-        $this->files->expects('exists')->with('app');
+        $this->filesystem->expects('exists')->with('app');
 
         $this->artisan('blueprint:erase')
             ->assertExitCode(0);
@@ -37,17 +35,17 @@ class EraseCommandTest extends TestCase
     /** @test */
     public function it_deletes_the_created_files()
     {
-        $this->files->expects('get')
+        $this->filesystem->expects('get')
             ->with('.blueprint')
             ->andReturn("created:\n  -  created_file1.php\n  -  created_file2.php");
 
-        $this->files->expects('delete')->with([
+        $this->filesystem->expects('delete')->with([
             "created_file1.php",
             "created_file2.php",
         ]);
 
-        $this->files->expects('put')->with('.blueprint', '{  }');
-        $this->files->expects('exists')->with('app');
+        $this->filesystem->expects('put')->with('.blueprint', '{  }');
+        $this->filesystem->expects('exists')->with('app');
 
         $this->artisan('blueprint:erase')
             ->assertExitCode(0)
@@ -59,12 +57,12 @@ class EraseCommandTest extends TestCase
     /** @test */
     public function it_notify_about_the_updated_files()
     {
-        $this->files->expects('get')
+        $this->filesystem->expects('get')
             ->with('.blueprint')
             ->andReturn("updated:\n  -  updated_file1.php\n  -  updated_file2.php");
 
-        $this->files->expects('put')->with('.blueprint', '{  }');
-        $this->files->expects('exists')->with('app');
+        $this->filesystem->expects('put')->with('.blueprint', '{  }');
+        $this->filesystem->expects('exists')->with('app');
 
         $this->artisan('blueprint:erase')
             ->assertExitCode(0)
@@ -76,8 +74,8 @@ class EraseCommandTest extends TestCase
     /** @test */
     public function it_calls_the_trace_command()
     {
-        $this->files->expects('get')->with('.blueprint')->andReturn("other: test.php");
-        $this->files->expects('put')->with('.blueprint', "other: test.php\n");
+        $this->filesystem->expects('get')->with('.blueprint')->andReturn("other: test.php");
+        $this->filesystem->expects('put')->with('.blueprint', "other: test.php\n");
 
         $tracer = $this->spy(Tracer::class);
 
@@ -85,6 +83,6 @@ class EraseCommandTest extends TestCase
             ->assertExitCode(0);
 
         $tracer->shouldHaveReceived('execute')
-            ->with(resolve(Blueprint::class), $this->files);
+            ->with(resolve(Blueprint::class), $this->filesystem);
     }
 }

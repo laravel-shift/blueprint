@@ -6,6 +6,7 @@ use Blueprint\Blueprint;
 use Blueprint\Generators\ControllerGenerator;
 use Blueprint\Lexers\StatementLexer;
 use Blueprint\Tree;
+use Illuminate\Support\Facades\File;
 use Tests\TestCase;
 
 /**
@@ -15,8 +16,6 @@ class ControllerGeneratorTest extends TestCase
 {
     private $blueprint;
 
-    private $files;
-
     /** @var ControllerGenerator */
     private $subject;
 
@@ -24,8 +23,7 @@ class ControllerGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->files = \Mockery::mock();
-        $this->subject = new ControllerGenerator($this->files);
+        $this->subject = new ControllerGenerator($this->filesystem);
 
         $this->blueprint = new Blueprint();
         $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
@@ -38,11 +36,11 @@ class ControllerGeneratorTest extends TestCase
      */
     public function output_writes_nothing_for_empty_tree()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('controller.class.stub')
             ->andReturn($this->stub('controller.class.stub'));
 
-        $this->files->shouldNotHaveReceived('put');
+        $this->filesystem->shouldNotHaveReceived('put');
 
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
@@ -53,17 +51,17 @@ class ControllerGeneratorTest extends TestCase
      */
     public function output_writes_migration_for_controller_tree($definition, $path, $controller)
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('controller.class.stub')
             ->andReturn($this->stub('controller.class.stub'));
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('controller.method.stub')
             ->andReturn($this->stub('controller.method.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with(dirname($path))
             ->andReturnTrue();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with($path, $this->fixture($controller));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
@@ -82,17 +80,17 @@ class ControllerGeneratorTest extends TestCase
 
         $this->app['config']->set('blueprint.models_namespace', 'Models');
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('controller.class.stub')
             ->andReturn($this->stub('controller.class.stub'));
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('controller.method.stub')
             ->andReturn($this->stub('controller.method.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with(dirname($path))
             ->andReturnTrue();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with($path, $this->fixture($controller));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
@@ -106,10 +104,10 @@ class ControllerGeneratorTest extends TestCase
      */
     public function output_works_for_pascal_case_definition()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('controller.class.stub')
             ->andReturn($this->stub('controller.class.stub'));
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('controller.method.stub')
             ->andReturn($this->stub('controller.method.stub'))
             ->twice();
@@ -117,16 +115,16 @@ class ControllerGeneratorTest extends TestCase
         $certificateController = 'app/Http/Controllers/CertificateController.php';
         $certificateTypeController = 'app/Http/Controllers/CertificateTypeController.php';
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with(dirname($certificateController))
             ->andReturnTrue();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with($certificateController, $this->fixture('controllers/certificate-controller.php'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with(dirname($certificateTypeController))
             ->andReturnTrue();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with($certificateTypeController, $this->fixture('controllers/certificate-type-controller.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/pascal-case.yaml'));
@@ -143,19 +141,19 @@ class ControllerGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
         $this->app['config']->set('blueprint.controllers_namespace', 'Other\\Http');
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('controller.class.stub')
             ->andReturn($this->stub('controller.class.stub'));
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('controller.method.stub')
             ->andReturn($this->stub('controller.method.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('src/path/Other/Http')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
+        $this->filesystem->expects('makeDirectory')
             ->with('src/path/Other/Http', 0755, true);
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('src/path/Other/Http/UserController.php', $this->fixture('controllers/controller-configured.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/simple-controller.yaml'));
@@ -173,22 +171,22 @@ class ControllerGeneratorTest extends TestCase
     {
         $this->app['config']->set('blueprint.use_return_types', true);
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('controller.class.stub')
             ->andReturn($this->stub('controller.class.stub'));
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('controller.method.stub')
             ->andReturn($this->stub('controller.method.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('app/Http/Controllers')
             ->andReturnFalse();
 
-        $this->files->expects('makeDirectory')
+        $this->filesystem->expects('makeDirectory')
             ->with('app/Http/Controllers', 0755, true);
 
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('app/Http/Controllers/TermController.php', $this->fixture('controllers/return-type-declarations.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/return-type-declarations.yaml'));

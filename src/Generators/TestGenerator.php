@@ -18,6 +18,7 @@ use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
 use Blueprint\Tree;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Shift\Faker\Registry as FakerRegistry;
@@ -30,8 +31,8 @@ class TestGenerator implements Generator
     const TESTS_DELETE = 8;
     const TESTS_RESPONDS = 16;
 
-    /** @var \Illuminate\Contracts\Filesystem\Filesystem */
-    private $files;
+    /** @var Filesystem */
+    protected $filesystem;
 
     /** @var Tree */
     private $tree;
@@ -40,9 +41,9 @@ class TestGenerator implements Generator
     private $stubs = [];
     private $traits = [];
 
-    public function __construct($files)
+    public function __construct(Filesystem $filesystem)
     {
-        $this->files = $files;
+        $this->filesystem = $filesystem;
     }
 
     public function output(Tree $tree): array
@@ -51,17 +52,17 @@ class TestGenerator implements Generator
 
         $output = [];
 
-        $stub = $this->files->stub('test.class.stub');
+        $stub = $this->filesystem->stub('test.class.stub');
 
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree->controllers() as $controller) {
             $path = $this->getPath($controller);
 
-            if (! $this->files->exists(dirname($path))) {
-                $this->files->makeDirectory(dirname($path), 0755, true);
+            if (! $this->filesystem->exists(dirname($path))) {
+                $this->filesystem->makeDirectory(dirname($path), 0755, true);
             }
 
-            $this->files->put($path, $this->populateStub($stub, $controller));
+            $this->filesystem->put($path, $this->populateStub($stub, $controller));
 
             $output['created'][] = $path;
         }
@@ -559,7 +560,7 @@ class TestGenerator implements Generator
     private function testCaseStub()
     {
         if (empty($this->stubs['test-case'])) {
-            $this->stubs['test-case'] = $this->files->stub('test.case.stub');
+            $this->stubs['test-case'] = $this->filesystem->stub('test.case.stub');
         }
 
         return $this->stubs['test-case'];

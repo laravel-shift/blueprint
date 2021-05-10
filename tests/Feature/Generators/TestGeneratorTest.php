@@ -15,8 +15,6 @@ class TestGeneratorTest extends TestCase
 {
     private $blueprint;
 
-    private $files;
-
     /** @var TestGenerator */
     private $subject;
 
@@ -24,8 +22,7 @@ class TestGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->files = \Mockery::mock();
-        $this->subject = new TestGenerator($this->files);
+        $this->subject = new TestGenerator($this->filesystem);
 
         $this->blueprint = new Blueprint();
         $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
@@ -38,11 +35,11 @@ class TestGeneratorTest extends TestCase
      */
     public function output_writes_nothing_for_empty_tree()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('test.class.stub')
             ->andReturn($this->stub('test.class.stub'));
 
-        $this->files->shouldNotHaveReceived('put');
+        $this->filesystem->shouldNotHaveReceived('put');
 
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
@@ -54,20 +51,20 @@ class TestGeneratorTest extends TestCase
      */
     public function output_generates_test_for_controller_tree($definition, $path, $test)
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('test.class.stub')
             ->andReturn($this->stub('test.class.stub'));
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('test.case.stub')
             ->andReturn($this->stub('test.case.stub'));
         $dirname = dirname($path);
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with($dirname)
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
+        $this->filesystem->expects('makeDirectory')
             ->with($dirname, 0755, true);
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with($path, $this->fixture($test));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
@@ -83,20 +80,20 @@ class TestGeneratorTest extends TestCase
      */
     public function output_generates_test_for_controller_tree_l8($definition, $path, $test)
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('test.class.stub')
             ->andReturn($this->stub('test.class.stub'));
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('test.case.stub')
             ->andReturn($this->stub('test.case.stub'));
         $dirname = dirname($path);
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with($dirname)
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
+        $this->filesystem->expects('makeDirectory')
             ->with($dirname, 0755, true);
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with($path, $this->fixture($test));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
@@ -111,27 +108,27 @@ class TestGeneratorTest extends TestCase
     */
     public function output_works_for_pascal_case_definition()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('test.class.stub')
             ->andReturn($this->stub('test.class.stub'));
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('test.case.stub')
             ->andReturn($this->stub('test.case.stub'));
 
         $certificateControllerTest = 'tests/Feature/Http/Controllers/CertificateControllerTest.php';
         $certificateTypeControllerTest = 'tests/Feature/Http/Controllers/CertificateTypeControllerTest.php';
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with(dirname($certificateControllerTest))
             ->andReturnTrue();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with($certificateControllerTest, $this->fixture('tests/certificate-pascal-case-example.php'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with(dirname($certificateTypeControllerTest))
             ->andReturnTrue();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with($certificateTypeControllerTest, $this->fixture('tests/certificate-type-pascal-case-example.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/pascal-case.yaml'));
@@ -145,27 +142,27 @@ class TestGeneratorTest extends TestCase
     */
     public function output_works_for_pascal_case_definition_l8()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('test.class.stub')
             ->andReturn($this->stub('test.class.stub'));
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('test.case.stub')
             ->andReturn($this->stub('test.case.stub'));
 
         $certificateControllerTest = 'tests/Feature/Http/Controllers/CertificateControllerTest.php';
         $certificateTypeControllerTest = 'tests/Feature/Http/Controllers/CertificateTypeControllerTest.php';
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with(dirname($certificateControllerTest))
             ->andReturnTrue();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with($certificateControllerTest, $this->fixture('tests/certificate-pascal-case-example-laravel8.php'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with(dirname($certificateTypeControllerTest))
             ->andReturnTrue();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with($certificateTypeControllerTest, $this->fixture('tests/certificate-type-pascal-case-example-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/pascal-case.yaml'));
@@ -179,19 +176,19 @@ class TestGeneratorTest extends TestCase
      */
     public function output_generates_test_for_controller_tree_using_cached_model()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('test.class.stub')
             ->andReturn($this->stub('test.class.stub'));
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('test.case.stub')
             ->andReturn($this->stub('test.case.stub'));
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('tests/Feature/Http/Controllers')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
+        $this->filesystem->expects('makeDirectory')
             ->with('tests/Feature/Http/Controllers', 0755, true);
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('tests/Feature/Http/Controllers/UserControllerTest.php', $this->fixture('tests/reference-cache.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/reference-cache.yaml'));
@@ -212,19 +209,19 @@ class TestGeneratorTest extends TestCase
      */
     public function output_generates_test_for_controller_tree_using_cached_model_l8()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('test.class.stub')
             ->andReturn($this->stub('test.class.stub'));
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('test.case.stub')
             ->andReturn($this->stub('test.case.stub'));
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('tests/Feature/Http/Controllers')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
+        $this->filesystem->expects('makeDirectory')
             ->with('tests/Feature/Http/Controllers', 0755, true);
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('tests/Feature/Http/Controllers/UserControllerTest.php', $this->fixture('tests/reference-cache-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/reference-cache.yaml'));
@@ -251,20 +248,20 @@ class TestGeneratorTest extends TestCase
 
         $this->app['config']->set('blueprint.models_namespace', 'Models');
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('test.class.stub')
             ->andReturn($this->stub('test.class.stub'));
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('test.case.stub')
             ->andReturn($this->stub('test.case.stub'));
         $dirname = dirname($path);
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with($dirname)
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
+        $this->filesystem->expects('makeDirectory')
         ->with($dirname, 0755, true);
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with($path, $this->fixture($test));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
@@ -285,20 +282,20 @@ class TestGeneratorTest extends TestCase
 
         $this->app['config']->set('blueprint.models_namespace', 'Models');
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('test.class.stub')
             ->andReturn($this->stub('test.class.stub'));
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('test.case.stub')
             ->andReturn($this->stub('test.case.stub'));
         $dirname = dirname($path);
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with($dirname)
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
+        $this->filesystem->expects('makeDirectory')
         ->with($dirname, 0755, true);
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with($path, $this->fixture($test));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
@@ -319,23 +316,23 @@ class TestGeneratorTest extends TestCase
 
         $this->app['config']->set('blueprint.use_return_types', true);
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
         ->with('test.class.stub')
         ->andReturn($this->stub('test.class.stub'));
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('test.case.stub')
             ->andReturn($this->stub('test.case.stub'));
 
         $dirname = dirname($path);
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with($dirname)
             ->andReturnFalse();
 
-        $this->files->expects('makeDirectory')
+        $this->filesystem->expects('makeDirectory')
             ->with($dirname, 0755, true);
 
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with($path, $this->fixture($test));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));

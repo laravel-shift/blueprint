@@ -23,13 +23,12 @@ class SeederGeneratorTest extends TestCase
     private $subject;
 
 
-    private $files;
+    protected $files;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->files = \Mockery::mock();
         $this->seederStub = version_compare(App::version(), '8.0.0', '>=') ? 'seeder.stub' : 'seeder.no-factory.stub';
         $this->subject = new SeederGenerator($this->files);
 
@@ -44,7 +43,7 @@ class SeederGeneratorTest extends TestCase
      */
     public function output_generates_nothing_for_empty_tree()
     {
-        $this->files->shouldNotHaveReceived('put');
+        $this->filesystem->shouldNotHaveReceived('put');
 
         $this->assertEquals([], $this->subject->output(new Tree(['seeders' => []])));
     }
@@ -55,13 +54,13 @@ class SeederGeneratorTest extends TestCase
      */
     public function output_generates_seeders()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->seederStub)
             ->andReturn($this->stub($this->seederStub));
 
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('database/seeders/PostSeeder.php', $this->fixture('seeders/PostSeeder-laravel8.php'));
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('database/seeders/CommentSeeder.php', $this->fixture('seeders/CommentSeeder-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
@@ -77,13 +76,13 @@ class SeederGeneratorTest extends TestCase
     {
         $this->app['config']->set('blueprint.use_return_types', true);
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->seederStub)
             ->andReturn($this->stub($this->seederStub));
 
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('database/seeders/PostSeeder.php', $this->fixture('seeders/PostSeeder-return-type-declarations.php'));
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('database/seeders/CommentSeeder.php', $this->fixture('seeders/CommentSeeder-return-type-declarations.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
@@ -98,13 +97,13 @@ class SeederGeneratorTest extends TestCase
      */
     public function output_generates_seeders_l7()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->seederStub)
             ->andReturn($this->stub($this->seederStub));
 
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/PostSeeder.php'));
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
@@ -119,13 +118,13 @@ class SeederGeneratorTest extends TestCase
      */
     public function output_generates_seeders_l6()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->seederStub)
             ->andReturn($this->stub($this->seederStub));
 
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/PostSeeder.php'));
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
@@ -140,13 +139,13 @@ class SeederGeneratorTest extends TestCase
      */
     public function output_generates_seeders_from_traced_models()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->seederStub)
             ->andReturn($this->stub($this->seederStub));
 
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('database/seeders/PostSeeder.php', $this->fixture('seeders/PostSeeder-laravel8.php'));
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('database/seeders/CommentSeeder.php', $this->fixture('seeders/CommentSeeder-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
@@ -164,13 +163,13 @@ class SeederGeneratorTest extends TestCase
      */
     public function output_generates_seeders_from_traced_models_l7()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->seederStub)
             ->andReturn($this->stub($this->seederStub));
 
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/PostSeeder.php'));
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
@@ -188,13 +187,13 @@ class SeederGeneratorTest extends TestCase
      */
     public function output_generates_seeders_from_traced_models_l6()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->seederStub)
             ->andReturn($this->stub($this->seederStub));
 
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/PostSeeder.php'));
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));

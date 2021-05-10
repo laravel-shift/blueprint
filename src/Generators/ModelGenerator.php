@@ -7,19 +7,24 @@ use Blueprint\Contracts\Generator;
 use Blueprint\Models\Column;
 use Blueprint\Models\Model;
 use Blueprint\Tree;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
 class ModelGenerator implements Generator
 {
-    /** @var \Illuminate\Contracts\Filesystem\Filesystem */
-    private $files;
+    /**
+     * @var Filesystem
+     */
+    protected $filesystem;
 
-    /** @var Tree */
+    /**
+     * @var Tree
+     */
     private $tree;
 
-    public function __construct($files)
+    public function __construct(Filesystem $filesystem)
     {
-        $this->files = $files;
+        $this->filesystem = $filesystem;
     }
 
     public function output(Tree $tree): array
@@ -29,20 +34,22 @@ class ModelGenerator implements Generator
         $output = [];
 
         if (Blueprint::isLaravel8OrHigher()) {
-            $stub = $this->files->stub('model.class.stub');
+            $stub = $this->filesystem->stub('model.class.stub');
         } else {
-            $stub = $this->files->stub('model.class.no-factory.stub');
+            $stub = $this->filesystem->stub('model.class.no-factory.stub');
         }
 
-        /** @var \Blueprint\Models\Model $model */
+        /**
+ * @var \Blueprint\Models\Model $model
+*/
         foreach ($tree->models() as $model) {
             $path = $this->getPath($model);
 
-            if (! $this->files->exists(dirname($path))) {
-                $this->files->makeDirectory(dirname($path), 0755, true);
+            if (! $this->filesystem->exists(dirname($path))) {
+                $this->filesystem->makeDirectory(dirname($path), 0755, true);
             }
 
-            $this->files->put($path, $this->populateStub($stub, $model));
+            $this->filesystem->put($path, $this->populateStub($stub, $model));
 
             $output['created'][] = $path;
         }
@@ -94,7 +101,9 @@ class ModelGenerator implements Generator
         $phpDoc = PHP_EOL;
         $phpDoc .= '/**';
         $phpDoc .= PHP_EOL;
-        /** @var Column $column */
+        /**
+ * @var Column $column
+*/
         foreach ($model->columns() as $column) {
             if ($column->dataType() === 'morphs') {
                 $phpDoc .= ' * @property int $' . $column->name() . '_id';
@@ -144,34 +153,34 @@ class ModelGenerator implements Generator
         $properties = '';
 
         if (! $model->usesTimestamps()) {
-            $properties .= $this->files->stub('model.timestamps.stub');
+            $properties .= $this->filesystem->stub('model.timestamps.stub');
         }
 
         if (config('blueprint.use_guarded')) {
-            $properties .= $this->files->stub('model.guarded.stub');
+            $properties .= $this->filesystem->stub('model.guarded.stub');
         } else {
             $columns = $this->fillableColumns($model->columns());
             if (! empty($columns)) {
-                $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model.fillable.stub'));
+                $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->filesystem->stub('model.fillable.stub'));
             } else {
-                $properties .= $this->files->stub('model.fillable.stub');
+                $properties .= $this->filesystem->stub('model.fillable.stub');
             }
         }
 
         $columns = $this->hiddenColumns($model->columns());
         if (! empty($columns)) {
-            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model.hidden.stub'));
+            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->filesystem->stub('model.hidden.stub'));
         }
 
         $columns = $this->castableColumns($model->columns());
         if (! empty($columns)) {
-            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns), $this->files->stub('model.casts.stub'));
+            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns), $this->filesystem->stub('model.casts.stub'));
         }
 
         if (! Blueprint::isLaravel8OrHigher()) {
             $columns = $this->dateColumns($model->columns());
             if (! empty($columns)) {
-                $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->files->stub('model.dates.stub'));
+                $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->filesystem->stub('model.dates.stub'));
             }
         }
 
@@ -181,11 +190,11 @@ class ModelGenerator implements Generator
     protected function buildRelationships(Model $model)
     {
         $methods = '';
-        $template = $this->files->stub('model.method.stub');
+        $template = $this->filesystem->stub('model.method.stub');
         $commentTemplate = '';
 
         if (config('blueprint.generate_phpdocs')) {
-            $commentTemplate = $this->files->stub('model.method.comment.stub');
+            $commentTemplate = $this->filesystem->stub('model.method.comment.stub');
         }
 
         foreach ($model->relationships() as $type => $references) {
@@ -290,31 +299,39 @@ class ModelGenerator implements Generator
 
     private function fillableColumns(array $columns)
     {
-        return array_diff(array_keys($columns), [
+        return array_diff(
+            array_keys($columns),
+            [
             'id',
             'deleted_at',
             'created_at',
             'updated_at',
             'remember_token',
-        ]);
+            ]
+        );
     }
 
     private function hiddenColumns(array $columns)
     {
-        return array_intersect(array_keys($columns), [
+        return array_intersect(
+            array_keys($columns),
+            [
             'password',
             'remember_token',
-        ]);
+            ]
+        );
     }
 
     private function castableColumns(array $columns)
     {
-        return array_filter(array_map(
-            function (Column $column) {
-                return $this->castForColumn($column);
-            },
-            $columns
-        ));
+        return array_filter(
+            array_map(
+                function (Column $column) {
+                    return $this->castForColumn($column);
+                },
+                $columns
+            )
+        );
     }
 
     private function dateColumns(array $columns)
@@ -323,11 +340,14 @@ class ModelGenerator implements Generator
             function (Column $column) {
                 return $column->name();
             },
-            array_filter($columns, function (Column $column) {
-                return $column->dataType() === 'date'
+            array_filter(
+                $columns,
+                function (Column $column) {
+                    return $column->dataType() === 'date'
                     || stripos($column->dataType(), 'datetime') !== false
                     || stripos($column->dataType(), 'timestamp') !== false;
-            })
+                }
+            )
         );
     }
 
@@ -430,7 +450,9 @@ class ModelGenerator implements Generator
         // If not found, assume parallel namespace as controller.
         // Use respond-statement.php as test case.
 
-        /** @var \Blueprint\Models\Model $model */
+        /**
+ * @var \Blueprint\Models\Model $model
+*/
         $model = $this->tree->modelForContext($model_name);
 
         if (isset($model)) {

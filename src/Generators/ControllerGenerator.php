@@ -17,23 +17,28 @@ use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
 use Blueprint\Tree;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
 class ControllerGenerator implements Generator
 {
     const INDENT = '        ';
 
-    /** @var \Illuminate\Contracts\Filesystem\Filesystem */
-    private $files;
+    /**
+     * @var Filesystem
+     */
+    protected $filesystem;
 
     private $imports = [];
 
-    /** @var Tree */
+    /**
+     * @var Tree
+     */
     private $tree;
 
-    public function __construct($files)
+    public function __construct(Filesystem $filesystem)
     {
-        $this->files = $files;
+        $this->filesystem = $filesystem;
     }
 
     public function output(Tree $tree): array
@@ -42,7 +47,7 @@ class ControllerGenerator implements Generator
 
         $output = [];
 
-        $stub = $this->files->stub('controller.class.stub');
+        $stub = $this->filesystem->stub('controller.class.stub');
 
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree->controllers() as $controller) {
@@ -54,11 +59,11 @@ class ControllerGenerator implements Generator
 
             $path = $this->getPath($controller);
 
-            if (!$this->files->exists(dirname($path))) {
-                $this->files->makeDirectory(dirname($path), 0755, true);
+            if (!$this->filesystem->exists(dirname($path))) {
+                $this->filesystem->makeDirectory(dirname($path), 0755, true);
             }
 
-            $this->files->put($path, $this->populateStub($stub, $controller));
+            $this->filesystem->put($path, $this->populateStub($stub, $controller));
 
             $output['created'][] = $path;
         }
@@ -83,7 +88,7 @@ class ControllerGenerator implements Generator
 
     protected function buildMethods(Controller $controller)
     {
-        $template = $this->files->stub('controller.method.stub');
+        $template = $this->filesystem->stub('controller.method.stub');
 
         $methods = '';
 
@@ -199,9 +204,15 @@ class ControllerGenerator implements Generator
         $imports = array_unique($this->imports[$controller->name()]);
         sort($imports);
 
-        return implode(PHP_EOL, array_map(function ($class) {
-            return 'use ' . $class . ';';
-        }, $imports));
+        return implode(
+            PHP_EOL,
+            array_map(
+                function ($class) {
+                    return 'use ' . $class . ';';
+                },
+                $imports
+            )
+        );
     }
 
     private function addImport(Controller $controller, $class)

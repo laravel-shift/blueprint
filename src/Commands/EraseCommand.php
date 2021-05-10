@@ -23,18 +23,14 @@ class EraseCommand extends Command
      */
     protected $description = 'Erase components created from last Blueprint build';
 
-    /** @var Filesystem $files */
-    protected $files;
+    /** @var Filesystem */
+    protected $filesystem;
 
-    /**
-     * @param Filesystem $files
-     * @param \Illuminate\Contracts\View\Factory $view
-     */
-    public function __construct(Filesystem $files)
+    public function __construct(Filesystem $filesystem)
     {
         parent::__construct();
 
-        $this->files = $files;
+        $this->filesystem = $filesystem;
     }
 
     /**
@@ -44,33 +40,37 @@ class EraseCommand extends Command
      */
     public function handle()
     {
-        $contents = $this->files->get('.blueprint');
+        $contents = $this->filesystem->get('.blueprint');
 
         $blueprint = resolve(Blueprint::class);
 
         $generated = $blueprint->parse($contents, false);
 
-        collect($generated)->each(function ($files, $action) {
-            if ($action === 'created') {
-                $this->line('Deleted:', $this->outputStyle($action));
-                $this->files->delete($files);
-            } elseif ($action === 'updated') {
-                $this->comment('The updates to the following files can not be erased automatically.');
-            } else {
-                return;
+        collect($generated)->each(
+            function ($files, $action) {
+                if ($action === 'created') {
+                    $this->line('Deleted:', $this->outputStyle($action));
+                    $this->filesystem->delete($files);
+                } elseif ($action === 'updated') {
+                    $this->comment('The updates to the following files can not be erased automatically.');
+                } else {
+                    return;
+                }
+
+                collect($files)->each(
+                    function ($file) {
+                        $this->line('- ' . $file);
+                    }
+                );
+
+                $this->line('');
             }
-
-            collect($files)->each(function ($file) {
-                $this->line('- ' . $file);
-            });
-
-            $this->line('');
-        });
+        );
 
         unset($generated['created']);
         unset($generated['updated']);
 
-        $this->files->put('.blueprint', $blueprint->dump($generated));
+        $this->filesystem->put('.blueprint', $blueprint->dump($generated));
 
         $this->call('blueprint:trace');
     }

@@ -8,22 +8,26 @@ use Blueprint\Models\Controller;
 use Blueprint\Models\Model;
 use Blueprint\Models\Statements\ResourceStatement;
 use Blueprint\Tree;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
 class ResourceGenerator implements Generator
 {
     const INDENT = '            ';
-    /**
-     * @var \Illuminate\Contracts\Filesystem\Filesystem
-     */
-    private $files;
 
-    /** @var Tree */
+    /**
+     * @var Filesystem
+     */
+    protected $filesystem;
+
+    /**
+     * @var Tree
+     */
     private $tree;
 
-    public function __construct($files)
+    public function __construct(Filesystem $filesystem)
     {
-        $this->files = $files;
+        $this->filesystem = $filesystem;
     }
 
     public function output(Tree $tree): array
@@ -32,9 +36,11 @@ class ResourceGenerator implements Generator
 
         $output = [];
 
-        $stub = $this->files->stub('resource.stub');
+        $stub = $this->filesystem->stub('resource.stub');
 
-        /** @var \Blueprint\Models\Controller $controller */
+        /**
+ * @var \Blueprint\Models\Controller $controller
+*/
         foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
@@ -44,15 +50,15 @@ class ResourceGenerator implements Generator
 
                     $path = $this->getPath(($controller->namespace() ? $controller->namespace() . '/' : '') . $statement->name());
 
-                    if ($this->files->exists($path)) {
+                    if ($this->filesystem->exists($path)) {
                         continue;
                     }
 
-                    if (! $this->files->exists(dirname($path))) {
-                        $this->files->makeDirectory(dirname($path), 0755, true);
+                    if (! $this->filesystem->exists(dirname($path))) {
+                        $this->filesystem->makeDirectory(dirname($path), 0755, true);
                     }
 
-                    $this->files->put($path, $this->populateStub($stub, $controller, $statement));
+                    $this->filesystem->put($path, $this->populateStub($stub, $controller, $statement));
 
                     $output['created'][] = $path;
                 }
@@ -96,7 +102,9 @@ class ResourceGenerator implements Generator
     {
         $context = Str::singular($resource->reference());
 
-        /** @var \Blueprint\Models\Model $model */
+        /**
+ * @var \Blueprint\Models\Model $model
+*/
         $model = $this->tree->modelForContext($context);
 
         $data = [];
@@ -119,9 +127,12 @@ class ResourceGenerator implements Generator
 
     private function visibleColumns(Model $model)
     {
-        return array_diff(array_keys($model->columns()), [
+        return array_diff(
+            array_keys($model->columns()),
+            [
             'password',
             'remember_token',
-        ]);
+            ]
+        );
     }
 }

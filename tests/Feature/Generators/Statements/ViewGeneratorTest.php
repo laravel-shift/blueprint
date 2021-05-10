@@ -15,7 +15,7 @@ class ViewGeneratorTest extends TestCase
 {
     private $blueprint;
 
-    private $files;
+    protected $files;
 
     /** @var ViewGenerator */
     private $subject;
@@ -24,7 +24,6 @@ class ViewGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->files = \Mockery::mock();
         $this->subject = new ViewGenerator($this->files);
 
         $this->blueprint = new Blueprint();
@@ -37,11 +36,11 @@ class ViewGeneratorTest extends TestCase
      */
     public function output_writes_nothing_for_empty_tree()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('view.stub')
             ->andReturn($this->stub('view.stub'));
 
-        $this->files->shouldNotHaveReceived('put');
+        $this->filesystem->shouldNotHaveReceived('put');
 
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
@@ -51,11 +50,11 @@ class ViewGeneratorTest extends TestCase
      */
     public function output_writes_nothing_without_render_statements()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('view.stub')
             ->andReturn($this->stub('view.stub'));
 
-        $this->files->shouldNotHaveReceived('put');
+        $this->filesystem->shouldNotHaveReceived('put');
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/controllers-only.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -68,35 +67,35 @@ class ViewGeneratorTest extends TestCase
      */
     public function output_writes_views_for_render_statements()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('view.stub')
             ->andReturn($this->stub('view.stub'));
 
-        $this->files->shouldReceive('exists')
+        $this->filesystem->shouldReceive('exists')
             ->times(2)
             ->with('resources/views/user')
             ->andReturnTrue();
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('resources/views/user/index.blade.php')
             ->andReturnFalse();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('resources/views/user/index.blade.php', $this->fixture('views/user.index.blade.php'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('resources/views/user/create.blade.php')
             ->andReturnFalse();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('resources/views/user/create.blade.php', $this->fixture('views/user.create.blade.php'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('resources/views/post')
             ->andReturns(false, true);
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('resources/views/post/show.blade.php')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
+        $this->filesystem->expects('makeDirectory')
             ->with('resources/views/post', 0755, true);
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('resources/views/post/show.blade.php', $this->fixture('views/post.show.blade.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/render-statements.yaml'));
@@ -110,17 +109,17 @@ class ViewGeneratorTest extends TestCase
      */
     public function it_only_outputs_new_views()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('view.stub')
             ->andReturn($this->stub('view.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('resources/views/user/index.blade.php')
             ->andReturnTrue();
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('resources/views/user/create.blade.php')
             ->andReturnTrue();
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('resources/views/post/show.blade.php')
             ->andReturnTrue();
 

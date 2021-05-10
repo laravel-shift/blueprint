@@ -13,9 +13,12 @@ class EnumType extends Type
 
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        $values = array_map(function ($val) {
-            return "'" . $val . "'";
-        }, $this->values);
+        $values = array_map(
+            function ($val) {
+                return "'" . $val . "'";
+            },
+            $this->values
+        );
 
         return "ENUM(" . implode(", ", $values) . ")";
     }
@@ -42,14 +45,17 @@ class EnumType extends Type
     {
         $options = explode(',', preg_replace('/enum\((?P<options>(.*))\)/', '$1', $definition));
 
-        return array_map(function ($option) {
-            $raw_value = str_replace("''", "'", trim($option, "'"));
+        return array_map(
+            function ($option) {
+                $raw_value = str_replace("''", "'", trim($option, "'"));
 
-            if (!preg_match('/\s/', $raw_value)) {
-                return $raw_value;
-            }
+                if (!preg_match('/\s/', $raw_value)) {
+                    return $raw_value;
+                }
 
-            return sprintf('"%s"', $raw_value);
-        }, $options);
+                return sprintf('"%s"', $raw_value);
+            },
+            $options
+        );
     }
 }

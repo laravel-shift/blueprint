@@ -25,20 +25,20 @@ class TraceCommand extends Command
     protected $description = 'Create definitions for existing models to reference in new drafts';
 
     /** @var Filesystem $files */
-    protected $files;
+    protected $filesystem;
 
     /** @var Tracer */
     private $tracer;
 
     /**
-     * @param Filesystem $files
-     * @param Tracer $tracer
+     * @param Filesystem $filesystem
+     * @param Tracer     $tracer
      */
-    public function __construct(Filesystem $files, Tracer $tracer)
+    public function __construct(Filesystem $filesystem, Tracer $tracer)
     {
         parent::__construct();
 
-        $this->files = $files;
+        $this->filesystem = $filesystem;
         $this->tracer = $tracer;
     }
 
@@ -50,7 +50,7 @@ class TraceCommand extends Command
     public function handle()
     {
         $blueprint = resolve(Blueprint::class);
-        $definitions = $this->tracer->execute($blueprint, $this->files);
+        $definitions = $this->tracer->execute($blueprint, $this->filesystem);
 
         if (empty($definitions)) {
             $this->error('No models found');

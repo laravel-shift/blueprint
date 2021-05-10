@@ -3,9 +3,25 @@
 namespace Tests;
 
 use Blueprint\BlueprintServiceProvider;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\File;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
+    /** @var Filesystem */
+    protected $filesystem;
+
+    /** @var Filesystem */
+    protected $files;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->files = $this->filesystem = File::spy();
+    }
+
     protected function getEnvironmentSetUp($app)
     {
         $app['config']->set('blueprint.namespace', 'App');
@@ -41,7 +57,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
             ->withNoArgs()
             ->andReturn('6.0.0');
 
-        \App::swap($appMock);
+        App::swap($appMock);
     }
 
     protected function useLaravel7($app)
@@ -51,7 +67,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
             ->withNoArgs()
             ->andReturn('7.0.0');
 
-        \App::swap($appMock);
+        App::swap($appMock);
     }
 
     protected function useLaravel8($app)
@@ -61,6 +77,6 @@ class TestCase extends \Orchestra\Testbench\TestCase
             ->withNoArgs()
             ->andReturn('8.0.0');
 
-        \App::swap($appMock);
+        App::swap($appMock);
     }
 }

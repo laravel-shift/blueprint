@@ -15,7 +15,7 @@ class ResourceGeneratorTest extends TestCase
 {
     private $blueprint;
 
-    private $files;
+    protected $files;
 
     /** @var ResourceGenerator */
     private $subject;
@@ -24,7 +24,6 @@ class ResourceGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->files = \Mockery::mock();
         $this->subject = new ResourceGenerator($this->files);
 
         $this->blueprint = new Blueprint();
@@ -38,11 +37,11 @@ class ResourceGeneratorTest extends TestCase
      */
     public function output_writes_nothing_for_empty_tree()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('resource.stub')
             ->andReturn($this->stub('resource.stub'));
 
-        $this->files->shouldNotHaveReceived('put');
+        $this->filesystem->shouldNotHaveReceived('put');
 
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
@@ -52,11 +51,11 @@ class ResourceGeneratorTest extends TestCase
      */
     public function output_writes_nothing_without_resource_statements()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('resource.stub')
             ->andReturn($this->stub('resource.stub'));
 
-        $this->files->shouldNotHaveReceived('put');
+        $this->filesystem->shouldNotHaveReceived('put');
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/controllers-only.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -70,29 +69,29 @@ class ResourceGeneratorTest extends TestCase
     public function output_writes_resources_for_render_statements()
     {
         $template = $this->stub('resource.stub');
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('resource.stub')
             ->andReturn($template);
 
-        $this->files->shouldReceive('exists')
+        $this->filesystem->shouldReceive('exists')
             ->twice()
             ->with('app/Http/Resources')
             ->andReturns(false, true);
-        $this->files->expects('makeDirectory')
+        $this->filesystem->expects('makeDirectory')
             ->with('app/Http/Resources', 0755, true);
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->twice()
             ->with('app/Http/Resources/UserResource.php')
             ->andReturns(false, true);
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('app/Http/Resources/UserResource.php', $this->fixture('resources/user.php'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->twice()
             ->with('app/Http/Resources/UserCollection.php')
             ->andReturns(false, true);
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('app/Http/Resources/UserCollection.php', $this->fixture('resources/user-collection.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/resource-statements.yaml'));
@@ -106,27 +105,27 @@ class ResourceGeneratorTest extends TestCase
      */
     public function output_writes_namespaced_classes()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('resource.stub')
             ->andReturn(file_get_contents('stubs/resource.stub'));
 
-        $this->files->shouldReceive('exists')
+        $this->filesystem->shouldReceive('exists')
             ->with('app/Http/Resources/Api')
             ->andReturns(false, true);
-        $this->files->expects('makeDirectory')
+        $this->filesystem->expects('makeDirectory')
             ->with('app/Http/Resources/Api', 0755, true);
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->times(3)
             ->with('app/Http/Resources/Api/CertificateResource.php')
             ->andReturns(false, true, true);
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('app/Http/Resources/Api/CertificateResource.php', $this->fixture('resources/certificate.php'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('app/Http/Resources/Api/CertificateCollection.php')
             ->andReturns(false);
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('app/Http/Resources/Api/CertificateCollection.php', $this->fixture('resources/certificate-collection.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/api-routes-example.yaml'));

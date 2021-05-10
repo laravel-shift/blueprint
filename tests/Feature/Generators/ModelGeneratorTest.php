@@ -12,7 +12,7 @@ class ModelGeneratorTest extends TestCase
 {
     private $blueprint;
 
-    private $files;
+    protected $files;
 
     /** @var ModelGenerator */
     private $subject;
@@ -21,7 +21,6 @@ class ModelGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->files = \Mockery::mock();
         $this->modelStub = version_compare(App::version(), '8.0.0', '>=') ? 'model.class.stub' : 'model.class.no-factory.stub';
         $this->subject = new ModelGenerator($this->files);
 
@@ -35,11 +34,11 @@ class ModelGeneratorTest extends TestCase
      */
     public function output_generates_nothing_for_empty_tree()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->modelStub)
             ->andReturn($this->stub($this->modelStub));
 
-        $this->files->shouldNotHaveReceived('put');
+        $this->filesystem->shouldNotHaveReceived('put');
 
         $this->assertEquals([], $this->subject->output(new Tree(['models' => []])));
     }
@@ -54,36 +53,36 @@ class ModelGeneratorTest extends TestCase
         if ($model === 'models/return-type-declarations.php') {
             $this->app['config']->set('blueprint.use_return_types', true);
         }
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->modelStub)
             ->andReturn($this->stub($this->modelStub));
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'));
 
         if (in_array($definition, ['drafts/nested-components.yaml', 'drafts/resource-statements.yaml'])) {
-            $this->files->expects('stub')
+            $this->filesystem->expects('stub')
                 ->with('model.hidden.stub')
                 ->andReturn($this->stub('model.hidden.stub'));
         }
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.casts.stub')
             ->andReturn($this->stub('model.casts.stub'));
 
-        $this->files->shouldReceive('stub')
+        $this->filesystem->shouldReceive('stub')
             ->with('model.method.stub')
             ->andReturn($this->stub('model.method.stub'));
 
-        $this->files->shouldReceive('stub')
+        $this->filesystem->shouldReceive('stub')
             ->with('model.method.comment.stub')
             ->andReturn($this->stub('model.method.comment.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with(dirname($path))
             ->andReturnTrue();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with($path, $this->fixture($model));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
@@ -99,42 +98,42 @@ class ModelGeneratorTest extends TestCase
      */
     public function output_generates_models_l7($definition, $path, $model)
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->modelStub)
             ->andReturn($this->stub($this->modelStub));
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'));
 
         if (in_array($definition, ['drafts/nested-components.yaml', 'drafts/resource-statements.yaml'])) {
-            $this->files->expects('stub')
+            $this->filesystem->expects('stub')
                 ->with('model.hidden.stub')
                 ->andReturn($this->stub('model.hidden.stub'));
         }
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.casts.stub')
             ->andReturn($this->stub('model.casts.stub'));
 
         if (in_array($definition, ['drafts/readme-example.yaml', 'drafts/all-column-types.yaml'])) {
-            $this->files->expects('stub')
+            $this->filesystem->expects('stub')
                 ->with('model.dates.stub')
                 ->andReturn($this->stub('model.dates.stub'));
         }
 
-        $this->files->shouldReceive('stub')
+        $this->filesystem->shouldReceive('stub')
             ->with('model.method.stub')
             ->andReturn($this->stub('model.method.stub'));
 
-        $this->files->shouldReceive('stub')
+        $this->filesystem->shouldReceive('stub')
             ->with('model.method.comment.stub')
             ->andReturn($this->stub('model.method.comment.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with(dirname($path))
             ->andReturnTrue();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with($path, $this->fixture(str_replace('models', 'models', $model)));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
@@ -150,42 +149,42 @@ class ModelGeneratorTest extends TestCase
      */
     public function output_generates_models_l6($definition, $path, $model)
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->modelStub)
             ->andReturn($this->stub($this->modelStub));
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'));
 
         if (in_array($definition, ['drafts/nested-components.yaml', 'drafts/resource-statements.yaml'])) {
-            $this->files->expects('stub')
+            $this->filesystem->expects('stub')
                 ->with('model.hidden.stub')
                 ->andReturn($this->stub('model.hidden.stub'));
         }
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.casts.stub')
             ->andReturn($this->stub('model.casts.stub'));
 
         if (in_array($definition, ['drafts/readme-example.yaml', 'drafts/all-column-types.yaml'])) {
-            $this->files->expects('stub')
+            $this->filesystem->expects('stub')
                 ->with('model.dates.stub')
                 ->andReturn($this->stub('model.dates.stub'));
         }
 
-        $this->files->shouldReceive('stub')
+        $this->filesystem->shouldReceive('stub')
             ->with('model.method.stub')
             ->andReturn($this->stub('model.method.stub'));
 
-        $this->files->shouldReceive('stub')
+        $this->filesystem->shouldReceive('stub')
             ->with('model.method.comment.stub')
             ->andReturn($this->stub('model.method.comment.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with(dirname($path))
             ->andReturnTrue();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with($path, $this->fixture(str_replace('models', 'models', $model)));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
@@ -200,18 +199,18 @@ class ModelGeneratorTest extends TestCase
      */
     public function output_works_for_pascal_case_definition()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->modelStub)
             ->andReturn($this->stub($this->modelStub));
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'))
             ->twice();
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.casts.stub')
             ->andReturn($this->stub('model.casts.stub'))
             ->twice();
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.method.stub')
             ->andReturn($this->stub('model.method.stub'))
             ->twice();
@@ -219,16 +218,16 @@ class ModelGeneratorTest extends TestCase
         $certificateModel = 'app/Certificate.php';
         $certificateTypeModel = 'app/CertificateType.php';
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with(dirname($certificateModel))
             ->andReturnTrue();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with($certificateModel, $this->fixture('models/certificate-pascal-case-example-laravel8.php'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with(dirname($certificateTypeModel))
             ->andReturnTrue();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with($certificateTypeModel, $this->fixture('models/certificate-type-pascal-case-example-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/pascal-case.yaml'));
@@ -243,23 +242,23 @@ class ModelGeneratorTest extends TestCase
      */
     public function output_generates_relationships()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->modelStub)
             ->andReturn($this->stub($this->modelStub));
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'));
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.casts.stub')
             ->andReturn($this->stub('model.casts.stub'));
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.method.stub')
             ->andReturn($this->stub('model.method.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('app')
             ->andReturnTrue();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('app/Subscription.php', $this->fixture('models/model-relationships-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/model-relationships.yaml'));
@@ -338,38 +337,38 @@ class ModelGeneratorTest extends TestCase
      */
     public function output_generates_polymorphic_relationships()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->modelStub)
             ->andReturn($this->stub($this->modelStub));
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->times(3)
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'));
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->times(3)
             ->with('model.casts.stub')
             ->andReturn($this->stub('model.casts.stub'));
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->times(3)
             ->with('model.method.stub')
             ->andReturn($this->stub('model.method.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('app')
             ->andReturnTrue();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('app/Post.php', $this->fixture('models/post-polymorphic-relationship-laravel8.php'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('app')
             ->andReturnTrue();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('app/User.php', $this->fixture('models/user-polymorphic-relationship-laravel8.php'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('app')
             ->andReturnTrue();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('app/Image.php', $this->fixture('models/image-polymorphic-relationship-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/polymorphic-relationships.yaml'));
@@ -384,26 +383,26 @@ class ModelGeneratorTest extends TestCase
      */
     public function output_generates_disabled_auto_columns()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->modelStub)
             ->andReturn($this->stub($this->modelStub));
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.timestamps.stub')
             ->andReturn($this->stub('model.timestamps.stub'));
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'));
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.casts.stub')
             ->andReturn($this->stub('model.casts.stub'));
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.method.stub')
             ->andReturn($this->stub('model.method.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('app')
             ->andReturnTrue();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('app/State.php', $this->fixture('models/disable-auto-columns-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/disable-auto-columns.yaml'));
@@ -422,28 +421,28 @@ class ModelGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
         $this->app['config']->set('blueprint.models_namespace', 'Models');
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->modelStub)
             ->andReturn($this->stub($this->modelStub));
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'));
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.casts.stub')
             ->andReturn($this->stub('model.casts.stub'));
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.method.stub')
             ->andReturn($this->stub('model.method.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('src/path/Models')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
+        $this->filesystem->expects('makeDirectory')
             ->with('src/path/Models', 0755, true);
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('src/path/Models/Comment.php', $this->fixture('models/model-configured-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/relationships.yaml'));
@@ -461,37 +460,37 @@ class ModelGeneratorTest extends TestCase
     {
         $this->app['config']->set('blueprint.generate_phpdocs', true);
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->modelStub)
             ->andReturn($this->stub($this->modelStub));
 
         if ($definition === 'drafts/disable-auto-columns.yaml') {
-            $this->files->expects('stub')
+            $this->filesystem->expects('stub')
                 ->with('model.timestamps.stub')
                 ->andReturn($this->stub('model.timestamps.stub'));
         }
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'));
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.casts.stub')
             ->andReturn($this->stub('model.casts.stub'));
 
-        $this->files->shouldReceive('stub')
+        $this->filesystem->shouldReceive('stub')
             ->with('model.method.stub')
             ->andReturn($this->stub('model.method.stub'));
 
-        $this->files->shouldReceive('stub')
+        $this->filesystem->shouldReceive('stub')
             ->with('model.method.comment.stub')
             ->andReturn($this->stub('model.method.comment.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with(dirname($path))
             ->andReturnTrue();
 
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with($path, $this->fixture($model));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
@@ -509,43 +508,43 @@ class ModelGeneratorTest extends TestCase
     {
         $this->app['config']->set('blueprint.generate_phpdocs', true);
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->modelStub)
             ->andReturn($this->stub($this->modelStub));
 
         if ($definition === 'drafts/disable-auto-columns.yaml') {
-            $this->files->expects('stub')
+            $this->filesystem->expects('stub')
                 ->with('model.timestamps.stub')
                 ->andReturn($this->stub('model.timestamps.stub'));
         }
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'));
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.casts.stub')
             ->andReturn($this->stub('model.casts.stub'));
 
         if ($definition === 'drafts/readme-example.yaml') {
-            $this->files->expects('stub')
+            $this->filesystem->expects('stub')
                 ->with('model.dates.stub')
                 ->andReturn($this->stub('model.dates.stub'));
         }
 
-        $this->files->shouldReceive('stub')
+        $this->filesystem->shouldReceive('stub')
             ->with('model.method.stub')
             ->andReturn($this->stub('model.method.stub'));
 
-        $this->files->shouldReceive('stub')
+        $this->filesystem->shouldReceive('stub')
             ->with('model.method.comment.stub')
             ->andReturn($this->stub('model.method.comment.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with(dirname($path))
             ->andReturnTrue();
 
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with($path, $this->fixture(str_replace('models', 'models', $model)));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
@@ -563,43 +562,43 @@ class ModelGeneratorTest extends TestCase
     {
         $this->app['config']->set('blueprint.generate_phpdocs', true);
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->modelStub)
             ->andReturn($this->stub($this->modelStub));
 
         if ($definition === 'drafts/disable-auto-columns.yaml') {
-            $this->files->expects('stub')
+            $this->filesystem->expects('stub')
                 ->with('model.timestamps.stub')
                 ->andReturn($this->stub('model.timestamps.stub'));
         }
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'));
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.casts.stub')
             ->andReturn($this->stub('model.casts.stub'));
 
         if ($definition === 'drafts/readme-example.yaml') {
-            $this->files->expects('stub')
+            $this->filesystem->expects('stub')
                 ->with('model.dates.stub')
                 ->andReturn($this->stub('model.dates.stub'));
         }
 
-        $this->files->shouldReceive('stub')
+        $this->filesystem->shouldReceive('stub')
             ->with('model.method.stub')
             ->andReturn($this->stub('model.method.stub'));
 
-        $this->files->shouldReceive('stub')
+        $this->filesystem->shouldReceive('stub')
             ->with('model.method.comment.stub')
             ->andReturn($this->stub('model.method.comment.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with(dirname($path))
             ->andReturnTrue();
 
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with($path, $this->fixture(str_replace('models', 'models', $model)));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
@@ -616,27 +615,27 @@ class ModelGeneratorTest extends TestCase
     {
         $this->app['config']->set('blueprint.use_guarded', true);
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->modelStub)
             ->andReturn($this->stub($this->modelStub));
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.guarded.stub')
             ->andReturn($this->stub('model.guarded.stub'));
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.casts.stub')
             ->andReturn($this->stub('model.casts.stub'));
 
-        $this->files->shouldReceive('stub')
+        $this->filesystem->shouldReceive('stub')
             ->with('model.method.stub')
             ->andReturn($this->stub('model.method.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with(dirname('app/Comment.php'))
             ->andReturnTrue();
 
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('app/Comment.php', $this->fixture('models/model-guarded-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/model-guarded.yaml'));
@@ -653,32 +652,32 @@ class ModelGeneratorTest extends TestCase
     {
         $this->app['config']->set('blueprint.models_namespace', 'Models');
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->modelStub)
             ->andReturn($this->stub($this->modelStub));
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->times(4)
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'));
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->times(4)
             ->with('model.casts.stub')
             ->andReturn($this->stub('model.casts.stub'));
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->times(4)
             ->with('model.method.stub')
             ->andReturn($this->stub('model.method.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->times(4)
             ->andReturnTrue();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('app/Models/QuestionType.php', \Mockery::type('string'));
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('app/Models/Appointment/AppointmentType.php', \Mockery::type('string'));
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('app/Models/Screening/Report.php', \Mockery::type('string'));
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('app/Models/Screening/ScreeningQuestion.php', $this->fixture('models/nested-models-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/nested-models.yaml'));
@@ -706,23 +705,23 @@ class ModelGeneratorTest extends TestCase
 
         $this->app['config']->set('blueprint.models_namespace', 'Models');
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->modelStub)
             ->andReturn($this->stub($this->modelStub));
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'));
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.casts.stub')
             ->andReturn($this->stub('model.casts.stub'));
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.method.stub')
             ->andReturn($this->stub('model.method.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('app/Models')
             ->andReturnTrue();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with($path, $this->fixture($model));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
@@ -737,26 +736,26 @@ class ModelGeneratorTest extends TestCase
      */
     public function output_generates_models_with_custom_pivot_columns()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with($this->modelStub)
             ->andReturn($this->stub($this->modelStub));
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'));
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.casts.stub')
             ->andReturn($this->stub('model.casts.stub'));
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.method.stub')
             ->andReturn($this->stub('model.method.stub'));
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('model.hidden.stub')
             ->andReturn($this->stub('model.hidden.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('app')
             ->andReturnTrue();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('app/User.php', $this->fixture('models/custom-pivot-table-name-laravel8.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/custom-pivot-table-name.yaml'));

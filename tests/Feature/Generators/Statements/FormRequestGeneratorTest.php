@@ -15,7 +15,7 @@ class FormRequestGeneratorTest extends TestCase
 {
     private $blueprint;
 
-    private $files;
+    protected $files;
 
     /** @var FormRequestGenerator */
     private $subject;
@@ -24,7 +24,6 @@ class FormRequestGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->files = \Mockery::mock();
         $this->subject = new FormRequestGenerator($this->files);
 
         $this->blueprint = new Blueprint();
@@ -38,11 +37,11 @@ class FormRequestGeneratorTest extends TestCase
      */
     public function output_writes_nothing_for_empty_tree()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('request.stub')
             ->andReturn($this->stub('request.stub'));
 
-        $this->files->shouldNotHaveReceived('put');
+        $this->filesystem->shouldNotHaveReceived('put');
 
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
@@ -52,11 +51,11 @@ class FormRequestGeneratorTest extends TestCase
      */
     public function output_writes_nothing_without_validate_statements()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('request.stub')
             ->andReturn($this->stub('request.stub'));
 
-        $this->files->shouldNotHaveReceived('put');
+        $this->filesystem->shouldNotHaveReceived('put');
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/controllers-only.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -69,32 +68,32 @@ class FormRequestGeneratorTest extends TestCase
      */
     public function output_writes_form_requests()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('request.stub')
             ->andReturn($this->stub('request.stub'));
 
-        $this->files->shouldReceive('exists')
+        $this->filesystem->shouldReceive('exists')
             ->times(3)
             ->with('app/Http/Requests')
             ->andReturns(false, true, true);
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('app/Http/Requests/PostIndexRequest.php')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
+        $this->filesystem->expects('makeDirectory')
             ->with('app/Http/Requests', 0755, true);
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('app/Http/Requests/PostIndexRequest.php', $this->fixture('form-requests/post-index.php'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('app/Http/Requests/PostStoreRequest.php')
             ->andReturnFalse();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('app/Http/Requests/PostStoreRequest.php', $this->fixture('form-requests/post-store.php'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('app/Http/Requests/OtherStoreRequest.php')
             ->andReturnFalse();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('app/Http/Requests/OtherStoreRequest.php', $this->fixture('form-requests/other-store.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/validate-statements.yaml'));
@@ -108,30 +107,30 @@ class FormRequestGeneratorTest extends TestCase
      */
     public function output_writes_form_requests_with_support_for_model_reference_in_validate_statement()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('request.stub')
             ->andReturn($this->stub('request.stub'));
 
-        $this->files->shouldReceive('exists')
+        $this->filesystem->shouldReceive('exists')
             ->twice()
             ->with('app/Http/Requests')
             ->andReturns(false, false);
 
-        $this->files->expects('makeDirectory')
+        $this->filesystem->expects('makeDirectory')
             ->twice()
             ->with('app/Http/Requests', 0755, true)
             ->andReturns(true, false);
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('app/Http/Requests/CertificateStoreRequest.php')
             ->andReturnFalse();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('app/Http/Requests/CertificateStoreRequest.php', $this->fixture('form-requests/certificate-store.php'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('app/Http/Requests/CertificateUpdateRequest.php')
             ->andReturnFalse();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('app/Http/Requests/CertificateUpdateRequest.php', $this->fixture('form-requests/certificate-update.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/model-reference-validate.yaml'));
@@ -145,17 +144,17 @@ class FormRequestGeneratorTest extends TestCase
      */
     public function it_only_outputs_new_form_requests()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('request.stub')
             ->andReturn($this->stub('request.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('app/Http/Requests/PostIndexRequest.php')
             ->andReturnTrue();
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('app/Http/Requests/PostStoreRequest.php')
             ->andReturnTrue();
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('app/Http/Requests/OtherStoreRequest.php')
             ->andReturnTrue();
 
@@ -170,19 +169,19 @@ class FormRequestGeneratorTest extends TestCase
      */
     public function output_supports_nested_form_requests()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('request.stub')
             ->andReturn($this->stub('request.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('app/Http/Requests/Admin')
             ->andReturnFalse();
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('app/Http/Requests/Admin/UserStoreRequest.php')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
+        $this->filesystem->expects('makeDirectory')
             ->with('app/Http/Requests/Admin', 0755, true);
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('app/Http/Requests/Admin/UserStoreRequest.php', $this->fixture('form-requests/nested-components.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/nested-components.yaml'));
@@ -199,19 +198,19 @@ class FormRequestGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
         $this->app['config']->set('blueprint.app_path', 'src/path');
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('request.stub')
             ->andReturn($this->stub('request.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('src/path/Http/Requests')
             ->andReturns(false);
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('src/path/Http/Requests/PostStoreRequest.php')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
+        $this->filesystem->expects('makeDirectory')
             ->with('src/path/Http/Requests', 0755, true);
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('src/path/Http/Requests/PostStoreRequest.php', $this->fixture('form-requests/form-request-configured.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
@@ -229,19 +228,19 @@ class FormRequestGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.app_path', 'src/path');
         $this->app['config']->set('blueprint.use_return_types', true);
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('request.stub')
             ->andReturn($this->stub('request.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('src/path/Http/Requests')
             ->andReturns(false);
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('src/path/Http/Requests/PostStoreRequest.php')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
+        $this->filesystem->expects('makeDirectory')
             ->with('src/path/Http/Requests', 0755, true);
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('src/path/Http/Requests/PostStoreRequest.php', $this->fixture('form-requests/return-type-declarations.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
@@ -255,19 +254,19 @@ class FormRequestGeneratorTest extends TestCase
      */
     public function output_generates_test_for_controller_tree_using_cached_model()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('request.stub')
             ->andReturn($this->stub('request.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('app/Http/Requests')
             ->andReturnFalse();
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('app/Http/Requests/UserStoreRequest.php')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
+        $this->filesystem->expects('makeDirectory')
             ->with('app/Http/Requests', 0755, true);
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('app/Http/Requests/UserStoreRequest.php', $this->fixture('form-requests/reference-cache.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/reference-cache.yaml'));

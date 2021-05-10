@@ -3,17 +3,17 @@
 namespace Blueprint;
 
 use Doctrine\DBAL\Types\Type;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Database\Eloquent\Model;
 
 class Tracer
 {
     /** @var Filesystem */
-    private $files;
+    private $filesystem;
 
-    public function execute(Blueprint $blueprint, Filesystem $files): array
+    public function execute(Blueprint $blueprint, Filesystem $filesystem): array
     {
-        $this->files = $files;
+        $this->filesystem = $filesystem;
 
         $definitions = [];
         foreach ($this->appClasses() as $class) {
@@ -30,13 +30,13 @@ class Tracer
         }
 
         $cache = [];
-        if ($files->exists('.blueprint')) {
-            $cache = $blueprint->parse($files->get('.blueprint'));
+        if ($filesystem->exists('.blueprint')) {
+            $cache = $blueprint->parse($filesystem->get('.blueprint'));
         }
 
         $cache['models'] = $definitions;
 
-        $files->put('.blueprint', $blueprint->dump($cache));
+        $filesystem->put('.blueprint', $blueprint->dump($cache));
 
         return $definitions;
     }
@@ -49,7 +49,7 @@ class Tracer
             $dir .= '/' . str_replace('\\', '/', config('blueprint.models_namespace'));
         }
 
-        if (!$this->files->exists($dir)) {
+        if (!$this->filesystem->exists($dir)) {
             return [];
         }
 
@@ -59,7 +59,7 @@ class Tracer
                 [config('blueprint.namespace') . '\\', '\\'],
                 $file->getPath() . '/' . $file->getBasename('.php')
             );
-        }, $this->files->allFiles($dir));
+        }, $this->filesystem->allFiles($dir));
     }
 
     private function loadModel(string $class)

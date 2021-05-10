@@ -15,7 +15,7 @@ class NotificationGeneratorTest extends TestCase
 {
     private $blueprint;
 
-    private $files;
+    protected $files;
 
     /** @var NotificationGenerator */
     private $subject;
@@ -24,7 +24,6 @@ class NotificationGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->files = \Mockery::mock();
         $this->subject = new NotificationGenerator($this->files);
 
         $this->blueprint = new Blueprint();
@@ -37,11 +36,11 @@ class NotificationGeneratorTest extends TestCase
      */
     public function output_writes_nothing_for_empty_tree()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('notification.stub')
             ->andReturn($this->stub('notification.stub'));
 
-        $this->files->shouldNotHaveReceived('put');
+        $this->filesystem->shouldNotHaveReceived('put');
 
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
@@ -51,11 +50,11 @@ class NotificationGeneratorTest extends TestCase
      */
     public function output_writes_nothing_tree_without_validate_statements()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('notification.stub')
             ->andReturn($this->stub('notification.stub'));
 
-        $this->files->shouldNotHaveReceived('put');
+        $this->filesystem->shouldNotHaveReceived('put');
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/render-statements.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -69,32 +68,32 @@ class NotificationGeneratorTest extends TestCase
      */
     public function output_writes_notifications($draft)
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('notification.stub')
             ->andReturn($this->stub('notification.stub'));
 
         if ($draft === 'drafts/send-statements-notification-facade.yaml') {
-            $this->files->expects('stub')
+            $this->filesystem->expects('stub')
                 ->with('constructor.stub')
                 ->andReturn($this->stub('constructor.stub'));
         }
 
-        $this->files->shouldReceive('exists')
+        $this->filesystem->shouldReceive('exists')
             ->twice()
             ->with('app/Notification')
             ->andReturns(false, true);
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('app/Notification/ReviewPostNotification.php')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
+        $this->filesystem->expects('makeDirectory')
             ->with('app/Notification', 0755, true);
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('app/Notification/ReviewPostNotification.php', $this->fixture('notifications/review-post.php'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('app/Notification/PublishedPostNotification.php')
             ->andReturnFalse();
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('app/Notification/PublishedPostNotification.php', $this->fixture('notifications/published-post.php'));
 
         $tokens = $this->blueprint->parse($this->fixture($draft));
@@ -108,14 +107,14 @@ class NotificationGeneratorTest extends TestCase
      */
     public function it_only_outputs_new_notifications()
     {
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('notification.stub')
             ->andReturn($this->stub('notification.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('app/Notification/ReviewPostNotification.php')
             ->andReturnTrue();
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('app/Notification/PublishedPostNotification.php')
             ->andReturnTrue();
 
@@ -133,19 +132,19 @@ class NotificationGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
         $this->app['config']->set('blueprint.app_path', 'src/path');
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('notification.stub')
             ->andReturn($this->stub('notification.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('src/path/Notification')
             ->andReturnFalse();
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('src/path/Notification/ReviewNotification.php')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
+        $this->filesystem->expects('makeDirectory')
             ->with('src/path/Notification', 0755, true);
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('src/path/Notification/ReviewNotification.php', $this->fixture('notifications/notification-configured.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example-notification-facade.yaml'));
@@ -163,19 +162,19 @@ class NotificationGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.app_path', 'src/path');
         $this->app['config']->set('blueprint.use_return_types', true);
 
-        $this->files->expects('stub')
+        $this->filesystem->expects('stub')
             ->with('notification.stub')
             ->andReturn($this->stub('notification.stub'));
 
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('src/path/Notification')
             ->andReturnFalse();
-        $this->files->expects('exists')
+        $this->filesystem->expects('exists')
             ->with('src/path/Notification/ReviewNotification.php')
             ->andReturnFalse();
-        $this->files->expects('makeDirectory')
+        $this->filesystem->expects('makeDirectory')
             ->with('src/path/Notification', 0755, true);
-        $this->files->expects('put')
+        $this->filesystem->expects('put')
             ->with('src/path/Notification/ReviewNotification.php', $this->fixture('notifications/return-type-declarations.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example-notification-facade.yaml'));
