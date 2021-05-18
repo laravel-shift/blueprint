@@ -89,7 +89,7 @@ class TestGeneratorTest extends TestCase
             ->andReturn($this->stub('test.case.stub'));
 
         $paths = collect($path)->combine($test)->toArray();
-        foreach($paths as $path => $test){
+        foreach ($paths as $path => $test) {
             $dirname = dirname($path);
 
             $this->filesystem->expects('exists')
