@@ -1,0 +1,40 @@
+models:
+  Models\Subscription:
+    source: string:400
+    start_date: date
+    end_date: date
+    user_id: id foreign:users.id
+    payment_id: id foreign:payments.id
+    softDeletes: true
+    timestamps: true
+
+  Models\Payment:
+    status: string
+    amount: decimal:8,3
+    user_id: id foreign:users.id
+    softDeletes: true
+    timestamps: true
+
+controllers:
+  Subscription:
+    resource: index,show
+
+  Telegram:
+    resource: all
+
+  Payment:
+    create:
+      render: payment.create
+    store:
+      validate: status,amount,user_id
+      save: payment
+      fire: NewPayment with:payment
+      send: PaymentCreated to:payment.user with:payment
+      flash: message
+      redirect: payment.create
+
+  Api\Payment:
+    store:
+      validate: payment
+      save: payment
+      respond: 204
