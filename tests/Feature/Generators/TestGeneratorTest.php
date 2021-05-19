@@ -87,19 +87,25 @@ class TestGeneratorTest extends TestCase
         $this->filesystem->expects('stub')
             ->with('test.case.stub')
             ->andReturn($this->stub('test.case.stub'));
-        $dirname = dirname($path);
-        $this->filesystem->expects('exists')
-            ->with($dirname)
-            ->andReturnFalse();
-        $this->filesystem->expects('makeDirectory')
-            ->with($dirname, 0755, true);
-        $this->filesystem->expects('put')
+
+        $paths = collect($path)->combine($test)->toArray();
+        foreach ($paths as $path => $test) {
+            $dirname = dirname($path);
+
+            $this->filesystem->expects('exists')
+                ->with($dirname)
+                ->andReturnFalse();
+                
+            $this->filesystem->expects('makeDirectory')
+                ->with($dirname, 0755, true);
+
+            $this->filesystem->expects('put')
             ->with($path, $this->fixture($test));
+        }
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
-
-        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+        $this->assertEquals(['created' => array_keys($paths)], $this->subject->output($tree));
     }
 
     /**
@@ -362,6 +368,17 @@ class TestGeneratorTest extends TestCase
             ['drafts/respond-statements.yaml', 'tests/Feature/Http/Controllers/Api/PostControllerTest.php', 'tests/respond-statements-laravel8.php'],
             ['drafts/full-crud-example.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/full-crud-example-laravel8.php'],
             ['drafts/model-reference-validate.yaml', 'tests/Feature/Http/Controllers/CertificateControllerTest.php', 'tests/api-shorthand-validation-laravel8.php'],
+            ['drafts/call-to-a-member-function-columns-on-null.yaml', [
+                'tests/Feature/Http/Controllers/SubscriptionControllerTest.php',
+                'tests/Feature/Http/Controllers/TelegramControllerTest.php',
+                'tests/Feature/Http/Controllers/PaymentControllerTest.php',
+                'tests/Feature/Http/Controllers/Api/PaymentControllerTest.php'
+            ],[
+                'tests/call-to-a-member-function-columns-on-null-SubscriptionControllerTest-laravel8.php',
+                'tests/call-to-a-member-function-columns-on-null-TelegramControllerTest-laravel8.php',
+                'tests/call-to-a-member-function-columns-on-null-PaymentControllerTest-laravel8.php',
+                'tests/call-to-a-member-function-columns-on-null-Api-PaymentControllerTest-laravel8.php',
+            ]],
         ];
     }
 }

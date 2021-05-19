@@ -248,7 +248,7 @@ class TestGenerator implements Generator
 
                                 $setup['data'][] = $faker;
                                 $request_data[$data] = '$' . $variable_name;
-                            } else {
+                            } elseif (! is_null($local_model)) {
                                 foreach ($local_model->columns() as $local_column) {
                                     if ($local_column->name() === 'id') {
                                         continue;
