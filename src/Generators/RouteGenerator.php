@@ -56,7 +56,7 @@ class RouteGenerator implements Generator
         $routes = '';
         $methods = array_keys($controller->methods());
         $className = $this->getClassName($controller);
-        $slug = Str::kebab($controller->prefix());
+        $slug = Str::kebab(Str::plural($controller->prefix()));
 
         foreach (array_diff($methods, Controller::$resourceMethods) as $method) {
             $routes .= $this->buildRouteLine($className, $slug, $method);
