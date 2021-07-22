@@ -126,6 +126,11 @@ class ModelLexer implements Lexer
     {
         $model = new Model($name);
 
+        if (!isset($columns['id']) && $model->usesPrimaryKey()) {
+            $column = $this->buildColumn('id', 'id');
+            $model->addColumn($column);
+        }
+        
         if (isset($columns['id'])) {
             if ($columns['id'] === false) {
                 $model->disablePrimaryKey();
@@ -152,6 +157,10 @@ class ModelLexer implements Lexer
             unset($columns['softdeletestz']);
         }
 
+        if($model->usesSoftDeletes()){
+            $model->addColumn($this->buildColumn('deleted_at', $model->softDeletesDataType()));
+        }
+
         if (isset($columns['relationships'])) {
             if (is_array($columns['relationships'])) {
                 foreach ($columns['relationships'] as $type => $relationships) {
@@ -173,11 +182,6 @@ class ModelLexer implements Lexer
                 $model->addIndex(new Index(key($index), array_map('trim', explode(',', current($index)))));
             }
             unset($columns['indexes']);
-        }
-
-        if (!isset($columns['id']) && $model->usesPrimaryKey()) {
-            $column = $this->buildColumn('id', 'id');
-            $model->addColumn($column);
         }
 
         foreach ($columns as $name => $definition) {
