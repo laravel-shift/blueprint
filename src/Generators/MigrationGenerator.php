@@ -63,10 +63,9 @@ class MigrationGenerator implements Generator
         $tables = ['tableNames' => [], 'pivotTableNames' => []];
 
         $stub = $this->filesystem->stub('migration.stub');
-
         /**
- * @var \Blueprint\Models\Model $model
-*/
+         * @var \Blueprint\Models\Model $model
+         */
         foreach ($tree->models() as $model) {
             $tables['tableNames'][$model->tableName()] = $this->populateStub($stub, $model);
 
@@ -98,7 +97,6 @@ class MigrationGenerator implements Generator
             $path = $this->getTablePath($tableName, $sequential_timestamp->addSecond(), $overwrite);
             $action = $this->filesystem->exists($path) ? 'updated' : 'created';
             $this->filesystem->put($path, $data);
-
             $output[$action][] = $path;
         }
 
@@ -109,7 +107,6 @@ class MigrationGenerator implements Generator
 
             $output[$action][] = $path;
         }
-
         return $output;
     }
 
@@ -208,12 +205,12 @@ class MigrationGenerator implements Generator
 
                 // TODO: unset the proper modifier
                 $modifiers = collect($modifiers)->reject(
-                    function ($modifier) {
+                    function ($modifier) use ($column) {
                         return (is_array($modifier) && key($modifier) === 'foreign')
                         || (is_array($modifier) && key($modifier) === 'onDelete')
                         || (is_array($modifier) && key($modifier) === 'onUpdate')
                         || $modifier === 'foreign'
-                        || ($modifier === 'nullable' && $this->isLaravel7orNewer());
+                        || ($modifier === 'nullable' && $this->isLaravel7orNewer() && $column->dataType() === 'id');
                     }
                 );
             }
