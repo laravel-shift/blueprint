@@ -250,7 +250,7 @@ class TestGenerator implements Generator
                                 $request_data[$data] = '$' . $variable_name;
                             } elseif (! is_null($local_model)) {
                                 foreach ($local_model->columns() as $local_column) {
-                                    if ($local_column->name() === 'id') {
+                                    if (in_array($local_column->name(), ['id', 'deleted_at'], true)) {
                                         continue;
                                     }
 
@@ -423,7 +423,7 @@ class TestGenerator implements Generator
                             $indent = str_pad(' ', 12);
                             $plural = Str::plural($variable);
                             $assertion = sprintf('$%s = %s::query()', $plural, $model);
-                            foreach ($request_data as $key => $datum) {
+                            foreach ($this->fillableColumns($request_data) as $key => $datum) {
                                 $assertion .= PHP_EOL . sprintf('%s->where(\'%s\', %s)', $indent, $key, $datum);
                             }
                             $assertion .= PHP_EOL . $indent . '->get();';
@@ -460,7 +460,7 @@ class TestGenerator implements Generator
                         if ($request_data) {
                             /** @var \Blueprint\Models\Model $local_model */
                             $local_model = $this->tree->modelForContext($model);
-                            foreach ($request_data as $key => $datum) {
+                            foreach ($this->fillableColumns($request_data) as $key => $datum) {
                                 if (! is_null($local_model) && $local_model->hasColumn($key) && $local_model->column($key)->dataType() === 'date') {
                                     $this->addImport($controller, 'Carbon\\Carbon');
                                     $assertions['generic'][] = sprintf('$this->assertEquals(Carbon::parse(%s), $%s->%s);', $datum, $variable, $key);
@@ -492,7 +492,7 @@ class TestGenerator implements Generator
             if ($request_data) {
                 $call .= ', [';
                 $call .= PHP_EOL;
-                foreach ($request_data as $key => $datum) {
+                foreach ($this->fillableColumns($request_data) as $key => $datum) {
                     $call .= str_pad(' ', 12);
                     $call .= sprintf('\'%s\' => %s,', $key, $datum);
                     $call .= PHP_EOL;
@@ -719,5 +719,16 @@ END;
         $this->addImport($controller, $modelNamespace . '\\' . Str::studly($reference));
 
         return [$faker, $variable_name];
+    }
+
+    private function fillableColumns(array $columns)
+    {
+        return collect($columns)->diffKeys([
+            'id',
+            'deleted_at',
+            'created_at',
+            'updated_at',
+            'remember_token',
+        ])->toArray();
     }
 }
