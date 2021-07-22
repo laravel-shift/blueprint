@@ -172,6 +172,8 @@ class MigrationGenerator implements Generator
                 $column_definition .= '$table->id(';
             } elseif ($dataType === 'rememberToken') {
                 $column_definition .= '$table->rememberToken(';
+            }elseif ($dataType === $model->softDeletesDataType()) {
+                $column_definition .= '$table->' . $model->softDeletesDataType() . '(';
             } else {
                 $column_definition .= '$table->' . $dataType . "('{$column->name()}'";
             }
@@ -242,10 +244,6 @@ class MigrationGenerator implements Generator
             }
 
             $definition .= $column_definition;
-        }
-
-        if ($model->usesSoftDeletes()) {
-            $definition .= self::INDENT . '$table->' . $model->softDeletesDataType() . '();' . PHP_EOL;
         }
 
         if ($model->morphTo()) {
