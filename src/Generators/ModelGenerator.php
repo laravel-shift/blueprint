@@ -125,15 +125,16 @@ class ModelGenerator implements Generator
                 $phpDoc .= PHP_EOL;
                 $phpDoc .= ' * @property string|null $' . $column->name() . '_type';
                 $phpDoc .= PHP_EOL;
+            } elseif (
+                $model->usesSoftDeletes() &&
+                $model->softDeletesDataType() === mb_strtolower($column->dataType())
+            ) {
+                $phpDoc .= ' * @property \Carbon\Carbon $deleted_at';
+                $phpDoc .= PHP_EOL;
             } else {
                 $phpDoc .= sprintf(' * @property %s $%s', $this->phpDataType($column->dataType()), $column->name());
                 $phpDoc .= PHP_EOL;
             }
-        }
-
-        if ($model->usesSoftDeletes()) {
-            $phpDoc .= ' * @property \Carbon\Carbon $deleted_at';
-            $phpDoc .= PHP_EOL;
         }
 
         if ($model->usesTimestamps()) {
