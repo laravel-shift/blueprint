@@ -172,7 +172,7 @@ class MigrationGenerator implements Generator
                 $column_definition .= '$table->id(';
             } elseif ($dataType === 'rememberToken') {
                 $column_definition .= '$table->rememberToken(';
-            }elseif ($dataType === $model->softDeletesDataType()) {
+            } elseif ($dataType === $model->softDeletesDataType()) {
                 $column_definition .= '$table->' . $model->softDeletesDataType() . '(';
             } else {
                 $column_definition .= '$table->' . $dataType . "('{$column->name()}'";

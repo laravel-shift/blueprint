@@ -157,7 +157,7 @@ class ModelLexer implements Lexer
             unset($columns['softdeletestz']);
         }
 
-        if($model->usesSoftDeletes()){
+        if ($model->usesSoftDeletes()) {
             $model->addColumn($this->buildColumn('deleted_at', $model->softDeletesDataType()));
         }
 
