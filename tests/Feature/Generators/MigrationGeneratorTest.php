@@ -645,6 +645,33 @@ class MigrationGeneratorTest extends TestCase
 
     /**
      * @test
+     */
+    public function output_creates_nullable_foreign_key_without_column_type_beeing_id()
+    {
+        $this->filesystem->expects('stub')
+            ->with('migration.stub')
+            ->andReturn($this->stub('migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $model_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_comments_table.php');
+
+        $this->filesystem->expects('exists')->with($model_migration)->andReturn(false);
+
+        $this->files
+            ->expects('put')
+            ->with($model_migration, $this->fixture('migrations/nullable-columns-with-foreign.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/nullable-columns-with-foreign.yaml'));
+        
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$model_migration]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
      * @environment-setup useLaravel6
      */
     public function output_creates_foreign_keys_with_nullable_chained_correctly_laravel6()
