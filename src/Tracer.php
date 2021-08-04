@@ -237,9 +237,6 @@ class Tracer
     private function relativeClassName($model)
     {
         $name = Blueprint::relativeNamespace(get_class($model));
-        if (config('blueprint.models_namespace')) {
-            return $name;
-        }
 
         return ltrim(str_replace(config('blueprint.models_namespace'), '', $name), '\\');
     }
