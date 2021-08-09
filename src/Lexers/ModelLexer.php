@@ -90,6 +90,7 @@ class ModelLexer implements Lexer
         'nullable' => 'nullable',
         'unsigned' => 'unsigned',
         'usecurrent' => 'useCurrent',
+        'usecurrentonupdate' => 'useCurrentOnUpdate',
         'always' => 'always',
         'unique' => 'unique',
         'index' => 'index',
