@@ -11,19 +11,17 @@ class Tracer
     /** @var Filesystem */
     private $filesystem;
 
-    public function execute(Blueprint $blueprint, Filesystem $filesystem, string $path): array
+    public function execute(Blueprint $blueprint, Filesystem $filesystem, array $paths = null): array
     {
         $this->filesystem = $filesystem;
 
-        if (!$path) {
-            $path = Blueprint::appPath();
+        if (empty($paths)) {
+            $paths = [Blueprint::appPath()];
 
             if (config('blueprint.models_namespace')) {
-                $path .= '/'.str_replace('\\', '/', config('blueprint.models_namespace'));
+                $paths[0] .= '/'.str_replace('\\', '/', config('blueprint.models_namespace'));
             }
         }
-
-        $paths = array_filter(explode(',', $path));
 
         $definitions = [];
         foreach ($this->appClasses($paths) as $class) {

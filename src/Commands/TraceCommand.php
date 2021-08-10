@@ -16,7 +16,7 @@ class TraceCommand extends Command
      * @var string
      */
     protected $signature = 'blueprint:trace
-                            {--path= : Comma separated list of paths to search in }
+                            {--path=* : List of paths to search in }
                             ';
 
     /**
@@ -52,7 +52,7 @@ class TraceCommand extends Command
     public function handle()
     {
         $blueprint = resolve(Blueprint::class);
-        $path = $this->option('path') ?: '';
+        $path = $this->option('path');
         $definitions = $this->tracer->execute($blueprint, $this->filesystem, $path);
 
         if (empty($definitions)) {

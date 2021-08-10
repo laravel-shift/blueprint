@@ -23,7 +23,7 @@ class TraceCommandTest extends TestCase
         $tracer = $this->mock(Tracer::class);
 
         $tracer->shouldReceive('execute')
-            ->with(resolve(Blueprint::class), $this->files, '')
+            ->with(resolve(Blueprint::class), $this->files, [])
             ->andReturn([]);
 
         $this->artisan('blueprint:trace')
@@ -37,7 +37,7 @@ class TraceCommandTest extends TestCase
         $tracer = $this->mock(Tracer::class);
 
         $tracer->shouldReceive('execute')
-            ->with(resolve(Blueprint::class), $this->files, '')
+            ->with(resolve(Blueprint::class), $this->files, [])
             ->andReturn([
                 "Model" => [],
                 "OtherModel" => [],
