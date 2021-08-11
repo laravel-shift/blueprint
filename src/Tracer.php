@@ -61,11 +61,11 @@ class Tracer
         }
 
         return array_map(function (\SplFIleInfo $file) {
-            $content = \Str::of($this->filesystem->get($file->getPathName()));
-            $namespace = $content->match("/namespace ([\w\\\\]+)/");
-            $class = $content->match("/class (\w+)/");
+            $content = $this->filesystem->get($file->getPathName());
+            preg_match("/namespace ([\w\\\\]+)/", $content, $namespace);
+            preg_match("/class (\w+)/", $content, $class);
 
-            return "$namespace\\$class";
+            return ($namespace[1] ?? '').'\\'.($class[1] ?? '');
         }, $classes);
     }
 
