@@ -195,6 +195,38 @@ class ControllerGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Http/Controllers/TermController.php']], $this->subject->output($tree));
     }
 
+    /**
+     * @test
+     * @environment-setup useLaravel8
+     */
+    public function output_using_return_types_for_api_resource_controller()
+    {
+        $this->app['config']->set('blueprint.use_return_types', true);
+
+        $this->filesystem->expects('stub')
+            ->with('controller.class.stub')
+            ->andReturn($this->stub('controller.class.stub'));
+
+        $this->filesystem->expects('stub')
+            ->with('controller.method.stub')
+            ->andReturn($this->stub('controller.method.stub'));
+
+        $this->filesystem->expects('exists')
+            ->with('app/Http/Controllers')
+            ->andReturnFalse();
+
+        $this->filesystem->expects('makeDirectory')
+            ->with('app/Http/Controllers', 0755, true);
+
+        $this->filesystem->expects('put')
+            ->with('app/Http/Controllers/PostController.php', $this->fixture('controllers/return-type-declarations-api-resource.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/return-type-declarations-api-controller.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['app/Http/Controllers/PostController.php']], $this->subject->output($tree));
+    }
+
     public function controllerTreeDataProvider()
     {
         return [
