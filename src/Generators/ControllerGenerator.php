@@ -183,7 +183,7 @@ class ControllerGenerator implements Generator
             }
 
             if (Blueprint::supportsReturnTypeHits()) {
-                if ($controller->isApiResource()) {
+                if (isset($fqcn) && $name !== 'destroy' && $controller->isApiResource()) {
                     $method = str_replace(')' . PHP_EOL, '): \\' . $fqcn . PHP_EOL, $method);
                 } else {
                     $method = str_replace(')' . PHP_EOL, '): \Illuminate\Http\Response' . PHP_EOL, $method);
