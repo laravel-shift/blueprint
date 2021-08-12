@@ -11,12 +11,20 @@ class Tracer
     /** @var Filesystem */
     private $filesystem;
 
-    public function execute(Blueprint $blueprint, Filesystem $filesystem): array
+    public function execute(Blueprint $blueprint, Filesystem $filesystem, array $paths = null): array
     {
         $this->filesystem = $filesystem;
 
+        if (empty($paths)) {
+            $paths = [Blueprint::appPath()];
+
+            if (config('blueprint.models_namespace')) {
+                $paths[0] .= '/'.str_replace('\\', '/', config('blueprint.models_namespace'));
+            }
+        }
+
         $definitions = [];
-        foreach ($this->appClasses() as $class) {
+        foreach ($this->appClasses($paths) as $class) {
             $model = $this->loadModel($class);
             if (is_null($model)) {
                 continue;
@@ -41,25 +49,24 @@ class Tracer
         return $definitions;
     }
 
-    private function appClasses()
+    private function appClasses($paths)
     {
-        $dir = Blueprint::appPath();
+        $classes = [];
+        foreach ($paths as $path) {
+            if (!$this->filesystem->exists($path)) {
+                continue;
+            }
 
-        if (config('blueprint.models_namespace')) {
-            $dir .= '/' . str_replace('\\', '/', config('blueprint.models_namespace'));
-        }
-
-        if (!$this->filesystem->exists($dir)) {
-            return [];
+            $classes = array_merge($classes, $this->filesystem->allFiles($path));
         }
 
         return array_map(function (\SplFIleInfo $file) {
-            return str_replace(
-                [Blueprint::appPath() . '/', '/'],
-                [config('blueprint.namespace') . '\\', '\\'],
-                $file->getPath() . '/' . $file->getBasename('.php')
-            );
-        }, $this->filesystem->allFiles($dir));
+            $content = $this->filesystem->get($file->getPathName());
+            preg_match("/namespace ([\w\\\\]+)/", $content, $namespace);
+            preg_match("/class (\w+)/", $content, $class);
+
+            return ($namespace[1] ?? '').'\\'.($class[1] ?? '');
+        }, $classes);
     }
 
     private function loadModel(string $class)

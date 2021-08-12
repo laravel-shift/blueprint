@@ -23,7 +23,7 @@ class TraceCommandTest extends TestCase
         $tracer = $this->mock(Tracer::class);
 
         $tracer->shouldReceive('execute')
-            ->with(resolve(Blueprint::class), $this->files)
+            ->with(resolve(Blueprint::class), $this->files, [])
             ->andReturn([]);
 
         $this->artisan('blueprint:trace')
@@ -37,7 +37,7 @@ class TraceCommandTest extends TestCase
         $tracer = $this->mock(Tracer::class);
 
         $tracer->shouldReceive('execute')
-            ->with(resolve(Blueprint::class), $this->files)
+            ->with(resolve(Blueprint::class), $this->files, [])
             ->andReturn([
                 "Model" => [],
                 "OtherModel" => [],
@@ -46,5 +46,22 @@ class TraceCommandTest extends TestCase
         $this->artisan('blueprint:trace')
             ->assertExitCode(0)
             ->expectsOutput('Traced 2 models');
+    }
+
+    /** @test */
+    public function it_passes_the_command_path_to_tracer()
+    {
+        $this->filesystem->shouldReceive('exists')
+            ->with('test.yml')
+            ->andReturnTrue();
+
+        $builder = $this->mock(Builder::class);
+
+        $builder->shouldReceive('execute')
+            ->with(resolve(Blueprint::class), $this->files, 'vendor/package/src/app/Models')
+            ->andReturn([]);
+
+        $this->artisan('blueprint:trace --path=vendor/package/src/app/Models')
+            ->assertExitCode(0);
     }
 }

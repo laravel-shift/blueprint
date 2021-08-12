@@ -83,6 +83,6 @@ class EraseCommandTest extends TestCase
             ->assertExitCode(0);
 
         $tracer->shouldHaveReceived('execute')
-            ->with(resolve(Blueprint::class), $this->filesystem);
+            ->with(resolve(Blueprint::class), $this->filesystem, []);
     }
 }
