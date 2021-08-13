@@ -12,6 +12,7 @@ $factory->define(Post::class, function (Faker $faker) {
         'author_bio' => $faker->text,
         'content' => $faker->paragraphs(3, true),
         'published_at' => $faker->dateTime(),
+        'updated_at' => $faker->dateTime(),
         'word_count' => $faker->randomNumber(),
     ];
 });
