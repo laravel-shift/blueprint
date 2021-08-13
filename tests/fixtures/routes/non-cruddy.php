@@ -1,9 +1,9 @@
 
 
-Route::get('some/whatever', 'SomeController@whatever');
-Route::get('some/slug-name', 'SomeController@slugName');
-Route::resource('some', 'SomeController')->only('index', 'show');
+Route::get('some/whatever', [App\Http\Controllers\SomeController::class, 'whatever']);
+Route::get('some/slug-name', [App\Http\Controllers\SomeController::class, 'slugName']);
+Route::resource('some', App\Http\Controllers\SomeController::class)->only('index', 'show');
 
-Route::get('subscriptions/resume', 'SubscriptionsController@resume');
+Route::get('subscriptions/resume', [App\Http\Controllers\SubscriptionsController::class, 'resume']);
 
-Route::get('report', 'ReportController');
+Route::get('report', App\Http\Controllers\ReportController::class);

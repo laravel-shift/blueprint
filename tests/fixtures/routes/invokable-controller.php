@@ -1,3 +1,3 @@
 
 
-Route::get('report', 'ReportController');
+Route::get('report', App\Http\Controllers\ReportController::class);

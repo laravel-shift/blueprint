@@ -1,3 +1,3 @@
 
 
-Route::resource('post', 'PostController')->only('index', 'store');
+Route::resource('post', App\Http\Controllers\PostController::class)->only('index', 'store');

@@ -87,16 +87,9 @@ class RouteGenerator implements Generator
         return trim($routes);
     }
 
-    protected function useTuples()
-    {
-        return config('blueprint.generate_fqcn_route');
-    }
-
     protected function getClassName(Controller $controller)
     {
-        return $this->useTuples()
-            ? $controller->fullyQualifiedClassName() . '::class'
-            : '\'' . str_replace('App\Http\Controllers\\', '', $controller->fullyQualifiedClassName()) . '\'';
+        return $controller->fullyQualifiedClassName() . '::class';
     }
 
     protected function buildRouteLine($className, $slug, $method)
@@ -105,13 +98,6 @@ class RouteGenerator implements Generator
             return sprintf("Route::get('%s', %s);", $slug, $className);
         }
 
-        if ($this->useTuples()) {
-            $action = "[{$className}, '{$method}']";
-        } else {
-            $classNameNoQuotes = trim($className, '\'');
-            $action = "'{$classNameNoQuotes}@{$method}'";
-        }
-
-        return sprintf("Route::get('%s/%s', %s);", $slug, Str::kebab($method), $action);
+        return sprintf("Route::get('%s/%s', [%s, '%s']);", $slug, Str::kebab($method), $className, $method);
     }
 }

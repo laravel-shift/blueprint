@@ -87,26 +87,11 @@ class RouteGeneratorTest extends TestCase
         $this->assertEquals(['updated' => ['routes/api.php', 'routes/web.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function output_generates_routes_using_tuples()
-    {
-        config(['blueprint.generate_fqcn_route' => true]);
-
-        $this->filesystem->expects('append')
-            ->with('routes/web.php', $this->fixture('routes/routes-tuples.php'));
-
-        $tokens = $this->blueprint->parse($this->fixture('drafts/routes-tuples.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
-
-        $this->subject->output($tree);
-    }
-
     public function controllerTreeDataProvider()
     {
         return [
             ['drafts/readme-example.yaml', 'routes/readme-example.php'],
+            ['drafts/routes-mixed.yaml', 'routes/routes-mixed.php'],
             ['drafts/cruddy.yaml', 'routes/cruddy.php'],
             ['drafts/non-cruddy.yaml', 'routes/non-cruddy.php'],
             ['drafts/respond-statements.yaml', 'routes/respond-statements.php'],
