@@ -49,6 +49,27 @@ class TraceCommandTest extends TestCase
     }
 
     /** @test */
+    public function relative_class_name_removes_models_namespace()
+    {
+        $this->requireFixture('models/comment.php');
+        $this->requireFixture('models/custom-models-namespace.php');
+
+        $method = new \ReflectionMethod(Tracer::class, 'relativeClassName');
+        $method->setAccessible(true);
+
+        // App namespace
+        config(['blueprint.models_namespace' => '']);
+
+        $this->assertEquals($method->invoke(new Tracer(), app('App\Comment')), 'Comment');
+        $this->assertEquals($method->invoke(new Tracer(), app('App\Models\Tag')), 'Models\Tag');
+
+        // Models namespace
+        config(['blueprint.models_namespace' => 'Models']);
+
+        $this->assertEquals($method->invoke(new Tracer(), app('App\Comment')), 'Comment');
+        $this->assertEquals($method->invoke(new Tracer(), app('App\Models\Tag')), 'Tag');
+    }
+  
     public function it_passes_the_command_path_to_tracer()
     {
         $this->filesystem->shouldReceive('exists')
