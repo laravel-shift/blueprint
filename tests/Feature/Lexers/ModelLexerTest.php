@@ -226,6 +226,7 @@ class ModelLexerTest extends TestCase
                     'sequence' => 'unsignedbiginteger autoincrement',
                     'content' => 'longtext',
                     'saved_at' => 'timestamptz usecurrent',
+                    'updated_at' => 'timestamptz usecurrent usecurrentOnUpdate',
                 ],
             ],
         ];
@@ -241,7 +242,7 @@ class ModelLexerTest extends TestCase
         $this->assertFalse($model->usesSoftDeletes());
 
         $columns = $model->columns();
-        $this->assertCount(4, $columns);
+        $this->assertCount(5, $columns);
         $this->assertEquals('id', $columns['id']->name());
         $this->assertEquals('id', $columns['id']->dataType());
         $this->assertEquals([], $columns['id']->attributes());
@@ -258,6 +259,7 @@ class ModelLexerTest extends TestCase
         $this->assertEquals('timestampTz', $columns['saved_at']->dataType());
         $this->assertEquals([], $columns['saved_at']->attributes());
         $this->assertEquals(['useCurrent'], $columns['saved_at']->modifiers());
+        $this->assertEquals(['useCurrent', 'useCurrentOnUpdate'], $columns['updated_at']->modifiers());
     }
 
     /**
