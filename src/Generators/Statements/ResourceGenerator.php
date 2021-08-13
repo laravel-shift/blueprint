@@ -9,6 +9,7 @@ use Blueprint\Models\Model;
 use Blueprint\Models\Statements\ResourceStatement;
 use Blueprint\Tree;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class ResourceGenerator implements Generator
@@ -39,8 +40,8 @@ class ResourceGenerator implements Generator
         $stub = $this->filesystem->stub('resource.stub');
 
         /**
- * @var \Blueprint\Models\Controller $controller
-*/
+         * @var \Blueprint\Models\Controller $controller
+         */
         foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
@@ -90,7 +91,7 @@ class ResourceGenerator implements Generator
         $stub = str_replace('{{ class }}', $resource->name(), $stub);
         $stub = str_replace('{{ parentClass }}', $resource->collection() ? 'ResourceCollection' : 'JsonResource', $stub);
         $stub = str_replace('{{ resource }}', $resource->collection() ? 'resource collection' : 'resource', $stub);
-        $stub = str_replace('{{ body }}', $this->buildData($resource), $stub);
+        $stub = str_replace('{{ body }}', $this->buildData($resource, $namespace), $stub);
 
         if (Blueprint::supportsReturnTypeHits()) {
             $stub = str_replace('toArray($request)', 'toArray($request): array', $stub);
@@ -98,13 +99,13 @@ class ResourceGenerator implements Generator
         return $stub;
     }
 
-    protected function buildData(ResourceStatement $resource)
+    protected function buildData(ResourceStatement $resource, string  $namespace)
     {
         $context = Str::singular($resource->reference());
 
         /**
- * @var \Blueprint\Models\Model $model
-*/
+         * @var \Blueprint\Models\Model $model
+         */
         $model = $this->tree->modelForContext($context);
 
         $data = [];
@@ -120,6 +121,27 @@ class ResourceGenerator implements Generator
         foreach ($this->visibleColumns($model) as $column) {
             $data[] = self::INDENT . '\'' . $column . '\' => $this->' . $column . ',';
         }
+
+        foreach ($model->relationships() as $type => $relationship) {
+
+            $method_name = lcfirst(Str::afterLast(Arr::last($relationship), '\\'));
+
+            $relation_model = $this->tree->modelForContext($method_name);
+
+            if($relation_model === null) {
+                continue;
+            }
+
+            if (in_array($type, ['hasMany', 'belongsToMany', 'morphMany'])) {
+                $relation_resource_name = $relation_model->name() . 'Collection';
+                $method_name = Str::plural($method_name);
+            } else {
+                $relation_resource_name = $relation_model->name() . 'Resource';
+            }
+
+            $data[] = self::INDENT . '\'' . $method_name . '\' => ' . $relation_resource_name . '::make($this->whenLoaded(\'' .$method_name.'\')),';
+        }
+
         $data[] = '        ];';
 
         return implode(PHP_EOL, $data);
@@ -130,8 +152,8 @@ class ResourceGenerator implements Generator
         return array_diff(
             array_keys($model->columns()),
             [
-            'password',
-            'remember_token',
+                'password',
+                'remember_token',
             ]
         );
     }
