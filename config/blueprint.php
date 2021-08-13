@@ -73,8 +73,8 @@ return [
     'use_constraints' => false,
 
     'on_delete' => 'cascade',
-    'on_update' => 'cascade',
 
+    'on_update' => 'cascade',
 
     /*
     |--------------------------------------------------------------------------
@@ -114,7 +114,6 @@ return [
     | generated "unguarded" models.
     |
     */
-
     'use_guarded' => false,
 
     /*
