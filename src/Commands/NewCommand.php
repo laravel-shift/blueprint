@@ -34,11 +34,6 @@ class NewCommand extends Command
         $this->filesystem = $filesystem;
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
     public function handle()
     {
         if (!$this->filesystem->exists('draft.yaml')) {
@@ -47,6 +42,6 @@ class NewCommand extends Command
             $this->info('Created example draft.yaml');
         }
 
-        $this->call('blueprint:trace');
+        return $this->call('blueprint:trace');
     }
 }

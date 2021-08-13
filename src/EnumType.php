@@ -11,7 +11,7 @@ class EnumType extends Type
 
     protected $values = [];
 
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform)
     {
         $values = array_map(
             function ($val) {

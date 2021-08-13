@@ -33,11 +33,6 @@ class EraseCommand extends Command
         $this->filesystem = $filesystem;
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
     public function handle()
     {
         $contents = $this->filesystem->get('.blueprint');
@@ -72,7 +67,7 @@ class EraseCommand extends Command
 
         $this->filesystem->put('.blueprint', $blueprint->dump($generated));
 
-        $this->call('blueprint:trace');
+        return $this->call('blueprint:trace');
     }
 
     private function outputStyle($action)

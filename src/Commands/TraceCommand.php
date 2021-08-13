@@ -44,11 +44,6 @@ class TraceCommand extends Command
         $this->tracer = $tracer;
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
     public function handle()
     {
         $blueprint = resolve(Blueprint::class);

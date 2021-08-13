@@ -5,16 +5,17 @@ namespace Blueprint\Generators;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Controller;
 use Blueprint\Tree;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
 class RouteGenerator implements Generator
 {
     /**
-     * @var \Illuminate\Filesystem\Filesystem
+     * @var Filesystem
      */
     private $filesystem;
 
-    public function __construct($filesystem)
+    public function __construct(Filesystem $filesystem)
     {
         $this->filesystem = $filesystem;
     }
