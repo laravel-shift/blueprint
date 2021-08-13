@@ -16,9 +16,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: [7.2, 7.3, 7.4, 8.0]
+        php-version: [7.4, 8.0]
 
-        laravel-version: [6, 7, 8]
+        laravel-version: [8]
 
         os: [ubuntu-latest]
 
@@ -27,23 +27,6 @@ jobs:
         experimental: [false]
 
         include:
-          - php-version: 7.4
-            laravel-version: 7
-            dependencies: highest
-            os: ubuntu-latest
-            experimental: false
-
-          - php-version: 7.4
-            laravel-version: 7
-            os: windows-latest
-            dependencies: locked
-            experimental: false
-
-          - php-version: 7.4
-            laravel-version: 7
-            os: macos-latest
-            dependencies: locked
-            experimental: false
 
     name: PHP ${{ matrix.php-version }} - L${{ matrix.laravel-version }} - ${{ matrix.os }}
 
