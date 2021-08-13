@@ -48,7 +48,6 @@ class FactoryGeneratorTest extends TestCase
 
     /**
      * @test
-     * @environment-setup useLaravel8
      * @dataProvider laravel8ModelTreeDataProvider
      */
     public function output_writes_factory_for_model_tree($definition, $path, $factory)
@@ -72,55 +71,6 @@ class FactoryGeneratorTest extends TestCase
 
     /**
      * @test
-     * @environment-setup useLaravel7
-     * @dataProvider modelTreeDataProvider
-     */
-    public function output_writes_factory_for_model_tree_l7($definition, $path, $factory)
-    {
-        $this->filesystem->expects('stub')
-            ->with($this->factoryStub)
-            ->andReturn($this->stub($this->factoryStub));
-
-        $this->filesystem->expects('exists')
-            ->with('database/factories')
-            ->andReturnTrue();
-
-        $this->filesystem->expects('put')
-            ->with($path, $this->fixture($factory));
-
-        $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree = $this->blueprint->analyze($tokens);
-
-        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
-    }
-
-    /**
-     * @test
-     * @environment-setup useLaravel6
-     * @dataProvider modelTreeDataProvider
-     */
-    public function output_writes_factory_for_model_tree_l6($definition, $path, $factory)
-    {
-        $this->filesystem->expects('stub')
-            ->with($this->factoryStub)
-            ->andReturn($this->stub($this->factoryStub));
-
-        $this->filesystem->expects('exists')
-            ->with('database/factories')
-            ->andReturnTrue();
-
-        $this->filesystem->expects('put')
-            ->with($path, $this->fixture($factory));
-
-        $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree = $this->blueprint->analyze($tokens);
-
-        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
-    }
-
-    /**
-     * @test
-     * @environment-setup useLaravel8
      */
     public function output_ignores_nullables_if_fake_nullables_configuration_is_set_to_false()
     {
@@ -145,7 +95,6 @@ class FactoryGeneratorTest extends TestCase
 
     /**
      * @test
-     * @environment-setup useLaravel8
      */
     public function output_using_return_types()
     {
@@ -170,7 +119,6 @@ class FactoryGeneratorTest extends TestCase
 
     /**
      * @test
-     * @environment-setup useLaravel8
      */
     public function output_generates_references_for_nested_models()
     {
@@ -206,7 +154,6 @@ class FactoryGeneratorTest extends TestCase
 
     /**
      * @test
-     * @environment-setup useLaravel8
      */
     public function output_respects_configuration()
     {
@@ -232,7 +179,6 @@ class FactoryGeneratorTest extends TestCase
 
     /**
      * @test
-     * @environment-setup useLaravel8
      */
     public function output_creates_directory_for_nested_components()
     {

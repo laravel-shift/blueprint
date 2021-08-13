@@ -37,20 +37,12 @@ class FactoryGenerator implements Generator
         $this->tree = $tree;
 
         $output = [];
-
-        if (Blueprint::isLaravel8OrHigher()) {
-            $stub = $this->filesystem->stub('factory.stub');
-        } else {
-            $stub = $this->filesystem->stub('factory.closure.stub');
-        }
+        $stub = $this->filesystem->stub('factory.stub');
 
         /**
- * @var \Blueprint\Models\Model $model
-*/
+         * @var \Blueprint\Models\Model $model
+         */
         foreach ($tree->models() as $model) {
-            if (!Blueprint::isLaravel8OrHigher()) {
-                $this->addImport($model, 'Faker\Generator as Faker');
-            }
             $this->addImport($model, $model->fullyQualifiedClassName());
 
             $path = $this->getPath($model);
@@ -87,18 +79,7 @@ class FactoryGenerator implements Generator
         $stub = str_replace('{{ model }}', $model->name(), $stub);
         $stub = str_replace('//', $this->buildDefinition($model), $stub);
 
-        if (!Blueprint::isLaravel8OrHigher()) {
-            $stub = str_replace(
-                [
-                "use Faker\Generator as Faker;\r\nuse",
-                "use Faker\Generator as Faker;\nuse"
-                ],
-                "use",
-                $stub
-            );
-        }
-
-        if (Blueprint::supportsReturnTypeHits()) {
+        if (Blueprint::useReturnTypeHints()) {
             $stub = str_replace('definition()', 'definition(): array', $stub);
         }
 
@@ -114,8 +95,8 @@ class FactoryGenerator implements Generator
         $fillable = $this->fillableColumns($model->columns());
 
         /**
- * @var \Blueprint\Models\Column $column
-*/
+         * @var \Blueprint\Models\Column $column
+         */
         foreach ($fillable as $column) {
             if ($column->name() === 'id') {
                 continue;
@@ -147,55 +128,30 @@ class FactoryGenerator implements Generator
                 $class = Str::studly(Str::singular($table));
                 $reference = $this->fullyQualifyModelReference($class) ?? $model;
 
-                if (Blueprint::isLaravel8OrHigher()) {
-                    $this->addImport($model, $reference->fullyQualifiedNamespace() . '\\' . $class);
-                }
+                $this->addImport($model, $reference->fullyQualifiedNamespace() . '\\' . $class);
+
                 if ($key === 'id') {
-                    if (Blueprint::isLaravel8OrHigher()) {
-                        $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
-                        $definition .= sprintf('%s::factory()', $class);
-                        $definition .= ',' . PHP_EOL;
-                    } else {
-                        $definition .= str_repeat(self::INDENT, 2) . "'{$column->name()}' => ";
-                        $definition .= sprintf('factory(%s::class)', '\\' . $reference->fullyQualifiedNamespace() . '\\' . $class);
-                        $definition .= ',' . PHP_EOL;
-                    }
+                    $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
+                    $definition .= sprintf('%s::factory()', $class);
+                    $definition .= ',' . PHP_EOL;
                 } else {
-                    if (Blueprint::isLaravel8OrHigher()) {
-                        $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
-                        $definition .= sprintf('%s::factory()->create()->%s', $class, $key);
-                        $definition .= ',' . PHP_EOL;
-                    } else {
-                        $definition .= str_repeat(self::INDENT, 2) . "'{$column->name()}' => function () {";
-                        $definition .= PHP_EOL;
-                        $definition .= str_repeat(self::INDENT, 3) . sprintf('return factory(%s::class)->create()->%s;', '\\' . $model->fullyQualifiedNamespace() . '\\' . $class, $key);
-                        $definition .= PHP_EOL;
-                        $definition .= str_repeat(self::INDENT, 2) . '},' . PHP_EOL;
-                    }
+                    $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
+                    $definition .= sprintf('%s::factory()->create()->%s', $class, $key);
+                    $definition .= ',' . PHP_EOL;
                 }
             } elseif ($column->dataType() === 'id' || ($column->dataType() === 'uuid' && Str::endsWith($column->name(), '_id'))) {
                 $name = Str::beforeLast($column->name(), '_id');
                 $class = Str::studly($column->attributes()[0] ?? $name);
                 $reference = $this->fullyQualifyModelReference($class) ?? $model;
 
-                if (Blueprint::isLaravel8OrHigher()) {
-                    $this->addImport($model, $reference->fullyQualifiedNamespace() . '\\' . $class);
-                    $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
-                    $definition .= sprintf('%s::factory()', $class);
-                } else {
-                    $definition .= str_repeat(self::INDENT, 2) . "'{$column->name()}' => ";
-                    $definition .= sprintf('factory(%s::class)', '\\' . $reference->fullyQualifiedNamespace() . '\\' . $class);
-                }
+                $this->addImport($model, $reference->fullyQualifiedNamespace() . '\\' . $class);
+                $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
+                $definition .= sprintf('%s::factory()', $class);
                 $definition .= ',' . PHP_EOL;
             } elseif (in_array($column->dataType(), ['enum', 'set']) && !empty($column->attributes())) {
                 $faker = FakerRegistry::fakerData($column->name()) ?? FakerRegistry::fakerDataType($column->dataType());
-                if (Blueprint::isLaravel8OrHigher()) {
-                    $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
-                    $definition .= '$this->faker->' . $faker;
-                } else {
-                    $definition .= str_repeat(self::INDENT, 2) . "'{$column->name()}' => ";
-                    $definition .= '$faker->' . $faker;
-                }
+                $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
+                $definition .= '$this->faker->' . $faker;
                 $definition .= ',' . PHP_EOL;
                 $definition = str_replace(
                     "/** {$column->dataType()}_attributes **/",
@@ -204,13 +160,8 @@ class FactoryGenerator implements Generator
                 );
             } elseif (in_array($column->dataType(), ['decimal', 'double', 'float'])) {
                 $faker = FakerRegistry::fakerData($column->name()) ?? FakerRegistry::fakerDataType($column->dataType());
-                if (Blueprint::isLaravel8OrHigher()) {
-                    $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
-                    $definition .= '$this->faker->' . $faker;
-                } else {
-                    $definition .= str_repeat(self::INDENT, 2) . "'{$column->name()}' => ";
-                    $definition .= '$faker->' . $faker;
-                }
+                $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
+                $definition .= '$this->faker->' . $faker;
                 $definition .= ',' . PHP_EOL;
 
                 $precision = min([65, intval($column->attributes()[0] ?? 10)]);
@@ -223,37 +174,20 @@ class FactoryGenerator implements Generator
                 );
             } elseif (in_array($column->dataType(), ['json', 'jsonb'])) {
                 $default = $column->defaultValue() ?? "{}";
-                if (Blueprint::isLaravel8OrHigher()) {
-                    $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => '{$default}'," . PHP_EOL;
-                } else {
-                    $definition .= str_repeat(self::INDENT, 2) . "'{$column->name()}' => '{$default}'," . PHP_EOL;
-                }
+                $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => '{$default}'," . PHP_EOL;
             } elseif ($column->dataType() === 'morphs') {
                 if ($column->isNullable()) {
                     continue;
                 }
-                if (Blueprint::isLaravel8OrHigher()) {
-                    $definition .= sprintf('%s%s => $this->faker->%s,%s', str_repeat(self::INDENT, 3), "'{$column->name()}_id'", FakerRegistry::fakerDataType('id'), PHP_EOL);
-                    $definition .= sprintf('%s%s => $this->faker->%s,%s', str_repeat(self::INDENT, 3), "'{$column->name()}_type'", FakerRegistry::fakerDataType('string'), PHP_EOL);
-                } else {
-                    $definition .= sprintf('%s%s => $faker->%s,%s', str_repeat(self::INDENT, 2), "'{$column->name()}_id'", FakerRegistry::fakerDataType('id'), PHP_EOL);
-                    $definition .= sprintf('%s%s => $faker->%s,%s', str_repeat(self::INDENT, 2), "'{$column->name()}_type'", FakerRegistry::fakerDataType('string'), PHP_EOL);
-                }
+                $definition .= sprintf('%s%s => $this->faker->%s,%s', str_repeat(self::INDENT, 3), "'{$column->name()}_id'", FakerRegistry::fakerDataType('id'), PHP_EOL);
+                $definition .= sprintf('%s%s => $this->faker->%s,%s', str_repeat(self::INDENT, 3), "'{$column->name()}_type'", FakerRegistry::fakerDataType('string'), PHP_EOL);
             } elseif ($column->dataType() === 'rememberToken') {
-                if (Blueprint::isLaravel8OrHigher()) {
-                    $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
-                } else {
-                    $this->addImport($model, 'Illuminate\Support\Str');
-                    $definition .= str_repeat(self::INDENT, 2) . "'{$column->name()}' => ";
-                }
+                $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
                 $definition .= 'Str::random(10)';
                 $definition .= ',' . PHP_EOL;
             } else {
-                if (Blueprint::isLaravel8OrHigher()) {
-                    $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
-                } else {
-                    $definition .= str_repeat(self::INDENT, 2) . "'{$column->name()}' => ";
-                }
+                $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
+
                 $type = $column->dataType();
                 if ($column->isUnsigned()) {
                     $type = 'unsigned' . $type;
@@ -269,11 +203,7 @@ class FactoryGenerator implements Generator
                     $faker = sprintf("regexify('[A-Za-z0-9]{%s}')", current($column->attributes()));
                 }
 
-                if (Blueprint::isLaravel8OrHigher()) {
-                    $definition .= '$this->faker->' . $faker;
-                } else {
-                    $definition .= '$faker->' . $faker;
-                }
+                $definition .= '$this->faker->' . $faker;
                 $definition .= ',' . PHP_EOL;
             }
         }

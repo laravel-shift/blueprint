@@ -182,7 +182,7 @@ class ControllerGenerator implements Generator
                 $method = str_replace('{{ body }}', trim($body), $method);
             }
 
-            if (Blueprint::supportsReturnTypeHits()) {
+            if (Blueprint::useReturnTypeHints()) {
                 if (isset($fqcn) && $name !== 'destroy' && $controller->isApiResource()) {
                     $method = str_replace(')' . PHP_EOL, '): \\' . $fqcn . PHP_EOL, $method);
                 } else {
