@@ -75,5 +75,10 @@ From these simple 20 lines of YAML, Blueprint will generate all of the following
 _**Note:** This example assumes features within a default Laravel application such as the `User` model and `app.blade.php
  layout. Otherwise, the generated test may have failures._
 
+## Support Policy
+Starting with version 2, Blueprint only supports the latest stable version of Laravel. If you need to support older versions of Laravel, you may use version 1.
+
+Blueprint still follows semantic versioning. However, it does so from the perspective of its grammar...
+
 ## Documentation
 Browse the [Blueprint Docs](https://blueprint.laravelshift.com/) for full details on [defining models](https://blueprint.laravelshift.com/docs/defining-models/), [defining controllers](https://blueprint.laravelshift.com/docs/defining-controllers/), [advanced configuration](https://blueprint.laravelshift.com/docs/advanced-configuration/), and [extending Blueprint](https://blueprint.laravelshift.com/docs/extending-blueprint/).
