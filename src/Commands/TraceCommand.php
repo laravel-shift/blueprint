@@ -15,7 +15,9 @@ class TraceCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'blueprint:trace';
+    protected $signature = 'blueprint:trace
+                            {--path=* : List of paths to search in }
+                            ';
 
     /**
      * The console command description.
@@ -50,7 +52,8 @@ class TraceCommand extends Command
     public function handle()
     {
         $blueprint = resolve(Blueprint::class);
-        $definitions = $this->tracer->execute($blueprint, $this->filesystem);
+        $path = $this->option('path');
+        $definitions = $this->tracer->execute($blueprint, $this->filesystem, $path);
 
         if (empty($definitions)) {
             $this->error('No models found');

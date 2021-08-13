@@ -139,6 +139,42 @@ class ResourceGeneratorTest extends TestCase
     /**
      * @test
      */
+    public function output_writes_nested_resource()
+    {
+        $this->filesystem->expects('stub')
+            ->with('resource.stub')
+            ->andReturn(file_get_contents('stubs/resource.stub'));
+
+        $this->filesystem->shouldReceive('exists')
+            ->with('app/Http/Resources/Api')
+            ->andReturns(false, true);
+        $this->filesystem->expects('makeDirectory')
+            ->with('app/Http/Resources/Api', 0755, true);
+
+        $this->filesystem->expects('exists')
+            ->times(3)
+            ->with('app/Http/Resources/Api/CertificateResource.php')
+            ->andReturns(false, true, true);
+        $this->filesystem->expects('put')
+            ->with('app/Http/Resources/Api/CertificateResource.php', $this->fixture('resources/certificate-with-nested-resource.php'));
+
+        $this->filesystem->expects('exists')
+            ->with('app/Http/Resources/Api/CertificateCollection.php')
+            ->andReturns(false);
+        $this->filesystem->expects('put')
+            ->with('app/Http/Resources/Api/CertificateCollection.php', $this->fixture('resources/certificate-collection.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/resource-nested.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals([
+            'created' => ['app/Http/Resources/Api/CertificateCollection.php', 'app/Http/Resources/Api/CertificateResource.php'],
+        ], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
     public function output_api_resource_pagination()
     {
         $this->files->expects('stub')
