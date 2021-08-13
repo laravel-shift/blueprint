@@ -128,7 +128,7 @@ class ResourceGenerator implements Generator
 
             $relation_model = $this->tree->modelForContext($method_name);
 
-            if($relation_model === null) {
+            if ($relation_model === null) {
                 continue;
             }
 
