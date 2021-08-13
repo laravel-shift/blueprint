@@ -20,7 +20,7 @@ class CertificateTypeControllerTest extends TestCase
      */
     public function index_behaves_as_expected()
     {
-        $certificateTypes = factory(CertificateType::class, 3)->create();
+        $certificateTypes = CertificateType::factory()->count(3)->create();
 
         $response = $this->get(route('certificate-type.index'));
 
@@ -68,7 +68,7 @@ class CertificateTypeControllerTest extends TestCase
      */
     public function show_behaves_as_expected()
     {
-        $certificateType = factory(CertificateType::class)->create();
+        $certificateType = CertificateType::factory()->create();
 
         $response = $this->get(route('certificate-type.show', $certificateType));
 
@@ -94,7 +94,7 @@ class CertificateTypeControllerTest extends TestCase
      */
     public function update_behaves_as_expected()
     {
-        $certificateType = factory(CertificateType::class)->create();
+        $certificateType = CertificateType::factory()->create();
         $name = $this->faker->name;
 
         $response = $this->put(route('certificate-type.update', $certificateType), [
@@ -115,7 +115,7 @@ class CertificateTypeControllerTest extends TestCase
      */
     public function destroy_deletes_and_responds_with()
     {
-        $certificateType = factory(CertificateType::class)->create();
+        $certificateType = CertificateType::factory()->create();
 
         $response = $this->delete(route('certificate-type.destroy', $certificateType));
 

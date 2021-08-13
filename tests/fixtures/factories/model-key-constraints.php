@@ -1,16 +1,35 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 use App\Order;
-use Faker\Generator as Faker;
+use App\Subscription;
+use App\User;
 
-$factory->define(Order::class, function (Faker $faker) {
-    return [
-        'user_id' => factory(\App\User::class),
-        'external_id' => $faker->word,
-        'sub_id' => factory(\App\Subscription::class),
-        'expires_at' => $faker->dateTime(),
-        'meta' => '[]',
-    ];
-});
+class OrderFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Order::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'user_id' => User::factory(),
+            'external_id' => $this->faker->word,
+            'sub_id' => Subscription::factory(),
+            'expires_at' => $this->faker->dateTime(),
+            'meta' => '[]',
+        ];
+    }
+}

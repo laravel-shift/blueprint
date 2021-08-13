@@ -20,7 +20,7 @@ class PostControllerTest extends TestCase
      */
     public function index_displays_view()
     {
-        $posts = factory(Post::class, 3)->create();
+        $posts = Post::factory()->count(3)->create();
 
         $response = $this->get(route('post.index'));
 
@@ -84,7 +84,7 @@ class PostControllerTest extends TestCase
      */
     public function show_displays_view()
     {
-        $post = factory(Post::class)->create();
+        $post = Post::factory()->create();
 
         $response = $this->get(route('post.show', $post));
 
@@ -99,7 +99,7 @@ class PostControllerTest extends TestCase
      */
     public function edit_displays_view()
     {
-        $post = factory(Post::class)->create();
+        $post = Post::factory()->create();
 
         $response = $this->get(route('post.edit', $post));
 
@@ -126,7 +126,7 @@ class PostControllerTest extends TestCase
      */
     public function update_saves_and_redirects()
     {
-        $post = factory(Post::class)->create();
+        $post = Post::factory()->create();
         $title = $this->faker->sentence(4);
         $content = $this->faker->paragraphs(3, true);
 
@@ -151,7 +151,7 @@ class PostControllerTest extends TestCase
      */
     public function destroy_deletes()
     {
-        $post = factory(Post::class)->create();
+        $post = Post::factory()->create();
 
         $response = $this->delete(route('post.destroy', $post));
 

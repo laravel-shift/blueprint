@@ -45,7 +45,7 @@ class ModelGeneratorTest extends TestCase
 
     /**
      * @test
-     * @dataProvider laravel8ModelTreeDataProvider
+     * @dataProvider modelTreeDataProvider
      */
     public function output_generates_models($definition, $path, $model)
     {
@@ -118,13 +118,13 @@ class ModelGeneratorTest extends TestCase
             ->with(dirname($certificateModel))
             ->andReturnTrue();
         $this->filesystem->expects('put')
-            ->with($certificateModel, $this->fixture('models/certificate-pascal-case-example-laravel8.php'));
+            ->with($certificateModel, $this->fixture('models/certificate-pascal-case-example.php'));
 
         $this->filesystem->expects('exists')
             ->with(dirname($certificateTypeModel))
             ->andReturnTrue();
         $this->filesystem->expects('put')
-            ->with($certificateTypeModel, $this->fixture('models/certificate-type-pascal-case-example-laravel8.php'));
+            ->with($certificateTypeModel, $this->fixture('models/certificate-type-pascal-case-example.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/pascal-case.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -154,7 +154,7 @@ class ModelGeneratorTest extends TestCase
             ->with('app')
             ->andReturnTrue();
         $this->filesystem->expects('put')
-            ->with('app/Subscription.php', $this->fixture('models/model-relationships-laravel8.php'));
+            ->with('app/Subscription.php', $this->fixture('models/model-relationships.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/model-relationships.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -185,7 +185,7 @@ class ModelGeneratorTest extends TestCase
             ->andReturnTrue();
 
         $this->files->expects('put')
-            ->with('app/Recurrency.php', $this->fixture('models/model-relationships-with-full-namespace-laravel8.php'));
+            ->with('app/Recurrency.php', $this->fixture('models/model-relationships-with-full-namespace.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/model-relationships-with-full-model-namespaces.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -216,7 +216,7 @@ class ModelGeneratorTest extends TestCase
             ->andReturnTrue();
 
         $this->files->expects('put')
-            ->with('app/Flag.php', $this->fixture('models/model-relationships-morphone-morphmany-with-fqn-laravel8.php'));
+            ->with('app/Flag.php', $this->fixture('models/model-relationships-morphone-morphmany-with-fqn.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/model-relationships-morphone-morphmany-with-fqn.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -249,19 +249,19 @@ class ModelGeneratorTest extends TestCase
             ->with('app')
             ->andReturnTrue();
         $this->filesystem->expects('put')
-            ->with('app/Post.php', $this->fixture('models/post-polymorphic-relationship-laravel8.php'));
+            ->with('app/Post.php', $this->fixture('models/post-polymorphic-relationship.php'));
 
         $this->filesystem->expects('exists')
             ->with('app')
             ->andReturnTrue();
         $this->filesystem->expects('put')
-            ->with('app/User.php', $this->fixture('models/user-polymorphic-relationship-laravel8.php'));
+            ->with('app/User.php', $this->fixture('models/user-polymorphic-relationship.php'));
 
         $this->filesystem->expects('exists')
             ->with('app')
             ->andReturnTrue();
         $this->filesystem->expects('put')
-            ->with('app/Image.php', $this->fixture('models/image-polymorphic-relationship-laravel8.php'));
+            ->with('app/Image.php', $this->fixture('models/image-polymorphic-relationship.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/polymorphic-relationships.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -294,7 +294,7 @@ class ModelGeneratorTest extends TestCase
             ->with('app')
             ->andReturnTrue();
         $this->filesystem->expects('put')
-            ->with('app/State.php', $this->fixture('models/disable-auto-columns-laravel8.php'));
+            ->with('app/State.php', $this->fixture('models/disable-auto-columns.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/disable-auto-columns.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -333,7 +333,7 @@ class ModelGeneratorTest extends TestCase
         $this->filesystem->expects('makeDirectory')
             ->with('src/path/Models', 0755, true);
         $this->filesystem->expects('put')
-            ->with('src/path/Models/Comment.php', $this->fixture('models/model-configured-laravel8.php'));
+            ->with('src/path/Models/Comment.php', $this->fixture('models/model-configured.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/relationships.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -343,7 +343,7 @@ class ModelGeneratorTest extends TestCase
 
     /**
      * @test
-     * @dataProvider laravel8DocBlockModelsDataProvider
+     * @dataProvider docBlockModelsDataProvider
      */
     public function output_generates_phpdoc_for_model($definition, $path, $model)
     {
@@ -416,7 +416,7 @@ class ModelGeneratorTest extends TestCase
             ->andReturnTrue();
 
         $this->filesystem->expects('put')
-            ->with('app/Comment.php', $this->fixture('models/model-guarded-laravel8.php'));
+            ->with('app/Comment.php', $this->fixture('models/model-guarded.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/model-guarded.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -457,7 +457,7 @@ class ModelGeneratorTest extends TestCase
         $this->filesystem->expects('put')
             ->with('app/Models/Screening/Report.php', \Mockery::type('string'));
         $this->filesystem->expects('put')
-            ->with('app/Models/Screening/ScreeningQuestion.php', $this->fixture('models/nested-models-laravel8.php'));
+            ->with('app/Models/Screening/ScreeningQuestion.php', $this->fixture('models/nested-models.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/nested-models.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -479,7 +479,7 @@ class ModelGeneratorTest extends TestCase
     {
         $definition = 'drafts/custom-models-namespace.yaml';
         $path = 'app/Models/Tag.php';
-        $model = 'models/custom-models-namespace-laravel8.php';
+        $model = 'models/custom-models-namespace.php';
 
         $this->app['config']->set('blueprint.models_namespace', 'Models');
 
@@ -533,7 +533,7 @@ class ModelGeneratorTest extends TestCase
             ->with('app')
             ->andReturnTrue();
         $this->filesystem->expects('put')
-            ->with('app/User.php', $this->fixture('models/custom-pivot-table-name-laravel8.php'));
+            ->with('app/User.php', $this->fixture('models/custom-pivot-table-name.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/custom-pivot-table-name.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -553,6 +553,7 @@ class ModelGeneratorTest extends TestCase
             ['drafts/resource-statements.yaml', 'app/User.php', 'models/resource-statements.php'],
             ['drafts/all-column-types.yaml', 'app/AllType.php', 'models/all-column-types.php'],
             ['drafts/alias-relationships.yaml', 'app/Salesman.php', 'models/alias-relationships.php'],
+            ['drafts/return-type-declarations.yaml', 'app/Term.php', 'models/return-type-declarations.php'],
             ['drafts/uuid-shorthand-invalid-relationship.yaml', 'app/AgeCohort.php', 'models/uuid-shorthand-invalid-relationship.php'],
         ];
     }
@@ -565,35 +566,6 @@ class ModelGeneratorTest extends TestCase
             ['drafts/relationships.yaml', 'app/Comment.php', 'models/relationships-phpdoc.php'],
             ['drafts/disable-auto-columns.yaml', 'app/State.php', 'models/disable-auto-columns-phpdoc.php'],
             ['drafts/foreign-key-shorthand.yaml', 'app/Comment.php', 'models/foreign-key-shorthand-phpdoc.php'],
-            ['drafts/optimize.yaml', 'app/Optimize.php', 'models/optimize.php'],
-        ];
-    }
-
-    public function laravel8ModelTreeDataProvider()
-    {
-        return [
-            ['drafts/readme-example.yaml', 'app/Post.php', 'models/readme-example-laravel8.php'],
-            ['drafts/with-timezones.yaml', 'app/Comment.php', 'models/comment-laravel8.php'],
-            ['drafts/soft-deletes.yaml', 'app/Comment.php', 'models/soft-deletes-laravel8.php'],
-            ['drafts/relationships.yaml', 'app/Comment.php', 'models/relationships-laravel8.php'],
-            ['drafts/unconventional.yaml', 'app/Team.php', 'models/unconventional-laravel8.php'],
-            ['drafts/nested-components.yaml', 'app/Admin/User.php', 'models/nested-components-laravel8.php'],
-            ['drafts/resource-statements.yaml', 'app/User.php', 'models/resource-statements-laravel8.php'],
-            ['drafts/all-column-types.yaml', 'app/AllType.php', 'models/all-column-types-laravel8.php'],
-            ['drafts/alias-relationships.yaml', 'app/Salesman.php', 'models/alias-relationships-laravel8.php'],
-            ['drafts/return-type-declarations.yaml', 'app/Term.php', 'models/return-type-declarations.php'],
-            ['drafts/uuid-shorthand-invalid-relationship.yaml', 'app/AgeCohort.php', 'models/uuid-shorthand-invalid-relationship-laravel8.php'],
-        ];
-    }
-
-    public function laravel8DocBlockModelsDataProvider()
-    {
-        return [
-            ['drafts/readme-example.yaml', 'app/Post.php', 'models/readme-example-phpdoc-laravel8.php'],
-            ['drafts/soft-deletes.yaml', 'app/Comment.php', 'models/soft-deletes-phpdoc-laravel8.php'],
-            ['drafts/relationships.yaml', 'app/Comment.php', 'models/relationships-phpdoc-laravel8.php'],
-            ['drafts/disable-auto-columns.yaml', 'app/State.php', 'models/disable-auto-columns-phpdoc-laravel8.php'],
-            ['drafts/foreign-key-shorthand.yaml', 'app/Comment.php', 'models/foreign-key-shorthand-phpdoc-laravel8.php'],
         ];
     }
 }

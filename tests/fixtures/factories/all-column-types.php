@@ -1,60 +1,76 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
-use App\AllType;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use App\AllType;
 
-$factory->define(AllType::class, function (Faker $faker) {
-    return [
-        'bigInteger' => $faker->numberBetween(-100000, 100000),
-        'binary' => $faker->sha256,
-        'boolean' => $faker->boolean,
-        'char' => $faker->randomLetter,
-        'date' => $faker->date(),
-        'dateTime' => $faker->dateTime(),
-        'dateTimeTz' => $faker->dateTime(),
-        'decimal' => $faker->randomFloat(0, 0, 9999999999.),
-        'double' => $faker->randomFloat(0, 0, 9999999999.),
-        'enum' => $faker->randomElement(["1","2","3"]),
-        'float' => $faker->randomFloat(0, 0, 9999999999.),
-        'geometry' => $faker->word,
-        'geometryCollection' => $faker->word,
-        'integer' => $faker->numberBetween(-10000, 10000),
-        'ipAddress' => $faker->ipv4,
-        'json' => '{}',
-        'jsonb' => '{}',
-        'lineString' => $faker->word,
-        'longText' => $faker->text,
-        'macAddress' => $faker->macAddress,
-        'mediumInteger' => $faker->numberBetween(-10000, 10000),
-        'mediumText' => $faker->text,
-        'morphs_id' => $faker->randomDigitNotNull,
-        'morphs_type' => $faker->word,
-        'uuidMorphs' => $faker->word,
-        'multiLineString' => $faker->word,
-        'multiPoint' => $faker->word,
-        'multiPolygon' => $faker->word,
-        'point' => $faker->word,
-        'polygon' => $faker->word,
-        'rememberToken' => Str::random(10),
-        'set' => $faker->randomElement(["1","2","3"]),
-        'smallInteger' => $faker->numberBetween(-1000, 1000),
-        'string' => $faker->word,
-        'text' => $faker->text,
-        'time' => $faker->time(),
-        'timeTz' => $faker->time(),
-        'timestamp' => $faker->dateTime(),
-        'timestampTz' => $faker->dateTime(),
-        'tinyInteger' => $faker->numberBetween(-8, 8),
-        'unsignedBigInteger' => $faker->randomNumber(),
-        'unsignedDecimal' => $faker->randomNumber(),
-        'unsignedInteger' => $faker->randomNumber(),
-        'unsignedMediumInteger' => $faker->randomNumber(),
-        'unsignedSmallInteger' => $faker->randomNumber(),
-        'unsignedTinyInteger' => $faker->randomDigitNotNull,
-        'uuid' => $faker->uuid,
-        'year' => $faker->year(),
-    ];
-});
+class AllTypeFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = AllType::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'bigInteger' => $this->faker->numberBetween(-100000, 100000),
+            'binary' => $this->faker->sha256,
+            'boolean' => $this->faker->boolean,
+            'char' => $this->faker->randomLetter,
+            'date' => $this->faker->date(),
+            'dateTime' => $this->faker->dateTime(),
+            'dateTimeTz' => $this->faker->dateTime(),
+            'decimal' => $this->faker->randomFloat(0, 0, 9999999999.),
+            'double' => $this->faker->randomFloat(0, 0, 9999999999.),
+            'enum' => $this->faker->randomElement(["1","2","3"]),
+            'float' => $this->faker->randomFloat(0, 0, 9999999999.),
+            'geometry' => $this->faker->word,
+            'geometryCollection' => $this->faker->word,
+            'integer' => $this->faker->numberBetween(-10000, 10000),
+            'ipAddress' => $this->faker->ipv4,
+            'json' => '{}',
+            'jsonb' => '{}',
+            'lineString' => $this->faker->word,
+            'longText' => $this->faker->text,
+            'macAddress' => $this->faker->macAddress,
+            'mediumInteger' => $this->faker->numberBetween(-10000, 10000),
+            'mediumText' => $this->faker->text,
+            'morphs_id' => $this->faker->randomDigitNotNull,
+            'morphs_type' => $this->faker->word,
+            'uuidMorphs' => $this->faker->word,
+            'multiLineString' => $this->faker->word,
+            'multiPoint' => $this->faker->word,
+            'multiPolygon' => $this->faker->word,
+            'point' => $this->faker->word,
+            'polygon' => $this->faker->word,
+            'rememberToken' => Str::random(10),
+            'set' => $this->faker->randomElement(["1","2","3"]),
+            'smallInteger' => $this->faker->numberBetween(-1000, 1000),
+            'string' => $this->faker->word,
+            'text' => $this->faker->text,
+            'time' => $this->faker->time(),
+            'timeTz' => $this->faker->time(),
+            'timestamp' => $this->faker->dateTime(),
+            'timestampTz' => $this->faker->dateTime(),
+            'tinyInteger' => $this->faker->numberBetween(-8, 8),
+            'unsignedBigInteger' => $this->faker->randomNumber(),
+            'unsignedDecimal' => $this->faker->randomNumber(),
+            'unsignedInteger' => $this->faker->randomNumber(),
+            'unsignedMediumInteger' => $this->faker->randomNumber(),
+            'unsignedSmallInteger' => $this->faker->randomNumber(),
+            'unsignedTinyInteger' => $this->faker->randomDigitNotNull,
+            'uuid' => $this->faker->uuid,
+            'year' => $this->faker->year(),
+        ];
+    }
+}
