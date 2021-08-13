@@ -45,7 +45,7 @@ class ResourceGenerator implements Generator
         foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
-                    if (! $statement instanceof ResourceStatement) {
+                    if (!$statement instanceof ResourceStatement) {
                         continue;
                     }
 
@@ -55,7 +55,7 @@ class ResourceGenerator implements Generator
                         continue;
                     }
 
-                    if (! $this->filesystem->exists(dirname($path))) {
+                    if (!$this->filesystem->exists(dirname($path))) {
                         $this->filesystem->makeDirectory(dirname($path), 0755, true);
                     }
 
@@ -91,7 +91,7 @@ class ResourceGenerator implements Generator
         $stub = str_replace('{{ class }}', $resource->name(), $stub);
         $stub = str_replace('{{ parentClass }}', $resource->collection() ? 'ResourceCollection' : 'JsonResource', $stub);
         $stub = str_replace('{{ resource }}', $resource->collection() ? 'resource collection' : 'resource', $stub);
-        $stub = str_replace('{{ body }}', $this->buildData($resource, $namespace), $stub);
+        $stub = str_replace('{{ body }}', $this->buildData($resource), $stub);
 
         if (Blueprint::supportsReturnTypeHits()) {
             $stub = str_replace('toArray($request)', 'toArray($request): array', $stub);
@@ -99,7 +99,7 @@ class ResourceGenerator implements Generator
         return $stub;
     }
 
-    protected function buildData(ResourceStatement $resource, string  $namespace)
+    protected function buildData(ResourceStatement $resource)
     {
         $context = Str::singular($resource->reference());
 
@@ -123,7 +123,6 @@ class ResourceGenerator implements Generator
         }
 
         foreach ($model->relationships() as $type => $relationship) {
-
             $method_name = lcfirst(Str::afterLast(Arr::last($relationship), '\\'));
 
             $relation_model = $this->tree->modelForContext($method_name);
@@ -139,7 +138,7 @@ class ResourceGenerator implements Generator
                 $relation_resource_name = $relation_model->name() . 'Resource';
             }
 
-            $data[] = self::INDENT . '\'' . $method_name . '\' => ' . $relation_resource_name . '::make($this->whenLoaded(\'' .$method_name.'\')),';
+            $data[] = self::INDENT . '\'' . $method_name . '\' => ' . $relation_resource_name . '::make($this->whenLoaded(\'' . $method_name . '\')),';
         }
 
         $data[] = '        ];';
