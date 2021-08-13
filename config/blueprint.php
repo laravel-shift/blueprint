@@ -27,7 +27,7 @@ return [
     | your own custom namespace when generating these components.
     |
     */
-    'models_namespace' => '',
+    'models_namespace' => 'Models',
     'controllers_namespace' => 'Http\\Controllers',
 
 
