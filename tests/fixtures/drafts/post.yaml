@@ -4,5 +4,6 @@ models:
     author_id: id
     author_bio: longtext
     content: bigtext nullable
-    published_at: timestamp nullable
+    published_at: timestamp nullable useCurrent
+    updated_at: timestamp nullable useCurrent useCurrentOnUpdate
     word_count: integer unsigned
