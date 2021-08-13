@@ -20,13 +20,11 @@ jobs:
 
         laravel-version: [8]
 
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
         dependencies: [locked]
 
         experimental: [false]
-
-        include:
 
     name: PHP ${{ matrix.php-version }} - L${{ matrix.laravel-version }} - ${{ matrix.os }}
 
