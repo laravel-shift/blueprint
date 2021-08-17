@@ -1,4 +1,4 @@
 
 
-Route::get('post/error', 'Api\PostController@error');
-Route::resource('post', 'Api\PostController')->only('index', 'store');
+Route::get('post/error', [App\Http\Controllers\Api\PostController::class, 'error']);
+Route::resource('post', App\Http\Controllers\Api\PostController::class)->only('index', 'store');

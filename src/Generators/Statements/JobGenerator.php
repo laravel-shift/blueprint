@@ -63,7 +63,7 @@ class JobGenerator extends StatementGenerator
         $stub = str_replace('{{ class }}', $dispatchStatement->job(), $stub);
         $stub = str_replace('{{ properties }}', $this->buildConstructor($dispatchStatement), $stub);
 
-        if (Blueprint::supportsReturnTypeHits()) {
+        if (Blueprint::useReturnTypeHints()) {
             $stub = str_replace('public function handle()', 'public function handle(): void', $stub);
         }
 

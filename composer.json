@@ -9,16 +9,16 @@
     "license": "MIT",
     "require": {
         "doctrine/dbal": "^2.9 || ^3.0",
-        "illuminate/console": "^6.0 || ^7.0 || ^8.0",
-        "illuminate/filesystem": "^6.0 || ^7.0 || ^8.0",
-        "illuminate/support": "^6.0 || ^7.0 || ^8.0",
+        "illuminate/console": "^8.0",
+        "illuminate/filesystem": "^8.0",
+        "illuminate/support": "^8.0",
         "laravel-shift/faker-registry": "^0.1",
-        "symfony/yaml": "^4.3 || ^5.0"
+        "symfony/yaml": "^5.1.4"
     },
     "require-dev": {
         "mockery/mockery": "^1.3",
-        "orchestra/testbench": "^4.0 || ^5.0 || ^6.0",
-        "phpunit/phpunit": "^8.0 || ^9.3"
+        "orchestra/testbench": "^6.0",
+        "phpunit/phpunit": "^9.3"
     },
     "suggest": {
         "jasonmccreary/laravel-test-assertions": "Required to use additional assertions in generated tests (^1.0)."

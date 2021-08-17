@@ -50,7 +50,6 @@ class SeederGeneratorTest extends TestCase
 
     /**
      * @test
-     * @environment-setup useLaravel8
      */
     public function output_generates_seeders()
     {
@@ -59,9 +58,9 @@ class SeederGeneratorTest extends TestCase
             ->andReturn($this->stub($this->seederStub));
 
         $this->filesystem->expects('put')
-            ->with('database/seeders/PostSeeder.php', $this->fixture('seeders/PostSeeder-laravel8.php'));
+            ->with('database/seeders/PostSeeder.php', $this->fixture('seeders/PostSeeder.php'));
         $this->filesystem->expects('put')
-            ->with('database/seeders/CommentSeeder.php', $this->fixture('seeders/CommentSeeder-laravel8.php'));
+            ->with('database/seeders/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -70,7 +69,6 @@ class SeederGeneratorTest extends TestCase
     }
     /**
      * @test
-     * @environment-setup useLaravel8
      */
     public function output_using_return_types()
     {
@@ -93,49 +91,6 @@ class SeederGeneratorTest extends TestCase
 
     /**
      * @test
-     * @environment-setup useLaravel7
-     */
-    public function output_generates_seeders_l7()
-    {
-        $this->filesystem->expects('stub')
-            ->with($this->seederStub)
-            ->andReturn($this->stub($this->seederStub));
-
-        $this->filesystem->expects('put')
-            ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/PostSeeder.php'));
-        $this->filesystem->expects('put')
-            ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
-
-        $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
-
-        $this->assertEquals(['created' => ['database/seeds/PostSeeder.php', 'database/seeds/CommentSeeder.php']], $this->subject->output($tree));
-    }
-
-    /**
-     * @test
-     * @environment-setup useLaravel6
-     */
-    public function output_generates_seeders_l6()
-    {
-        $this->filesystem->expects('stub')
-            ->with($this->seederStub)
-            ->andReturn($this->stub($this->seederStub));
-
-        $this->filesystem->expects('put')
-            ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/PostSeeder.php'));
-        $this->filesystem->expects('put')
-            ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
-
-        $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
-
-        $this->assertEquals(['created' => ['database/seeds/PostSeeder.php', 'database/seeds/CommentSeeder.php']], $this->subject->output($tree));
-    }
-
-    /**
-     * @test
-     * @environment-setup useLaravel8
      */
     public function output_generates_seeders_from_traced_models()
     {
@@ -144,9 +99,9 @@ class SeederGeneratorTest extends TestCase
             ->andReturn($this->stub($this->seederStub));
 
         $this->filesystem->expects('put')
-            ->with('database/seeders/PostSeeder.php', $this->fixture('seeders/PostSeeder-laravel8.php'));
+            ->with('database/seeders/PostSeeder.php', $this->fixture('seeders/PostSeeder.php'));
         $this->filesystem->expects('put')
-            ->with('database/seeders/CommentSeeder.php', $this->fixture('seeders/CommentSeeder-laravel8.php'));
+            ->with('database/seeders/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
         $tree = $this->blueprint->analyze($tokens)->toArray();
@@ -155,53 +110,5 @@ class SeederGeneratorTest extends TestCase
         $tree = new Tree($tree);
 
         $this->assertEquals(['created' => ['database/seeders/PostSeeder.php', 'database/seeders/CommentSeeder.php']], $this->subject->output($tree));
-    }
-
-    /**
-     * @test
-     * @environment-setup useLaravel7
-     */
-    public function output_generates_seeders_from_traced_models_l7()
-    {
-        $this->filesystem->expects('stub')
-            ->with($this->seederStub)
-            ->andReturn($this->stub($this->seederStub));
-
-        $this->filesystem->expects('put')
-            ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/PostSeeder.php'));
-        $this->filesystem->expects('put')
-            ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
-
-        $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
-        $tree = $this->blueprint->analyze($tokens)->toArray();
-        $tree['cache'] = $tree['models'];
-        unset($tree['models']);
-        $tree = new Tree($tree);
-
-        $this->assertEquals(['created' => ['database/seeds/PostSeeder.php', 'database/seeds/CommentSeeder.php']], $this->subject->output($tree));
-    }
-
-    /**
-     * @test
-     * @environment-setup useLaravel6
-     */
-    public function output_generates_seeders_from_traced_models_l6()
-    {
-        $this->filesystem->expects('stub')
-            ->with($this->seederStub)
-            ->andReturn($this->stub($this->seederStub));
-
-        $this->filesystem->expects('put')
-            ->with('database/seeds/PostSeeder.php', $this->fixture('seeders/PostSeeder.php'));
-        $this->filesystem->expects('put')
-            ->with('database/seeds/CommentSeeder.php', $this->fixture('seeders/CommentSeeder.php'));
-
-        $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
-        $tree = $this->blueprint->analyze($tokens)->toArray();
-        $tree['cache'] = $tree['models'];
-        unset($tree['models']);
-        $tree = new Tree($tree);
-
-        $this->assertEquals(['created' => ['database/seeds/PostSeeder.php', 'database/seeds/CommentSeeder.php']], $this->subject->output($tree));
     }
 }

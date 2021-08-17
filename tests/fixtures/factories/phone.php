@@ -1,19 +1,37 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 use App\Phone;
-use Faker\Generator as Faker;
+use App\User;
 
-$factory->define(Phone::class, function (Faker $faker) {
-    return [
-        'label' => $faker->word,
-        'user_id' => factory(\App\User::class),
-        'phone_number' => $faker->phoneNumber,
-        'type' => $faker->randomElement(["home","cell"]),
-        'status' => $faker->randomElement(["archived","deleted"]),
-        'foo_id' => $faker->randomDigitNotNull,
-        'foo_type' => $faker->word,
-        'tag' => $faker->regexify('[A-Za-z0-9]{3}'),
-    ];
-});
+class PhoneFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Phone::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'label' => $this->faker->word,
+            'user_id' => User::factory(),
+            'phone_number' => $this->faker->phoneNumber,
+            'type' => $this->faker->randomElement(["home","cell"]),
+            'status' => $this->faker->randomElement(["archived","deleted"]),
+            'foo_id' => $this->faker->randomDigitNotNull,
+            'foo_type' => $this->faker->word,
+            'tag' => $this->faker->regexify('[A-Za-z0-9]{3}'),
+        ];
+    }
+}

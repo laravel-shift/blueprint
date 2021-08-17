@@ -34,7 +34,6 @@ class Controller
 
     /**
      * Controller constructor.
-     * @param $name
      */
     public function __construct(string $name)
     {

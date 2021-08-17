@@ -19,7 +19,6 @@ use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
 use Blueprint\Tree;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Shift\Faker\Registry as FakerRegistry;
 
@@ -58,7 +57,7 @@ class TestGenerator implements Generator
         foreach ($tree->controllers() as $controller) {
             $path = $this->getPath($controller);
 
-            if (! $this->filesystem->exists(dirname($path))) {
+            if (!$this->filesystem->exists(dirname($path))) {
                 $this->filesystem->makeDirectory(dirname($path), 0755, true);
             }
 
@@ -122,11 +121,7 @@ class TestGenerator implements Generator
                 : config('blueprint.namespace');
 
             if (in_array($name, ['edit', 'update', 'show', 'destroy'])) {
-                if (Blueprint::isLaravel8OrHigher()) {
-                    $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
-                } else {
-                    $setup['data'][] = sprintf('$%s = factory(%s::class)->create();', $variable, $model);
-                }
+                $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
             }
 
             foreach ($statements as $statement) {
@@ -235,7 +230,7 @@ class TestGenerator implements Generator
                             /** @var \Blueprint\Models\Model $local_model */
                             $local_model = $this->tree->modelForContext($qualifier);
 
-                            if (! is_null($local_model) && $local_model->hasColumn($column)) {
+                            if (!is_null($local_model) && $local_model->hasColumn($column)) {
                                 $local_column = $local_model->column($column);
 
                                 $factory = $this->generateReferenceFactory($local_column, $controller, $modelNamespace);
@@ -248,7 +243,7 @@ class TestGenerator implements Generator
 
                                 $setup['data'][] = $faker;
                                 $request_data[$data] = '$' . $variable_name;
-                            } elseif (! is_null($local_model)) {
+                            } elseif (!is_null($local_model)) {
                                 foreach ($local_model->columns() as $local_column) {
                                     if ($local_column->name() === 'id') {
                                         continue;
@@ -435,21 +430,14 @@ class TestGenerator implements Generator
                             $assertions['generic'][] = '$this->assertDatabaseHas(' . Str::camel(Str::plural($model)) . ', [ /* ... */ ]);';
                         }
                     } elseif ($statement->operation() === 'find') {
-                        if (Blueprint::isLaravel8OrHigher()) {
-                            $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
-                        } else {
-                            $setup['data'][] = sprintf('$%s = factory(%s::class)->create();', $variable, $model);
-                        }
+                        $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
                     } elseif ($statement->operation() === 'delete') {
                         $tested_bits |= self::TESTS_DELETE;
-                        if (Blueprint::isLaravel8OrHigher()) {
-                            $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
-                        } else {
-                            $setup['data'][] = sprintf('$%s = factory(%s::class)->create();', $variable, $model);
-                        }
+                        $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
+
                         /** @var \Blueprint\Models\Model $local_model */
                         $local_model = $this->tree->modelForContext($model);
-                        if (! is_null($local_model) && $local_model->usesSoftDeletes()) {
+                        if (!is_null($local_model) && $local_model->usesSoftDeletes()) {
                             $assertions['generic'][] = sprintf('$this->assertSoftDeleted($%s);', $variable);
                         } else {
                             $assertions['generic'][] = sprintf('$this->assertDeleted($%s);', $variable);
@@ -461,7 +449,7 @@ class TestGenerator implements Generator
                             /** @var \Blueprint\Models\Model $local_model */
                             $local_model = $this->tree->modelForContext($model);
                             foreach ($request_data as $key => $datum) {
-                                if (! is_null($local_model) && $local_model->hasColumn($key) && $local_model->column($key)->dataType() === 'date') {
+                                if (!is_null($local_model) && $local_model->hasColumn($key) && $local_model->column($key)->dataType() === 'date') {
                                     $this->addImport($controller, 'Carbon\\Carbon');
                                     $assertions['generic'][] = sprintf('$this->assertEquals(Carbon::parse(%s), $%s->%s);', $datum, $variable, $key);
                                 } else {
@@ -472,11 +460,7 @@ class TestGenerator implements Generator
                     }
                 } elseif ($statement instanceof QueryStatement) {
                     $this->addRefreshDatabaseTrait($controller);
-                    if (Blueprint::isLaravel8OrHigher()) {
-                        $setup['data'][] = sprintf('$%s = %s::factory()->count(3)->create();', Str::plural($variable), $model);
-                    } else {
-                        $setup['data'][] = sprintf('$%s = factory(%s::class, 3)->create();', Str::plural($variable), $model);
-                    }
+                    $setup['data'][] = sprintf('$%s = %s::factory()->count(3)->create();', Str::plural($variable), $model);
 
                     $this->addImport($controller, $modelNamespace . '\\' . $this->determineModel($controller->prefix(), $statement->model()));
                 }
@@ -512,7 +496,7 @@ class TestGenerator implements Generator
             $test_case = str_replace('{{ method }}', $test_case_name, $test_case);
             $test_case = str_replace('{{ body }}', trim($body), $test_case);
 
-            if (Blueprint::supportsReturnTypeHits()) {
+            if (Blueprint::useReturnTypeHints()) {
                 $test_case = str_replace("$test_case_name()", "$test_case_name(): void", $test_case);
                 $test_case = str_replace("uses_form_request_validation()", "uses_form_request_validation(): void", $test_case);
             }
@@ -710,11 +694,7 @@ END;
             $reference = $local_column->attributes()[0];
         }
 
-        if (Blueprint::isLaravel8OrHigher()) {
-            $faker = sprintf('$%s = %s::factory()->create();', Str::beforeLast($local_column->name(), '_id'), Str::studly($reference));
-        } else {
-            $faker = sprintf('$%s = factory(%s::class)->create();', Str::beforeLast($local_column->name(), '_id'), Str::studly($reference));
-        }
+        $faker = sprintf('$%s = %s::factory()->create();', Str::beforeLast($local_column->name(), '_id'), Str::studly($reference));
 
         $this->addImport($controller, $modelNamespace . '\\' . Str::studly($reference));
 

@@ -20,13 +20,8 @@ class InitCommand extends Command
      */
     protected $description = 'An alias for "blueprint:new" command';
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
     public function handle()
     {
-        $this->call(\Blueprint\Commands\NewCommand::class);
+        return $this->call(\Blueprint\Commands\NewCommand::class);
     }
 }

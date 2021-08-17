@@ -48,8 +48,7 @@ class FactoryGeneratorTest extends TestCase
 
     /**
      * @test
-     * @environment-setup useLaravel8
-     * @dataProvider laravel8ModelTreeDataProvider
+     * @dataProvider modelTreeDataProvider
      */
     public function output_writes_factory_for_model_tree($definition, $path, $factory)
     {
@@ -72,55 +71,6 @@ class FactoryGeneratorTest extends TestCase
 
     /**
      * @test
-     * @environment-setup useLaravel7
-     * @dataProvider modelTreeDataProvider
-     */
-    public function output_writes_factory_for_model_tree_l7($definition, $path, $factory)
-    {
-        $this->filesystem->expects('stub')
-            ->with($this->factoryStub)
-            ->andReturn($this->stub($this->factoryStub));
-
-        $this->filesystem->expects('exists')
-            ->with('database/factories')
-            ->andReturnTrue();
-
-        $this->filesystem->expects('put')
-            ->with($path, $this->fixture($factory));
-
-        $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree = $this->blueprint->analyze($tokens);
-
-        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
-    }
-
-    /**
-     * @test
-     * @environment-setup useLaravel6
-     * @dataProvider modelTreeDataProvider
-     */
-    public function output_writes_factory_for_model_tree_l6($definition, $path, $factory)
-    {
-        $this->filesystem->expects('stub')
-            ->with($this->factoryStub)
-            ->andReturn($this->stub($this->factoryStub));
-
-        $this->filesystem->expects('exists')
-            ->with('database/factories')
-            ->andReturnTrue();
-
-        $this->filesystem->expects('put')
-            ->with($path, $this->fixture($factory));
-
-        $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree = $this->blueprint->analyze($tokens);
-
-        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
-    }
-
-    /**
-     * @test
-     * @environment-setup useLaravel8
      */
     public function output_ignores_nullables_if_fake_nullables_configuration_is_set_to_false()
     {
@@ -135,7 +85,7 @@ class FactoryGeneratorTest extends TestCase
             ->andReturnTrue();
 
         $this->filesystem->expects('put')
-            ->with('database/factories/PostFactory.php', $this->fixture('factories/fake-nullables-laravel8.php'));
+            ->with('database/factories/PostFactory.php', $this->fixture('factories/fake-nullables.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -145,7 +95,6 @@ class FactoryGeneratorTest extends TestCase
 
     /**
      * @test
-     * @environment-setup useLaravel8
      */
     public function output_using_return_types()
     {
@@ -160,7 +109,7 @@ class FactoryGeneratorTest extends TestCase
             ->andReturnTrue();
 
         $this->filesystem->expects('put')
-            ->with('database/factories/PostFactory.php', $this->fixture('factories/return-type-declarations-laravel8.php'));
+            ->with('database/factories/PostFactory.php', $this->fixture('factories/return-type-declarations.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -170,7 +119,6 @@ class FactoryGeneratorTest extends TestCase
 
     /**
      * @test
-     * @environment-setup useLaravel8
      */
     public function output_generates_references_for_nested_models()
     {
@@ -189,7 +137,7 @@ class FactoryGeneratorTest extends TestCase
         $this->filesystem->expects('put')
             ->with('database/factories/Screening/ReportFactory.php', \Mockery::type('string'));
         $this->filesystem->expects('put')
-            ->with('database/factories/Screening/ScreeningQuestionFactory.php', $this->fixture('factories/nested-models-laravel8.php'));
+            ->with('database/factories/Screening/ScreeningQuestionFactory.php', $this->fixture('factories/nested-models.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/nested-models.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -206,7 +154,6 @@ class FactoryGeneratorTest extends TestCase
 
     /**
      * @test
-     * @environment-setup useLaravel8
      */
     public function output_respects_configuration()
     {
@@ -222,7 +169,7 @@ class FactoryGeneratorTest extends TestCase
             ->andReturnTrue();
 
         $this->filesystem->expects('put')
-            ->with('database/factories/PostFactory.php', $this->fixture('factories/post-configured-laravel8.php'));
+            ->with('database/factories/PostFactory.php', $this->fixture('factories/post-configured.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/post.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -232,7 +179,6 @@ class FactoryGeneratorTest extends TestCase
 
     /**
      * @test
-     * @environment-setup useLaravel8
      */
     public function output_creates_directory_for_nested_components()
     {
@@ -247,7 +193,7 @@ class FactoryGeneratorTest extends TestCase
             ->with('database/factories/Admin', 0755, true);
 
         $this->filesystem->expects('put')
-            ->with('database/factories/Admin/UserFactory.php', $this->fixture('factories/nested-components-laravel8.php'));
+            ->with('database/factories/Admin/UserFactory.php', $this->fixture('factories/nested-components.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/nested-components.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -269,23 +215,6 @@ class FactoryGeneratorTest extends TestCase
             ['drafts/resource-statements.yaml', 'database/factories/UserFactory.php', 'factories/resource-statements.php'],
             ['drafts/factory-smallint-and-tinyint.yaml', 'database/factories/ModelFactory.php', 'factories/factory-smallint-and-tinyint.php'],
             ['drafts/all-column-types.yaml', 'database/factories/AllTypeFactory.php', 'factories/all-column-types.php'],
-        ];
-    }
-
-    public function laravel8ModelTreeDataProvider()
-    {
-        return [
-            ['drafts/phone.yaml', 'database/factories/PhoneFactory.php', 'factories/phone-laravel8.php'],
-            ['drafts/post.yaml', 'database/factories/PostFactory.php', 'factories/post-laravel8.php'],
-            ['drafts/team.yaml', 'database/factories/TeamFactory.php', 'factories/team-laravel8.php'],
-            ['drafts/unconventional.yaml', 'database/factories/TeamFactory.php', 'factories/unconventional-laravel8.php'],
-            ['drafts/model-modifiers.yaml', 'database/factories/ModifierFactory.php', 'factories/model-modifiers-laravel8.php'],
-            ['drafts/model-key-constraints.yaml', 'database/factories/OrderFactory.php', 'factories/model-key-constraints-laravel8.php'],
-            ['drafts/unconventional-foreign-key.yaml', 'database/factories/StateFactory.php', 'factories/unconventional-foreign-key-laravel8.php'],
-            ['drafts/foreign-key-shorthand.yaml', 'database/factories/CommentFactory.php', 'factories/foreign-key-shorthand-laravel8.php'],
-            ['drafts/resource-statements.yaml', 'database/factories/UserFactory.php', 'factories/resource-statements-laravel8.php'],
-            ['drafts/factory-smallint-and-tinyint.yaml', 'database/factories/ModelFactory.php', 'factories/factory-smallint-and-tinyint-laravel8.php'],
-            ['drafts/all-column-types.yaml', 'database/factories/AllTypeFactory.php', 'factories/all-column-types-laravel8.php'],
         ];
     }
 }

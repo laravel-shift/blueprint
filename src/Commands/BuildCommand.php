@@ -76,6 +76,8 @@ class BuildCommand extends Command
                 $this->line('');
             }
         );
+
+        return 0;
     }
 
     /**

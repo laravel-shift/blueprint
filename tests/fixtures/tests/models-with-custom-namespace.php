@@ -20,7 +20,7 @@ class CategoryControllerTest extends TestCase
      */
     public function index_behaves_as_expected()
     {
-        $categories = factory(Category::class, 3)->create();
+        $categories = Category::factory()->count(3)->create();
 
         $response = $this->get(route('category.index'));
 
@@ -74,7 +74,7 @@ class CategoryControllerTest extends TestCase
      */
     public function show_behaves_as_expected()
     {
-        $category = factory(Category::class)->create();
+        $category = Category::factory()->create();
 
         $response = $this->get(route('category.show', $category));
 
@@ -100,7 +100,7 @@ class CategoryControllerTest extends TestCase
      */
     public function update_behaves_as_expected()
     {
-        $category = factory(Category::class)->create();
+        $category = Category::factory()->create();
         $name = $this->faker->name;
         $image = $this->faker->word;
         $active = $this->faker->boolean;
@@ -127,7 +127,7 @@ class CategoryControllerTest extends TestCase
      */
     public function destroy_deletes_and_responds_with()
     {
-        $category = factory(Category::class)->create();
+        $category = Category::factory()->create();
 
         $response = $this->delete(route('category.destroy', $category));
 

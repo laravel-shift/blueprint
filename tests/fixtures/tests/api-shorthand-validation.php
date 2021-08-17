@@ -22,7 +22,7 @@ class CertificateControllerTest extends TestCase
      */
     public function index_behaves_as_expected()
     {
-        $certificates = factory(Certificate::class, 3)->create();
+        $certificates = Certificate::factory()->count(3)->create();
 
         $response = $this->get(route('certificate.index'));
 
@@ -49,7 +49,7 @@ class CertificateControllerTest extends TestCase
     public function store_saves()
     {
         $name = $this->faker->name;
-        $certificate_type = factory(CertificateType::class)->create();
+        $certificate_type = CertificateType::factory()->create();
         $reference = $this->faker->word;
         $document = $this->faker->word;
         $expiry_date = $this->faker->date();
@@ -82,7 +82,7 @@ class CertificateControllerTest extends TestCase
      */
     public function show_behaves_as_expected()
     {
-        $certificate = factory(Certificate::class)->create();
+        $certificate = Certificate::factory()->create();
 
         $response = $this->get(route('certificate.show', $certificate));
 
@@ -108,9 +108,9 @@ class CertificateControllerTest extends TestCase
      */
     public function update_behaves_as_expected()
     {
-        $certificate = factory(Certificate::class)->create();
+        $certificate = Certificate::factory()->create();
         $name = $this->faker->name;
-        $certificate_type = factory(CertificateType::class)->create();
+        $certificate_type = CertificateType::factory()->create();
         $reference = $this->faker->word;
         $document = $this->faker->word;
         $expiry_date = $this->faker->date();
@@ -141,7 +141,7 @@ class CertificateControllerTest extends TestCase
      */
     public function destroy_deletes_and_responds_with()
     {
-        $certificate = factory(Certificate::class)->create();
+        $certificate = Certificate::factory()->create();
 
         $response = $this->delete(route('certificate.destroy', $certificate));
 

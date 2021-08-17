@@ -27,7 +27,7 @@ class PostControllerTest extends TestCase
      */
     public function index_displays_view()
     {
-        $posts = factory(Post::class, 3)->create();
+        $posts = Post::factory()->count(3)->create();
 
         $response = $this->get(route('post.index'));
 
@@ -56,7 +56,7 @@ class PostControllerTest extends TestCase
     {
         $title = $this->faker->sentence(4);
         $content = $this->faker->paragraphs(3, true);
-        $author = factory(User::class)->create();
+        $author = User::factory()->create();
 
         Mail::fake();
         Queue::fake();

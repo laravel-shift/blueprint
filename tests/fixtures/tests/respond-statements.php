@@ -20,7 +20,7 @@ class PostControllerTest extends TestCase
      */
     public function index_responds_with()
     {
-        $posts = factory(Post::class, 3)->create();
+        $posts = Post::factory()->count(3)->create();
 
         $response = $this->get(route('post.index'));
 

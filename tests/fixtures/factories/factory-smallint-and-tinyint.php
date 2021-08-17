@@ -1,13 +1,30 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 use App\Model;
-use Faker\Generator as Faker;
 
-$factory->define(Model::class, function (Faker $faker) {
-    return [
-        'market_type' => $faker->numberBetween(-8, 8),
-        'deposit' => $faker->randomNumber(),
-    ];
-});
+class ModelFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Model::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'market_type' => $this->faker->numberBetween(-8, 8),
+            'deposit' => $this->faker->randomNumber(),
+        ];
+    }
+}

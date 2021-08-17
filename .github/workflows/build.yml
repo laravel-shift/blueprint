@@ -9,43 +9,22 @@ on:
     - cron: "0 0 * * *"
 
 env:
-  COMPOSER_FLAGS: "--ansi --no-interaction --no-progress --no-suggest --prefer-dist -o -n"
+  COMPOSER_FLAGS: "--ansi --no-interaction --no-progress --prefer-dist -o -n"
 
 jobs:
   tests:
     strategy:
       fail-fast: false
       matrix:
-        php-version: [7.2, 7.3, 7.4, 8.0]
+        php-version: [7.3, 7.4, 8.0]
 
-        laravel-version: [6, 7, 8]
-
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
         dependencies: [locked]
 
         experimental: [false]
 
-        include:
-          - php-version: 7.4
-            laravel-version: 7
-            dependencies: highest
-            os: ubuntu-latest
-            experimental: false
-
-          - php-version: 7.4
-            laravel-version: 7
-            os: windows-latest
-            dependencies: locked
-            experimental: false
-
-          - php-version: 7.4
-            laravel-version: 7
-            os: macos-latest
-            dependencies: locked
-            experimental: false
-
-    name: PHP ${{ matrix.php-version }} - L${{ matrix.laravel-version }} - ${{ matrix.os }}
+    name: PHP ${{ matrix.php-version }} - ${{ matrix.os }}
 
     runs-on: ${{ matrix.os }}
 
@@ -63,14 +42,14 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ steps.determine-composer-cache-directory.outputs.directory }}
-          key: dependencies-os-${{ matrix.os }}-php-${{ matrix.php-version }}-laravel-${{ matrix.laravel-version }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: dependencies-os-${{ matrix.os }}-php-${{ matrix.php-version }}-laravel-${{ matrix.laravel-version }}-composer-
+          key: dependencies-os-${{ matrix.os }}-php-${{ matrix.php-version }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: dependencies-os-${{ matrix.os }}-php-${{ matrix.php-version }}-composer-
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, gd
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, gd, fileinfo
           coverage: none
           ini-values: "memory_limit=-1"
 
@@ -104,12 +83,8 @@ jobs:
           max_attempts: 5
           command: composer install ${{ env.COMPOSER_FLAGS }}
 
-      - name: Select Laravel version
-        uses: nick-invision/retry@v1
-        with:
-          timeout_minutes: 5
-          max_attempts: 5
-          command: composer require "laravel/framework:${{ matrix.laravel-version }}.*" --no-update
+      - name: Install Laravel
+        run: composer require laravel/framework --no-update
 
       - name: Run tests
         run: vendor/bin/phpunit --verbose

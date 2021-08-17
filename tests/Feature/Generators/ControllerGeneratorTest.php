@@ -165,7 +165,6 @@ class ControllerGeneratorTest extends TestCase
 
     /**
      * @test
-     * @environment-setup useLaravel8
      */
     public function output_using_return_types()
     {
@@ -197,7 +196,6 @@ class ControllerGeneratorTest extends TestCase
 
     /**
      * @test
-     * @environment-setup useLaravel8
      */
     public function output_using_return_types_for_api_resource_controller()
     {

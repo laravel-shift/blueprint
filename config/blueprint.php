@@ -15,7 +15,6 @@ return [
     */
     'namespace' => 'App',
 
-
     /*
     |--------------------------------------------------------------------------
     | Component Namespaces
@@ -27,9 +26,8 @@ return [
     | your own custom namespace when generating these components.
     |
     */
-    'models_namespace' => '',
+    'models_namespace' => 'Models',
     'controllers_namespace' => 'Http\\Controllers',
-
 
     /*
     |--------------------------------------------------------------------------
@@ -115,20 +113,6 @@ return [
     |
     */
     'use_guarded' => false,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Generate FQCN Routes
-    |--------------------------------------------------------------------------
-    |
-    | By default, Blueprint follows the Laravel convention of the controller
-    | namespace matches the namespace set within the RouteServiceProvider.
-    | However, you may configure Blueprint to generate routes using a
-    | "tuple syntax" in cases where you may not use this property
-    | or wish to improve static analysis.
-    |
-    */
-    'generate_fqcn_route' => false,
 
     /*
     |--------------------------------------------------------------------------
