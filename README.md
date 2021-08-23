@@ -11,7 +11,7 @@ _Blueprint_ is an open-source tool for **rapidly generating multiple** Laravel c
 Watch a quick [demo of Blueprint](https://www.youtube.com/watch?v=A_gUCwni_6c) in action and continue reading to get started.
 
 ## Requirements
-Blueprint requires a Laravel application running version 6.0 or higher.
+Blueprint requires a Laravel application running the latest stable release of Laravel, currently Laravel 8.x.
 
 ## Installation
 You can install Blueprint via composer using the following command:
