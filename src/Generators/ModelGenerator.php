@@ -20,7 +20,7 @@ class ModelGenerator implements Generator
     /**
      * @var Tree
      */
-    private $tree;
+    protected $tree;
 
     public function __construct(Filesystem $filesystem)
     {
