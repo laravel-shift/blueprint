@@ -8,6 +8,7 @@ use Blueprint\Commands\TraceCommand;
 use Blueprint\Tracer;
 use Illuminate\Support\Facades\File;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use Symfony\Component\Yaml\Yaml;
 use Tests\TestCase;
 
 /**
@@ -69,7 +70,7 @@ class TraceCommandTest extends TestCase
         $this->assertEquals($method->invoke(new Tracer(), app('App\Comment')), 'Comment');
         $this->assertEquals($method->invoke(new Tracer(), app('App\Models\Tag')), 'Tag');
     }
-  
+
     public function it_passes_the_command_path_to_tracer()
     {
         $this->filesystem->shouldReceive('exists')
@@ -84,5 +85,51 @@ class TraceCommandTest extends TestCase
 
         $this->artisan('blueprint:trace --path=vendor/package/src/app/Models')
             ->assertExitCode(0);
+    }
+
+    /** @test */
+    public function it_traces_models_with_differente_namespaces()
+    {
+        $this->requireFixture('models/comment.php');
+        $this->requireFixture('models/custom-models-namespace.php');
+
+        $expectedBlueprint = Yaml::dump([
+                'models' => [
+                    'Comment' => [],
+                    'Models\Tag' => [],
+                ],
+            ]);
+
+        $this->filesystem->shouldReceive('exists')
+            ->with('app')
+            ->andReturnTrue();
+
+        $this->filesystem->shouldReceive('allFiles')
+            ->with('app')
+            ->andReturn([
+                new \SplFileInfo('Comment.php'),
+                new \SplFileInfo('Models\Tag.php'),
+                new \SplFileInfo('OtherFile.ext'),
+            ]);
+
+        $this->filesystem->shouldReceive('get')
+            ->with('Comment.php')
+            ->andReturn($this->fixture('models/comment.php'));
+
+        $this->filesystem->shouldReceive('get')
+            ->with('Models\Tag.php')
+            ->andReturn($this->fixture('models/custom-models-namespace.php'));
+
+        $this->filesystem->shouldReceive('exists')
+            ->with('.blueprint')
+            ->andReturnFalse();
+
+        $this->filesystem->shouldReceive('put')
+            ->with('.blueprint', $expectedBlueprint)
+            ->andReturnTrue();
+
+        $this->artisan('blueprint:trace')
+            ->assertExitCode(0)
+            ->expectsOutput('Traced 2 models');
     }
 }

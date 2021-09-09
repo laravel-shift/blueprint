@@ -30,6 +30,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         $app['config']->set('blueprint.generate_phpdocs', false);
         $app['config']->set('blueprint.use_constraints', false);
         $app['config']->set('blueprint.fake_nullables', true);
+        $app['config']->set('database.default', 'testing');
     }
 
     public function fixture(string $path)

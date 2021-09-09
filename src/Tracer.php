@@ -60,13 +60,17 @@ class Tracer
             $classes = array_merge($classes, $this->filesystem->allFiles($path));
         }
 
-        return array_map(function (\SplFIleInfo $file) {
+        return array_filter(array_map(function (\SplFIleInfo $file) {
+            if ($file->getExtension() !== 'php') {
+                return;
+            }
+
             $content = $this->filesystem->get($file->getPathName());
             preg_match("/namespace ([\w\\\\]+)/", $content, $namespace);
             preg_match("/class (\w+)/", $content, $class);
 
             return ($namespace[1] ?? '').'\\'.($class[1] ?? '');
-        }, $classes);
+        }, $classes));
     }
 
     private function loadModel(string $class)
