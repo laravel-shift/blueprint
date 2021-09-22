@@ -300,6 +300,9 @@ class MigrationGenerator implements Generator
         } elseif (Str::contains($on, '.')) {
             [$table, $column] = explode('.', $on);
             $table = Str::snake($table);
+        } elseif (Str::contains($on, '\\') && class_exists($on)) {
+            $table = (new $on())->getTable();
+            $column = Str::afterLast($column_name, '_');
         } else {
             $table = Str::plural($on);
             $column = Str::afterLast($column_name, '_');
