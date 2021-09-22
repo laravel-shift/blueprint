@@ -7,7 +7,6 @@ use Blueprint\Contracts\Generator;
 use Blueprint\Models\Model;
 use Blueprint\Tree;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Symfony\Component\Finder\SplFileInfo;
 use Illuminate\Filesystem\Filesystem;
@@ -165,7 +164,7 @@ class MigrationGenerator implements Generator
             }
 
             $column_definition = self::INDENT;
-            if ($dataType === 'bigIncrements' && $this->isLaravel7orNewer()) {
+            if ($dataType === 'bigIncrements') {
                 $column_definition .= '$table->id(';
             } elseif ($dataType === 'rememberToken') {
                 $column_definition .= '$table->rememberToken(';
@@ -198,7 +197,7 @@ class MigrationGenerator implements Generator
                     $column->modifiers()
                 );
 
-                if ($this->isIdOrUuid($column->dataType()) && $this->isLaravel7orNewer()) {
+                if ($this->isIdOrUuid($column->dataType())) {
                     $column_definition = $foreign;
                     $foreign = '';
                 }
@@ -210,7 +209,7 @@ class MigrationGenerator implements Generator
                         || (is_array($modifier) && key($modifier) === 'onDelete')
                         || (is_array($modifier) && key($modifier) === 'onUpdate')
                         || $modifier === 'foreign'
-                        || ($modifier === 'nullable' && $this->isLaravel7orNewer() && $this->isIdOrUuid($column->dataType()));
+                        || ($modifier === 'nullable' && $this->isIdOrUuid($column->dataType()));
                     }
                 );
             }
@@ -276,14 +275,10 @@ class MigrationGenerator implements Generator
             $on = Str::plural($column);
             $foreign = Str::singular($column) . '_' . $references;
 
-            if (! $this->isLaravel7orNewer()) {
-                $definition .= self::INDENT . '$table->unsignedBigInteger(\'' . $foreign . '\');' . PHP_EOL;
-            }
-
             if (config('blueprint.use_constraints')) {
                 $this->hasForeignKeyConstraints = true;
                 $definition .= $this->buildForeignKey($foreign, $on, 'id') . ';' . PHP_EOL;
-            } elseif ($this->isLaravel7orNewer()) {
+            } else {
                 $definition .= self::INDENT . '$table->foreignId(\'' . $foreign . '\');' . PHP_EOL;
             }
         }
@@ -321,7 +316,7 @@ class MigrationGenerator implements Generator
             $on_update_suffix = self::ON_UPDATE_CLAUSES[$on_update_clause];
         }
 
-        if ($this->isLaravel7orNewer() && $this->isIdOrUuid($type)) {
+        if ($this->isIdOrUuid($type)) {
             if ($type === 'uuid') {
                 $method = 'foreignUuid';
             } else {
@@ -404,11 +399,6 @@ class MigrationGenerator implements Generator
         }
 
         return $dir . $timestamp->format('Y_m_d_His') . $name;
-    }
-
-    protected function isLaravel7orNewer()
-    {
-        return version_compare(App::version(), '7.0.0', '>=');
     }
 
     protected function getPivotClassName(array $segments)
