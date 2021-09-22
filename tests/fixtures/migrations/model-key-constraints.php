@@ -19,8 +19,7 @@ class CreateOrdersTable extends Migration
             $table->uuid('id')->primary();
             $table->foreignId('user_id')->constrained();
             $table->string('external_id')->nullable()->index();
-            $table->uuid('sub_id');
-            $table->foreign('sub_id')->references('id')->on('subscriptions');
+            $table->foreignUuid('sub_id')->constrained('subscriptions');
             $table->timestamp('expires_at')->nullable()->index();
             $table->json('meta')->default('[]');
             $table->timestamps();
