@@ -173,7 +173,7 @@ class MigrationGenerator implements Generator
                 $column_definition .= '$table->' . $dataType . "('{$column->name()}'";
             }
 
-            if (! empty($column->attributes()) && ! in_array($column->dataType(), ['id', 'uuid'])) {
+            if (! empty($column->attributes()) && ! $this->isIdOrUuid($column->dataType())) {
                 $column_definition .= ', ';
                 if (in_array($column->dataType(), ['set', 'enum'])) {
                     $column_definition .= json_encode($column->attributes());
@@ -198,7 +198,7 @@ class MigrationGenerator implements Generator
                     $column->modifiers()
                 );
 
-                if ($column->dataType() === 'id' && $this->isLaravel7orNewer()) {
+                if ($this->isIdOrUuid($column->dataType()) && $this->isLaravel7orNewer()) {
                     $column_definition = $foreign;
                     $foreign = '';
                 }
@@ -210,7 +210,7 @@ class MigrationGenerator implements Generator
                         || (is_array($modifier) && key($modifier) === 'onDelete')
                         || (is_array($modifier) && key($modifier) === 'onUpdate')
                         || $modifier === 'foreign'
-                        || ($modifier === 'nullable' && $this->isLaravel7orNewer() && $column->dataType() === 'id');
+                        || ($modifier === 'nullable' && $this->isLaravel7orNewer() && $this->isIdOrUuid($column->dataType()));
                     }
                 );
             }
@@ -237,7 +237,6 @@ class MigrationGenerator implements Generator
             if (! empty($foreign)) {
                 $column_definition .= $foreign . ';' . PHP_EOL;
             }
-
             $definition .= $column_definition;
         }
 
@@ -305,7 +304,7 @@ class MigrationGenerator implements Generator
             $column = Str::afterLast($column_name, '_');
         }
 
-        if ($type === 'id' && ! empty($attributes)) {
+        if ($this->isIdOrUuid($type) && ! empty($attributes)) {
             $table = Str::lower(Str::plural($attributes[0]));
         }
 
@@ -322,10 +321,16 @@ class MigrationGenerator implements Generator
             $on_update_suffix = self::ON_UPDATE_CLAUSES[$on_update_clause];
         }
 
-        if ($this->isLaravel7orNewer() && $type === 'id') {
+        if ($this->isLaravel7orNewer() && $this->isIdOrUuid($type)) {
+            if ($type === 'uuid') {
+                $method = 'foreignUuid';
+            } else {
+                $method = 'foreignId';
+            }
+
             $prefix = in_array('nullable', $modifiers)
-                ? '$table->foreignId' . "('{$column_name}')->nullable()"
-                : '$table->foreignId' . "('{$column_name}')";
+                ? '$table->' . "{$method}('{$column_name}')->nullable()"
+                : '$table->' . "{$method}('{$column_name}')";
 
             if ($on_delete_clause === 'cascade') {
                 $on_delete_suffix = '->cascadeOnDelete()';
@@ -448,7 +453,7 @@ class MigrationGenerator implements Generator
         }
 
         return config('blueprint.use_constraints')
-            && ($column->dataType() === 'id' || $column->dataType() === 'uuid' && Str::endsWith($column->name(), '_id'));
+            && ($this->isIdOrUuid($column->dataType()) && Str::endsWith($column->name(), '_id'));
     }
 
     protected function isNumericDefault(string $type, string $value): bool
@@ -467,5 +472,10 @@ class MigrationGenerator implements Generator
                     return strtolower($value) === strtolower($type);
                 }
             );
+    }
+
+    protected function isIdOrUuid(string $dataType)
+    {
+        return in_array($dataType, ['id', 'uuid']);
     }
 }
