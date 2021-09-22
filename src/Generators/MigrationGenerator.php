@@ -165,7 +165,7 @@ class MigrationGenerator implements Generator
             }
 
             $column_definition = self::INDENT;
-            if ($dataType === 'bigIncrements' && $this->isLaravel7orNewer()) {
+            if ($dataType === 'bigIncrements') {
                 $column_definition .= '$table->id(';
             } elseif ($dataType === 'rememberToken') {
                 $column_definition .= '$table->rememberToken(';
@@ -198,7 +198,7 @@ class MigrationGenerator implements Generator
                     $column->modifiers()
                 );
 
-                if ($column->dataType() === 'id' && $this->isLaravel7orNewer()) {
+                if ($column->dataType() === 'id') {
                     $column_definition = $foreign;
                     $foreign = '';
                 }
@@ -210,7 +210,7 @@ class MigrationGenerator implements Generator
                         || (is_array($modifier) && key($modifier) === 'onDelete')
                         || (is_array($modifier) && key($modifier) === 'onUpdate')
                         || $modifier === 'foreign'
-                        || ($modifier === 'nullable' && $this->isLaravel7orNewer() && $column->dataType() === 'id');
+                        || ($modifier === 'nullable' && $column->dataType() === 'id');
                     }
                 );
             }
@@ -277,14 +277,10 @@ class MigrationGenerator implements Generator
             $on = Str::plural($column);
             $foreign = Str::singular($column) . '_' . $references;
 
-            if (! $this->isLaravel7orNewer()) {
-                $definition .= self::INDENT . '$table->unsignedBigInteger(\'' . $foreign . '\');' . PHP_EOL;
-            }
-
             if (config('blueprint.use_constraints')) {
                 $this->hasForeignKeyConstraints = true;
                 $definition .= $this->buildForeignKey($foreign, $on, 'id') . ';' . PHP_EOL;
-            } elseif ($this->isLaravel7orNewer()) {
+            } else {
                 $definition .= self::INDENT . '$table->foreignId(\'' . $foreign . '\');' . PHP_EOL;
             }
         }
@@ -322,7 +318,7 @@ class MigrationGenerator implements Generator
             $on_update_suffix = self::ON_UPDATE_CLAUSES[$on_update_clause];
         }
 
-        if ($this->isLaravel7orNewer() && $type === 'id') {
+        if ($type === 'id') {
             $prefix = in_array('nullable', $modifiers)
                 ? '$table->foreignId' . "('{$column_name}')->nullable()"
                 : '$table->foreignId' . "('{$column_name}')";
@@ -399,11 +395,6 @@ class MigrationGenerator implements Generator
         }
 
         return $dir . $timestamp->format('Y_m_d_His') . $name;
-    }
-
-    protected function isLaravel7orNewer()
-    {
-        return version_compare(App::version(), '7.0.0', '>=');
     }
 
     protected function getPivotClassName(array $segments)
