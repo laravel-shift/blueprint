@@ -1,0 +1,4 @@
+models:
+  Event:
+    working_title: string
+    image_id: uuid foreign:\Tests\Models\Attachment nullable
