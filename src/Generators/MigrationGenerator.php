@@ -295,7 +295,7 @@ class MigrationGenerator implements Generator
             [$table, $column] = explode('.', $on);
             $table = Str::snake($table);
         } elseif (Str::contains($on, '\\')) {
-            $table = (new $on())->getTable();
+            $table = Str::lower(Str::plural(Str::afterLast($on, '\\')));
             $column = Str::afterLast($column_name, '_');
         } else {
             $table = Str::plural($on);
