@@ -18,8 +18,7 @@ class CreateEventsTable extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->string('working_title');
-            $table->uuid('image_id')->nullable();
-            $table->foreign('image_id')->references('id')->on('attachments');
+            $table->foreignUuid('image_id')->nullable()->constrained('attachments');
             $table->timestamps();
         });
 
