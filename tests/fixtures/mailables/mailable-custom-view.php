@@ -1,17 +1,27 @@
 <?php
 
-namespace {{ namespace }};
+namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class {{ class }} extends Mailable
+class ReviewPost extends Mailable
 {
     use Queueable, SerializesModels;
 
-    {{ properties }}
+    public $post;
+
+    /**
+     * Create a new message instance.
+     *
+     * @return void
+     */
+    public function __construct($post)
+    {
+        $this->post = $post;
+    }
 
     /**
      * Build the message.
@@ -20,6 +30,6 @@ class {{ class }} extends Mailable
      */
     public function build()
     {
-        return $this->view('{{ view }}');
+        return $this->view('email.my.custom-viewFile');
     }
 }

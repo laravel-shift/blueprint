@@ -1,0 +1,4 @@
+{{ typehint }}
+{{--
+    {{ view }} template
+--}}

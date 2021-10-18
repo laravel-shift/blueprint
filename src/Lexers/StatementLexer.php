@@ -108,10 +108,17 @@ class StatementLexer implements Lexer
     private function analyzeSend($statement)
     {
         $to = null;
+        $view = null;
 
         $found = preg_match('/\\s+to:(\\S+)/', $statement, $matches);
         if ($found) {
             $to = $matches[1];
+            $statement = str_replace($matches[0], '', $statement);
+        }
+
+        $found = preg_match('/\\s+view:(\\S+)/', $statement, $matches);
+        if ($found) {
+            $view = $matches[1];
             $statement = str_replace($matches[0], '', $statement);
         }
 
@@ -127,7 +134,7 @@ class StatementLexer implements Lexer
             $type = SendStatement::TYPE_NOTIFICATION_WITH_FACADE;
         }
 
-        return new SendStatement($object, $to, $data, $type);
+        return new SendStatement($object, $to, $data, $type, $view);
     }
 
     private function analyzeNotify($statement)

@@ -28,12 +28,18 @@ class SendStatement
      */
     private $type;
 
-    public function __construct(string $mail, string $to = null, array $data, string $type)
+    /**
+     * @var string
+     */
+    private $view;
+
+    public function __construct(string $mail, string $to = null, array $data, string $type, string $view = null)
     {
         $this->mail = $mail;
         $this->data = $data;
         $this->to = $to;
         $this->type = $type;
+        $this->view = $view;
     }
 
     public function mail()
@@ -49,6 +55,11 @@ class SendStatement
     public function type()
     {
         return $this->type;
+    }
+
+    public function view()
+    {
+        return $this->view;
     }
 
     /**

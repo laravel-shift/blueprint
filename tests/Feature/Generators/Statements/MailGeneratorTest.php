@@ -179,4 +179,34 @@ class MailGeneratorTest extends TestCase
 
         $this->assertEquals(['created' => ['src/path/Mail/ReviewPost.php']], $this->subject->output($tree));
     }
+
+    /**
+     * @test
+     */
+    public function output_using_custom_view()
+    {
+        $this->app['config']->set('blueprint.namespace', 'App');
+        $this->app['config']->set('blueprint.app_path', 'app');
+        $this->app['config']->set('blueprint.use_return_types', false);
+
+        $this->filesystem->expects('stub')
+            ->with('mail.stub')
+            ->andReturn($this->stub('mail.stub'));
+
+        $this->filesystem->expects('exists')
+            ->with('app/Mail')
+            ->andReturnFalse();
+        $this->filesystem->expects('exists')
+            ->with('app/Mail/ReviewPost.php')
+            ->andReturnFalse();
+        $this->filesystem->expects('makeDirectory')
+            ->with('app/Mail', 0755, true);
+        $this->filesystem->expects('put')
+            ->with('app/Mail/ReviewPost.php', $this->fixture('mailables/mailable-custom-view.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example-custom-view.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['app/Mail/ReviewPost.php']], $this->subject->output($tree));
+    }
 }

@@ -7,19 +7,19 @@ use Blueprint\Generators\StatementGenerator;
 use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Tree;
 
-class MailGenerator extends StatementGenerator
+class MailViewGenerator extends StatementGenerator
 {
-    protected $new_instance = 'new message instance';
+    protected $new_instance = 'new message view instance';
 
     public function output(Tree $tree): array
     {
         $output = [];
 
-        $stub = $this->filesystem->stub('mail.stub');
+        $stub = $this->filesystem->stub('mailView.stub');
 
         /**
- * @var \Blueprint\Models\Controller $controller
-*/
+         * @var \Blueprint\Models\Controller $controller
+        */
         foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
@@ -31,7 +31,11 @@ class MailGenerator extends StatementGenerator
                         continue;
                     }
 
-                    $path = $this->getPath($statement->mail());
+                    if (! $statement->view()) {
+                        continue;
+                    }
+
+                    $path = $this->getPath($statement->view());
 
                     if ($this->filesystem->exists($path)) {
                         continue;
@@ -56,22 +60,23 @@ class MailGenerator extends StatementGenerator
         return ['controllers'];
     }
 
-    protected function getPath(string $name)
+    protected function getPath(string $view)
     {
-        return Blueprint::appPath() . '/Mail/' . $name . '.php';
+        return 'resources/views/' . str_replace('.', '/', 'email.'.$view) . '.blade.php';
     }
 
     protected function populateStub(string $stub, SendStatement $sendStatement)
     {
-        $stub = str_replace('{{ namespace }}', config('blueprint.namespace') . '\\Mail', $stub);
-        $stub = str_replace('{{ class }}', $sendStatement->mail(), $stub);
-        $stub = str_replace('{{ properties }}', $this->buildConstructor($sendStatement), $stub);
-        $stub = str_replace('{{ view }}', $sendStatement->view() ? 'email.' . $sendStatement->view() : "view.name", $stub);
+         $stub = str_replace('{{ view }}', $sendStatement->view(), $stub);
 
         if (Blueprint::useReturnTypeHints()) {
-            $stub = str_replace('build()', sprintf('build(): %s', $sendStatement->mail()), $stub);
+            $stub = str_replace('{{ typehint }}', $this->buildTypehint($sendStatement->data()), $stub);
+        }else{
+            $stub = str_replace('{{ typehint }}', '', $stub);   
         }
+        $stub = trim($stub);
 
         return $stub;
     }
+
 }

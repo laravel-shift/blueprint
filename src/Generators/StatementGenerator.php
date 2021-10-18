@@ -83,4 +83,22 @@ abstract class StatementGenerator implements Generator
 
         return implode(', ', $parameters);
     }
+
+    protected function buildTypehint(array $data)
+    {
+        $result = array_reduce(
+            $data,
+            function ($output, $property) {
+                $output .= ' * @var mixed $' . $property . PHP_EOL;
+
+                return $output;
+            },
+            ''
+        );
+        if($result){
+            $result = '<' . '?php /**' . PHP_EOL . $result . ' */ ?'.'>';
+        }
+
+        return $result;
+    }
 }

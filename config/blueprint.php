@@ -138,6 +138,7 @@ return [
         'form_request' => \Blueprint\Generators\Statements\FormRequestGenerator::class,
         'job' => \Blueprint\Generators\Statements\JobGenerator::class,
         'mail' => \Blueprint\Generators\Statements\MailGenerator::class,
+        'mailView' => \Blueprint\Generators\Statements\MailViewGenerator::class,
         'notification' => \Blueprint\Generators\Statements\NotificationGenerator::class,
         'resource' => \Blueprint\Generators\Statements\ResourceGenerator::class,
         'view' => \Blueprint\Generators\Statements\ViewGenerator::class,
