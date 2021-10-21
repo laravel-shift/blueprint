@@ -132,5 +132,4 @@ class MailViewGeneratorTest extends TestCase
 
         $this->assertEquals(['created' => ['resources/views/email/my/custom-view_file.blade.php']], $this->subject->output($tree));
     }
-
 }

@@ -78,5 +78,4 @@ class MailViewGenerator extends StatementGenerator
 
         return $stub;
     }
-
 }
