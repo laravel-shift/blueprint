@@ -92,17 +92,17 @@ class MailViewGeneratorTest extends TestCase
             ->with('resources/views/email/my')
             ->andReturns(false, true);
         $this->filesystem->expects('exists')
-            ->with('resources/views/email/my/custom-viewFile.blade.php')
+            ->with('resources/views/email/my/custom-view_file.blade.php')
             ->andReturnFalse();
         $this->filesystem->expects('makeDirectory')
             ->with('resources/views/email/my', 0755, true);
         $this->filesystem->expects('put')
-            ->with('resources/views/email/my/custom-viewFile.blade.php', $this->fixture('mailables/custom-view-output.php'));
+            ->with('resources/views/email/my/custom-view_file.blade.php', $this->fixture('mailables/custom-view-output.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example-custom-view.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['resources/views/email/my/custom-viewFile.blade.php']], $this->subject->output($tree));
+        $this->assertEquals(['created' => ['resources/views/email/my/custom-view_file.blade.php']], $this->subject->output($tree));
     }
     
     /**
@@ -120,17 +120,17 @@ class MailViewGeneratorTest extends TestCase
             ->with('resources/views/email/my')
             ->andReturns(false, true);
         $this->filesystem->expects('exists')
-            ->with('resources/views/email/my/custom-viewFile.blade.php')
+            ->with('resources/views/email/my/custom-view_file.blade.php')
             ->andReturnFalse();
         $this->filesystem->expects('makeDirectory')
             ->with('resources/views/email/my', 0755, true);
         $this->filesystem->expects('put')
-            ->with('resources/views/email/my/custom-viewFile.blade.php', $this->fixture('mailables/custom-view-output-typehint.php'));
+            ->with('resources/views/email/my/custom-view_file.blade.php', $this->fixture('mailables/custom-view-output-typehint.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example-custom-view.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['resources/views/email/my/custom-viewFile.blade.php']], $this->subject->output($tree));
+        $this->assertEquals(['created' => ['resources/views/email/my/custom-view_file.blade.php']], $this->subject->output($tree));
     }
     
 }

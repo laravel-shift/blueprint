@@ -59,7 +59,7 @@ class SendStatement
 
     public function view()
     {
-        return $this->view;
+        return \Illuminate\Support\Str::snake($this->view);
     }
 
     /**

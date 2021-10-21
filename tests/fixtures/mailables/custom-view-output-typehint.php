@@ -2,5 +2,5 @@
  * @var mixed $post
  */ ?>
 {{--
-    my.custom-viewFile template
+    my.custom-view_file template
 --}}

@@ -30,6 +30,6 @@ class ReviewPost extends Mailable
      */
     public function build()
     {
-        return $this->view('email.my.custom-viewFile');
+        return $this->view('email.my.custom-view_file');
     }
 }
