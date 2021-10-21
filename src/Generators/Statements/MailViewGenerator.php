@@ -67,12 +67,12 @@ class MailViewGenerator extends StatementGenerator
 
     protected function populateStub(string $stub, SendStatement $sendStatement)
     {
-         $stub = str_replace('{{ view }}', $sendStatement->view(), $stub);
+        $stub = str_replace('{{ view }}', $sendStatement->view(), $stub);
 
         if (Blueprint::useReturnTypeHints()) {
             $stub = str_replace('{{ typehint }}', $this->buildTypehint($sendStatement->data()), $stub);
-        }else{
-            $stub = str_replace('{{ typehint }}', '', $stub);   
+        } else {
+            $stub = str_replace('{{ typehint }}', '', $stub);
         }
         $stub = trim($stub);
 

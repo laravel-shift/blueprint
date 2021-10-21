@@ -95,7 +95,7 @@ abstract class StatementGenerator implements Generator
             },
             ''
         );
-        if($result){
+        if ($result) {
             $result = '<' . '?php /**' . PHP_EOL . $result . ' */ ?'.'>';
         }
 
