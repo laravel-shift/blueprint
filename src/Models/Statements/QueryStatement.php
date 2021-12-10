@@ -60,12 +60,14 @@ class QueryStatement
         foreach ($this->clauses as $clause) {
             [$method, $argument] = explode(':', $clause);
 
-            if (in_array($method, ['where', 'order', 'pluck'])) {
+            if (in_array($method, ['where', 'wherenull', 'order', 'pluck'])) {
                 $column = $this->columnName($model, $argument);
             }
 
             if ($method === 'where') {
                 $methods[] = $method . '(' . "'{$column}', $" . str_replace('.', '->', $argument) . ')';
+            } elseif ($method === 'wherenull') {
+                $methods[] = "whereNull('{$column}')";
             } elseif ($method === 'pluck') {
                 $pluck_field = $argument;
                 $methods[] = "pluck('{$column}')";
