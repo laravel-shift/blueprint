@@ -48,9 +48,9 @@ class MigrationGenerator implements Generator
      */
     protected $filesystem;
 
-    private $output = [];
+    protected $output = [];
 
-    private $hasForeignKeyConstraints = false;
+    protected $hasForeignKeyConstraints = false;
 
     public function __construct(Filesystem $filesystem)
     {
@@ -435,7 +435,7 @@ class MigrationGenerator implements Generator
         return strtolower(implode('_', $segments));
     }
 
-    private function shouldAddForeignKeyConstraint(\Blueprint\Models\Column $column)
+    protected function shouldAddForeignKeyConstraint(\Blueprint\Models\Column $column)
     {
         if ($column->name() === 'id') {
             return false;

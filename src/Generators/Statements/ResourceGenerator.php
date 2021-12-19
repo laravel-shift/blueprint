@@ -24,7 +24,7 @@ class ResourceGenerator implements Generator
     /**
      * @var Tree
      */
-    private $tree;
+    protected $tree;
 
     public function __construct(Filesystem $filesystem)
     {
@@ -146,7 +146,7 @@ class ResourceGenerator implements Generator
         return implode(PHP_EOL, $data);
     }
 
-    private function visibleColumns(Model $model)
+    protected function visibleColumns(Model $model)
     {
         return array_diff(
             array_keys($model->columns()),

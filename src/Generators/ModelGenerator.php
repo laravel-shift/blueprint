@@ -268,7 +268,7 @@ class ModelGenerator implements Generator
         return $stub;
     }
 
-    private function fillableColumns(array $columns)
+    protected function fillableColumns(array $columns)
     {
         return array_diff(
             array_keys($columns),
@@ -282,7 +282,7 @@ class ModelGenerator implements Generator
         );
     }
 
-    private function hiddenColumns(array $columns)
+    protected function hiddenColumns(array $columns)
     {
         return array_intersect(
             array_keys($columns),
@@ -293,7 +293,7 @@ class ModelGenerator implements Generator
         );
     }
 
-    private function castableColumns(array $columns)
+    protected function castableColumns(array $columns)
     {
         return array_filter(
             array_map(
@@ -305,7 +305,7 @@ class ModelGenerator implements Generator
         );
     }
 
-    private function dateColumns(array $columns)
+    protected function dateColumns(array $columns)
     {
         return array_map(
             function (Column $column) {
@@ -322,7 +322,7 @@ class ModelGenerator implements Generator
         );
     }
 
-    private function castForColumn(Column $column)
+    protected function castForColumn(Column $column)
     {
         if ($column->dataType() === 'date') {
             return 'date';
@@ -357,7 +357,7 @@ class ModelGenerator implements Generator
         }
     }
 
-    private function pretty_print_array(array $data, $assoc = true)
+    protected function pretty_print_array(array $data, $assoc = true)
     {
         $output = var_export($data, true);
         $output = preg_replace('/^\s+/m', '        ', $output);
@@ -370,7 +370,7 @@ class ModelGenerator implements Generator
         return trim(str_replace("\n", PHP_EOL, $output));
     }
 
-    private function phpDataType(string $dataType)
+    protected function phpDataType(string $dataType)
     {
         static $php_data_types = [
             'id' => 'int',
@@ -413,7 +413,7 @@ class ModelGenerator implements Generator
         return $php_data_types[strtolower($dataType)] ?? 'string';
     }
 
-    private function fullyQualifyModelReference(string $model_name)
+    protected function fullyQualifyModelReference(string $model_name)
     {
         // TODO: get model_name from tree.
         // If not found, assume parallel namespace as controller.

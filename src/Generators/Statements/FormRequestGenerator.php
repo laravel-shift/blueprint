@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 
 class FormRequestGenerator implements Generator
 {
-    private const INDENT = '            ';
+    protected const INDENT = '            ';
 
     /**
      * @var Filesystem
@@ -23,7 +23,7 @@ class FormRequestGenerator implements Generator
     /**
      * @var Tree
      */
-    private $tree;
+    protected $tree;
 
     public function __construct(Filesystem $filesystem)
     {
@@ -120,12 +120,12 @@ class FormRequestGenerator implements Generator
         );
     }
 
-    private function getName(string $context, string $method)
+    protected function getName(string $context, string $method)
     {
         return $context . Str::studly($method) . 'Request';
     }
 
-    private function splitField($field)
+    protected function splitField($field)
     {
         if (Str::contains($field, '.')) {
             return explode('.', $field, 2);
@@ -134,7 +134,7 @@ class FormRequestGenerator implements Generator
         return [null, $field];
     }
 
-    private function validationRules(string $qualifier, string $column)
+    protected function validationRules(string $qualifier, string $column)
     {
         /**
  * @var \Blueprint\Models\Model $model

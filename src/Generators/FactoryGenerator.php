@@ -23,9 +23,9 @@ class FactoryGenerator implements Generator
     /**
      * @var Tree
      */
-    private $tree;
+    protected $tree;
 
-    private $imports = [];
+    protected $imports = [];
 
     public function __construct(Filesystem $filesystem)
     {
@@ -228,12 +228,12 @@ class FactoryGenerator implements Generator
         );
     }
 
-    private function addImport(Model $model, $class)
+    protected function addImport(Model $model, $class)
     {
         $this->imports[$model->name()][] = $class;
     }
 
-    private function fillableColumns(array $columns): array
+    protected function fillableColumns(array $columns): array
     {
         if (config('blueprint.fake_nullables')) {
             return $columns;
@@ -247,7 +247,7 @@ class FactoryGenerator implements Generator
         );
     }
 
-    private function fullyQualifyModelReference(string $model_name)
+    protected function fullyQualifyModelReference(string $model_name)
     {
         return $this->tree->modelForContext($model_name);
     }

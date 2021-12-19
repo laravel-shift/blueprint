@@ -29,12 +29,12 @@ class ControllerGenerator implements Generator
      */
     protected $filesystem;
 
-    private $imports = [];
+    protected $imports = [];
 
     /**
      * @var Tree
      */
-    private $tree;
+    protected $tree;
 
     public function __construct(Filesystem $filesystem)
     {
@@ -219,12 +219,12 @@ class ControllerGenerator implements Generator
         );
     }
 
-    private function addImport(Controller $controller, $class)
+    protected function addImport(Controller $controller, $class)
     {
         $this->imports[$controller->name()][] = $class;
     }
 
-    private function determineModel(Controller $controller, ?string $reference)
+    protected function determineModel(Controller $controller, ?string $reference)
     {
         if (empty($reference) || $reference === 'id') {
             return $this->fullyQualifyModelReference($controller->namespace(), Str::studly(Str::singular($controller->prefix())));
@@ -237,7 +237,7 @@ class ControllerGenerator implements Generator
         return $this->fullyQualifyModelReference($controller->namespace(), Str::studly($reference));
     }
 
-    private function fullyQualifyModelReference(string $sub_namespace, string $model_name)
+    protected function fullyQualifyModelReference(string $sub_namespace, string $model_name)
     {
         // TODO: get model_name from tree.
         // If not found, assume parallel namespace as controller.

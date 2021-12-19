@@ -17,9 +17,9 @@ class SeederGenerator implements Generator
     /**
      * @var Tree
      */
-    private $tree;
+    protected $tree;
 
-    private $imports = [];
+    protected $imports = [];
 
     public function __construct(Filesystem $filesystem)
     {
@@ -93,12 +93,12 @@ class SeederGenerator implements Generator
         );
     }
 
-    private function addImport(string $model, $class)
+    protected function addImport(string $model, $class)
     {
         $this->imports[$model][] = $class;
     }
 
-    private function getPath($model)
+    protected function getPath($model)
     {
         return 'database/seeders/' . $model . 'Seeder.php';
     }

@@ -34,11 +34,11 @@ class TestGenerator implements Generator
     protected $filesystem;
 
     /** @var Tree */
-    private $tree;
+    protected $tree;
 
-    private $imports = [];
-    private $stubs = [];
-    private $traits = [];
+    protected $imports = [];
+    protected $stubs = [];
+    protected $traits = [];
 
     public function __construct(Filesystem $filesystem)
     {
@@ -529,7 +529,7 @@ class TestGenerator implements Generator
         }, $imports));
     }
 
-    private function buildTraits(Controller $controller)
+    protected function buildTraits(Controller $controller)
     {
         if (empty($this->traits[$controller->name()])) {
             return '';
@@ -541,7 +541,7 @@ class TestGenerator implements Generator
         return 'use ' . implode(', ', $traits) . ';';
     }
 
-    private function testCaseStub()
+    protected function testCaseStub()
     {
         if (empty($this->stubs['test-case'])) {
             $this->stubs['test-case'] = $this->filesystem->stub('test.case.stub');
@@ -550,7 +550,7 @@ class TestGenerator implements Generator
         return $this->stubs['test-case'];
     }
 
-    private function determineModel(string $prefix, ?string $reference)
+    protected function determineModel(string $prefix, ?string $reference)
     {
         if (empty($reference) || $reference === 'id') {
             return Str::studly(Str::singular($prefix));
@@ -563,7 +563,7 @@ class TestGenerator implements Generator
         return Str::studly($reference);
     }
 
-    private function buildFormRequestName(Controller $controller, string $name)
+    protected function buildFormRequestName(Controller $controller, string $name)
     {
         if (empty($controller->namespace())) {
             return $controller->name() . Str::studly($name) . 'Request';
@@ -572,7 +572,7 @@ class TestGenerator implements Generator
         return $controller->namespace() . '\\' . $controller->name() . Str::studly($name) . 'Request';
     }
 
-    private function buildFormRequestTestCase(string $controller, string $action, string $form_request)
+    protected function buildFormRequestTestCase(string $controller, string $action, string $form_request)
     {
         return <<< END
     /**
@@ -589,25 +589,25 @@ class TestGenerator implements Generator
 END;
     }
 
-    private function addFakerTrait(Controller $controller)
+    protected function addFakerTrait(Controller $controller)
     {
         $this->addImport($controller, 'Illuminate\\Foundation\\Testing\\WithFaker');
         $this->addTrait($controller, 'WithFaker');
     }
 
-    private function addTestAssertionsTrait(Controller $controller)
+    protected function addTestAssertionsTrait(Controller $controller)
     {
         $this->addImport($controller, 'JMac\\Testing\\Traits\AdditionalAssertions');
         $this->addTrait($controller, 'AdditionalAssertions');
     }
 
-    private function addRefreshDatabaseTrait(Controller $controller)
+    protected function addRefreshDatabaseTrait(Controller $controller)
     {
         $this->addImport($controller, 'Illuminate\\Foundation\\Testing\\RefreshDatabase');
         $this->addTrait($controller, 'RefreshDatabase');
     }
 
-    private function httpMethodForAction($action)
+    protected function httpMethodForAction($action)
     {
         switch ($action) {
             case 'store':
@@ -621,7 +621,7 @@ END;
         }
     }
 
-    private function buildTestCaseName(string $name, int $tested_bits)
+    protected function buildTestCaseName(string $name, int $tested_bits)
     {
         $verifications = [];
 
@@ -658,12 +658,12 @@ END;
         return $name . '_' . implode('_', $verifications) . '_and_' . $final_verification;
     }
 
-    private function buildLines($lines)
+    protected function buildLines($lines)
     {
         return str_pad(' ', 8) . implode(PHP_EOL . str_pad(' ', 8), $lines);
     }
 
-    private function splitField($field)
+    protected function splitField($field)
     {
         if (Str::contains($field, '.')) {
             return explode('.', $field, 2);
@@ -672,7 +672,7 @@ END;
         return [null, $field];
     }
 
-    private function uniqueSetupLines(array $setup)
+    protected function uniqueSetupLines(array $setup)
     {
         return collect($setup)->filter()
             ->map(function ($lines) {
@@ -681,7 +681,7 @@ END;
             ->toArray();
     }
 
-    private function generateReferenceFactory(Column $local_column, Controller $controller, string $modelNamespace)
+    protected function generateReferenceFactory(Column $local_column, Controller $controller, string $modelNamespace)
     {
         if (!in_array($local_column->dataType(), ['id', 'uuid']) && !($local_column->attributes() && Str::endsWith($local_column->name(), '_id'))) {
             return null;

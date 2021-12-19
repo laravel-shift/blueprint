@@ -13,7 +13,7 @@ class RouteGenerator implements Generator
     /**
      * @var Filesystem
      */
-    private $filesystem;
+    protected $filesystem;
 
     public function __construct(Filesystem $filesystem)
     {
