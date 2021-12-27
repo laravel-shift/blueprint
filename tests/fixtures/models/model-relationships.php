@@ -29,7 +29,6 @@ class Subscription extends Model
         'user_id' => 'integer',
     ];
 
-
     public function teams()
     {
         return $this->belongsToMany(\App\Team::class);

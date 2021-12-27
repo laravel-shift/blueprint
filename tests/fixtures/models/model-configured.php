@@ -30,7 +30,6 @@ class Comment extends Model
         'author_id' => 'integer',
     ];
 
-
     public function post()
     {
         return $this->belongsTo(\Some\App\Models\Post::class);

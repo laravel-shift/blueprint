@@ -27,7 +27,6 @@ class User extends Model
         'id' => 'integer',
     ];
 
-
     public function images()
     {
         return $this->morphMany(\App\Image::class, 'imageable');

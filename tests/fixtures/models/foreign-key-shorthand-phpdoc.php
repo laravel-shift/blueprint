@@ -40,7 +40,6 @@ class Comment extends Model
         'ccid' => 'integer',
     ];
 
-
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
