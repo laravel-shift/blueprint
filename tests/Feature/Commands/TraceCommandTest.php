@@ -53,7 +53,8 @@ class TraceCommandTest extends TestCase
     public function relative_class_name_removes_models_namespace()
     {
         $this->requireFixture('models/comment.php');
-        $this->requireFixture('models/custom-models-namespace.php');
+        $this->requireFixture('models/comment-global-namespace.php');
+        $this->requireFixture('models/tag-custom-models-namespace.php');
 
         $method = new \ReflectionMethod(Tracer::class, 'relativeClassName');
         $method->setAccessible(true);
@@ -62,13 +63,15 @@ class TraceCommandTest extends TestCase
         config(['blueprint.models_namespace' => '']);
 
         $this->assertEquals($method->invoke(new Tracer(), app('App\Comment')), 'Comment');
-        $this->assertEquals($method->invoke(new Tracer(), app('App\Models\Tag')), 'Models\Tag');
+        $this->assertEquals($method->invoke(new Tracer(), app('App\Something\Tag')), 'Something\Tag');
 
         // Models namespace
         config(['blueprint.models_namespace' => 'Models']);
 
-        $this->assertEquals($method->invoke(new Tracer(), app('App\Comment')), 'Comment');
-        $this->assertEquals($method->invoke(new Tracer(), app('App\Models\Tag')), 'Tag');
+        $this->assertEquals($method->invoke(new Tracer(), app('App\Models\Comment')), 'Comment');
+        $this->assertEquals($method->invoke(new Tracer(), app('App\Something\Tag')), 'Something\Tag');
+
+        // TODO: Possible bug here. Now using App/Models broke things until I added an extra (original) fixture
     }
 
     public function it_passes_the_command_path_to_tracer()
@@ -101,11 +104,11 @@ class TraceCommandTest extends TestCase
             ]);
 
         $this->filesystem->shouldReceive('exists')
-            ->with('app')
+            ->with('app/Models')
             ->andReturnTrue();
 
         $this->filesystem->shouldReceive('allFiles')
-            ->with('app')
+            ->with('app/Models')
             ->andReturn([
                 new \SplFileInfo('Comment.php'),
                 new \SplFileInfo('Models\Tag.php'),

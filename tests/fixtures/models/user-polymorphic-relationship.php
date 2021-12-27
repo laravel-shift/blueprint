@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -30,6 +30,6 @@ class User extends Model
 
     public function images()
     {
-        return $this->morphMany(\App\Image::class, 'imageable');
+        return $this->morphMany(\App\Models\Image::class, 'imageable');
     }
 }

@@ -26,7 +26,7 @@ class EraseCommandTest extends TestCase
         $this->filesystem->expects('put')
             ->with('.blueprint', "other: test.php\n");
 
-        $this->filesystem->expects('exists')->with('app');
+        $this->filesystem->expects('exists')->with('app/Models');
 
         $this->artisan('blueprint:erase')
             ->assertExitCode(0);
@@ -45,7 +45,7 @@ class EraseCommandTest extends TestCase
         ]);
 
         $this->filesystem->expects('put')->with('.blueprint', '{  }');
-        $this->filesystem->expects('exists')->with('app');
+        $this->filesystem->expects('exists')->with('app/Models');
 
         $this->artisan('blueprint:erase')
             ->assertExitCode(0)
@@ -62,7 +62,7 @@ class EraseCommandTest extends TestCase
             ->andReturn("updated:\n  -  updated_file1.php\n  -  updated_file2.php");
 
         $this->filesystem->expects('put')->with('.blueprint', '{  }');
-        $this->filesystem->expects('exists')->with('app');
+        $this->filesystem->expects('exists')->with('app/Models');
 
         $this->artisan('blueprint:erase')
             ->assertExitCode(0)

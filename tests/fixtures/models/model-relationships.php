@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -32,31 +32,31 @@ class Subscription extends Model
 
     public function teams()
     {
-        return $this->belongsToMany(\App\Team::class);
+        return $this->belongsToMany(\App\Models\Team::class);
     }
 
     public function orders()
     {
-        return $this->hasMany(\App\Order::class);
+        return $this->hasMany(\App\Models\Order::class);
     }
 
     public function duration()
     {
-        return $this->hasOne(\App\Duration::class);
+        return $this->hasOne(\App\Models\Duration::class);
     }
 
     public function transaction()
     {
-        return $this->hasOne(\App\Transaction::class);
+        return $this->hasOne(\App\Models\Transaction::class);
     }
 
     public function user()
     {
-        return $this->belongsTo(\App\User::class);
+        return $this->belongsTo(\App\Models\User::class);
     }
 
     public function product()
     {
-        return $this->belongsTo(\App\Product::class);
+        return $this->belongsTo(\App\Models\Product::class);
     }
 }

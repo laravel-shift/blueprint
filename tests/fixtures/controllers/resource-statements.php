@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
-use App\User;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -31,7 +31,7 @@ class UserController extends Controller
 
     /**
      * @param \Illuminate\Http\Request $request
-     * @param \App\User $user
+     * @param \App\Models\User $user
      * @return \App\Http\Resources\UserResource
      */
     public function show(Request $request, User $user)

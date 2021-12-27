@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -30,16 +30,16 @@ class Salesman extends Model
 
     public function lead()
     {
-        return $this->hasOne(\App\User::class);
+        return $this->hasOne(\App\Models\User::class);
     }
 
     public function methodNames()
     {
-        return $this->hasMany(\App\ClassName::class);
+        return $this->hasMany(\App\Models\ClassName::class);
     }
 
     public function methodName()
     {
-        return $this->belongsTo(\App\ClassName::class);
+        return $this->belongsTo(\App\Models\ClassName::class);
     }
 }

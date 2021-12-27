@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TermStoreRequest;
 use App\Http\Requests\TermUpdateRequest;
-use App\Term;
+use App\Models\Term;
 use Illuminate\Http\Request;
 
 class TermController extends Controller
@@ -44,7 +44,7 @@ class TermController extends Controller
 
     /**
      * @param \Illuminate\Http\Request $request
-     * @param \App\Term $term
+     * @param \App\Models\Term $term
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, Term $term): \Illuminate\Http\Response
@@ -54,7 +54,7 @@ class TermController extends Controller
 
     /**
      * @param \Illuminate\Http\Request $request
-     * @param \App\Term $term
+     * @param \App\Models\Term $term
      * @return \Illuminate\Http\Response
      */
     public function edit(Request $request, Term $term): \Illuminate\Http\Response
@@ -64,7 +64,7 @@ class TermController extends Controller
 
     /**
      * @param \App\Http\Requests\TermUpdateRequest $request
-     * @param \App\Term $term
+     * @param \App\Models\Term $term
      * @return \Illuminate\Http\Response
      */
     public function update(TermUpdateRequest $request, Term $term): \Illuminate\Http\Response
@@ -78,7 +78,7 @@ class TermController extends Controller
 
     /**
      * @param \Illuminate\Http\Request $request
-     * @param \App\Term $term
+     * @param \App\Models\Term $term
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request, Term $term): \Illuminate\Http\Response

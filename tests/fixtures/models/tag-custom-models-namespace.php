@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Models;
+namespace App\Something;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class User extends Model
+class Tag extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -16,18 +17,8 @@ class User extends Model
      */
     protected $fillable = [
         'name',
-        'email',
-        'password',
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
+        'icon',
+        'active',
     ];
 
     /**
@@ -37,5 +28,6 @@ class User extends Model
      */
     protected $casts = [
         'id' => 'integer',
+        'active' => 'boolean',
     ];
 }

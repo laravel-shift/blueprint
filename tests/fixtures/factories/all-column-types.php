@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use App\AllType;
+use App\Models\AllType;
 
 class AllTypeFactory extends Factory
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -39,6 +39,6 @@ class User extends Model
 
     public function accounts()
     {
-        return $this->belongsToMany(\App\Account::class, 'test');
+        return $this->belongsToMany(\App\Models\Account::class, 'test');
     }
 }

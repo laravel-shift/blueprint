@@ -4,10 +4,10 @@ namespace Database\Factories\Screening;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use App\Appointment\AppointmentType;
-use App\QuestionType;
-use App\Screening\Report;
-use App\Screening\ScreeningQuestion;
+use App\Models\Appointment\AppointmentType;
+use App\Models\QuestionType;
+use App\Models\Screening\Report;
+use App\Models\Screening\ScreeningQuestion;
 
 class ScreeningQuestionFactory extends Factory
 {

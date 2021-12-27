@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -30,6 +30,6 @@ class CertificateType extends Model
 
     public function certificates()
     {
-        return $this->hasMany(\App\Certificate::class);
+        return $this->hasMany(\App\Models\Certificate::class);
     }
 }
