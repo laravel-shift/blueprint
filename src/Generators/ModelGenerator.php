@@ -164,6 +164,7 @@ class ModelGenerator implements Generator
 
     protected function buildRelationships(Model $model)
     {
+        $newLine = null;
         $methods = '';
         $template = $this->filesystem->stub('model.method.stub');
         $commentTemplate = '';
@@ -242,7 +243,8 @@ class ModelGenerator implements Generator
 
                 $phpDoc = str_replace('{{ namespacedReturnClass }}', '\Illuminate\Database\Eloquent\Relations\\' . Str::ucfirst($type), $commentTemplate);
 
-                $methods .= PHP_EOL . $phpDoc . $method;
+                $methods .= ($newLine ?? '') . $phpDoc . $method;
+                $newLine = PHP_EOL;
             }
         }
 
