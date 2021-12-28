@@ -32,7 +32,6 @@ class Post extends Model
         'author_id' => 'integer',
     ];
 
-
     public function author()
     {
         return $this->belongsTo(\App\User::class);

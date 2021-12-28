@@ -33,7 +33,6 @@ class Team extends Model
         'options' => 'array',
     ];
 
-
     public function owner()
     {
         return $this->belongsTo(\App\Owner::class);

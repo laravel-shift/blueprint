@@ -27,7 +27,6 @@ class Salesman extends Model
         'id' => 'integer',
     ];
 
-
     public function lead()
     {
         return $this->hasOne(\App\User::class);

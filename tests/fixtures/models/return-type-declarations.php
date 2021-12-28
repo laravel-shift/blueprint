@@ -41,7 +41,6 @@ class Term extends Model
         'published' => 'boolean',
     ];
 
-
     public function organizers(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(\App\Organizer::class);

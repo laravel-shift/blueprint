@@ -32,7 +32,6 @@ class ScreeningQuestion extends Model
         'question_type_id' => 'integer',
     ];
 
-
     public function report()
     {
         return $this->belongsTo(\App\Models\Screening\Report::class);

@@ -242,7 +242,7 @@ class ModelGenerator implements Generator
 
                 $phpDoc = str_replace('{{ namespacedReturnClass }}', '\Illuminate\Database\Eloquent\Relations\\' . Str::ucfirst($type), $commentTemplate);
 
-                $methods .= PHP_EOL . $phpDoc . $method;
+                $methods .= $phpDoc . $method. PHP_EOL;
             }
         }
 
