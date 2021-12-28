@@ -41,7 +41,6 @@ class Post extends Model
         'author_id' => 'integer',
     ];
 
-
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

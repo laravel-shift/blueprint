@@ -36,7 +36,6 @@ class Comment extends Model
         'post_id' => 'integer',
     ];
 
-
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
