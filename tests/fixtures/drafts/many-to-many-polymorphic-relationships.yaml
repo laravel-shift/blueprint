@@ -1,0 +1,15 @@
+models:
+  Post:
+    name: string
+    relationships:
+      morphToMany: Tag
+
+  Video:
+    name: string
+    relationships:
+      morphToMany: Tag
+
+  Tag:
+    name: string
+    relationships:
+      morphedByMany: Post, Video

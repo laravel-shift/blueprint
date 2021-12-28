@@ -18,6 +18,8 @@ class ModelLexer implements Lexer
         'morphone' => 'morphOne',
         'morphmany' => 'morphMany',
         'morphto' => 'morphTo',
+        'morphtomany' => 'morphToMany',
+        'morphedbymany' => 'morphedByMany',
     ];
 
     private static $dataTypes = [
