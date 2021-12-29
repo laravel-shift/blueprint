@@ -119,6 +119,7 @@ class MigrationGenerator implements Generator
             $this->filesystem->put($path, $data);
             $output[$action][] = $path;
         }
+
         return $output;
     }
 
