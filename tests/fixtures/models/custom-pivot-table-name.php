@@ -38,6 +38,6 @@ class User extends Model
 
     public function accounts()
     {
-        return $this->belongsToMany(\App\Models\Account::class, 'test');
+        return $this->belongsToMany(Account::class, 'test');
     }
 }

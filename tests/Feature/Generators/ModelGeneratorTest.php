@@ -272,6 +272,52 @@ class ModelGeneratorTest extends TestCase
     /**
      * @test
      */
+    public function output_generates_morphtomany_relationship_with_intermediate_models()
+    {
+        $this->filesystem->expects('stub')
+            ->with($this->modelStub)
+            ->andReturn($this->stub($this->modelStub));
+        $this->filesystem->expects('stub')
+            ->times(3)
+            ->with('model.fillable.stub')
+            ->andReturn($this->stub('model.fillable.stub'));
+
+        $this->filesystem->expects('stub')
+            ->times(3)
+            ->with('model.casts.stub')
+            ->andReturn($this->stub('model.casts.stub'));
+        $this->filesystem->expects('stub')
+            ->times(3)
+            ->with('model.method.stub')
+            ->andReturn($this->stub('model.method.stub'));
+
+        $this->filesystem->expects('exists')
+            ->with('app')
+            ->andReturnTrue();
+        $this->filesystem->expects('put')
+            ->with('app/Post.php', $this->fixture('models/post-many-to-many-polymorphic-relationship.php'));
+
+        $this->filesystem->expects('exists')
+            ->with('app')
+            ->andReturnTrue();
+        $this->filesystem->expects('put')
+            ->with('app/Video.php', $this->fixture('models/video-many-to-many-polymorphic-relationship.php'));
+
+        $this->filesystem->expects('exists')
+            ->with('app')
+            ->andReturnTrue();
+        $this->filesystem->expects('put')
+            ->with('app/Tag.php', $this->fixture('models/tag-many-to-many-polymorphic-relationship.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/many-to-many-polymorphic-relationships.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['app/Post.php', 'app/Video.php', 'app/Tag.php']], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
     public function output_generates_disabled_auto_columns()
     {
         $this->filesystem->expects('stub')

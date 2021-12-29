@@ -29,16 +29,16 @@ class Salesman extends Model
 
     public function lead()
     {
-        return $this->hasOne(\App\Models\User::class);
+        return $this->hasOne(User::class);
     }
 
     public function methodNames()
     {
-        return $this->hasMany(\App\Models\ClassName::class);
+        return $this->hasMany(ClassName::class);
     }
 
     public function methodName()
     {
-        return $this->belongsTo(\App\Models\ClassName::class);
+        return $this->belongsTo(ClassName::class);
     }
 }
