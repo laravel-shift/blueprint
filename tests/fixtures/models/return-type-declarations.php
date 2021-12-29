@@ -43,21 +43,21 @@ class Term extends Model
 
     public function organizers(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(\App\Organizer::class);
+        return $this->belongsToMany(Organizer::class);
     }
 
     public function events(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(\App\Event::class);
+        return $this->belongsToMany(Event::class);
     }
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(\App\User::class);
+        return $this->belongsTo(User::class);
     }
 
     public function team(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(\App\Team::class);
+        return $this->belongsTo(Team::class);
     }
 }

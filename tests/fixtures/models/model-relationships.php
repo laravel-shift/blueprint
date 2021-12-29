@@ -31,31 +31,31 @@ class Subscription extends Model
 
     public function teams()
     {
-        return $this->belongsToMany(\App\Team::class);
+        return $this->belongsToMany(Team::class);
     }
 
     public function orders()
     {
-        return $this->hasMany(\App\Order::class);
+        return $this->hasMany(Order::class);
     }
 
     public function duration()
     {
-        return $this->hasOne(\App\Duration::class);
+        return $this->hasOne(Duration::class);
     }
 
     public function transaction()
     {
-        return $this->hasOne(\App\Transaction::class);
+        return $this->hasOne(Transaction::class);
     }
 
     public function user()
     {
-        return $this->belongsTo(\App\User::class);
+        return $this->belongsTo(User::class);
     }
 
     public function product()
     {
-        return $this->belongsTo(\App\Product::class);
+        return $this->belongsTo(Product::class);
     }
 }

@@ -45,7 +45,7 @@ class Comment extends Model
      */
     public function post()
     {
-        return $this->belongsTo(\App\Post::class);
+        return $this->belongsTo(Post::class);
     }
 
     /**
@@ -53,7 +53,7 @@ class Comment extends Model
      */
     public function author()
     {
-        return $this->belongsTo(\App\User::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
@@ -61,6 +61,6 @@ class Comment extends Model
      */
     public function country()
     {
-        return $this->belongsTo(\App\Country::class, 'ccid', 'code');
+        return $this->belongsTo(Country::class, 'ccid', 'code');
     }
 }

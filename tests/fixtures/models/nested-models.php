@@ -34,7 +34,7 @@ class ScreeningQuestion extends Model
 
     public function report()
     {
-        return $this->belongsTo(\App\Models\Screening\Report::class);
+        return $this->belongsTo(Report::class);
     }
 
     public function appointmentType()
