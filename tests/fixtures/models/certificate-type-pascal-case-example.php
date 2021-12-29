@@ -27,9 +27,8 @@ class CertificateType extends Model
         'id' => 'integer',
     ];
 
-
     public function certificates()
     {
-        return $this->hasMany(\App\Certificate::class);
+        return $this->hasMany(Certificate::class);
     }
 }

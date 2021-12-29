@@ -34,9 +34,8 @@ class Certificate extends Model
         'expiry_date' => 'date',
     ];
 
-
     public function certificateType()
     {
-        return $this->belongsTo(\App\CertificateType::class);
+        return $this->belongsTo(CertificateType::class);
     }
 }

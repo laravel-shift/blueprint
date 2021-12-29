@@ -27,7 +27,6 @@ class Image extends Model
         'id' => 'integer',
     ];
 
-
     public function imageable()
     {
         return $this->morphTo();

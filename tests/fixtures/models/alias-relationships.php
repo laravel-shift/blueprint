@@ -27,19 +27,18 @@ class Salesman extends Model
         'id' => 'integer',
     ];
 
-
     public function lead()
     {
-        return $this->hasOne(\App\User::class);
+        return $this->hasOne(User::class);
     }
 
     public function methodNames()
     {
-        return $this->hasMany(\App\ClassName::class);
+        return $this->hasMany(ClassName::class);
     }
 
     public function methodName()
     {
-        return $this->belongsTo(\App\ClassName::class);
+        return $this->belongsTo(ClassName::class);
     }
 }

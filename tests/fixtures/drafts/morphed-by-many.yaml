@@ -1,0 +1,5 @@
+models:
+  Tag:
+    name: string
+    relationships:
+      morphedByMany: Video

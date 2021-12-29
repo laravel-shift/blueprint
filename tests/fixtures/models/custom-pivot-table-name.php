@@ -36,9 +36,8 @@ class User extends Model
         'id' => 'integer',
     ];
 
-
     public function accounts()
     {
-        return $this->belongsToMany(\App\Account::class, 'test');
+        return $this->belongsToMany(Account::class, 'test');
     }
 }

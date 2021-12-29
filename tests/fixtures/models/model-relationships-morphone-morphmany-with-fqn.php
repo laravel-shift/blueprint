@@ -28,7 +28,6 @@ class Flag extends Model
         'user_id' => 'integer',
     ];
 
-
     public function stars()
     {
         return $this->morphOne(\Other\Package\Order::class, 'starable');
@@ -46,6 +45,6 @@ class Flag extends Model
 
     public function user()
     {
-        return $this->belongsTo(\App\User::class);
+        return $this->belongsTo(User::class);
     }
 }

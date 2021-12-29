@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Comment extends Model
+class Tag extends Model
 {
     use HasFactory;
 
@@ -15,8 +15,7 @@ class Comment extends Model
      * @var array
      */
     protected $fillable = [
-        'post_id',
-        'author_id',
+        'name',
     ];
 
     /**
@@ -26,17 +25,15 @@ class Comment extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'post_id' => 'integer',
-        'author_id' => 'integer',
     ];
 
-    public function post()
+    public function posts()
     {
-        return $this->belongsTo(Post::class);
+        return $this->morphedByMany(Post::class, 'tagable');
     }
 
-    public function author()
+    public function videos()
     {
-        return $this->belongsTo(User::class);
+        return $this->morphedByMany(Video::class, 'tagable');
     }
 }

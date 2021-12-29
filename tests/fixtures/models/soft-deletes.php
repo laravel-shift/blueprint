@@ -29,9 +29,8 @@ class Comment extends Model
         'post_id' => 'integer',
     ];
 
-
     public function post()
     {
-        return $this->belongsTo(\App\Post::class);
+        return $this->belongsTo(Post::class);
     }
 }
