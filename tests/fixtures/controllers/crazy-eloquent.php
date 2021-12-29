@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Post;
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -20,7 +20,7 @@ class PostController extends Controller
 
     /**
      * @param \Illuminate\Http\Request $request
-     * @param \App\Post $post
+     * @param \App\Models\Post $post
      * @return \Illuminate\Http\Response
      */
     public function edit(Request $request, Post $post)
@@ -32,7 +32,7 @@ class PostController extends Controller
 
     /**
      * @param \Illuminate\Http\Request $request
-     * @param \App\Post $post
+     * @param \App\Models\Post $post
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Post $post)

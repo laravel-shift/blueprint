@@ -4,8 +4,8 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use App\Country;
-use App\State;
+use App\Models\Country;
+use App\Models\State;
 
 class StateFactory extends Factory
 {

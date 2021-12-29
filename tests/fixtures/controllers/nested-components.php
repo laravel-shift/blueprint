@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Admin\User;
 use App\Events\NewUser;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UserStoreRequest;
 use App\Jobs\BuildAccount;
+use App\Models\Admin\User;
 use App\Notification\InviteNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;

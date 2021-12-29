@@ -4,8 +4,8 @@ namespace Tests\Feature\Http\Controllers\Api;
 
 use App\Events\NewPayment;
 use App\Mail\PaymentCreated;
-use App\Payment;
-use App\User;
+use App\Models\Payment;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Event;

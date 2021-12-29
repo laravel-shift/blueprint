@@ -4,8 +4,8 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use App\Phone;
-use App\User;
+use App\Models\Phone;
+use App\Models\User;
 
 class PhoneFactory extends Factory
 {

@@ -4,9 +4,9 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use App\Order;
-use App\Subscription;
-use App\User;
+use App\Models\Order;
+use App\Models\Subscription;
+use App\Models\User;
 
 class OrderFactory extends Factory
 {

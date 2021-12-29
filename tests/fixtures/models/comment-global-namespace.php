@@ -1,22 +1,21 @@
 <?php
 
-namespace App\Models;
+namespace App;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Tag extends Model
+class Comment extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [
-        'name',
-    ];
+    protected $fillable = [];
 
     /**
      * The attributes that should be cast to native types.
@@ -26,14 +25,4 @@ class Tag extends Model
     protected $casts = [
         'id' => 'integer',
     ];
-
-    public function posts()
-    {
-        return $this->morphedByMany(Post::class, 'tagable');
-    }
-
-    public function videos()
-    {
-        return $this->morphedByMany(Video::class, 'tagable');
-    }
 }

@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Events\NewPost;
 use App\Http\Requests\PostStoreRequest;
 use App\Jobs\SyncMedia;
+use App\Models\Post;
 use App\Notification\ReviewNotification;
-use App\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
 

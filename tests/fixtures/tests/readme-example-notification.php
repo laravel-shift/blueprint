@@ -4,8 +4,8 @@ namespace Tests\Feature\Http\Controllers;
 
 use App\Events\NewPost;
 use App\Jobs\SyncMedia;
+use App\Models\Post;
 use App\Notification\ReviewNotification;
-use App\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Event;

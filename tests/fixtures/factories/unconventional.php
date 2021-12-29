@@ -4,9 +4,9 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use App\Owner;
-use App\Team;
-use App\User;
+use App\Models\Owner;
+use App\Models\Team;
+use App\Models\User;
 
 class TeamFactory extends Factory
 {
