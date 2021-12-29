@@ -412,6 +412,34 @@ class MigrationGeneratorTest extends TestCase
     /**
      * @test
      */
+    public function output_also_creates_many_to_many_polymorphic_intermediate_table_migration()
+    {
+        $this->filesystem->expects('stub')
+            ->with('migration.stub')
+            ->andReturn($this->stub('migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $model_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_tags_table.php');
+        $poly_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_tagables_table.php');
+
+        $this->filesystem->expects('exists')->twice()->andReturn(false);
+
+        $this->filesystem->expects('put')
+            ->with($model_migration, $this->fixture('migrations/morphed-by-many.php'));
+        $this->filesystem->expects('put')
+            ->with($poly_migration, $this->fixture('migrations/morphed-by-many-intermediate.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/morphed-by-many.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$model_migration, $poly_migration]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
     public function output_creates_foreign_keys_with_nullable_chained_correctly()
     {
         $this->app->config->set('blueprint.use_constraints', true);

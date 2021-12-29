@@ -15,6 +15,7 @@ class Model
     private $columns = [];
     private $relationships = [];
     private $pivotTables = [];
+    private $polymorphicManyToManyTables = [];
     private $indexes = [];
 
     /**
@@ -149,8 +150,16 @@ class Model
         if ($type === 'belongsToMany') {
             $this->addPivotTable($reference);
         }
+        if ($type === 'morphedByMany') {
+            $this->addPolymorphicManyToManyTable(Str::studly($this->tableName()));
+        }
 
         $this->relationships[$type][] = $reference;
+    }
+
+    public function addPolymorphicManyToManyTable(string $reference)
+    {
+        $this->polymorphicManyToManyTables[] = class_basename($reference);
     }
 
     public function addPivotTable(string $reference)
@@ -173,6 +182,11 @@ class Model
     public function pivotTables(): array
     {
         return $this->pivotTables;
+    }
+
+    public function polymorphicManyToManyTables()
+    {
+        return $this->polymorphicManyToManyTables;
     }
 
     public function setMorphTo(string $reference)

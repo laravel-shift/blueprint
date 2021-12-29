@@ -213,9 +213,11 @@ class ModelGenerator implements Generator
 
                 if ($type === 'morphTo') {
                     $relationship = sprintf('$this->%s()', $type);
-                } elseif ($type === 'morphMany' || $type === 'morphOne') {
+                } elseif (in_array($type, ['morphMany', 'morphOne', 'morphToMany'])) {
                     $relation = Str::lower($is_model_fqn ? Str::singular(Str::afterLast($column_name, '\\')) : Str::singular($column_name)) . 'able';
                     $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, $fqcn, $relation);
+                } elseif ($type === 'morphedByMany') {
+                    $relationship = sprintf('$this->%s(%s::class, \'%sable\')', $type, $fqcn, strtolower($model->name()));
                 } elseif (!is_null($key)) {
                     $relationship = sprintf('$this->%s(%s::class, \'%s\', \'%s\')', $type, $fqcn, $column_name, $key);
                 } elseif (!is_null($class) && $type === 'belongsToMany') {
@@ -227,7 +229,7 @@ class ModelGenerator implements Generator
 
                 if ($type === 'morphTo') {
                     $method_name = Str::lower($class_name);
-                } elseif (in_array($type, ['hasMany', 'belongsToMany', 'morphMany'])) {
+                } elseif (in_array($type, ['hasMany', 'belongsToMany', 'morphMany', 'morphToMany', 'morphedByMany'])) {
                     $method_name = Str::plural($is_model_fqn ? Str::afterLast($column_name, '\\') : $column_name);
                 }
 

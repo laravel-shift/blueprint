@@ -59,7 +59,7 @@ class MigrationGenerator implements Generator
 
     public function output(Tree $tree, $overwrite = false): array
     {
-        $tables = ['tableNames' => [], 'pivotTableNames' => []];
+        $tables = ['tableNames' => [], 'pivotTableNames' => [], 'polymorphicManyToManyTables' => []];
 
         $stub = $this->filesystem->stub('migration.stub');
         /**
@@ -72,6 +72,12 @@ class MigrationGenerator implements Generator
                 foreach ($model->pivotTables() as $pivotSegments) {
                     $pivotTableName = $this->getPivotTableName($pivotSegments);
                     $tables['pivotTableNames'][$pivotTableName] = $this->populatePivotStub($stub, $pivotSegments);
+                }
+            }
+
+            if (!empty($model->polymorphicManyToManyTables())) {
+                foreach ($model->polymorphicManyToManyTables() as $tableName) {
+                    $tables['polymorphicManyToManyTables'][Str::lower(Str::plural(Str::singular($tableName).'able'))] = $this->populatePolyStub($stub, $tableName);
                 }
             }
         }
@@ -89,7 +95,7 @@ class MigrationGenerator implements Generator
         $output = [];
 
         $sequential_timestamp = \Carbon\Carbon::now()->copy()->subSeconds(
-            collect($tables['tableNames'])->merge($tables['pivotTableNames'])->count()
+            collect($tables['tableNames'])->merge($tables['pivotTableNames'])->merge($tables['polymorphicManyToManyTables'])->count()
         );
 
         foreach ($tables['tableNames'] as $tableName => $data) {
@@ -106,6 +112,14 @@ class MigrationGenerator implements Generator
 
             $output[$action][] = $path;
         }
+
+        foreach ($tables['polymorphicManyToManyTables'] as $tableName => $data) {
+            $path = $this->getTablePath($tableName, $sequential_timestamp->addSecond(), $overwrite);
+            $action = $this->filesystem->exists($path) ? 'updated' : 'created';
+            $this->filesystem->put($path, $data);
+            $output[$action][] = $path;
+        }
+
         return $output;
     }
 
@@ -116,7 +130,7 @@ class MigrationGenerator implements Generator
         $stub = str_replace('{{ definition }}', $this->buildDefinition($model), $stub);
 
         if (Blueprint::useReturnTypeHints()) {
-            $stub =  str_replace(['up()','down()'], ['up(): void','down(): void'], $stub);
+            $stub = str_replace(['up()', 'down()'], ['up(): void', 'down(): void'], $stub);
         }
 
         if ($this->hasForeignKeyConstraints) {
@@ -131,6 +145,23 @@ class MigrationGenerator implements Generator
         $stub = str_replace('{{ class }}', $this->getPivotClassName($segments), $stub);
         $stub = str_replace('{{ table }}', $this->getPivotTableName($segments), $stub);
         $stub = str_replace('{{ definition }}', $this->buildPivotTableDefinition($segments), $stub);
+
+        if ($this->hasForeignKeyConstraints) {
+            $stub = $this->disableForeignKeyConstraints($stub);
+        }
+
+        return $stub;
+    }
+
+    protected function populatePolyStub(string $stub, string $parentTable)
+    {
+        $stub = str_replace('{{ class }}', $this->getPolyClassName($parentTable), $stub);
+        $stub = str_replace('{{ table }}', $this->getPolyTableName($parentTable), $stub);
+        $stub = str_replace('{{ definition }}', $this->buildPolyTableDefinition($parentTable), $stub);
+
+        if (Blueprint::useReturnTypeHints()) {
+            $stub = str_replace(['up()', 'down()'], ['up(): void', 'down(): void'], $stub);
+        }
 
         if ($this->hasForeignKeyConstraints) {
             $stub = $this->disableForeignKeyConstraints($stub);
@@ -286,6 +317,27 @@ class MigrationGenerator implements Generator
         return trim($definition);
     }
 
+    protected function buildPolyTableDefinition(string $parentTable)
+    {
+        $definition = '';
+
+        $references = 'id';
+        $on = Str::lower(Str::plural($parentTable));
+        $foreign = Str::lower(Str::singular($parentTable)) . '_' . $references;
+
+        if (config('blueprint.use_constraints')) {
+            $this->hasForeignKeyConstraints = true;
+            $definition .= $this->buildForeignKey($foreign, $on, 'id') . ';' . PHP_EOL;
+        } else {
+            $definition .= self::INDENT . '$table->foreignId(\'' . $foreign . '\');' . PHP_EOL;
+        }
+
+        $definition .= self::INDENT . sprintf('$table->unsignedBigInteger(\'%s\');', Str::lower(Str::singular($parentTable).'able' . '_id')) . PHP_EOL;
+        $definition .= self::INDENT . sprintf('$table->string(\'%s\');', Str::lower(Str::singular($parentTable).'able' . '_type')) . PHP_EOL;
+
+        return trim($definition);
+    }
+
     protected function buildForeignKey(string $column_name, ?string $on, string $type, array $attributes = [], array $modifiers = [])
     {
         if (is_null($on)) {
@@ -409,6 +461,11 @@ class MigrationGenerator implements Generator
         return 'Create' . Str::studly($this->getPivotTableName($segments)) . 'Table';
     }
 
+    protected function getPolyClassName(string $parentTable)
+    {
+        return 'Create' . Str::studly($this->getPolyTableName($parentTable)) . 'Table';
+    }
+
     protected function getPivotTableName(array $segments)
     {
         $isCustom = collect($segments)
@@ -433,6 +490,11 @@ class MigrationGenerator implements Generator
         sort($segments);
 
         return strtolower(implode('_', $segments));
+    }
+
+    protected function getPolyTableName(string $parentTable)
+    {
+        return Str::plural(Str::lower(Str::singular($parentTable) . 'able'));
     }
 
     private function shouldAddForeignKeyConstraint(\Blueprint\Models\Column $column)
