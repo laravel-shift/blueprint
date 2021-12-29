@@ -292,27 +292,27 @@ class ModelGeneratorTest extends TestCase
             ->andReturn($this->stub('model.method.stub'));
 
         $this->filesystem->expects('exists')
-            ->with('app')
+            ->with('app/Models')
             ->andReturnTrue();
         $this->filesystem->expects('put')
-            ->with('app/Post.php', $this->fixture('models/post-many-to-many-polymorphic-relationship.php'));
+            ->with('app/Models/Post.php', $this->fixture('models/post-many-to-many-polymorphic-relationship.php'));
 
         $this->filesystem->expects('exists')
-            ->with('app')
+            ->with('app/Models')
             ->andReturnTrue();
         $this->filesystem->expects('put')
-            ->with('app/Video.php', $this->fixture('models/video-many-to-many-polymorphic-relationship.php'));
+            ->with('app/Models/Video.php', $this->fixture('models/video-many-to-many-polymorphic-relationship.php'));
 
         $this->filesystem->expects('exists')
-            ->with('app')
+            ->with('app/Models')
             ->andReturnTrue();
         $this->filesystem->expects('put')
-            ->with('app/Tag.php', $this->fixture('models/tag-many-to-many-polymorphic-relationship.php'));
+            ->with('app/Models/Tag.php', $this->fixture('models/tag-many-to-many-polymorphic-relationship.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/many-to-many-polymorphic-relationships.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['app/Post.php', 'app/Video.php', 'app/Tag.php']], $this->subject->output($tree));
+        $this->assertEquals(['created' => ['app/Models/Post.php', 'app/Models/Video.php', 'app/Models/Tag.php']], $this->subject->output($tree));
     }
 
     /**
