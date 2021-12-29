@@ -527,8 +527,6 @@ class ModelGeneratorTest extends TestCase
         $path = 'app/Models/Tag.php';
         $model = 'models/custom-models-namespace.php';
 
-        // $this->app['config']->set('blueprint.models_namespace', '');
-        // TODO: Review this?
         $this->filesystem->expects('stub')
             ->with($this->modelStub)
             ->andReturn($this->stub($this->modelStub));

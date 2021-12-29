@@ -4,9 +4,7 @@ namespace Tests\Feature\Commands;
 
 use Blueprint\Blueprint;
 use Blueprint\Builder;
-use Blueprint\Commands\TraceCommand;
 use Blueprint\Tracer;
-use Illuminate\Support\Facades\File;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Symfony\Component\Yaml\Yaml;
 use Tests\TestCase;
@@ -40,8 +38,8 @@ class TraceCommandTest extends TestCase
         $tracer->shouldReceive('execute')
             ->with(resolve(Blueprint::class), $this->files, [])
             ->andReturn([
-                "Model" => [],
-                "OtherModel" => [],
+                'Model' => [],
+                'OtherModel' => [],
             ]);
 
         $this->artisan('blueprint:trace')
@@ -70,8 +68,6 @@ class TraceCommandTest extends TestCase
 
         $this->assertEquals($method->invoke(new Tracer(), app('App\Models\Comment')), 'Comment');
         $this->assertEquals($method->invoke(new Tracer(), app('App\Something\Tag')), 'Something\Tag');
-
-        // TODO: Possible bug here. Now using App/Models broke things until I added an extra (original) fixture
     }
 
     public function it_passes_the_command_path_to_tracer()
@@ -97,11 +93,11 @@ class TraceCommandTest extends TestCase
         $this->requireFixture('models/custom-models-namespace.php');
 
         $expectedBlueprint = Yaml::dump([
-                'models' => [
-                    'Comment' => [],
-                    'Models\Tag' => [],
-                ],
-            ]);
+            'models' => [
+                'Comment' => [],
+                'Models\Tag' => [],
+            ],
+        ]);
 
         $this->filesystem->shouldReceive('exists')
             ->with('app/Models')
