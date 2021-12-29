@@ -4,10 +4,10 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use App\Comment;
-use App\Country;
-use App\Post;
-use App\User;
+use App\Models\Comment;
+use App\Models\Country;
+use App\Models\Post;
+use App\Models\User;
 
 class CommentFactory extends Factory
 {

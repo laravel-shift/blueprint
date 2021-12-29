@@ -6,7 +6,7 @@ use App\Http\Requests\PostStoreRequest;
 use App\Http\Requests\PostUpdateRequest;
 use App\Http\Resources\PostCollection;
 use App\Http\Resources\PostResource;
-use App\Post;
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -35,7 +35,7 @@ class PostController extends Controller
 
     /**
      * @param \Illuminate\Http\Request $request
-     * @param \App\Post $post
+     * @param \App\Models\Post $post
      * @return \App\Http\Resources\PostResource
      */
     public function show(Request $request, Post $post): \App\Http\Resources\PostResource
@@ -45,7 +45,7 @@ class PostController extends Controller
 
     /**
      * @param \App\Http\Requests\PostUpdateRequest $request
-     * @param \App\Post $post
+     * @param \App\Models\Post $post
      * @return \App\Http\Resources\PostResource
      */
     public function update(PostUpdateRequest $request, Post $post): \App\Http\Resources\PostResource
@@ -57,7 +57,7 @@ class PostController extends Controller
 
     /**
      * @param \Illuminate\Http\Request $request
-     * @param \App\Post $post
+     * @param \App\Models\Post $post
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request, Post $post): \Illuminate\Http\Response

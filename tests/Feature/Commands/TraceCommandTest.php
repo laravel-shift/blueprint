@@ -4,9 +4,7 @@ namespace Tests\Feature\Commands;
 
 use Blueprint\Blueprint;
 use Blueprint\Builder;
-use Blueprint\Commands\TraceCommand;
 use Blueprint\Tracer;
-use Illuminate\Support\Facades\File;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Symfony\Component\Yaml\Yaml;
 use Tests\TestCase;
@@ -40,8 +38,8 @@ class TraceCommandTest extends TestCase
         $tracer->shouldReceive('execute')
             ->with(resolve(Blueprint::class), $this->files, [])
             ->andReturn([
-                "Model" => [],
-                "OtherModel" => [],
+                'Model' => [],
+                'OtherModel' => [],
             ]);
 
         $this->artisan('blueprint:trace')
@@ -53,7 +51,8 @@ class TraceCommandTest extends TestCase
     public function relative_class_name_removes_models_namespace()
     {
         $this->requireFixture('models/comment.php');
-        $this->requireFixture('models/custom-models-namespace.php');
+        $this->requireFixture('models/comment-global-namespace.php');
+        $this->requireFixture('models/tag-custom-models-namespace.php');
 
         $method = new \ReflectionMethod(Tracer::class, 'relativeClassName');
         $method->setAccessible(true);
@@ -62,13 +61,13 @@ class TraceCommandTest extends TestCase
         config(['blueprint.models_namespace' => '']);
 
         $this->assertEquals($method->invoke(new Tracer(), app('App\Comment')), 'Comment');
-        $this->assertEquals($method->invoke(new Tracer(), app('App\Models\Tag')), 'Models\Tag');
+        $this->assertEquals($method->invoke(new Tracer(), app('App\Something\Tag')), 'Something\Tag');
 
         // Models namespace
         config(['blueprint.models_namespace' => 'Models']);
 
-        $this->assertEquals($method->invoke(new Tracer(), app('App\Comment')), 'Comment');
-        $this->assertEquals($method->invoke(new Tracer(), app('App\Models\Tag')), 'Tag');
+        $this->assertEquals($method->invoke(new Tracer(), app('App\Models\Comment')), 'Comment');
+        $this->assertEquals($method->invoke(new Tracer(), app('App\Something\Tag')), 'Something\Tag');
     }
 
     public function it_passes_the_command_path_to_tracer()
@@ -94,18 +93,18 @@ class TraceCommandTest extends TestCase
         $this->requireFixture('models/custom-models-namespace.php');
 
         $expectedBlueprint = Yaml::dump([
-                'models' => [
-                    'Comment' => [],
-                    'Models\Tag' => [],
-                ],
-            ]);
+            'models' => [
+                'Comment' => [],
+                'Models\Tag' => [],
+            ],
+        ]);
 
         $this->filesystem->shouldReceive('exists')
-            ->with('app')
+            ->with('app/Models')
             ->andReturnTrue();
 
         $this->filesystem->shouldReceive('allFiles')
-            ->with('app')
+            ->with('app/Models')
             ->andReturn([
                 new \SplFileInfo('Comment.php'),
                 new \SplFileInfo('Models\Tag.php'),

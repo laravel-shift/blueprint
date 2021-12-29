@@ -4,7 +4,7 @@ namespace Database\Factories\Admin;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use App\Admin\User;
+use App\Models\Admin\User;
 
 class UserFactory extends Factory
 {

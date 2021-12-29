@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Models;
+namespace App\Something;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Tag extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -16,6 +17,8 @@ class Tag extends Model
      */
     protected $fillable = [
         'name',
+        'icon',
+        'active',
     ];
 
     /**
@@ -25,15 +28,6 @@ class Tag extends Model
      */
     protected $casts = [
         'id' => 'integer',
+        'active' => 'boolean',
     ];
-
-    public function posts()
-    {
-        return $this->morphedByMany(Post::class, 'tagable');
-    }
-
-    public function videos()
-    {
-        return $this->morphedByMany(Video::class, 'tagable');
-    }
 }
