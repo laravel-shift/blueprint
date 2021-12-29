@@ -35,11 +35,11 @@ class Team extends Model
 
     public function owner()
     {
-        return $this->belongsTo(\App\Owner::class);
+        return $this->belongsTo(Owner::class);
     }
 
     public function manager()
     {
-        return $this->belongsTo(\App\User::class);
+        return $this->belongsTo(User::class);
     }
 }

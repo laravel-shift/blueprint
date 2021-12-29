@@ -29,6 +29,6 @@ class CertificateType extends Model
 
     public function certificates()
     {
-        return $this->hasMany(\App\Certificate::class);
+        return $this->hasMany(Certificate::class);
     }
 }

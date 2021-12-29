@@ -51,11 +51,11 @@ class Recurrency extends Model
 
     public function user()
     {
-        return $this->belongsTo(\App\User::class);
+        return $this->belongsTo(User::class);
     }
 
     public function product()
     {
-        return $this->belongsTo(\App\Product::class);
+        return $this->belongsTo(Product::class);
     }
 }

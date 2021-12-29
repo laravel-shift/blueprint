@@ -36,6 +36,6 @@ class Certificate extends Model
 
     public function certificateType()
     {
-        return $this->belongsTo(\App\CertificateType::class);
+        return $this->belongsTo(CertificateType::class);
     }
 }

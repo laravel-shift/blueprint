@@ -29,6 +29,6 @@ class User extends Model
 
     public function images()
     {
-        return $this->morphMany(\App\Image::class, 'imageable');
+        return $this->morphMany(Image::class, 'imageable');
     }
 }

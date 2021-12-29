@@ -209,6 +209,7 @@ class ModelGenerator implements Generator
                 }
 
                 $fqcn = Str::startsWith($fqcn, '\\') ? $fqcn : '\\' . $fqcn;
+                $fqcn = Str::is($fqcn, "\\{$model->fullyQualifiedNamespace()}\\{$class_name}") ? $class_name : $fqcn;
 
                 if ($type === 'morphTo') {
                     $relationship = sprintf('$this->%s()', $type);
