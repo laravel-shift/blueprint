@@ -523,8 +523,10 @@ class ModelGeneratorTest extends TestCase
      */
     public function output_generates_models_with_custom_namespace_correctly()
     {
+        $this->app['config']->set('blueprint.models_namespace', 'MyCustom');
+
         $definition = 'drafts/custom-models-namespace.yaml';
-        $path = 'app/Models/Tag.php';
+        $path = 'app/MyCustom/Tag.php';
         $model = 'models/custom-models-namespace.php';
 
         $this->filesystem->expects('stub')
@@ -541,7 +543,7 @@ class ModelGeneratorTest extends TestCase
             ->andReturn($this->stub('model.method.stub'));
 
         $this->filesystem->expects('exists')
-            ->with('app/Models')
+            ->with('app/MyCustom')
             ->andReturnTrue();
         $this->filesystem->expects('put')
             ->with($path, $this->fixture($model));
