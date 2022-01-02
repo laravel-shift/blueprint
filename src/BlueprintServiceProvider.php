@@ -2,16 +2,12 @@
 
 namespace Blueprint;
 
-use Blueprint\Blueprint;
-use Blueprint\Builder;
 use Blueprint\Commands\BuildCommand;
 use Blueprint\Commands\EraseCommand;
-use Blueprint\Commands\NewCommand;
 use Blueprint\Commands\InitCommand;
+use Blueprint\Commands\NewCommand;
+use Blueprint\Commands\PublishStubsCommand;
 use Blueprint\Commands\TraceCommand;
-use Blueprint\Contracts\Generator;
-use Blueprint\FileMixins;
-use Blueprint\Tracer;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
@@ -71,6 +67,9 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
         $this->app->bind('command.blueprint.init', function ($app) {
             return new InitCommand();
         });
+        $this->app->bind('command.blueprint.stubs', function ($app) {
+            return new PublishStubsCommand();
+        });
 
         $this->app->singleton(Blueprint::class, function ($app) {
             $blueprint = new Blueprint();
@@ -91,6 +90,7 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
             'command.blueprint.trace',
             'command.blueprint.new',
             'command.blueprint.init',
+            'command.blueprint.stubs',
         ]);
     }
 
