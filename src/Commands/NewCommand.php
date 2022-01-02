@@ -13,8 +13,8 @@ class NewCommand extends Command
      * @var string
      */
     protected $signature = 'blueprint:new
-                            {--C|config : Publish blueprint config }
-                            {--S|stubs : Publish blueprint stubs }
+                            {--c|config : Publish blueprint config }
+                            {--s|stubs : Publish blueprint stubs }
                             ';
 
     /**
