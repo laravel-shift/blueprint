@@ -8,6 +8,8 @@ use Blueprint\Commands\InitCommand;
 use Blueprint\Commands\NewCommand;
 use Blueprint\Commands\PublishStubsCommand;
 use Blueprint\Commands\TraceCommand;
+use Illuminate\Console\Events\CommandFinished;
+use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
@@ -82,6 +84,12 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
             }
 
             return $blueprint;
+        });
+
+        $this->app->make('events')->listen(CommandFinished::class, function ($event) {
+            if ($event->command == 'stub:publish') {
+                $this->app->make(Kernel::class)->queue('blueprint:stubs');
+            }
         });
 
         $this->commands([
