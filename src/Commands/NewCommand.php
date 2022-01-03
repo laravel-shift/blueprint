@@ -12,7 +12,10 @@ class NewCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'blueprint:new';
+    protected $signature = 'blueprint:new
+                            {--c|config : Publish blueprint config }
+                            {--s|stubs : Publish blueprint stubs }
+                            ';
 
     /**
      * The console command description.
@@ -40,6 +43,17 @@ class NewCommand extends Command
             $this->filesystem->put('draft.yaml', $this->filesystem->stub('draft.stub'));
 
             $this->info('Created example draft.yaml');
+            $this->newLine();
+        }
+
+        if ($this->option('config')) {
+            $this->call('vendor:publish', ['--tag' => 'blueprint-config']);
+            $this->newLine();
+        }
+
+        if ($this->option('stubs')) {
+            $this->call('vendor:publish', ['--tag' => 'blueprint-stubs']);
+            $this->newLine();
         }
 
         return $this->call('blueprint:trace');
