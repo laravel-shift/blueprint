@@ -107,7 +107,7 @@ class ViewGeneratorTest extends TestCase
     /**
      * @test
      */
-    public function it_only_outputs_new_views()
+    public function it_outputs_skipped_views()
     {
         $this->filesystem->expects('stub')
             ->with('view.stub')
@@ -126,6 +126,12 @@ class ViewGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/render-statements.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals([], $this->subject->output($tree));
+        $this->assertEquals([
+            "skipped" => [
+                "resources/views/user/index.blade.php",
+                "resources/views/user/create.blade.php",
+                "resources/views/post/show.blade.php",
+            ],
+        ], $this->subject->output($tree));
     }
 }

@@ -38,7 +38,7 @@ class ViewGenerator implements Generator
                     $path = $this->getPath($statement->view());
 
                     if ($this->filesystem->exists($path)) {
-                        // TODO: mark skipped...
+                        $output['skipped'][] = $path;
                         continue;
                     }
 

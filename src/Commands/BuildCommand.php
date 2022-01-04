@@ -96,7 +96,7 @@ class BuildCommand extends Command
     {
         if ($action === 'deleted') {
             return 'error';
-        } elseif ($action === 'updated') {
+        } elseif ($action === 'updated' || $action === 'skipped') {
             return 'comment';
         }
 
