@@ -104,7 +104,7 @@ class Model
 
     public function tableName()
     {
-        return Str::snake(Str::pluralStudly($this->tableName ? $this->tableName : $this->name));
+        return Str::snake($this->useTableName() ? $this->tableName : Str::pluralStudly($this->name));
     }
 
     public function timestampsDataType(): string
