@@ -134,6 +134,10 @@ class ModelGenerator implements Generator
     {
         $properties = '';
 
+        if ($model->useTableName()) {
+            $properties .= PHP_EOL . str_replace('{{ tablename }}', $model->tableName(), $this->filesystem->stub('model.table.name.stub'));
+        }
+
         if (!$model->usesTimestamps()) {
             $properties .= $this->filesystem->stub('model.timestamps.stub');
         }
@@ -245,7 +249,7 @@ class ModelGenerator implements Generator
 
                 $phpDoc = str_replace('{{ namespacedReturnClass }}', '\Illuminate\Database\Eloquent\Relations\\' . Str::ucfirst($type), $commentTemplate);
 
-                $methods .= $phpDoc . $method. PHP_EOL;
+                $methods .= $phpDoc . $method . PHP_EOL;
             }
         }
 

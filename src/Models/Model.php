@@ -17,6 +17,7 @@ class Model
     private $pivotTables = [];
     private $polymorphicManyToManyTables = [];
     private $indexes = [];
+    private $tableName;
 
     /**
      * @param $name
@@ -91,9 +92,19 @@ class Model
         $this->primaryKey = false;
     }
 
+    public function addTableName(string $tableName)
+    {
+        $this->tableName = $tableName;
+    }
+
+    public function useTableName()
+    {
+        return $this->tableName ? true : false;
+    }
+
     public function tableName()
     {
-        return Str::snake(Str::pluralStudly($this->name));
+        return Str::snake(Str::pluralStudly($this->tableName ? $this->tableName : $this->name));
     }
 
     public function timestampsDataType(): string

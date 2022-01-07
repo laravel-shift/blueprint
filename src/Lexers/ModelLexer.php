@@ -129,6 +129,11 @@ class ModelLexer implements Lexer
     {
         $model = new Model($name);
 
+        if (isset($columns['_tableName'])) {
+            $model->addTableName($columns['_tableName']);
+            unset($columns['_tableName']);
+        }
+
         if (isset($columns['id'])) {
             if ($columns['id'] === false) {
                 $model->disablePrimaryKey();
