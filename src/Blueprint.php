@@ -4,7 +4,6 @@ namespace Blueprint;
 
 use Blueprint\Contracts\Generator;
 use Blueprint\Contracts\Lexer;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Symfony\Component\Yaml\Yaml;
 

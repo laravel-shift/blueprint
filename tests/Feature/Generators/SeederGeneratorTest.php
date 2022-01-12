@@ -5,7 +5,6 @@ namespace Tests\Feature\Generators;
 use Blueprint\Blueprint;
 use Blueprint\Generators\SeederGenerator;
 use Blueprint\Tree;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Tests\TestCase;
 
@@ -21,7 +20,6 @@ class SeederGeneratorTest extends TestCase
 
     /** @var SeederGenerator */
     private $subject;
-
 
     protected $files;
 
@@ -67,6 +65,7 @@ class SeederGeneratorTest extends TestCase
 
         $this->assertEquals(['created' => ['database/seeders/PostSeeder.php', 'database/seeders/CommentSeeder.php']], $this->subject->output($tree));
     }
+
     /**
      * @test
      */

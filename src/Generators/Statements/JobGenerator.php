@@ -9,50 +9,38 @@ use Blueprint\Tree;
 
 class JobGenerator extends StatementGenerator
 {
+    protected $types = ['controllers'];
     protected $new_instance = 'new job instance';
 
     public function output(Tree $tree): array
     {
-        $output = [];
-
         $stub = $this->filesystem->stub('job.stub');
 
         /**
- * @var \Blueprint\Models\Controller $controller
-*/
+         * @var \Blueprint\Models\Controller $controller
+        */
         foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
-                    if (! $statement instanceof DispatchStatement) {
+                    if (!$statement instanceof DispatchStatement) {
                         continue;
                     }
 
-                    $path = $this->getPath($statement->job());
+                    $path = $this->getStatementPath($statement->job());
 
                     if ($this->filesystem->exists($path)) {
                         continue;
                     }
 
-                    if (! $this->filesystem->exists(dirname($path))) {
-                        $this->filesystem->makeDirectory(dirname($path), 0755, true);
-                    }
-
-                    $this->filesystem->put($path, $this->populateStub($stub, $statement));
-
-                    $output['created'][] = $path;
+                    $this->create($path, $this->populateStub($stub, $statement));
                 }
             }
         }
 
-        return $output;
+        return $this->output;
     }
 
-    public function types(): array
-    {
-        return ['controllers'];
-    }
-
-    protected function getPath(string $name)
+    protected function getStatementPath(string $name)
     {
         return Blueprint::appPath() . '/Jobs/' . $name . '.php';
     }

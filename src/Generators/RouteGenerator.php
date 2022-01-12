@@ -5,20 +5,11 @@ namespace Blueprint\Generators;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Controller;
 use Blueprint\Tree;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
-class RouteGenerator implements Generator
+class RouteGenerator extends AbstractClassGenerator implements Generator
 {
-    /**
-     * @var Filesystem
-     */
-    private $filesystem;
-
-    public function __construct(Filesystem $filesystem)
-    {
-        $this->filesystem = $filesystem;
-    }
+    protected $types = ['routes'];
 
     public function output(Tree $tree): array
     {
@@ -29,8 +20,8 @@ class RouteGenerator implements Generator
         $routes = ['api' => '', 'web' => ''];
 
         /**
- * @var \Blueprint\Models\Controller $controller
-*/
+         * @var \Blueprint\Models\Controller $controller
+        */
         foreach ($tree->controllers() as $controller) {
             $type = $controller->isApiResource() ? 'api' : 'web';
             $routes[$type] .= PHP_EOL . PHP_EOL . $this->buildRoutes($controller);
@@ -45,11 +36,6 @@ class RouteGenerator implements Generator
         }
 
         return ['updated' => $paths];
-    }
-
-    public function types(): array
-    {
-        return ['routes'];
     }
 
     protected function buildRoutes(Controller $controller)

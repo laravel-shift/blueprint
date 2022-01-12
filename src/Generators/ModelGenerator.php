@@ -7,31 +7,15 @@ use Blueprint\Contracts\Generator;
 use Blueprint\Models\Column;
 use Blueprint\Models\Model;
 use Blueprint\Tree;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
-class ModelGenerator implements Generator
+class ModelGenerator extends AbstractClassGenerator implements Generator
 {
-    /**
-     * @var Filesystem
-     */
-    protected $filesystem;
-
-    /**
-     * @var Tree
-     */
-    protected $tree;
-
-    public function __construct(Filesystem $filesystem)
-    {
-        $this->filesystem = $filesystem;
-    }
+    protected $types = ['models'];
 
     public function output(Tree $tree): array
     {
         $this->tree = $tree;
-
-        $output = [];
         $stub = $this->filesystem->stub('model.class.stub');
 
         /**
@@ -40,21 +24,10 @@ class ModelGenerator implements Generator
         foreach ($tree->models() as $model) {
             $path = $this->getPath($model);
 
-            if (!$this->filesystem->exists(dirname($path))) {
-                $this->filesystem->makeDirectory(dirname($path), 0755, true);
-            }
-
-            $this->filesystem->put($path, $this->populateStub($stub, $model));
-
-            $output['created'][] = $path;
+            $this->create($path, $this->populateStub($stub, $model));
         }
 
-        return $output;
-    }
-
-    public function types(): array
-    {
-        return ['models'];
+        return $this->output;
     }
 
     protected function populateStub(string $stub, Model $model)
@@ -245,18 +218,11 @@ class ModelGenerator implements Generator
 
                 $phpDoc = str_replace('{{ namespacedReturnClass }}', '\Illuminate\Database\Eloquent\Relations\\' . Str::ucfirst($type), $commentTemplate);
 
-                $methods .= $phpDoc . $method. PHP_EOL;
+                $methods .= $phpDoc . $method . PHP_EOL;
             }
         }
 
         return $methods;
-    }
-
-    protected function getPath(Model $model)
-    {
-        $path = str_replace('\\', '/', Blueprint::relativeNamespace($model->fullyQualifiedClassName()));
-
-        return Blueprint::appPath() . '/' . $path . '.php';
     }
 
     protected function addTraits(Model $model, $stub)

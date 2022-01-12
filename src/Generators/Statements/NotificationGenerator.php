@@ -9,17 +9,16 @@ use Blueprint\Tree;
 
 class NotificationGenerator extends StatementGenerator
 {
+    protected $types = ['controllers'];
     protected $new_instance = 'new message instance';
 
     public function output(Tree $tree): array
     {
-        $output = [];
-
         $stub = $this->filesystem->stub('notification.stub');
 
         /**
- * @var \Blueprint\Models\Controller $controller
-*/
+         * @var \Blueprint\Models\Controller $controller
+        */
         foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
@@ -31,32 +30,21 @@ class NotificationGenerator extends StatementGenerator
                         continue;
                     }
 
-                    $path = $this->getPath($statement->mail());
+                    $path = $this->getStatementPath($statement->mail());
 
                     if ($this->filesystem->exists($path)) {
                         continue;
                     }
 
-                    if (!$this->filesystem->exists(dirname($path))) {
-                        $this->filesystem->makeDirectory(dirname($path), 0755, true);
-                    }
-
-                    $this->filesystem->put($path, $this->populateStub($stub, $statement));
-
-                    $output['created'][] = $path;
+                    $this->create($path, $this->populateStub($stub, $statement));
                 }
             }
         }
 
-        return $output;
+        return $this->output;
     }
 
-    public function types(): array
-    {
-        return ['controllers'];
-    }
-
-    protected function getPath(string $name)
+    protected function getStatementPath(string $name)
     {
         return Blueprint::appPath() . '/Notification/' . $name . '.php';
     }

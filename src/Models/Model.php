@@ -2,9 +2,10 @@
 
 namespace Blueprint\Models;
 
+use Blueprint\Contracts\Model as BlueprintModel;
 use Illuminate\Support\Str;
 
-class Model
+class Model implements BlueprintModel
 {
     private $name;
     private $namespace;

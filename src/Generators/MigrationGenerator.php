@@ -9,10 +9,11 @@ use Blueprint\Tree;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Symfony\Component\Finder\SplFileInfo;
-use Illuminate\Filesystem\Filesystem;
 
-class MigrationGenerator implements Generator
+class MigrationGenerator extends AbstractClassGenerator implements Generator
 {
+    protected $types = ['migrations'];
+
     const INDENT = '            ';
 
     const NULLABLE_TYPES = [
@@ -43,19 +44,7 @@ class MigrationGenerator implements Generator
         'tinyInteger',
     ];
 
-    /**
-     * @var Filesystem
-     */
-    protected $filesystem;
-
-    private $output = [];
-
     private $hasForeignKeyConstraints = false;
-
-    public function __construct(Filesystem $filesystem)
-    {
-        $this->filesystem = $filesystem;
-    }
 
     public function output(Tree $tree, $overwrite = false): array
     {
@@ -68,7 +57,7 @@ class MigrationGenerator implements Generator
         foreach ($tree->models() as $model) {
             $tables['tableNames'][$model->tableName()] = $this->populateStub($stub, $model);
 
-            if (! empty($model->pivotTables())) {
+            if (!empty($model->pivotTables())) {
                 foreach ($model->pivotTables() as $pivotSegments) {
                     $pivotTableName = $this->getPivotTableName($pivotSegments);
                     $tables['pivotTableNames'][$pivotTableName] = $this->populatePivotStub($stub, $pivotSegments);
@@ -77,7 +66,7 @@ class MigrationGenerator implements Generator
 
             if (!empty($model->polymorphicManyToManyTables())) {
                 foreach ($model->polymorphicManyToManyTables() as $tableName) {
-                    $tables['polymorphicManyToManyTables'][Str::lower(Str::plural(Str::singular($tableName).'able'))] = $this->populatePolyStub($stub, $tableName);
+                    $tables['polymorphicManyToManyTables'][Str::lower(Str::plural(Str::singular($tableName) . 'able'))] = $this->populatePolyStub($stub, $tableName);
                 }
             }
         }
@@ -85,15 +74,8 @@ class MigrationGenerator implements Generator
         return $this->createMigrations($tables, $overwrite);
     }
 
-    public function types(): array
-    {
-        return ['migrations'];
-    }
-
     protected function createMigrations(array $tables, $overwrite = false): array
     {
-        $output = [];
-
         $sequential_timestamp = \Carbon\Carbon::now()->copy()->subSeconds(
             collect($tables['tableNames'])->merge($tables['pivotTableNames'])->merge($tables['polymorphicManyToManyTables'])->count()
         );
@@ -102,7 +84,7 @@ class MigrationGenerator implements Generator
             $path = $this->getTablePath($tableName, $sequential_timestamp->addSecond(), $overwrite);
             $action = $this->filesystem->exists($path) ? 'updated' : 'created';
             $this->filesystem->put($path, $data);
-            $output[$action][] = $path;
+            $this->output[$action][] = $path;
         }
 
         foreach ($tables['pivotTableNames'] as $tableName => $data) {
@@ -110,17 +92,17 @@ class MigrationGenerator implements Generator
             $action = $this->filesystem->exists($path) ? 'updated' : 'created';
             $this->filesystem->put($path, $data);
 
-            $output[$action][] = $path;
+            $this->output[$action][] = $path;
         }
 
         foreach ($tables['polymorphicManyToManyTables'] as $tableName => $data) {
             $path = $this->getTablePath($tableName, $sequential_timestamp->addSecond(), $overwrite);
             $action = $this->filesystem->exists($path) ? 'updated' : 'created';
             $this->filesystem->put($path, $data);
-            $output[$action][] = $path;
+            $this->output[$action][] = $path;
         }
 
-        return $output;
+        return $this->output;
     }
 
     protected function populateStub(string $stub, Model $model)
@@ -175,8 +157,8 @@ class MigrationGenerator implements Generator
         $definition = '';
 
         /**
- * @var \Blueprint\Models\Column $column
-*/
+         * @var \Blueprint\Models\Column $column
+        */
         foreach ($model->columns() as $column) {
             $dataType = $column->dataType();
 
@@ -203,7 +185,7 @@ class MigrationGenerator implements Generator
                 $column_definition .= '$table->' . $dataType . "('{$column->name()}'";
             }
 
-            if (! empty($column->attributes()) && ! $this->isIdOrUuid($column->dataType())) {
+            if (!empty($column->attributes()) && !$this->isIdOrUuid($column->dataType())) {
                 $column_definition .= ', ';
                 if (in_array($column->dataType(), ['set', 'enum'])) {
                     $column_definition .= json_encode($column->attributes());
@@ -250,7 +232,7 @@ class MigrationGenerator implements Generator
                     $modifierKey = key($modifier);
                     $modifierValue = addslashes(current($modifier));
                     if ($modifierKey === 'default' && ($modifierValue === 'null' || $dataType === 'boolean' || $this->isNumericDefault($dataType, $modifierValue))) {
-                        $column_definition .= sprintf("->%s(%s)", $modifierKey, $modifierValue);
+                        $column_definition .= sprintf('->%s(%s)', $modifierKey, $modifierValue);
                     } else {
                         $column_definition .= sprintf("->%s('%s')", $modifierKey, $modifierValue);
                     }
@@ -264,7 +246,7 @@ class MigrationGenerator implements Generator
             }
 
             $column_definition .= ';' . PHP_EOL;
-            if (! empty($foreign)) {
+            if (!empty($foreign)) {
                 $column_definition .= $foreign . ';' . PHP_EOL;
             }
             $definition .= $column_definition;
@@ -332,8 +314,8 @@ class MigrationGenerator implements Generator
             $definition .= self::INDENT . '$table->foreignId(\'' . $foreign . '\');' . PHP_EOL;
         }
 
-        $definition .= self::INDENT . sprintf('$table->unsignedBigInteger(\'%s\');', Str::lower(Str::singular($parentTable).'able' . '_id')) . PHP_EOL;
-        $definition .= self::INDENT . sprintf('$table->string(\'%s\');', Str::lower(Str::singular($parentTable).'able' . '_type')) . PHP_EOL;
+        $definition .= self::INDENT . sprintf('$table->unsignedBigInteger(\'%s\');', Str::lower(Str::singular($parentTable) . 'able' . '_id')) . PHP_EOL;
+        $definition .= self::INDENT . sprintf('$table->string(\'%s\');', Str::lower(Str::singular($parentTable) . 'able' . '_type')) . PHP_EOL;
 
         return trim($definition);
     }
@@ -354,7 +336,7 @@ class MigrationGenerator implements Generator
             $column = Str::afterLast($column_name, '_');
         }
 
-        if ($this->isIdOrUuid($type) && ! empty($attributes)) {
+        if ($this->isIdOrUuid($type) && !empty($attributes)) {
             $table = Str::lower(Str::plural($attributes[0]));
         }
 
@@ -414,11 +396,6 @@ class MigrationGenerator implements Generator
     protected function getClassName(Model $model)
     {
         return 'Create' . Str::studly($model->tableName()) . 'Table';
-    }
-
-    protected function getPath(Model $model, Carbon $timestamp, $overwrite = false)
-    {
-        return $this->getTablePath($model->tableName(), $timestamp, $overwrite);
     }
 
     protected function getTablePath($tableName, Carbon $timestamp, $overwrite = false)
@@ -513,7 +490,7 @@ class MigrationGenerator implements Generator
 
     protected function isNumericDefault(string $type, string $value): bool
     {
-        if (! is_numeric($value)) {
+        if (!is_numeric($value)) {
             return false;
         }
 

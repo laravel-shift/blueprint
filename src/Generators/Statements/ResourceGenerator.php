@@ -4,38 +4,23 @@ namespace Blueprint\Generators\Statements;
 
 use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
+use Blueprint\Generators\StatementGenerator;
 use Blueprint\Models\Controller;
 use Blueprint\Models\Model;
 use Blueprint\Models\Statements\ResourceStatement;
 use Blueprint\Tree;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
-class ResourceGenerator implements Generator
+class ResourceGenerator extends StatementGenerator implements Generator
 {
     const INDENT = '            ';
 
-    /**
-     * @var Filesystem
-     */
-    protected $filesystem;
-
-    /**
-     * @var Tree
-     */
-    private $tree;
-
-    public function __construct(Filesystem $filesystem)
-    {
-        $this->filesystem = $filesystem;
-    }
+    protected $types = ['controllers', 'resources'];
 
     public function output(Tree $tree): array
     {
         $this->tree = $tree;
-
-        $output = [];
 
         $stub = $this->filesystem->stub('resource.stub');
 
@@ -49,32 +34,21 @@ class ResourceGenerator implements Generator
                         continue;
                     }
 
-                    $path = $this->getPath(($controller->namespace() ? $controller->namespace() . '/' : '') . $statement->name());
+                    $path = $this->getStatementPath(($controller->namespace() ? $controller->namespace() . '/' : '') . $statement->name());
 
                     if ($this->filesystem->exists($path)) {
                         continue;
                     }
 
-                    if (!$this->filesystem->exists(dirname($path))) {
-                        $this->filesystem->makeDirectory(dirname($path), 0755, true);
-                    }
-
-                    $this->filesystem->put($path, $this->populateStub($stub, $controller, $statement));
-
-                    $output['created'][] = $path;
+                    $this->create($path, $this->populateStub($stub, $controller, $statement));
                 }
             }
         }
 
-        return $output;
+        return $this->output;
     }
 
-    public function types(): array
-    {
-        return ['controllers', 'resources'];
-    }
-
-    protected function getPath(string $name)
+    protected function getStatementPath(string $name)
     {
         return Blueprint::appPath() . '/Http/Resources/' . $name . '.php';
     }
