@@ -380,6 +380,8 @@ class ModelLexerTest extends TestCase
         $this->assertCount(2, $columns);
         $this->assertEquals('id', $columns['id']->name());
         $this->assertEquals('id', $columns['id']->dataType());
+        $this->assertEquals('softdeletes', $columns['softdeletes']->name());
+        $this->assertEquals('softDeletes', $columns['softdeletes']->dataType());
         $this->assertEquals([], $columns['id']->modifiers());
     }
 
