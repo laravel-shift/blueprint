@@ -3,6 +3,8 @@
 namespace Blueprint\Generators;
 
 use Blueprint\Blueprint;
+use Blueprint\Concerns\HandlesImports;
+use Blueprint\Concerns\HandlesTraits;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Controller;
 use Blueprint\Models\Model;
@@ -22,6 +24,8 @@ use Illuminate\Support\Str;
 
 class ControllerGenerator extends AbstractClassGenerator implements Generator
 {
+    use HandlesImports, HandlesTraits;
+
     protected $types = ['controllers'];
 
     public function output(Tree $tree): array

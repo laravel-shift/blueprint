@@ -3,6 +3,8 @@
 namespace Blueprint\Generators;
 
 use Blueprint\Blueprint;
+use Blueprint\Concerns\HandlesImports;
+use Blueprint\Concerns\HandlesTraits;
 use Blueprint\Contracts\Generator;
 use Blueprint\Contracts\Model as BlueprintModel;
 use Blueprint\Models\Column;
@@ -25,11 +27,15 @@ use Shift\Faker\Registry as FakerRegistry;
 
 class TestGenerator extends AbstractClassGenerator implements Generator
 {
+    use HandlesImports, HandlesTraits;
+
     const TESTS_VIEW = 1;
     const TESTS_REDIRECT = 2;
     const TESTS_SAVE = 4;
     const TESTS_DELETE = 8;
     const TESTS_RESPONDS = 16;
+
+    protected $stubs = [];
 
     protected $types = ['controllers', 'tests'];
 

@@ -6,6 +6,8 @@ use Blueprint\Contracts\Model;
 
 trait HandlesTraits
 {
+    protected $traits = [];
+
     protected function addTrait(Model $model, $trait)
     {
         $this->traits[$model->name()][] = $trait;

@@ -3,6 +3,8 @@
 namespace Blueprint\Generators;
 
 use Blueprint\Blueprint;
+use Blueprint\Concerns\HandlesImports;
+use Blueprint\Concerns\HandlesTraits;
 use Blueprint\Contracts\Generator;
 use Blueprint\Contracts\Model as BlueprintModel;
 use Blueprint\Models\Column;
@@ -13,6 +15,8 @@ use Shift\Faker\Registry as FakerRegistry;
 
 class FactoryGenerator extends AbstractClassGenerator implements Generator
 {
+    use HandlesImports, HandlesTraits;
+
     const INDENT = '    ';
 
     protected $types = ['factories'];

@@ -3,6 +3,8 @@
 namespace Blueprint\Generators;
 
 use Blueprint\Blueprint;
+use Blueprint\Concerns\HandlesImports;
+use Blueprint\Concerns\HandlesTraits;
 use Blueprint\Contracts\Generator;
 use Blueprint\Contracts\Model as BlueprintModel;
 use Blueprint\Models\Model;
@@ -10,6 +12,8 @@ use Blueprint\Tree;
 
 class SeederGenerator extends AbstractClassGenerator implements Generator
 {
+    use HandlesImports, HandlesTraits;
+
     protected $types = ['seeders'];
 
     public function output(Tree $tree): array

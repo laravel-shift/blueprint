@@ -6,6 +6,8 @@ use Blueprint\Contracts\Model;
 
 trait HandlesImports
 {
+    protected $imports = [];
+
     protected function addImport(Model $model, $class)
     {
         $this->imports[$model->name()][] = $class;
