@@ -256,9 +256,11 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             $definition .= self::INDENT . '$table->' . $model->softDeletesDataType() . '();' . PHP_EOL;
         }
 
-        if ($model->morphTo()) {
-            $definition .= self::INDENT . sprintf('$table->unsignedBigInteger(\'%s\');', Str::lower($model->morphTo() . '_id')) . PHP_EOL;
-            $definition .= self::INDENT . sprintf('$table->string(\'%s\');', Str::lower($model->morphTo() . '_type')) . PHP_EOL;
+        if ($model->morphTo() && $relationships = $model->relationships()) {
+            foreach ($relationships['morphTo'] as $morphTo) {
+                $definition .= self::INDENT . sprintf('$table->unsignedBigInteger(\'%s\');', Str::lower($morphTo . '_id')) . PHP_EOL;
+                $definition .= self::INDENT . sprintf('$table->string(\'%s\');', Str::lower($morphTo . '_type')) . PHP_EOL;
+            }
         }
 
         foreach ($model->indexes() as $index) {

@@ -6,7 +6,6 @@ use Blueprint\Blueprint;
 use Blueprint\Generators\MigrationGenerator;
 use Blueprint\Tree;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\App;
 use Symfony\Component\Finder\SplFileInfo;
 use Tests\TestCase;
 
@@ -53,7 +52,7 @@ class MigrationGeneratorTest extends TestCase
      */
     public function output_writes_migration_for_model_tree($definition, $path, $migration)
     {
-        if ($migration  === 'migrations/return-type-declarations.php') {
+        if ($migration === 'migrations/return-type-declarations.php') {
             $this->app['config']->set('blueprint.use_return_types', true);
         }
 
@@ -85,7 +84,7 @@ class MigrationGeneratorTest extends TestCase
      */
     public function output_updates_migration_for_model_tree($definition, $path, $migration)
     {
-        if ($migration  === 'migrations/return-type-declarations.php') {
+        if ($migration === 'migrations/return-type-declarations.php') {
             $this->app['config']->set('blueprint.use_return_types', true);
         }
 
@@ -548,6 +547,31 @@ class MigrationGeneratorTest extends TestCase
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$post_migration, $user_migration, $image_migration]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function output_works_with_multiple_morphto_statements_in_polymorphic_relationship()
+    {
+        $this->filesystem->expects('stub')
+            ->with('migration.stub')
+            ->andReturn($this->stub('migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $image_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_images_table.php');
+
+        $this->filesystem->expects('exists')->andReturn(false);
+
+        $this->filesystem->expects('put')
+            ->with($image_migration, $this->fixture('migrations/polymorphic_relationships_images_table_multiple_morphto.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/polymorphic-relationships-multiple-morphto.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$image_migration]], $this->subject->output($tree));
     }
 
     /**

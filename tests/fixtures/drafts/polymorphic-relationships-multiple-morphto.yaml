@@ -1,0 +1,5 @@
+models:
+  Image:
+    url: string:400
+    relationships:
+      morphTo: Imageable, Tagable
