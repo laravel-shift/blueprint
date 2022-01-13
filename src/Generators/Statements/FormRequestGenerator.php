@@ -4,78 +4,52 @@ namespace Blueprint\Generators\Statements;
 
 use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
+use Blueprint\Generators\AbstractClassGenerator;
 use Blueprint\Models\Controller;
 use Blueprint\Models\Statements\ValidateStatement;
 use Blueprint\Translators\Rules;
 use Blueprint\Tree;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
-class FormRequestGenerator implements Generator
+class FormRequestGenerator extends AbstractClassGenerator implements Generator
 {
-    private const INDENT = '            ';
+    protected $types = ['controllers', 'requests'];
 
-    /**
-     * @var Filesystem
-     */
-    protected $filesystem;
-
-    /**
-     * @var Tree
-     */
-    private $tree;
-
-    public function __construct(Filesystem $filesystem)
-    {
-        $this->filesystem = $filesystem;
-    }
+    public const INDENT = '            ';
 
     public function output(Tree $tree): array
     {
         $this->tree = $tree;
 
-        $output = [];
-
         $stub = $this->filesystem->stub('request.stub');
 
         /**
- * @var \Blueprint\Models\Controller $controller
-*/
+         * @var \Blueprint\Models\Controller $controller
+        */
         foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
-                    if (! $statement instanceof ValidateStatement) {
+                    if (!$statement instanceof ValidateStatement) {
                         continue;
                     }
 
                     $context = Str::singular($controller->prefix());
                     $name = $this->getName($context, $method);
-                    $path = $this->getPath($controller, $name);
+                    $path = $this->getStatementPath($controller, $name);
 
                     if ($this->filesystem->exists($path)) {
                         continue;
                     }
 
-                    if (! $this->filesystem->exists(dirname($path))) {
-                        $this->filesystem->makeDirectory(dirname($path), 0755, true);
-                    }
-
-                    $this->filesystem->put($path, $this->populateStub($stub, $name, $context, $statement, $controller));
-
-                    $output['created'][] = $path;
+                    $this->create($path, $this->populateStub($stub, $name, $context, $statement, $controller));
                 }
             }
         }
 
-        return $output;
+        return $this->output;
     }
 
-    public function types(): array
-    {
-        return ['controllers', 'requests'];
-    }
-
-    protected function getPath(Controller $controller, string $name)
+    protected function getStatementPath(Controller $controller, string $name)
     {
         return Blueprint::appPath() . '/Http/Requests/' . ($controller->namespace() ? $controller->namespace() . '/' : '') . $name . '.php';
     }
@@ -87,7 +61,7 @@ class FormRequestGenerator implements Generator
         $stub = str_replace('{{ rules }}', $this->buildRules($context, $validateStatement), $stub);
 
         if (Blueprint::useReturnTypeHints()) {
-            $stub = str_replace(['authorize()','rules()'], ['authorize(): bool','rules(): array'], $stub);
+            $stub = str_replace(['authorize()', 'rules()'], ['authorize(): bool', 'rules(): array'], $stub);
         }
 
         return $stub;
@@ -143,7 +117,7 @@ class FormRequestGenerator implements Generator
 
         $rules = [];
 
-        if (! is_null($model)) {
+        if (!is_null($model)) {
             if ($model->hasColumn($column)) {
                 $modelColumn = $model->column($column);
 
@@ -152,8 +126,8 @@ class FormRequestGenerator implements Generator
                 return $rules;
             } else {
                 /**
- * @var \Blueprint\Models\Model $column
-*/
+                 * @var \Blueprint\Models\Model $column
+                */
                 foreach ($model->columns() as $column) {
                     if ($column->name() === 'id') {
                         continue;

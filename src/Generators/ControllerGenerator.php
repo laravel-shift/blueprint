@@ -3,8 +3,11 @@
 namespace Blueprint\Generators;
 
 use Blueprint\Blueprint;
+use Blueprint\Concerns\HandlesImports;
+use Blueprint\Concerns\HandlesTraits;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Controller;
+use Blueprint\Models\Model;
 use Blueprint\Models\Statements\DispatchStatement;
 use Blueprint\Models\Statements\EloquentStatement;
 use Blueprint\Models\Statements\FireStatement;
@@ -17,63 +20,32 @@ use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
 use Blueprint\Tree;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
-class ControllerGenerator implements Generator
+class ControllerGenerator extends AbstractClassGenerator implements Generator
 {
-    const INDENT = '        ';
+    use HandlesImports, HandlesTraits;
 
-    /**
-     * @var Filesystem
-     */
-    protected $filesystem;
-
-    private $imports = [];
-
-    /**
-     * @var Tree
-     */
-    private $tree;
-
-    public function __construct(Filesystem $filesystem)
-    {
-        $this->filesystem = $filesystem;
-    }
+    protected $types = ['controllers'];
 
     public function output(Tree $tree): array
     {
         $this->tree = $tree;
-
-        $output = [];
 
         $stub = $this->filesystem->stub('controller.class.stub');
 
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree->controllers() as $controller) {
             $this->addImport($controller, 'Illuminate\\Http\\Request');
-
             if ($controller->fullyQualifiedNamespace() !== 'App\\Http\\Controllers') {
                 $this->addImport($controller, 'App\\Http\\Controllers\\Controller');
             }
-
             $path = $this->getPath($controller);
 
-            if (!$this->filesystem->exists(dirname($path))) {
-                $this->filesystem->makeDirectory(dirname($path), 0755, true);
-            }
-
-            $this->filesystem->put($path, $this->populateStub($stub, $controller));
-
-            $output['created'][] = $path;
+            $this->create($path, $this->populateStub($stub, $controller));
         }
 
-        return $output;
-    }
-
-    public function types(): array
-    {
-        return ['controllers'];
+        return $this->output;
     }
 
     protected function populateStub(string $stub, Controller $controller)
@@ -149,7 +121,7 @@ class ControllerGenerator implements Generator
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
 
                     if ($statement->paginate()) {
-                        if (! Str::contains($body, '::all();')) {
+                        if (!Str::contains($body, '::all();')) {
                             $queryStatement = new QueryStatement('all', [$statement->reference()]);
                             $body = implode(PHP_EOL, [
                                 self::INDENT . $queryStatement->output($statement->reference()),
@@ -194,34 +166,6 @@ class ControllerGenerator implements Generator
         }
 
         return trim($methods);
-    }
-
-    protected function getPath(Controller $controller)
-    {
-        $path = str_replace('\\', '/', Blueprint::relativeNamespace($controller->fullyQualifiedClassName()));
-
-        return Blueprint::appPath() . '/' . $path . '.php';
-    }
-
-    protected function buildImports(Controller $controller)
-    {
-        $imports = array_unique($this->imports[$controller->name()]);
-        sort($imports);
-
-        return implode(
-            PHP_EOL,
-            array_map(
-                function ($class) {
-                    return 'use ' . $class . ';';
-                },
-                $imports
-            )
-        );
-    }
-
-    private function addImport(Controller $controller, $class)
-    {
-        $this->imports[$controller->name()][] = $class;
     }
 
     private function determineModel(Controller $controller, ?string $reference)

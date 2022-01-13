@@ -3,9 +3,13 @@
 namespace Blueprint\Generators;
 
 use Blueprint\Blueprint;
+use Blueprint\Concerns\HandlesImports;
+use Blueprint\Concerns\HandlesTraits;
 use Blueprint\Contracts\Generator;
+use Blueprint\Contracts\Model as BlueprintModel;
 use Blueprint\Models\Column;
 use Blueprint\Models\Controller;
+use Blueprint\Models\Model;
 use Blueprint\Models\Statements\DispatchStatement;
 use Blueprint\Models\Statements\EloquentStatement;
 use Blueprint\Models\Statements\FireStatement;
@@ -18,66 +22,43 @@ use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
 use Blueprint\Tree;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use Shift\Faker\Registry as FakerRegistry;
 
-class TestGenerator implements Generator
+class TestGenerator extends AbstractClassGenerator implements Generator
 {
+    use HandlesImports, HandlesTraits;
+
     const TESTS_VIEW = 1;
     const TESTS_REDIRECT = 2;
     const TESTS_SAVE = 4;
     const TESTS_DELETE = 8;
     const TESTS_RESPONDS = 16;
 
-    /** @var Filesystem */
-    protected $filesystem;
+    protected $stubs = [];
 
-    /** @var Tree */
-    private $tree;
-
-    private $imports = [];
-    private $stubs = [];
-    private $traits = [];
-
-    public function __construct(Filesystem $filesystem)
-    {
-        $this->filesystem = $filesystem;
-    }
+    protected $types = ['controllers', 'tests'];
 
     public function output(Tree $tree): array
     {
         $this->tree = $tree;
 
-        $output = [];
-
         $stub = $this->filesystem->stub('test.class.stub');
 
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree->controllers() as $controller) {
+            $this->addImport($controller, \Tests\TestCase::class);
             $path = $this->getPath($controller);
 
-            if (!$this->filesystem->exists(dirname($path))) {
-                $this->filesystem->makeDirectory(dirname($path), 0755, true);
-            }
-
-            $this->filesystem->put($path, $this->populateStub($stub, $controller));
-
-            $output['created'][] = $path;
+            $this->create($path, $this->populateStub($stub, $controller));
         }
 
-        return $output;
+        return $this->output;
     }
 
-    public function types(): array
+    protected function getPath(BlueprintModel $model)
     {
-        return ['controllers', 'tests'];
-    }
-
-    protected function getPath(Controller $controller)
-    {
-        $path = str_replace('\\', '/', Blueprint::relativeNamespace($controller->fullyQualifiedClassName()));
-
+        $path = str_replace('\\', '/', Blueprint::relativeNamespace($model->fullyQualifiedClassName()));
         return 'tests/Feature/' . $path . 'Test.php';
     }
 
@@ -498,47 +479,13 @@ class TestGenerator implements Generator
 
             if (Blueprint::useReturnTypeHints()) {
                 $test_case = str_replace("$test_case_name()", "$test_case_name(): void", $test_case);
-                $test_case = str_replace("uses_form_request_validation()", "uses_form_request_validation(): void", $test_case);
+                $test_case = str_replace('uses_form_request_validation()', 'uses_form_request_validation(): void', $test_case);
             }
 
             $test_cases .= PHP_EOL . $test_case . PHP_EOL;
         }
 
         return trim($this->buildTraits($controller) . PHP_EOL . $test_cases);
-    }
-
-    protected function addTrait(Controller $controller, $trait)
-    {
-        $this->traits[$controller->name()][] = $trait;
-    }
-
-    protected function addImport(Controller $controller, $class)
-    {
-        $this->imports[$controller->name()][] = $class;
-    }
-
-    protected function buildImports(Controller $controller)
-    {
-        $this->addImport($controller, 'Tests\\TestCase');
-
-        $imports = array_unique($this->imports[$controller->name()]);
-        sort($imports);
-
-        return implode(PHP_EOL, array_map(function ($class) {
-            return 'use ' . $class . ';';
-        }, $imports));
-    }
-
-    private function buildTraits(Controller $controller)
-    {
-        if (empty($this->traits[$controller->name()])) {
-            return '';
-        }
-
-        $traits = array_unique($this->traits[$controller->name()]);
-        sort($traits);
-
-        return 'use ' . implode(', ', $traits) . ';';
     }
 
     private function testCaseStub()

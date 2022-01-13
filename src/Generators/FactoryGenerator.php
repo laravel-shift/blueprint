@@ -3,40 +3,27 @@
 namespace Blueprint\Generators;
 
 use Blueprint\Blueprint;
+use Blueprint\Concerns\HandlesImports;
+use Blueprint\Concerns\HandlesTraits;
 use Blueprint\Contracts\Generator;
+use Blueprint\Contracts\Model as BlueprintModel;
 use Blueprint\Models\Column;
 use Blueprint\Models\Model;
 use Blueprint\Tree;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use Shift\Faker\Registry as FakerRegistry;
 
-class FactoryGenerator implements Generator
+class FactoryGenerator extends AbstractClassGenerator implements Generator
 {
+    use HandlesImports, HandlesTraits;
+
     const INDENT = '    ';
 
-    /**
-     * @var Filesystem
-     */
-    protected $filesystem;
-
-    /**
-     * @var Tree
-     */
-    private $tree;
-
-    private $imports = [];
-
-    public function __construct(Filesystem $filesystem)
-    {
-        $this->filesystem = $filesystem;
-    }
+    protected $types = ['factories'];
 
     public function output(Tree $tree): array
     {
         $this->tree = $tree;
-
-        $output = [];
         $stub = $this->filesystem->stub('factory.stub');
 
         /**
@@ -47,28 +34,17 @@ class FactoryGenerator implements Generator
 
             $path = $this->getPath($model);
 
-            if (!$this->filesystem->exists(dirname($path))) {
-                $this->filesystem->makeDirectory(dirname($path), 0755, true);
-            }
-
-            $this->filesystem->put($path, $this->populateStub($stub, $model));
-
-            $output['created'][] = $path;
+            $this->create($path, $this->populateStub($stub, $model));
         }
 
-        return $output;
+        return $this->output;
     }
 
-    public function types(): array
+    protected function getPath(BlueprintModel $blueprintModel)
     {
-        return ['factories'];
-    }
-
-    protected function getPath(Model $model)
-    {
-        $path = $model->name();
-        if ($model->namespace()) {
-            $path = str_replace('\\', '/', $model->namespace()) . '/' . $path;
+        $path = $blueprintModel->name();
+        if ($blueprintModel->namespace()) {
+            $path = str_replace('\\', '/', $blueprintModel->namespace()) . '/' . $path;
         }
 
         return 'database/factories/' . $path . 'Factory.php';
@@ -174,7 +150,7 @@ class FactoryGenerator implements Generator
                     $definition
                 );
             } elseif (in_array($column->dataType(), ['json', 'jsonb'])) {
-                $default = $column->defaultValue() ?? "{}";
+                $default = $column->defaultValue() ?? '{}';
                 $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => '{$default}'," . PHP_EOL;
             } elseif ($column->dataType() === 'morphs') {
                 if ($column->isNullable()) {
@@ -210,27 +186,6 @@ class FactoryGenerator implements Generator
         }
 
         return trim($definition);
-    }
-
-    protected function buildImports(Model $model)
-    {
-        $imports = array_unique($this->imports[$model->name()]);
-        sort($imports);
-
-        return implode(
-            PHP_EOL,
-            array_map(
-                function ($class) {
-                    return 'use ' . $class . ';';
-                },
-                $imports
-            )
-        );
-    }
-
-    private function addImport(Model $model, $class)
-    {
-        $this->imports[$model->name()][] = $class;
     }
 
     private function fillableColumns(array $columns): array

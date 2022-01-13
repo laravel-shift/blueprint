@@ -3,17 +3,6 @@
 namespace Tests\Feature\Lexers;
 
 use Blueprint\Lexers\SeederLexer;
-use Blueprint\Models\Statements\DispatchStatement;
-use Blueprint\Models\Statements\EloquentStatement;
-use Blueprint\Models\Statements\FireStatement;
-use Blueprint\Models\Statements\QueryStatement;
-use Blueprint\Models\Statements\RedirectStatement;
-use Blueprint\Models\Statements\RenderStatement;
-use Blueprint\Models\Statements\ResourceStatement;
-use Blueprint\Models\Statements\RespondStatement;
-use Blueprint\Models\Statements\SendStatement;
-use Blueprint\Models\Statements\SessionStatement;
-use Blueprint\Models\Statements\ValidateStatement;
 use PHPUnit\Framework\TestCase;
 
 /**

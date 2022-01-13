@@ -2,9 +2,10 @@
 
 namespace Blueprint\Models;
 
+use Blueprint\Contracts\Model as BlueprintModel;
 use Illuminate\Support\Str;
 
-class Controller
+class Controller implements BlueprintModel
 {
     /** @var array */
     public static $resourceMethods = ['index', 'create', 'store', 'edit', 'update', 'show', 'destroy'];

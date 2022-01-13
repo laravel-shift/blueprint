@@ -3,58 +3,47 @@
 namespace Blueprint\Generators;
 
 use Blueprint\Blueprint;
+use Blueprint\Concerns\HandlesImports;
+use Blueprint\Concerns\HandlesTraits;
 use Blueprint\Contracts\Generator;
+use Blueprint\Contracts\Model as BlueprintModel;
+use Blueprint\Models\Model;
 use Blueprint\Tree;
-use Illuminate\Filesystem\Filesystem;
 
-class SeederGenerator implements Generator
+class SeederGenerator extends AbstractClassGenerator implements Generator
 {
-    /**
-     * @var Filesystem
-     */
-    protected $filesystem;
+    use HandlesImports, HandlesTraits;
 
-    /**
-     * @var Tree
-     */
-    private $tree;
-
-    private $imports = [];
-
-    public function __construct(Filesystem $filesystem)
-    {
-        $this->filesystem = $filesystem;
-    }
+    protected $types = ['seeders'];
 
     public function output(Tree $tree): array
     {
         $this->tree = $tree;
 
-        if (empty($tree->seeders())) {
-            return [];
-        }
-
-        $output = [];
         $stub = $this->filesystem->stub('seeder.stub');
 
         foreach ($tree->seeders() as $model) {
+            $model = new Model($model);
             $path = $this->getPath($model);
-            $this->filesystem->put($path, $this->populateStub($stub, $model));
-
-            $output['created'][] = $path;
+            $this->create($path, $this->populateStub($stub, $model));
         }
 
-        return $output;
+        return $this->output;
     }
 
-    public function types(): array
+    protected function getPath(BlueprintModel $blueprintModel)
     {
-        return ['seeders'];
+        $path = $blueprintModel->name();
+        if ($blueprintModel->namespace()) {
+            $path = str_replace('\\', '/', $blueprintModel->namespace()) . '/' . $path;
+        }
+
+        return 'database/seeders/' . $path . 'Seeder.php';
     }
 
-    protected function populateStub(string $stub, string $model)
+    protected function populateStub(string $stub, BlueprintModel $model)
     {
-        $stub = str_replace('{{ class }}', $this->getClassName($model), $stub);
+        $stub = str_replace('{{ class }}', $model->name() . 'Seeder', $stub);
         $this->addImport($model, 'Illuminate\Database\Seeder');
         $stub = str_replace('//', $this->build($model), $stub);
         $stub = str_replace('use Illuminate\Database\Seeder;', $this->buildImports($model), $stub);
@@ -66,40 +55,9 @@ class SeederGenerator implements Generator
         return $stub;
     }
 
-    protected function getClassName(string $model)
+    protected function build(BlueprintModel $model)
     {
-        return $model . 'Seeder';
-    }
-
-    protected function build(string $model)
-    {
-        $this->addImport($model, $this->tree->fqcnForContext($model));
-        return sprintf('%s::factory()->count(5)->create();', class_basename($this->tree->fqcnForContext($model)));
-    }
-
-    protected function buildImports(string $model)
-    {
-        $imports = array_unique($this->imports[$model]);
-        sort($imports);
-
-        return implode(
-            PHP_EOL,
-            array_map(
-                function ($class) {
-                    return 'use ' . $class . ';';
-                },
-                $imports
-            )
-        );
-    }
-
-    private function addImport(string $model, $class)
-    {
-        $this->imports[$model][] = $class;
-    }
-
-    private function getPath($model)
-    {
-        return 'database/seeders/' . $model . 'Seeder.php';
+        $this->addImport($model, $this->tree->fqcnForContext($model->name()));
+        return sprintf('%s::factory()->count(5)->create();', class_basename($this->tree->fqcnForContext($model->name())));
     }
 }

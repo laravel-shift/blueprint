@@ -11,4 +11,3 @@ models:
     user_id: id
 
 seeders: Post, Comment
-
