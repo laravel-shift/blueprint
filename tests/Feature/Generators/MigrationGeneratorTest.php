@@ -6,7 +6,6 @@ use Blueprint\Blueprint;
 use Blueprint\Generators\MigrationGenerator;
 use Blueprint\Tree;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\App;
 use Symfony\Component\Finder\SplFileInfo;
 use Tests\TestCase;
 
@@ -53,7 +52,7 @@ class MigrationGeneratorTest extends TestCase
      */
     public function output_writes_migration_for_model_tree($definition, $path, $migration)
     {
-        if ($migration  === 'migrations/return-type-declarations.php') {
+        if ($migration === 'migrations/return-type-declarations.php') {
             $this->app['config']->set('blueprint.use_return_types', true);
         }
 
@@ -85,7 +84,7 @@ class MigrationGeneratorTest extends TestCase
      */
     public function output_updates_migration_for_model_tree($definition, $path, $migration)
     {
-        if ($migration  === 'migrations/return-type-declarations.php') {
+        if ($migration === 'migrations/return-type-declarations.php') {
             $this->app['config']->set('blueprint.use_return_types', true);
         }
 
@@ -605,6 +604,34 @@ class MigrationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/uuid-shorthand.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
+        $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function output_respects_softdelete_order()
+    {
+        $this->app->config->set('blueprint.use_constraints', true);
+
+        $this->filesystem->expects('stub')
+            ->with('migration.stub')
+            ->andReturn($this->stub('migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $timestamp_path = 'database/migrations/' . $now->format('Y_m_d_His') . '_create_comments_table.php';
+
+        $this->filesystem->expects('exists')
+            ->with($timestamp_path)
+            ->andReturn(false);
+
+        $this->filesystem->expects('put')
+            ->with($timestamp_path, $this->fixture('migrations/soft-deletes-respect-order.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/soft-deletes-respect-order.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
         $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
     }
 

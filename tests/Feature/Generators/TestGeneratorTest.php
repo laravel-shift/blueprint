@@ -172,7 +172,6 @@ class TestGeneratorTest extends TestCase
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
-
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
@@ -226,7 +225,7 @@ class TestGeneratorTest extends TestCase
                 'tests/Feature/Http/Controllers/TelegramControllerTest.php',
                 'tests/Feature/Http/Controllers/PaymentControllerTest.php',
                 'tests/Feature/Http/Controllers/Api/PaymentControllerTest.php'
-            ],[
+            ], [
                 'tests/call-to-a-member-function-columns-on-null-SubscriptionControllerTest.php',
                 'tests/call-to-a-member-function-columns-on-null-TelegramControllerTest.php',
                 'tests/call-to-a-member-function-columns-on-null-PaymentControllerTest.php',
