@@ -226,7 +226,7 @@ class TestGenerator extends AbstractClassGenerator implements Generator
                                 $request_data[$data] = '$' . $variable_name;
                             } elseif (!is_null($local_model)) {
                                 foreach ($local_model->columns() as $local_column) {
-                                    if ($local_column->name() === 'id') {
+                                    if (in_array($local_column->name(), ['id', 'softdeletes', 'softdeletestz'])) {
                                         continue;
                                     }
 
