@@ -632,7 +632,7 @@ class ModelLexerTest extends TestCase
 
         $model = $actual['models']['Model'];
         $this->assertEquals('Model', $model->name());
-        $this->assertEquals('Morphable', $model->morphTo());
+        $this->assertArrayHasKey('morphTo', $model->relationships());
         $this->assertTrue($model->usesTimestamps());
 
         $columns = $model->columns();
