@@ -632,6 +632,34 @@ class MigrationGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
     }
 
+    /**
+     * @test
+     */
+    public function output_respects_softdelete_order()
+    {
+        $this->app->config->set('blueprint.use_constraints', true);
+
+        $this->filesystem->expects('stub')
+            ->with('migration.stub')
+            ->andReturn($this->stub('migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $timestamp_path = 'database/migrations/' . $now->format('Y_m_d_His') . '_create_comments_table.php';
+
+        $this->filesystem->expects('exists')
+            ->with($timestamp_path)
+            ->andReturn(false);
+
+        $this->filesystem->expects('put')
+            ->with($timestamp_path, $this->fixture('migrations/soft-deletes-respect-order.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/soft-deletes-respect-order.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+        $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
+    }
+
     public function modelTreeDataProvider()
     {
         return [

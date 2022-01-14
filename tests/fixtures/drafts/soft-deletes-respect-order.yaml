@@ -1,0 +1,5 @@
+models:
+  Comment:
+    title: string
+    softdeletes
+    name: string
