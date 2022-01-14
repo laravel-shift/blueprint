@@ -12,7 +12,6 @@ class Model implements BlueprintModel
     private $primaryKey = 'id';
     private $timestamps = 'timestamps';
     private $softDeletes = false;
-    private $morphTo;
     private $columns = [];
     private $relationships = [];
     private $pivotTables = [];
@@ -188,15 +187,5 @@ class Model implements BlueprintModel
     public function polymorphicManyToManyTables()
     {
         return $this->polymorphicManyToManyTables;
-    }
-
-    public function setMorphTo(string $reference)
-    {
-        $this->morphTo = $reference;
-    }
-
-    public function morphTo(): ?string
-    {
-        return $this->morphTo;
     }
 }

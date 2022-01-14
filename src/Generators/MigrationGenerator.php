@@ -56,7 +56,6 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
          */
         foreach ($tree->models() as $model) {
             $tables['tableNames'][$model->tableName()] = $this->populateStub($stub, $model);
-
             if (!empty($model->pivotTables())) {
                 foreach ($model->pivotTables() as $pivotSegments) {
                     $pivotTableName = $this->getPivotTableName($pivotSegments);
@@ -257,9 +256,13 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             $definition .= $column_definition;
         }
 
-        if ($model->morphTo()) {
-            $definition .= self::INDENT . sprintf('$table->unsignedBigInteger(\'%s\');', Str::lower($model->morphTo() . '_id')) . PHP_EOL;
-            $definition .= self::INDENT . sprintf('$table->string(\'%s\');', Str::lower($model->morphTo() . '_type')) . PHP_EOL;
+        $relationships = $model->relationships();
+
+        if (array_key_exists('morphTo', $relationships)) {
+            foreach ($relationships['morphTo'] as $morphTo) {
+                $definition .= self::INDENT . sprintf('$table->unsignedBigInteger(\'%s\');', Str::lower($morphTo . '_id')) . PHP_EOL;
+                $definition .= self::INDENT . sprintf('$table->string(\'%s\');', Str::lower($morphTo . '_type')) . PHP_EOL;
+            }
         }
 
         foreach ($model->indexes() as $index) {

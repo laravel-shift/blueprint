@@ -552,6 +552,31 @@ class MigrationGeneratorTest extends TestCase
     /**
      * @test
      */
+    public function output_works_with_multiple_morphto_statements_in_polymorphic_relationship()
+    {
+        $this->filesystem->expects('stub')
+            ->with('migration.stub')
+            ->andReturn($this->stub('migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $image_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_images_table.php');
+
+        $this->filesystem->expects('exists')->andReturn(false);
+
+        $this->filesystem->expects('put')
+            ->with($image_migration, $this->fixture('migrations/polymorphic_relationships_images_table_multiple_morphto.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/polymorphic-relationships-multiple-morphto.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$image_migration]], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
     public function output_does_not_generate_relationship_for_uuid()
     {
         $this->app->config->set('blueprint.use_constraints', true);
