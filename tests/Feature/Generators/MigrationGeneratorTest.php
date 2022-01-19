@@ -28,6 +28,7 @@ class MigrationGeneratorTest extends TestCase
         $this->subject = new MigrationGenerator($this->files);
 
         $this->blueprint = new Blueprint();
+        $this->blueprint->registerLexer(new \Blueprint\Lexers\ConfigLexer());
         $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
         $this->blueprint->registerGenerator($this->subject);
     }
@@ -204,8 +205,6 @@ class MigrationGeneratorTest extends TestCase
      */
     public function output_creates_constraints_for_unconventional_foreign_reference_migration()
     {
-        $this->app->config->set('blueprint.use_constraints', true);
-
         $this->filesystem->expects('stub')
             ->with('migration.stub')
             ->andReturn($this->stub('migration.stub'));
@@ -221,8 +220,7 @@ class MigrationGeneratorTest extends TestCase
             ->with($model_migration, $this->fixture('migrations/relationships-constraints.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/relationships.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
-
+        $tree = $this->blueprint->analyze($tokens + ['config' => ['use_constraints' => true]]);
         $this->assertEquals(['created' => [$model_migration]], $this->subject->output($tree));
     }
 
