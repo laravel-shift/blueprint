@@ -205,7 +205,6 @@ class MigrationGeneratorTest extends TestCase
      */
     public function output_creates_constraints_for_unconventional_foreign_reference_migration()
     {
-        $this->app->config->set('blueprint.use_constraints', true);
         $this->filesystem->expects('stub')
             ->with('migration.stub')
             ->andReturn($this->stub('migration.stub'));
