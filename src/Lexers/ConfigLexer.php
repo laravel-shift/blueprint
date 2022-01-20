@@ -19,6 +19,7 @@ class ConfigLexer implements Lexer
         if (array_key_exists('config', $tokens) && is_array($tokens['config'])) {
             $this->analyzeValue($tokens['config']);
         }
+
         return [];
     }
 
