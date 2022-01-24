@@ -17,7 +17,7 @@
     },
     "require-dev": {
         "mockery/mockery": "^1.4.4",
-        "orchestra/testbench": "dev-remove-nice-to-have-deps",
+        "orchestra/testbench": "^7.0",
         "phpunit/phpunit": "^9.5.10"
     },
     "suggest": {
