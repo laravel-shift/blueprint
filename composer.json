@@ -13,7 +13,7 @@
         "illuminate/filesystem": "^9.0",
         "illuminate/support": "^9.0",
         "laravel-shift/faker-registry": "^0.1",
-        "symfony/yaml": "^5.1.4"
+        "symfony/yaml": "^6.0"
     },
     "require-dev": {
         "mockery/mockery": "^1.4.4",
