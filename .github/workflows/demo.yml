@@ -26,7 +26,7 @@ jobs:
       fail-fast: false
       matrix:
         php-version: [7.3, 7.4]
-        laravel-version: [6, 7, 8]
+        laravel-version: [9.*, 6, 7, 8]
         os: [ubuntu-latest]
 
     runs-on: ${{ matrix.os }}
