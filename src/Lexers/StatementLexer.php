@@ -37,10 +37,11 @@ class StatementLexer implements Lexer
                 'save', 'delete', 'find' => new EloquentStatement($command, $statement),
                 'update' => $this->analyzeUpdate($statement),
                 'flash', 'store' => new SessionStatement($command, $statement),
+                default => null,
             };
         }
 
-        return $statements;
+        return array_filter($statements);
     }
 
     private function analyzeRender(string $statement)
