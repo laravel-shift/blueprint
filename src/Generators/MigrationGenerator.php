@@ -221,7 +221,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
 
                 // TODO: unset the proper modifier
                 $modifiers = collect($modifiers)->reject(
-                    fn($modifier) => (is_array($modifier) && key($modifier) === 'foreign')
+                    fn ($modifier) => (is_array($modifier) && key($modifier) === 'foreign')
                     || (is_array($modifier) && key($modifier) === 'onDelete')
                     || (is_array($modifier) && key($modifier) === 'onUpdate')
                     || $modifier === 'foreign'
@@ -408,7 +408,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         if ($overwrite) {
             $migrations = collect($this->filesystem->files($dir))
                 ->filter(
-                    fn(SplFileInfo $file) => str_contains($file->getFilename(), $name)
+                    fn (SplFileInfo $file) => str_contains($file->getFilename(), $name)
                 )
                 ->sort();
 
@@ -447,7 +447,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
     {
         $isCustom = collect($segments)
             ->filter(
-                fn($segment) => Str::contains($segment, ':')
+                fn ($segment) => Str::contains($segment, ':')
             )->first();
 
         if ($isCustom) {
@@ -457,7 +457,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         }
 
         $segments = array_map(
-            fn($name) => Str::snake($name),
+            fn ($name) => Str::snake($name),
             $segments
         );
         sort($segments);
@@ -496,7 +496,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
 
         return collect(self::UNSIGNABLE_TYPES)
             ->contains(
-                fn($value) => strtolower($value) === strtolower($type)
+                fn ($value) => strtolower($value) === strtolower($type)
             );
     }
 

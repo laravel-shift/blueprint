@@ -16,7 +16,7 @@ trait HandlesImports
     protected function buildImports(Model $model)
     {
         return collect($this->imports[$model->name()])
-                        ->map(fn($class) => "use {$class};")
+                        ->map(fn ($class) => "use {$class};")
                         ->unique()
                         ->sort()
                         ->implode(PHP_EOL);
