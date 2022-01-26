@@ -109,16 +109,12 @@ class Tracer
 
         $columns = $schema->listTableColumns($table, $database);
 
-        $uses_enums = collect($columns)->contains(function ($column) {
-            return $column->getType() instanceof \Blueprint\EnumType;
-        });
+        $uses_enums = collect($columns)->contains(fn($column) => $column->getType() instanceof \Blueprint\EnumType);
 
         if ($uses_enums) {
             $definitions = $model->getConnection()->getDoctrineConnection()->fetchAllAssociative($schema->getDatabasePlatform()->getListTableColumnsSQL($table, $database));
 
-            collect($columns)->filter(function ($column) {
-                return $column->getType() instanceof \Blueprint\EnumType;
-            })->each(function (&$column, $key) use ($definitions) {
+            collect($columns)->filter(fn($column) => $column->getType() instanceof \Blueprint\EnumType)->each(function (&$column, $key) use ($definitions) {
                 $definition = collect($definitions)->where('Field', $key)->first();
 
                 $column->options = \Blueprint\EnumType::extractOptions($definition['Type']);

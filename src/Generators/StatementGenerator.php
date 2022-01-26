@@ -58,9 +58,7 @@ abstract class StatementGenerator extends AbstractClassGenerator implements Gene
     protected function buildParameters(array $data)
     {
         $parameters = array_map(
-            function ($parameter) {
-                return '$' . $parameter;
-            },
+            fn($parameter) => '$' . $parameter,
             $data
         );
 
