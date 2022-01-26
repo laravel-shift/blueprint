@@ -554,16 +554,12 @@ END;
 
     private function httpMethodForAction($action)
     {
-        switch ($action) {
-            case 'store':
-                return 'post';
-            case 'update':
-                return 'put';
-            case 'destroy':
-                return 'delete';
-            default:
-                return 'get';
-        }
+        return match ($action) {
+            'store' => 'post',
+            'update' => 'put',
+            'destroy' => 'delete',
+            default => 'get',
+        };
     }
 
     private function buildTestCaseName(string $name, int $tested_bits)
