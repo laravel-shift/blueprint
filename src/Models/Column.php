@@ -39,14 +39,14 @@ class Column
 
     public function isForeignKey()
     {
-        return collect($this->modifiers())->filter(fn($modifier) => (is_array($modifier) && key($modifier) === 'foreign') || $modifier === 'foreign')->flatten()->first();
+        return collect($this->modifiers())->filter(fn ($modifier) => (is_array($modifier) && key($modifier) === 'foreign') || $modifier === 'foreign')->flatten()->first();
     }
 
     public function defaultValue()
     {
         return collect($this->modifiers())
             ->collapse()
-            ->first(fn($value, $key) => $key === 'default');
+            ->first(fn ($value, $key) => $key === 'default');
     }
 
     public function isNullable()

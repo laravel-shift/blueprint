@@ -65,7 +65,7 @@ class FireStatement
 
     private function buildParameters(array $data)
     {
-        $parameters = array_map(fn($parameter) => '$' . $parameter, $data);
+        $parameters = array_map(fn ($parameter) => '$' . $parameter, $data);
 
         return implode(', ', $parameters);
     }

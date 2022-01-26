@@ -63,8 +63,8 @@ class ControllerLexer implements Lexer
     private function generateResourceTokens(Controller $controller, array $methods)
     {
         return collect($this->resourceTokens())
-            ->filter(fn($statements, $method) => in_array($method, $methods))
-            ->mapWithKeys(fn($statements, $method) => [
+            ->filter(fn ($statements, $method) => in_array($method, $methods))
+            ->mapWithKeys(fn ($statements, $method) => [
                 str_replace('api.', '', $method) => collect($statements)->map(function ($statement) use ($controller) {
                     $model = $this->getControllerModelName($controller);
 
@@ -154,6 +154,6 @@ class ControllerLexer implements Lexer
 
     private function hasOnlyApiResourceMethods(array $methods)
     {
-        return collect($methods)->every(fn($item, $key) => Str::startsWith($item, 'api.'));
+        return collect($methods)->every(fn ($item, $key) => Str::startsWith($item, 'api.'));
     }
 }

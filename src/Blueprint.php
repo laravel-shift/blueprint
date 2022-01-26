@@ -44,31 +44,31 @@ class Blueprint
 
         $content = preg_replace_callback(
             '/^(\s+)(id|timestamps(Tz)?|softDeletes(Tz)?)$/mi',
-            fn($matches) => $matches[1] . strtolower($matches[2]) . ': ' . $matches[2],
+            fn ($matches) => $matches[1] . strtolower($matches[2]) . ': ' . $matches[2],
             $content
         );
 
         $content = preg_replace_callback(
             '/^(\s+)(id|timestamps(Tz)?|softDeletes(Tz)?): true$/mi',
-            fn($matches) => $matches[1] . strtolower($matches[2]) . ': ' . $matches[2],
+            fn ($matches) => $matches[1] . strtolower($matches[2]) . ': ' . $matches[2],
             $content
         );
 
         $content = preg_replace_callback(
             '/^(\s+)resource?$/mi',
-            fn($matches) => $matches[1] . 'resource: web',
+            fn ($matches) => $matches[1] . 'resource: web',
             $content
         );
 
         $content = preg_replace_callback(
             '/^(\s+)invokable?$/mi',
-            fn($matches) => $matches[1] . 'invokable: true',
+            fn ($matches) => $matches[1] . 'invokable: true',
             $content
         );
 
         $content = preg_replace_callback(
             '/^(\s+)uuid(: true)?$/mi',
-            fn($matches) => $matches[1] . 'id: uuid primary',
+            fn ($matches) => $matches[1] . 'id: uuid primary',
             $content
         );
 
