@@ -10,7 +10,6 @@ use Blueprint\Tree;
 class EventGenerator extends StatementGenerator
 {
     protected $types = ['controllers'];
-    protected $new_instance = 'new event instance';
 
     public function output(Tree $tree): array
     {
@@ -53,7 +52,7 @@ class EventGenerator extends StatementGenerator
     {
         $stub = str_replace('{{ namespace }}', config('blueprint.namespace') . '\\Events', $stub);
         $stub = str_replace('{{ class }}', $fireStatement->event(), $stub);
-        $stub = str_replace('{{ properties }}', $this->buildConstructor($fireStatement), $stub);
+        $stub = str_replace('{{ properties }}', $this->populateConstructor('event', $fireStatement), $stub);
 
         return $stub;
     }

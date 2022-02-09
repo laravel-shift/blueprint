@@ -10,7 +10,6 @@ use Blueprint\Tree;
 class NotificationGenerator extends StatementGenerator
 {
     protected $types = ['controllers'];
-    protected $new_instance = 'new message instance';
 
     public function output(Tree $tree): array
     {
@@ -53,7 +52,7 @@ class NotificationGenerator extends StatementGenerator
     {
         $stub = str_replace('{{ namespace }}', config('blueprint.namespace') . '\\Notification', $stub);
         $stub = str_replace('{{ class }}', $sendStatement->mail(), $stub);
-        $stub = str_replace('{{ properties }}', $this->buildConstructor($sendStatement), $stub);
+        $stub = str_replace('{{ properties }}', $this->populateConstructor('message', $sendStatement), $stub);
 
         if (Blueprint::useReturnTypeHints()) {
             $stub = str_replace(

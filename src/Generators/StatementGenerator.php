@@ -6,13 +6,9 @@ use Blueprint\Contracts\Generator;
 
 abstract class StatementGenerator extends AbstractClassGenerator implements Generator
 {
-    protected function buildConstructor($statement)
+    protected function populateConstructor(string $type, $statement): string
     {
-        static $constructor = null;
-
-        if (is_null($constructor)) {
-            $constructor = str_replace('new instance', $this->new_instance, $this->filesystem->stub('constructor.stub'));
-        }
+        $constructor = str_replace('{{ type }}', $type, $this->filesystem->stub('constructor.stub'));
 
         if (empty($statement->data())) {
             $stub = (str_replace('{{ body }}', '//', $constructor));

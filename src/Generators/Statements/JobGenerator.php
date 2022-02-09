@@ -10,7 +10,6 @@ use Blueprint\Tree;
 class JobGenerator extends StatementGenerator
 {
     protected $types = ['controllers'];
-    protected $new_instance = 'new job instance';
 
     public function output(Tree $tree): array
     {
@@ -49,7 +48,7 @@ class JobGenerator extends StatementGenerator
     {
         $stub = str_replace('{{ namespace }}', config('blueprint.namespace') . '\\Jobs', $stub);
         $stub = str_replace('{{ class }}', $dispatchStatement->job(), $stub);
-        $stub = str_replace('{{ properties }}', $this->buildConstructor($dispatchStatement), $stub);
+        $stub = str_replace('{{ properties }}', $this->populateConstructor('job', $dispatchStatement), $stub);
 
         if (Blueprint::useReturnTypeHints()) {
             $stub = str_replace('public function handle()', 'public function handle(): void', $stub);
