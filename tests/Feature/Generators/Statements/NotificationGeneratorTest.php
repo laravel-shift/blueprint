@@ -71,9 +71,12 @@ class NotificationGeneratorTest extends TestCase
         $this->filesystem->expects('stub')
             ->with('notification.stub')
             ->andReturn($this->stub('notification.stub'));
+        $this->filesystem->shouldReceive('stub')
+            ->with('constructor.stub')
+            ->andReturn($this->stub('constructor.stub'));
 
         if ($draft === 'drafts/send-statements-notification-facade.yaml') {
-            $this->filesystem->expects('stub')
+            $this->filesystem->shouldReceive('stub')
                 ->with('constructor.stub')
                 ->andReturn($this->stub('constructor.stub'));
         }
@@ -89,7 +92,6 @@ class NotificationGeneratorTest extends TestCase
             ->with('app/Notification', 0755, true);
         $this->filesystem->expects('put')
             ->with('app/Notification/ReviewPostNotification.php', $this->fixture('notifications/review-post.php'));
-
         $this->filesystem->expects('exists')
             ->with('app/Notification/PublishedPostNotification.php')
             ->andReturnFalse();
@@ -110,7 +112,6 @@ class NotificationGeneratorTest extends TestCase
         $this->filesystem->expects('stub')
             ->with('notification.stub')
             ->andReturn($this->stub('notification.stub'));
-
         $this->filesystem->expects('exists')
             ->with('app/Notification/ReviewPostNotification.php')
             ->andReturnTrue();
@@ -135,7 +136,9 @@ class NotificationGeneratorTest extends TestCase
         $this->filesystem->expects('stub')
             ->with('notification.stub')
             ->andReturn($this->stub('notification.stub'));
-
+        $this->filesystem->expects('stub')
+            ->with('constructor.stub')
+            ->andReturn($this->stub('constructor.stub'));
         $this->filesystem->expects('exists')
             ->with('src/path/Notification')
             ->andReturnFalse();
@@ -165,7 +168,9 @@ class NotificationGeneratorTest extends TestCase
         $this->filesystem->expects('stub')
             ->with('notification.stub')
             ->andReturn($this->stub('notification.stub'));
-
+        $this->filesystem->expects('stub')
+            ->with('constructor.stub')
+            ->andReturn($this->stub('constructor.stub'));
         $this->filesystem->expects('exists')
             ->with('src/path/Notification')
             ->andReturnFalse();

@@ -70,11 +70,9 @@ class JobGeneratorTest extends TestCase
         $this->filesystem->expects('stub')
             ->with('job.stub')
             ->andReturn($this->stub('job.stub'));
-
-        $this->filesystem->expects('stub')
+        $this->filesystem->shouldReceive('stub')
             ->with('constructor.stub')
             ->andReturn($this->stub('constructor.stub'));
-
         $this->filesystem->shouldReceive('exists')
             ->twice()
             ->with('app/Jobs')
@@ -86,7 +84,6 @@ class JobGeneratorTest extends TestCase
             ->with('app/Jobs', 0755, true);
         $this->filesystem->expects('put')
             ->with('app/Jobs/CreateUser.php', $this->fixture('jobs/create-user.php'));
-
         $this->filesystem->expects('exists')
             ->with('app/Jobs/DeleteRole.php')
             ->andReturnFalse();
@@ -107,7 +104,6 @@ class JobGeneratorTest extends TestCase
         $this->filesystem->expects('stub')
             ->with('job.stub')
             ->andReturn($this->stub('job.stub'));
-
         $this->filesystem->expects('exists')
             ->with('app/Jobs/CreateUser.php')
             ->andReturnTrue();
@@ -133,7 +129,9 @@ class JobGeneratorTest extends TestCase
         $this->filesystem->expects('stub')
             ->with('job.stub')
             ->andReturn($this->stub('job.stub'));
-
+        $this->filesystem->expects('stub')
+            ->with('constructor.stub')
+            ->andReturn($this->stub('constructor.stub'));
         $this->filesystem->expects('exists')
             ->with('src/path/Jobs')
             ->andReturnFalse();

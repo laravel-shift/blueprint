@@ -14,9 +14,7 @@ class EnumType extends Type
     public function getSQLDeclaration(array $column, AbstractPlatform $platform)
     {
         $values = array_map(
-            function ($val) {
-                return "'" . $val . "'";
-            },
+            fn ($val) => "'" . $val . "'",
             $this->values
         );
 

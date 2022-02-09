@@ -45,9 +45,7 @@ class Tree
             return $this->models[Str::studly(Str::plural($context))];
         }
 
-        $matches = array_filter(array_keys($this->models), function ($key) use ($context) {
-            return Str::endsWith(Str::afterLast(Str::afterLast($key, '\\'), '/'), [Str::studly($context), Str::studly(Str::plural($context))]);
-        });
+        $matches = array_filter(array_keys($this->models), fn ($key) => Str::endsWith(Str::afterLast(Str::afterLast($key, '\\'), '/'), [Str::studly($context), Str::studly(Str::plural($context))]));
 
         if (count($matches) === 1) {
             return $this->models[current($matches)];
@@ -60,9 +58,7 @@ class Tree
             return $this->models[$context]->fullyQualifiedClassName();
         }
 
-        $matches = array_filter(array_keys($this->models), function ($key) use ($context) {
-            return Str::endsWith($key, '\\' . Str::studly($context));
-        });
+        $matches = array_filter(array_keys($this->models), fn ($key) => Str::endsWith($key, '\\' . Str::studly($context)));
 
         if (count($matches) === 1) {
             return $this->models[current($matches)]->fullyQualifiedClassName();

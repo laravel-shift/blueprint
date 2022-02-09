@@ -266,9 +266,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
     {
         return array_filter(
             array_map(
-                function (Column $column) {
-                    return $this->castForColumn($column);
-                },
+                fn (Column $column) => $this->castForColumn($column),
                 $columns
             )
         );
@@ -277,16 +275,12 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
     private function dateColumns(array $columns)
     {
         return array_map(
-            function (Column $column) {
-                return $column->name();
-            },
+            fn (Column $column) => $column->name(),
             array_filter(
                 $columns,
-                function (Column $column) {
-                    return $column->dataType() === 'date'
-                        || stripos($column->dataType(), 'datetime') !== false
-                        || stripos($column->dataType(), 'timestamp') !== false;
-                }
+                fn (Column $column) => $column->dataType() === 'date'
+                    || stripos($column->dataType(), 'datetime') !== false
+                    || stripos($column->dataType(), 'timestamp') !== false
             )
         );
     }

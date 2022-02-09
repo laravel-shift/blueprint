@@ -196,9 +196,7 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
 
         return array_filter(
             $columns,
-            function (Column $column) {
-                return !in_array('nullable', $column->modifiers());
-            }
+            fn (Column $column) => !in_array('nullable', $column->modifiers())
         );
     }
 

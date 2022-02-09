@@ -54,24 +54,12 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
 
         File::mixin(new FileMixins());
 
-        $this->app->bind('command.blueprint.build', function ($app) {
-            return new BuildCommand($app['files'], app(Builder::class));
-        });
-        $this->app->bind('command.blueprint.erase', function ($app) {
-            return new EraseCommand($app['files']);
-        });
-        $this->app->bind('command.blueprint.trace', function ($app) {
-            return new TraceCommand($app['files'], app(Tracer::class));
-        });
-        $this->app->bind('command.blueprint.new', function ($app) {
-            return new NewCommand($app['files']);
-        });
-        $this->app->bind('command.blueprint.init', function ($app) {
-            return new InitCommand();
-        });
-        $this->app->bind('command.blueprint.stubs', function ($app) {
-            return new PublishStubsCommand();
-        });
+        $this->app->bind('command.blueprint.build', fn ($app) => new BuildCommand($app['files'], app(Builder::class)));
+        $this->app->bind('command.blueprint.erase', fn ($app) => new EraseCommand($app['files']));
+        $this->app->bind('command.blueprint.trace', fn ($app) => new TraceCommand($app['files'], app(Tracer::class)));
+        $this->app->bind('command.blueprint.new', fn ($app) => new NewCommand($app['files']));
+        $this->app->bind('command.blueprint.init', fn ($app) => new InitCommand());
+        $this->app->bind('command.blueprint.stubs', fn ($app) => new PublishStubsCommand());
 
         $this->app->singleton(Blueprint::class, function ($app) {
             $blueprint = new Blueprint();

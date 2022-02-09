@@ -66,9 +66,7 @@ class EloquentStatement
 
         if ($this->operation() == 'update') {
             if (!empty($this->columns())) {
-                $columns = implode(', ', array_map(function ($column) {
-                    return sprintf("'%s' => \$%s", $column, $column);
-                }, $this->columns()));
+                $columns = implode(', ', array_map(fn ($column) => sprintf("'%s' => \$%s", $column, $column), $this->columns()));
 
                 $code = "$" . Str::camel($model) . '->update([' . $columns . ']);';
             } elseif ($using_validation) {
