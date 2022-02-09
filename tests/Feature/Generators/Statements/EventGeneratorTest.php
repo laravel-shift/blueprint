@@ -70,11 +70,9 @@ class EventGeneratorTest extends TestCase
         $this->filesystem->expects('stub')
             ->with('event.stub')
             ->andReturn($this->stub('event.stub'));
-
-        $this->filesystem->expects('stub')
+        $this->filesystem->shouldReceive('stub')
             ->with('constructor.stub')
             ->andReturn($this->stub('constructor.stub'));
-
         $this->filesystem->shouldReceive('exists')
             ->twice()
             ->with('app/Events')
@@ -132,7 +130,9 @@ class EventGeneratorTest extends TestCase
         $this->filesystem->expects('stub')
             ->with('event.stub')
             ->andReturn($this->stub('event.stub'));
-
+        $this->filesystem->expects('stub')
+            ->with('constructor.stub')
+            ->andReturn($this->stub('constructor.stub'));
         $this->filesystem->expects('exists')
             ->with('src/path/Events')
             ->andReturnFalse();

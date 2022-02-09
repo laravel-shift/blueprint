@@ -70,11 +70,9 @@ class MailGeneratorTest extends TestCase
         $this->filesystem->expects('stub')
             ->with('mail.stub')
             ->andReturn($this->stub('mail.stub'));
-
-        $this->filesystem->expects('stub')
+        $this->filesystem->shouldReceive('stub')
             ->with('constructor.stub')
             ->andReturn($this->stub('constructor.stub'));
-
         $this->filesystem->shouldReceive('exists')
             ->twice()
             ->with('app/Mail')
@@ -86,7 +84,6 @@ class MailGeneratorTest extends TestCase
             ->with('app/Mail', 0755, true);
         $this->filesystem->expects('put')
             ->with('app/Mail/ReviewPost.php', $this->fixture('mailables/review-post.php'));
-
         $this->filesystem->expects('exists')
             ->with('app/Mail/PublishedPost.php')
             ->andReturnFalse();
@@ -107,7 +104,6 @@ class MailGeneratorTest extends TestCase
         $this->filesystem->expects('stub')
             ->with('mail.stub')
             ->andReturn($this->stub('mail.stub'));
-
         $this->filesystem->expects('exists')
             ->with('app/Mail/ReviewPost.php')
             ->andReturnTrue();
@@ -132,7 +128,9 @@ class MailGeneratorTest extends TestCase
         $this->filesystem->expects('stub')
             ->with('mail.stub')
             ->andReturn($this->stub('mail.stub'));
-
+        $this->filesystem->expects('stub')
+            ->with('constructor.stub')
+            ->andReturn($this->stub('constructor.stub'));
         $this->filesystem->expects('exists')
             ->with('src/path/Mail')
             ->andReturnFalse();
@@ -162,7 +160,9 @@ class MailGeneratorTest extends TestCase
         $this->filesystem->expects('stub')
             ->with('mail.stub')
             ->andReturn($this->stub('mail.stub'));
-
+        $this->filesystem->expects('stub')
+            ->with('constructor.stub')
+            ->andReturn($this->stub('constructor.stub'));
         $this->filesystem->expects('exists')
             ->with('src/path/Mail')
             ->andReturnFalse();

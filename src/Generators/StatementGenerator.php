@@ -11,7 +11,7 @@ abstract class StatementGenerator extends AbstractClassGenerator implements Gene
         $constructor = str_replace('{{ type }}', $type, $this->filesystem->stub('constructor.stub'));
 
         if (empty($statement->data())) {
-            $stub = (str_replace('{{ body }}', '//', $constructor));
+            $stub = str_replace('{{ body }}', '//', $constructor);
         } else {
             $stub = $this->buildProperties($statement->data()) . PHP_EOL . PHP_EOL;
             $stub .= str_replace('__construct()', '__construct(' . $this->buildParameters($statement->data()) . ')', $constructor);
