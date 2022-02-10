@@ -181,9 +181,7 @@ class ModelLexer implements Lexer
             $column = $this->buildColumn($name, $definition);
             $model->addColumn($column);
 
-            $foreign = collect($column->modifiers())->filter(function ($modifier) {
-                return collect($modifier)->containsStrict('foreign') || collect($modifier)->has('foreign');
-            })->flatten()->first();
+            $foreign = collect($column->modifiers())->filter(fn ($modifier) => collect($modifier)->containsStrict('foreign') || collect($modifier)->has('foreign'))->flatten()->first();
 
             if (
                 ($column->name() !== 'id' && $column->dataType() === 'id')
@@ -234,9 +232,7 @@ class ModelLexer implements Lexer
                     $attributes = explode(',', $attributes);
 
                     if ($data_type === 'enum') {
-                        $attributes = array_map(function ($attribute) {
-                            return trim($attribute, '"');
-                        }, $attributes);
+                        $attributes = array_map(fn ($attribute) => trim($attribute, '"'), $attributes);
                     }
                 }
             }
@@ -252,9 +248,7 @@ class ModelLexer implements Lexer
         }
 
         if (is_null($data_type)) {
-            $is_foreign_key = collect($modifiers)->contains(function ($modifier) {
-                return (is_array($modifier) && key($modifier) === 'foreign') || $modifier === 'foreign';
-            });
+            $is_foreign_key = collect($modifiers)->contains(fn ($modifier) => (is_array($modifier) && key($modifier) === 'foreign') || $modifier === 'foreign');
 
             $data_type = $is_foreign_key ? 'id' : 'string';
         }

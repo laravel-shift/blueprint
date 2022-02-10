@@ -48,9 +48,7 @@ class RenderStatement
 
     private function buildParameters(array $data)
     {
-        $parameters = array_map(function ($parameter) {
-            return "'" . $parameter . "'";
-        }, $data);
+        $parameters = array_map(fn ($parameter) => "'" . $parameter . "'", $data);
 
         return implode(', ', $parameters);
     }

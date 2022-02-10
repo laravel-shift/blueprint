@@ -1,5 +1,5 @@
     /**
-     * Create a new instance.
+     * Create a new {{ type }} instance.
      *
      * @return void
      */

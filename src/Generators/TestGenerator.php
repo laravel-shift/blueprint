@@ -347,9 +347,7 @@ class TestGenerator extends AbstractClassGenerator implements Generator
                     $assertion = sprintf('$response->assertRedirect(route(\'%s\'', $statement->route());
 
                     if ($statement->data()) {
-                        $parameters = array_map(function ($parameter) {
-                            return '$' . $parameter;
-                        }, $statement->data());
+                        $parameters = array_map(fn ($parameter) => '$' . $parameter, $statement->data());
 
                         $assertion .= ', [' . implode(', ', $parameters) . ']';
                     } elseif (Str::contains($statement->route(), '.')) {
@@ -556,16 +554,12 @@ END;
 
     private function httpMethodForAction($action)
     {
-        switch ($action) {
-            case 'store':
-                return 'post';
-            case 'update':
-                return 'put';
-            case 'destroy':
-                return 'delete';
-            default:
-                return 'get';
-        }
+        return match ($action) {
+            'store' => 'post',
+            'update' => 'put',
+            'destroy' => 'delete',
+            default => 'get',
+        };
     }
 
     private function buildTestCaseName(string $name, int $tested_bits)
@@ -622,9 +616,7 @@ END;
     private function uniqueSetupLines(array $setup)
     {
         return collect($setup)->filter()
-            ->map(function ($lines) {
-                return array_unique($lines);
-            })
+            ->map(fn ($lines) => array_unique($lines))
             ->toArray();
     }
 

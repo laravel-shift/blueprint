@@ -63,22 +63,18 @@ class ControllerLexer implements Lexer
     private function generateResourceTokens(Controller $controller, array $methods)
     {
         return collect($this->resourceTokens())
-            ->filter(function ($statements, $method) use ($methods) {
-                return in_array($method, $methods);
-            })
-            ->mapWithKeys(function ($statements, $method) use ($controller) {
-                return [
-                    str_replace('api.', '', $method) => collect($statements)->map(function ($statement) use ($controller) {
-                        $model = $this->getControllerModelName($controller);
+            ->filter(fn ($statements, $method) => in_array($method, $methods))
+            ->mapWithKeys(fn ($statements, $method) => [
+                str_replace('api.', '', $method) => collect($statements)->map(function ($statement) use ($controller) {
+                    $model = $this->getControllerModelName($controller);
 
-                        return str_replace(
-                            ['[singular]', '[plural]'],
-                            [Str::camel($model), Str::camel(Str::plural($model))],
-                            $statement
-                        );
-                    }),
-                ];
-            })
+                    return str_replace(
+                        ['[singular]', '[plural]'],
+                        [Str::camel($model), Str::camel(Str::plural($model))],
+                        $statement
+                    );
+                }),
+            ])
             ->toArray();
     }
 
@@ -158,8 +154,6 @@ class ControllerLexer implements Lexer
 
     private function hasOnlyApiResourceMethods(array $methods)
     {
-        return collect($methods)->every(function ($item, $key) {
-            return Str::startsWith($item, 'api.');
-        });
+        return collect($methods)->every(fn ($item, $key) => Str::startsWith($item, 'api.'));
     }
 }

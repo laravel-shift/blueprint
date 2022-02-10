@@ -109,16 +109,12 @@ class Tracer
 
         $columns = $schema->listTableColumns($table, $database);
 
-        $uses_enums = collect($columns)->contains(function ($column) {
-            return $column->getType() instanceof \Blueprint\EnumType;
-        });
+        $uses_enums = collect($columns)->contains(fn ($column) => $column->getType() instanceof \Blueprint\EnumType);
 
         if ($uses_enums) {
             $definitions = $model->getConnection()->getDoctrineConnection()->fetchAllAssociative($schema->getDatabasePlatform()->getListTableColumnsSQL($table, $database));
 
-            collect($columns)->filter(function ($column) {
-                return $column->getType() instanceof \Blueprint\EnumType;
-            })->each(function (&$column, $key) use ($definitions) {
+            collect($columns)->filter(fn ($column) => $column->getType() instanceof \Blueprint\EnumType)->each(function (&$column, $key) use ($definitions) {
                 $definition = collect($definitions)->where('Field', $key)->first();
 
                 $column->options = \Blueprint\EnumType::extractOptions($definition['Type']);
@@ -221,12 +217,12 @@ class Tracer
 
     private function translateColumns(array $columns)
     {
-        if (isset($columns['id']) && strpos($columns['id'], 'autoincrement') !== false && strpos($columns['id'], 'integer') !== false) {
+        if (isset($columns['id']) && str_contains($columns['id'], 'autoincrement') && str_contains($columns['id'], 'integer')) {
             unset($columns['id']);
         }
 
         if (isset($columns[Model::CREATED_AT]) && isset($columns[Model::UPDATED_AT])) {
-            if (strpos($columns[Model::CREATED_AT], 'datetimetz') !== false) {
+            if (str_contains($columns[Model::CREATED_AT], 'datetimetz')) {
                 $columns['timestampstz'] = 'timestampsTz';
             }
 
@@ -235,7 +231,7 @@ class Tracer
         }
 
         if (isset($columns['deleted_at'])) {
-            if (strpos($columns['deleted_at'], 'datetimetz') !== false) {
+            if (str_contains($columns['deleted_at'], 'datetimetz')) {
                 $columns['softdeletestz'] = 'softDeletesTz';
             }
 

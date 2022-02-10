@@ -23,53 +23,25 @@ class StatementLexer implements Lexer
         $statements = [];
 
         foreach ($tokens as $command => $statement) {
-            switch ($command) {
-                case 'query':
-                    $statements[] = $this->analyzeQuery($statement);
-                    break;
-                case 'render':
-                    $statements[] = $this->analyzeRender($statement);
-                    break;
-                case 'fire':
-                    $statements[] = $this->analyzeEvent($statement);
-                    break;
-                case 'dispatch':
-                    $statements[] = $this->analyzeDispatch($statement);
-                    break;
-                case 'send':
-                    $statements[] = $this->analyzeSend($statement);
-                    break;
-                case 'notify':
-                    $statements[] = $this->analyzeNotify($statement);
-                    break;
-                case 'validate':
-                    $statements[] = $this->analyzeValidate($statement);
-                    break;
-                case 'redirect':
-                    $statements[] = $this->analyzeRedirect($statement);
-                    break;
-                case 'respond':
-                    $statements[] = $this->analyzeRespond($statement);
-                    break;
-                case 'resource':
-                    $statements[] = $this->analyzeResource($statement);
-                    break;
-                case 'save':
-                case 'delete':
-                case 'find':
-                    $statements[] = new EloquentStatement($command, $statement);
-                    break;
-                case 'update':
-                    $statements[] = $this->analyzeUpdate($statement);
-                    break;
-                case 'flash':
-                case 'store':
-                    $statements[] = new SessionStatement($command, $statement);
-                    break;
-            }
+            $statements[] = match ($command) {
+                'query' => $this->analyzeQuery($statement),
+                'render' => $this->analyzeRender($statement),
+                'fire' => $this->analyzeEvent($statement),
+                'dispatch' => $this->analyzeDispatch($statement),
+                'send' => $this->analyzeSend($statement),
+                'notify' => $this->analyzeNotify($statement),
+                'validate' => $this->analyzeValidate($statement),
+                'redirect' => $this->analyzeRedirect($statement),
+                'respond' => $this->analyzeRespond($statement),
+                'resource' => $this->analyzeResource($statement),
+                'save', 'delete', 'find' => new EloquentStatement($command, $statement),
+                'update' => $this->analyzeUpdate($statement),
+                'flash', 'store' => new SessionStatement($command, $statement),
+                default => null,
+            };
         }
 
-        return $statements;
+        return array_filter($statements);
     }
 
     private function analyzeRender(string $statement)

@@ -11,8 +11,6 @@ class MailGenerator extends StatementGenerator
 {
     protected $types = ['controllers'];
 
-    protected $new_instance = 'new message instance';
-
     public function output(Tree $tree): array
     {
         $stub = $this->filesystem->stub('mail.stub');
@@ -54,7 +52,7 @@ class MailGenerator extends StatementGenerator
     {
         $stub = str_replace('{{ namespace }}', config('blueprint.namespace') . '\\Mail', $stub);
         $stub = str_replace('{{ class }}', $sendStatement->mail(), $stub);
-        $stub = str_replace('{{ properties }}', $this->buildConstructor($sendStatement), $stub);
+        $stub = str_replace('{{ properties }}', $this->populateConstructor('message', $sendStatement), $stub);
 
         if (Blueprint::useReturnTypeHints()) {
             $stub = str_replace('build()', sprintf('build(): %s', $sendStatement->mail()), $stub);

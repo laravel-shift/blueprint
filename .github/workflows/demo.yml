@@ -25,8 +25,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: [7.3, 7.4]
-        laravel-version: [6, 7, 8]
+        php-version: [8.0, 8.1]
+        laravel-version: [9]
         os: [ubuntu-latest]
 
     runs-on: ${{ matrix.os }}

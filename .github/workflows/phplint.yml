@@ -4,13 +4,19 @@ on: [pull_request]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
 
-    - uses: jasonmccreary/PHP-Lint@fetch-signature
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.0'
+        tools: phplint, php-cs-fixer
 
     - name: Validate composer.json and composer.lock
       run: composer validate
+
+    - name: Check syntax
+      run: phplint .
