@@ -37,7 +37,6 @@ class ConfigLexerTest extends TestCase
         $this->blueprint->registerLexer(new ConfigLexer());
         $this->blueprint->registerLexer(new ControllerLexer(new StatementLexer()));
         $this->blueprint->registerGenerator($this->modelGenerator);
-
     }
 
     /**
@@ -85,7 +84,6 @@ class ConfigLexerTest extends TestCase
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['atum/Models/Comment.php']], $this->modelGenerator->output($tree));
-
     }
 
     /**
@@ -112,6 +110,5 @@ class ConfigLexerTest extends TestCase
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['shift/Other/Http/UserController.php']], $this->controllerGenerator->output($tree));
-
     }
 }
