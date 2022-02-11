@@ -24,7 +24,7 @@ class FactoryGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->factoryStub = version_compare(App::version(), '8.0.0', '>=') ? 'factory.stub' : 'factory.closure.stub';
+        $this->factoryStub = 'factory.stub';
         $this->subject = new FactoryGenerator($this->files);
 
         $this->blueprint = new Blueprint();

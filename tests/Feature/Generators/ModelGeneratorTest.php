@@ -21,7 +21,7 @@ class ModelGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->modelStub = version_compare(App::version(), '8.0.0', '>=') ? 'model.class.stub' : 'model.class.no-factory.stub';
+        $this->modelStub = 'model.class.stub';
         $this->subject = new ModelGenerator($this->files);
 
         $this->blueprint = new Blueprint();

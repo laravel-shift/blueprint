@@ -27,7 +27,7 @@ class SeederGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->seederStub = version_compare(App::version(), '8.0.0', '>=') ? 'seeder.stub' : 'seeder.no-factory.stub';
+        $this->seederStub = 'seeder.stub';
         $this->subject = new SeederGenerator($this->files);
 
         $this->blueprint = new Blueprint();
