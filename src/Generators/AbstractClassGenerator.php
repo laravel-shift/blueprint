@@ -8,11 +8,11 @@ use Illuminate\Filesystem\Filesystem;
 
 class AbstractClassGenerator
 {
-    const INDENT = '        ';
+    public const INDENT = '        ';
 
     protected $filesystem;
 
-    private $tree;
+    protected $tree;
 
     protected $output = [];
 
