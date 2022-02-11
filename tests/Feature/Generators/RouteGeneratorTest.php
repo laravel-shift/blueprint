@@ -13,9 +13,8 @@ use Tests\TestCase;
  */
 class RouteGeneratorTest extends TestCase
 {
-    private $blueprint;
-
     protected $files;
+    private $blueprint;
 
     /** @var RouteGenerator */
     private $subject;
@@ -64,6 +63,22 @@ class RouteGeneratorTest extends TestCase
     {
         $this->filesystem->expects('append')
             ->with('routes/api.php', $this->fixture('routes/api-routes.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/api-routes-example.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['updated' => ['routes/api.php']], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function output_generates_api_routes_singular_slug()
+    {
+        $this->app['config']->set('blueprint.plural_api_slug', false);
+
+        $this->filesystem->expects('append')
+            ->with('routes/api.php', $this->fixture('routes/api-routes-singular.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/api-routes-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);

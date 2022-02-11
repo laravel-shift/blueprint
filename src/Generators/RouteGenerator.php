@@ -53,7 +53,7 @@ class RouteGenerator extends AbstractClassGenerator implements Generator
         $resource_methods = array_intersect($methods, Controller::$resourceMethods);
         if (count($resource_methods)) {
             $routes .= $controller->isApiResource()
-                ? sprintf("Route::apiResource('%s', %s)", $slug, $className)
+                ? sprintf("Route::apiResource('%s', %s)", config('blueprint.plural_api_slug') ? Str::plural($slug) : Str::singular($slug), $className)
                 : sprintf("Route::resource('%s', %s)", $slug, $className);
 
             $missing_methods = $controller->isApiResource()
