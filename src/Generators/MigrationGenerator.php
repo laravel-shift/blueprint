@@ -184,6 +184,8 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
                 $column_definition .= '$table->softDeletes(';
             } elseif ($dataType === 'softDeletesTz') {
                 $column_definition .= '$table->softDeletesTz(';
+            } elseif ($dataType === 'fullText') {
+                $column_definition .= '$table->fullText(';
             } else {
                 $column_definition .= '$table->' . $dataType . "('{$column->name()}'";
             }

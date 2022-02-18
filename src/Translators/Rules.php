@@ -34,7 +34,7 @@ class Rules
         }
 
         // hack for tests...
-        if (in_array($column->dataType(), ['string', 'char', 'text', 'longText'])) {
+        if (in_array($column->dataType(), ['string', 'char', 'text', 'longText', 'fullText'])) {
             array_push($rules, self::overrideStringRuleForSpecialNames($column->name()));
         }
 
