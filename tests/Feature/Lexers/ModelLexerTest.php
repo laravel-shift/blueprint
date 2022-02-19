@@ -243,7 +243,7 @@ class ModelLexerTest extends TestCase
         $this->assertFalse($model->usesSoftDeletes());
 
         $columns = $model->columns();
-        $this->assertCount(5, $columns);
+        $this->assertCount(6, $columns);
         $this->assertEquals('id', $columns['id']->name());
         $this->assertEquals('id', $columns['id']->dataType());
         $this->assertEquals([], $columns['id']->attributes());
@@ -256,7 +256,10 @@ class ModelLexerTest extends TestCase
         $this->assertEquals('longText', $columns['content']->dataType());
         $this->assertEquals([], $columns['content']->attributes());
         $this->assertEquals([], $columns['content']->modifiers());
+        $this->assertEquals('search', $columns['search']->name());
         $this->assertEquals('fullText', $columns['search']->dataType());
+        $this->assertEquals([], $columns['search']->attributes());
+        $this->assertEquals([], $columns['search']->modifiers());
         $this->assertEquals('saved_at', $columns['saved_at']->name());
         $this->assertEquals('timestampTz', $columns['saved_at']->dataType());
         $this->assertEquals([], $columns['saved_at']->attributes());

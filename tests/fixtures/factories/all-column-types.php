@@ -34,6 +34,7 @@ class AllTypeFactory extends Factory
             'double' => $this->faker->randomFloat(0, 0, 9999999999.),
             'enum' => $this->faker->randomElement(["1","2","3"]),
             'float' => $this->faker->randomFloat(0, 0, 9999999999.),
+            'fullText' => $this->faker->text,
             'geometry' => $this->faker->word,
             'geometryCollection' => $this->faker->word,
             'integer' => $this->faker->numberBetween(-10000, 10000),
