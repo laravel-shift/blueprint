@@ -28,6 +28,7 @@ class PostFactory extends Factory
             'author_id' => Author::factory(),
             'author_bio' => $this->faker->text,
             'content' => $this->faker->paragraphs(3, true),
+            'search' => $this->faker->text,
             'published_at' => $this->faker->dateTime(),
             'updated_at' => $this->faker->dateTime(),
             'word_count' => $this->faker->randomNumber(),
