@@ -35,6 +35,7 @@ class ModelLexer implements Lexer
         'double' => 'double',
         'enum' => 'enum',
         'float' => 'float',
+        'fulltext' => 'fullText',
         'geometry' => 'geometry',
         'geometrycollection' => 'geometryCollection',
         'increments' => 'increments',

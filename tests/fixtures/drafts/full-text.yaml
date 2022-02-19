@@ -1,0 +1,4 @@
+models:
+  Post:
+    title: string
+    content: fullText

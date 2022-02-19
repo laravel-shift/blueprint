@@ -685,6 +685,7 @@ class MigrationGeneratorTest extends TestCase
             ['drafts/columns-with-comments.yaml', 'database/migrations/timestamp_create_professions_table.php', 'migrations/columns-with-comments.php'],
             ['drafts/boolean-column-default.yaml', 'database/migrations/timestamp_create_posts_table.php', 'migrations/boolean-column-default.php'],
             ['drafts/foreign-with-class.yaml', 'database/migrations/timestamp_create_events_table.php', 'migrations/foreign-with-class.php'],
+            ['drafts/full-text.yaml', 'database/migrations/timestamp_create_posts_table.php', 'migrations/full-text.php'],
         ];
     }
 }

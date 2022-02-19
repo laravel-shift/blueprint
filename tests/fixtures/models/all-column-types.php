@@ -26,6 +26,7 @@ class AllType extends Model
         'double',
         'enum',
         'float',
+        'fullText',
         'geometry',
         'geometryCollection',
         'integer',

@@ -12,6 +12,7 @@ models:
     double: double
     enum: enum:1,2,3
     float: float
+    fullText: fullText
     geometry: geometry
     geometryCollection: geometryCollection
     integer: integer
