@@ -1,0 +1,8 @@
+controllers:
+  Report:
+    invokable:
+      dispatch: GenerateReport with:event
+      fire: ExportReport with:event
+      notify: auth.user ReportGenerated with:event
+      send: SendReport with:event
+      render: report
