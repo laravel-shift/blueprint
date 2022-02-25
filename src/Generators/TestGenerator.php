@@ -125,7 +125,7 @@ class TestGenerator extends AbstractClassGenerator implements Generator
                             $assertion .= ', function ($notification)';
 
                             foreach ($statement->data() as $data) {
-                                if (Str::studly(Str::singular($data)) === $context) {
+                                if (Str::studly(Str::singular($data)) === $context || ! Str::contains($data, '.')) {
                                     $variables[] .= '$' . $data;
                                     $conditions[] .= sprintf('$notification->%s->is($%s)', $data, $data);
                                 } else {
@@ -166,7 +166,7 @@ class TestGenerator extends AbstractClassGenerator implements Generator
                             }
 
                             foreach ($statement->data() as $data) {
-                                if (Str::studly(Str::singular($data)) === $context) {
+                                if (Str::studly(Str::singular($data)) === $context || ! Str::contains($data, '.')) {
                                     $variables[] .= '$' . $data;
                                     $conditions[] .= sprintf('$mail->%s->is($%s)', $data, $data);
                                 } else {
@@ -262,7 +262,7 @@ class TestGenerator extends AbstractClassGenerator implements Generator
                         $assertion .= ', function ($job)';
 
                         foreach ($statement->data() as $data) {
-                            if (Str::studly(Str::singular($data)) === $context) {
+                            if (Str::studly(Str::singular($data)) === $context || ! Str::contains($data, '.')) {
                                 $variables[] .= '$' . $data;
                                 $conditions[] .= sprintf('$job->%s->is($%s)', $data, $data);
                             } else {
@@ -305,7 +305,7 @@ class TestGenerator extends AbstractClassGenerator implements Generator
                         $assertion .= ', function ($event)';
 
                         foreach ($statement->data() as $data) {
-                            if (Str::studly(Str::singular($data)) === $context) {
+                            if (Str::studly(Str::singular($data)) === $context || ! Str::contains($data, '.')) {
                                 $variables[] .= '$' . $data;
                                 $conditions[] .= sprintf('$event->%s->is($%s)', $data, $data);
                             } else {
