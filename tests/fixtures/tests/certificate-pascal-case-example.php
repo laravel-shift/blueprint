@@ -147,6 +147,6 @@ class CertificateControllerTest extends TestCase
 
         $response->assertNoContent();
 
-        $this->assertDeleted($certificate);
+        $this->assertModelMissing($certificate);
     }
 }

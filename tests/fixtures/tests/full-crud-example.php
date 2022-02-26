@@ -155,6 +155,6 @@ class PostControllerTest extends TestCase
 
         $response = $this->delete(route('post.destroy', $post));
 
-        $this->assertDeleted($post);
+        $this->assertModelMissing($post);
     }
 }
