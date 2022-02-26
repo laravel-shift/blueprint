@@ -121,6 +121,6 @@ class CertificateTypeControllerTest extends TestCase
 
         $response->assertNoContent();
 
-        $this->assertDeleted($certificateType);
+        $this->assertModelMissing($certificateType);
     }
 }
