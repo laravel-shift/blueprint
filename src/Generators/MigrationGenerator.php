@@ -51,6 +51,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         $tables = ['tableNames' => [], 'pivotTableNames' => [], 'polymorphicManyToManyTables' => []];
 
         $stub = $this->filesystem->stub('migration.stub');
+
         /**
          * @var \Blueprint\Models\Model $model
          */
@@ -109,6 +110,8 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         $stub = str_replace('{{ class }}', $this->getClassName($model), $stub);
         $stub = str_replace('{{ table }}', $model->tableName(), $stub);
         $stub = str_replace('{{ definition }}', $this->buildDefinition($model), $stub);
+
+        $stub = $this->strict_types($stub);
 
         if (Blueprint::useReturnTypeHints()) {
             $stub = str_replace(['up()', 'down()'], ['up(): void', 'down(): void'], $stub);

@@ -22,6 +22,8 @@ class SeederGenerator extends AbstractClassGenerator implements Generator
 
         $stub = $this->filesystem->stub('seeder.stub');
 
+        $stub = $this->strict_types($stub);
+
         foreach ($tree->seeders() as $model) {
             $model = new Model($model);
             $path = $this->getPath($model);

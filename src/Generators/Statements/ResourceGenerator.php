@@ -24,6 +24,8 @@ class ResourceGenerator extends StatementGenerator implements Generator
 
         $stub = $this->filesystem->stub('resource.stub');
 
+        $stub = $this->strict_types($stub);
+
         /**
          * @var \Blueprint\Models\Controller $controller
          */

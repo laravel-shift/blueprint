@@ -15,6 +15,8 @@ class NotificationGenerator extends StatementGenerator
     {
         $stub = $this->filesystem->stub('notification.stub');
 
+        $stub = $this->strict_types($stub);
+
         /**
          * @var \Blueprint\Models\Controller $controller
         */

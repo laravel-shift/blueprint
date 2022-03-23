@@ -15,6 +15,8 @@ class JobGenerator extends StatementGenerator
     {
         $stub = $this->filesystem->stub('job.stub');
 
+        $stub = $this->strict_types($stub);
+
         /**
          * @var \Blueprint\Models\Controller $controller
         */

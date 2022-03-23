@@ -45,6 +45,8 @@ class TestGenerator extends AbstractClassGenerator implements Generator
 
         $stub = $this->filesystem->stub('test.class.stub');
 
+        $stub = $this->strict_types($stub);
+
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree->controllers() as $controller) {
             $this->addImport($controller, \Tests\TestCase::class);

@@ -23,6 +23,8 @@ class FormRequestGenerator extends AbstractClassGenerator implements Generator
 
         $stub = $this->filesystem->stub('request.stub');
 
+        $stub = $this->strict_types($stub);
+
         /**
          * @var \Blueprint\Models\Controller $controller
         */

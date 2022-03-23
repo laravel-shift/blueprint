@@ -15,6 +15,8 @@ class MailGenerator extends StatementGenerator
     {
         $stub = $this->filesystem->stub('mail.stub');
 
+        $stub = $this->strict_types($stub);
+
         /**
          * @var \Blueprint\Models\Controller $controller
         */

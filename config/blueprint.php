@@ -52,6 +52,17 @@ return [
     | meet this convention. 
     */
     'generate_new_factory_for_models'   => false,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Generate strict_types
+    |--------------------------------------------------------------------------
+    |
+    | Generate declare(strict_types=1); on the top of all the generated files.
+    | 
+    */
+    'strict_types'  => false,
+    
     /*
     |--------------------------------------------------------------------------
     | Generate PHPDocs

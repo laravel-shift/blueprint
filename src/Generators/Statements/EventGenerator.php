@@ -15,6 +15,8 @@ class EventGenerator extends StatementGenerator
     {
         $stub = $this->filesystem->stub('event.stub');
 
+        $stub = $this->strict_types($stub);
+
         /**
          * @var \Blueprint\Models\Controller $controller
         */

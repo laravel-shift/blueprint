@@ -26,6 +26,9 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
         $this->tree = $tree;
         $stub = $this->filesystem->stub('factory.stub');
 
+        $stub = $this->strict_types($stub);
+
+
         /**
          * @var \Blueprint\Models\Model $model
          */

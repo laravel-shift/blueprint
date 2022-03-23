@@ -18,6 +18,8 @@ abstract class StatementGenerator extends AbstractClassGenerator implements Gene
             $stub = str_replace('{{ body }}', $this->buildAssignments($statement->data()), $stub);
         }
 
+        $stub = $this->strict_types($stub);
+
         return trim($stub);
     }
 

@@ -15,6 +15,8 @@ class ViewGenerator extends StatementGenerator implements Generator
     {
         $stub = $this->filesystem->stub('view.stub');
 
+        $stub = $this->strict_types($stub);
+
         /**
          * @var \Blueprint\Models\Controller $controller
         */
