@@ -53,6 +53,7 @@ class EventGenerator extends StatementGenerator
         $stub = str_replace('{{ namespace }}', config('blueprint.namespace') . '\\Events', $stub);
         $stub = str_replace('{{ class }}', $fireStatement->event(), $stub);
         $stub = str_replace('{{ properties }}', $this->populateConstructor('event', $fireStatement), $stub);
+        $stub = $this->strict_types($stub);
 
         return $stub;
     }

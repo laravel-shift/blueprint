@@ -69,6 +69,7 @@ class TestGenerator extends AbstractClassGenerator implements Generator
         $stub = str_replace('{{ class }}', $controller->className() . 'Test', $stub);
         $stub = str_replace('{{ body }}', $this->buildTestCases($controller), $stub);
         $stub = str_replace('{{ imports }}', $this->buildImports($controller), $stub);
+        $stub = $this->strict_types($stub);
 
         return $stub;
     }

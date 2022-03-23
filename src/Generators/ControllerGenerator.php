@@ -54,6 +54,7 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
         $stub = str_replace('{{ class }}', $controller->className(), $stub);
         $stub = str_replace('{{ methods }}', $this->buildMethods($controller), $stub);
         $stub = str_replace('{{ imports }}', $this->buildImports($controller), $stub);
+        $stub = $this->strict_types($stub);
 
         return $stub;
     }

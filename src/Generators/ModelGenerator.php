@@ -35,6 +35,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         $stub = str_replace('{{ namespace }}', $model->fullyQualifiedNamespace(), $stub);
         $stub = str_replace(PHP_EOL . 'class {{ class }}', $this->buildClassPhpDoc($model) . PHP_EOL . 'class {{ class }}', $stub);
         $stub = str_replace('{{ class }}', $model->name(), $stub);
+        $stub = $this->strict_types($stub);
 
         $body = $this->buildProperties($model);
         $body .= PHP_EOL . PHP_EOL;

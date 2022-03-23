@@ -42,4 +42,12 @@ class AbstractClassGenerator
 
         $this->output['created'][] = $path;
     }
+
+    public function strict_types(string $stub): string
+    {
+        if (config('blueprint.strict_types')) {
+            $stub = str_replace('<?php','<?php'.PHP_EOL.'declare(strict_types=1);'.PHP_EOL, $stub);
+        }
+        return $stub;
+    }
 }

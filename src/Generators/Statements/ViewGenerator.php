@@ -14,6 +14,8 @@ class ViewGenerator extends StatementGenerator implements Generator
     public function output(Tree $tree): array
     {
         $stub = $this->filesystem->stub('view.stub');
+        $stub = $this->strict_types($stub);
+
 
         /**
          * @var \Blueprint\Models\Controller $controller

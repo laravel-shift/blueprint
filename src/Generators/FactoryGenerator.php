@@ -54,6 +54,7 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
     {
         $stub = str_replace('{{ model }}', $model->name(), $stub);
         $stub = str_replace('//', $this->buildDefinition($model), $stub);
+        $stub = $this->strict_types($stub);
 
         if (Blueprint::useReturnTypeHints()) {
             $stub = str_replace('definition()', 'definition(): array', $stub);

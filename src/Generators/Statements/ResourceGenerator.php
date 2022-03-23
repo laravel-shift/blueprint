@@ -66,6 +66,7 @@ class ResourceGenerator extends StatementGenerator implements Generator
         $stub = str_replace('{{ parentClass }}', $resource->collection() ? 'ResourceCollection' : 'JsonResource', $stub);
         $stub = str_replace('{{ resource }}', $resource->collection() ? 'resource collection' : 'resource', $stub);
         $stub = str_replace('{{ body }}', $this->buildData($resource), $stub);
+        $stub = $this->strict_types($stub);
 
         if (Blueprint::useReturnTypeHints()) {
             $stub = str_replace('toArray($request)', 'toArray($request): array', $stub);
