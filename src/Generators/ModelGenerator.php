@@ -139,7 +139,6 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
     protected function addFactory(Model $model, $stub)
     {
         if (config('blueprint.generate_new_factory_for_models')) {
-
             $template = $this->filesystem->stub('model.factory.stub');
             $new_template = str_replace('{{ class }}', $model->name(), $template);
 
@@ -148,10 +147,8 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
             $stub = str_replace('use Illuminate\\Database\\Eloquent\\Model;', $replacement_stub, $stub);
 
             $stub = str_replace('////AddFactory', $new_template . PHP_EOL, $stub);
-
         } else {
             $stub = str_replace('////AddFactory', PHP_EOL, $stub);
-
         }
         return $stub;
     }
