@@ -43,6 +43,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Generate New Factory for Models
+    |--------------------------------------------------------------------------
+    |
+    | By default, Laravel assumes that Model factories are located in Database\Factories
+    | directory and is suffixed with Factory.
+    | The newFactory function allows you to specify the corresponding Factory if it does not
+    | meet this convention. 
+    */
+    'generate_new_factory_for_models'   => false,
+    /*
+    |--------------------------------------------------------------------------
     | Generate PHPDocs
     |--------------------------------------------------------------------------
     |

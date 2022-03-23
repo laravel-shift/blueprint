@@ -40,9 +40,12 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         $body .= PHP_EOL . PHP_EOL;
         $body .= $this->buildRelationships($model);
 
+        $body .= "////AddFactory".PHP_EOL;
+
         $stub = str_replace('use HasFactory;', 'use HasFactory;' . PHP_EOL . PHP_EOL . '    ' . trim($body), $stub);
 
         $stub = $this->addTraits($model, $stub);
+        $stub = $this->addFactory($model, $stub);
 
         return $stub;
     }
@@ -131,6 +134,26 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         }
 
         return trim($properties);
+    }
+
+    protected function addFactory(Model $model, $stub)
+    {
+        if (config('blueprint.generate_new_factory_for_models')) {
+
+            $template = $this->filesystem->stub('model.factory.stub');
+            $new_template = str_replace('{{ class }}', $model->name(), $template);
+
+            $replacement_stub = 'use Illuminate\\Database\\Eloquent\\Model;' . PHP_EOL . 'use Illuminate\\Database\\Eloquent\\Factories\\Factory;'.PHP_EOL.'use Database\\Factories\\' . $model->name() . 'Factory;' . PHP_EOL;
+
+            $stub = str_replace('use Illuminate\\Database\\Eloquent\\Model;', $replacement_stub, $stub);
+
+            $stub = str_replace('////AddFactory', $new_template . PHP_EOL, $stub);
+
+        } else {
+            $stub = str_replace('////AddFactory', PHP_EOL, $stub);
+
+        }
+        return $stub;
     }
 
     protected function buildRelationships(Model $model)
