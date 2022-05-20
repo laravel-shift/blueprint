@@ -150,8 +150,10 @@ class ModelLexer implements Lexer
 
         if (isset($columns['softdeletes'])) {
             $model->enableSoftDeletes();
+            unset($columns['softdeletes']);
         } elseif (isset($columns['softdeletestz'])) {
             $model->enableSoftDeletes(true);
+            unset($columns['softdeletestz']);
         }
 
         if (isset($columns['relationships'])) {
