@@ -194,9 +194,14 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
             return $columns;
         }
 
-        return array_filter(
+        $nonNullableColumns = array_filter(
             $columns,
             fn (Column $column) => !in_array('nullable', $column->modifiers())
+        );
+
+        return array_filter(
+            $nonNullableColumns,
+            fn (Column $column) => $column->dataType() !== 'softDeletes'
         );
     }
 
