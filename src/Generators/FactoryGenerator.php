@@ -75,7 +75,7 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
          * @var \Blueprint\Models\Column $column
          */
         foreach ($fillable as $column) {
-            if ($column->name() === 'id') {
+            if (in_array($column->name(), ['id', 'softdeletes', 'softdeletestz'])) {
                 continue;
             }
 
@@ -185,6 +185,10 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
             }
         }
 
+        if (empty($definition)) {
+            return '//';
+        }
+
         return trim($definition);
     }
 
@@ -194,9 +198,14 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
             return $columns;
         }
 
-        return array_filter(
+        $nonNullableColumns = array_filter(
             $columns,
             fn (Column $column) => !in_array('nullable', $column->modifiers())
+        );
+
+        return array_filter(
+            $nonNullableColumns,
+            fn (Column $column) => $column->dataType() !== 'softDeletes'
         );
     }
 
