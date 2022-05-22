@@ -75,7 +75,7 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
          * @var \Blueprint\Models\Column $column
          */
         foreach ($fillable as $column) {
-            if ($column->name() === 'id') {
+            if (in_array($column->name(), ['id', 'softdeletes', 'softdeletestz'])) {
                 continue;
             }
 
@@ -183,6 +183,10 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
                 $definition .= '$this->faker->' . $faker;
                 $definition .= ',' . PHP_EOL;
             }
+        }
+
+        if (empty($definition)) {
+            return '//';
         }
 
         return trim($definition);
