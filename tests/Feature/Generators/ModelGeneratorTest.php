@@ -196,6 +196,36 @@ class ModelGeneratorTest extends TestCase
     /**
      * @test
      */
+    public function output_generates_relationships_from_yaml_list()
+    {
+        $this->filesystem->expects('stub')
+            ->with($this->modelStub)
+            ->andReturn($this->stub($this->modelStub));
+        $this->filesystem->expects('stub')
+            ->with('model.fillable.stub')
+            ->andReturn($this->stub('model.fillable.stub'));
+        $this->filesystem->expects('stub')
+            ->with('model.casts.stub')
+            ->andReturn($this->stub('model.casts.stub'));
+        $this->filesystem->expects('stub')
+            ->with('model.method.stub')
+            ->andReturn($this->stub('model.method.stub'));
+
+        $this->filesystem->expects('exists')
+            ->with('app/Models')
+            ->andReturnTrue();
+        $this->filesystem->expects('put')
+            ->with('app/Models/Subscription.php', $this->fixture('models/model-relationships.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/model-relationships-yaml-lists.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['app/Models/Subscription.php']], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
     public function output_generates_morphone_morphmany_relation_string_when_using_fqn()
     {
         $this->files->expects('stub')

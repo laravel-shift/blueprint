@@ -1,0 +1,10 @@
+models:
+  Subscription:
+    user_id: id
+    product_id: uuid
+    relationships:
+      belongsToMany: Team
+      hasMany: Order
+      hasOne:
+        - Duration
+        - Transaction
