@@ -362,7 +362,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
             'timestamptz' => '\Carbon\Carbon',
             'timestamps' => '\Carbon\Carbon',
             'timestampstz' => '\Carbon\Carbon',
-            'tinyincrements' => 'integer',
+            'tinyincrements' => 'int',
             'tinyinteger' => 'int',
             'unsignedbiginteger' => 'int',
             'unsigneddecimal' => 'float',
