@@ -13,9 +13,8 @@ use Tests\TestCase;
  */
 class RouteGeneratorTest extends TestCase
 {
-    private $blueprint;
-
     protected $files;
+    private $blueprint;
 
     /** @var RouteGenerator */
     private $subject;
@@ -64,6 +63,38 @@ class RouteGeneratorTest extends TestCase
     {
         $this->filesystem->expects('append')
             ->with('routes/api.php', $this->fixture('routes/api-routes.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/api-routes-example.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['updated' => ['routes/api.php']], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function output_generates_routes_with_plural_slug()
+    {
+        $this->app['config']->set('blueprint.plural_routes', true);
+
+        $this->filesystem->expects('append')
+            ->with('routes/web.php', $this->fixture('routes/readme-example-plural.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['updated' => ['routes/web.php']], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function output_generates_api_routes_with_plural_slug()
+    {
+        $this->app['config']->set('blueprint.plural_routes', true);
+
+        $this->filesystem->expects('append')
+            ->with('routes/api.php', $this->fixture('routes/api-routes-plural.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/api-routes-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);
