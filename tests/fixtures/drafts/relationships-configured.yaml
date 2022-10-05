@@ -1,0 +1,9 @@
+models:
+  Comment:
+    post_id: id
+    author_id: id:user
+
+config:
+  use_constraints: true
+  app_path: atum
+  namespace: Some\App
