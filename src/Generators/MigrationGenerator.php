@@ -106,7 +106,6 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
 
     protected function populateStub(string $stub, Model $model)
     {
-        $stub = str_replace('{{ class }}', $this->getClassName($model), $stub);
         $stub = str_replace('{{ table }}', $model->tableName(), $stub);
         $stub = str_replace('{{ definition }}', $this->buildDefinition($model), $stub);
 
@@ -123,7 +122,6 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
 
     protected function populatePivotStub(string $stub, array $segments)
     {
-        $stub = str_replace('{{ class }}', $this->getPivotClassName($segments), $stub);
         $stub = str_replace('{{ table }}', $this->getPivotTableName($segments), $stub);
         $stub = str_replace('{{ definition }}', $this->buildPivotTableDefinition($segments), $stub);
 
@@ -136,7 +134,6 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
 
     protected function populatePolyStub(string $stub, string $parentTable)
     {
-        $stub = str_replace('{{ class }}', $this->getPolyClassName($parentTable), $stub);
         $stub = str_replace('{{ table }}', $this->getPolyTableName($parentTable), $stub);
         $stub = str_replace('{{ definition }}', $this->buildPolyTableDefinition($parentTable), $stub);
 
