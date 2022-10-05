@@ -125,7 +125,7 @@ return [
     | to false, will product a singular slug of 'post'
     |
     */
-    'plural_api_slug' => true,
+    'plural_names' => null,
 
     /*
     |--------------------------------------------------------------------------

@@ -73,12 +73,28 @@ class RouteGeneratorTest extends TestCase
     /**
      * @test
      */
-    public function output_generates_api_routes_singular_slug()
+    public function output_generates_routes_with_plural_slug()
     {
-        $this->app['config']->set('blueprint.plural_api_slug', false);
+        $this->app['config']->set('blueprint.plural_names', true);
 
         $this->filesystem->expects('append')
-            ->with('routes/api.php', $this->fixture('routes/api-routes-singular.php'));
+            ->with('routes/web.php', $this->fixture('routes/readme-example-plural.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['updated' => ['routes/web.php']], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function output_generates_api_routes_with_plural_slug()
+    {
+        $this->app['config']->set('blueprint.plural_names', true);
+
+        $this->filesystem->expects('append')
+            ->with('routes/api.php', $this->fixture('routes/api-routes-plural.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/api-routes-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);
