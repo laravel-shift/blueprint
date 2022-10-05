@@ -75,7 +75,7 @@ class RouteGeneratorTest extends TestCase
      */
     public function output_generates_routes_with_plural_slug()
     {
-        $this->app['config']->set('blueprint.plural_names', true);
+        $this->app['config']->set('blueprint.plural_routes', true);
 
         $this->filesystem->expects('append')
             ->with('routes/web.php', $this->fixture('routes/readme-example-plural.php'));
@@ -91,7 +91,7 @@ class RouteGeneratorTest extends TestCase
      */
     public function output_generates_api_routes_with_plural_slug()
     {
-        $this->app['config']->set('blueprint.plural_names', true);
+        $this->app['config']->set('blueprint.plural_routes', true);
 
         $this->filesystem->expects('append')
             ->with('routes/api.php', $this->fixture('routes/api-routes-plural.php'));

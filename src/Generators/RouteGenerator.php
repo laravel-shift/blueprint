@@ -43,7 +43,7 @@ class RouteGenerator extends AbstractClassGenerator implements Generator
         $routes = '';
         $methods = array_keys($controller->methods());
         $className = $this->getClassName($controller);
-        $slug = config('blueprint.plural_names') ? Str::plural(Str::kebab($controller->prefix())) : Str::kebab($controller->prefix());
+        $slug = config('blueprint.plural_routes') ? Str::plural(Str::kebab($controller->prefix())) : Str::kebab($controller->prefix());
 
         foreach (array_diff($methods, Controller::$resourceMethods) as $method) {
             $routes .= $this->buildRouteLine($className, $slug, $method);

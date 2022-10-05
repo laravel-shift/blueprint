@@ -116,16 +116,15 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Pluralize base slug for Route::apiResource(...)
+    | Pluralize route names
     |--------------------------------------------------------------------------
     |
-    | By default, Blueprint will pluralize the api resource slug meaning
-    | a model named post will create an api resource route definition with a
-    | the base slug as 'posts'. Previously this was singular. Setting this
-    | to false, will product a singular slug of 'post'
+    | By default, Blueprint will use the `kebab-case` of the controller name for
+    | for the route name. If you would like to ensure a plural route name is
+    | used, you may set this to `true`.
     |
     */
-    'plural_names' => null,
+    'plural_routes' => null,
 
     /*
     |--------------------------------------------------------------------------
