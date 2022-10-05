@@ -54,7 +54,7 @@ class ConfigLexerTest extends TestCase
     /**
      * @test
      */
-    public function it_uses_app_path_and_namespace_config_from_yaml_override(): void
+    public function it_uses_app_path_and_namespace_from_inline_configuration(): void
     {
         $this->filesystem->expects('stub')
             ->with('model.class.stub')

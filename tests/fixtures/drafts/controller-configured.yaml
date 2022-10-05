@@ -9,6 +9,7 @@ controllers:
       save: user
       flash: user.name
       redirect: post.index
+
 config:
   app_path: shift
   namespace: Some\App
