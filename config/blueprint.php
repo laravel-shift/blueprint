@@ -116,6 +116,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Pluralize base slug for Route::apiResource(...)
+    |--------------------------------------------------------------------------
+    |
+    | By default, Blueprint will pluralize the api resource slug meaning
+    | a model named post will create an api resource route definition with a
+    | the base slug as 'posts'. Previously this was singular. Setting this
+    | to false, will product a singular slug of 'post'
+    |
+    */
+    'plural_api_slug' => true,
+
+    /*
+    |--------------------------------------------------------------------------
     | Generators
     |--------------------------------------------------------------------------
     |
