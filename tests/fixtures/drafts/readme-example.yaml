@@ -19,7 +19,3 @@ controllers:
       fire: NewPost with:post
       flash: post.title
       redirect: post.index
-
-config:
-    namespace: MyAppNamespace
-    models_namespace: MyAppModels

@@ -233,10 +233,6 @@ class BlueprintTest extends TestCase
                     ],
                 ],
             ],
-            'config' => [
-                'namespace' => 'MyAppNamespace',
-                'models_namespace' => 'MyAppModels'
-            ]
         ], $this->subject->parse($blueprint));
     }
 
@@ -280,10 +276,6 @@ class BlueprintTest extends TestCase
                     ],
                 ],
             ],
-            'config' => [
-                'namespace' => 'MyAppNamespace',
-                'models_namespace' => 'MyAppModels'
-            ]
         ];
 
         $this->assertEquals($expected, $this->subject->parse($definition_mac_eol));
