@@ -5,3 +5,5 @@ models:
 
 config:
   use_constraints: true
+  app_path: atum
+  namespace: Some\App
