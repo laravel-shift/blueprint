@@ -26,15 +26,15 @@ class TraceCommand extends Command
      */
     protected $description = 'Create definitions for existing models to reference in new drafts';
 
-    /** @var Filesystem $files */
+    /** @var Filesystem */
     protected $filesystem;
 
     /** @var Tracer */
     private $tracer;
 
     /**
-     * @param Filesystem $filesystem
-     * @param Tracer     $tracer
+     * @param  Filesystem  $filesystem
+     * @param  Tracer  $tracer
      */
     public function __construct(Filesystem $filesystem, Tracer $tracer)
     {

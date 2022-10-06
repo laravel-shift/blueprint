@@ -6,7 +6,6 @@ use Blueprint\Blueprint;
 use Blueprint\Generators\ControllerGenerator;
 use Blueprint\Lexers\StatementLexer;
 use Blueprint\Tree;
-use Illuminate\Support\Facades\File;
 use Tests\TestCase;
 
 /**
@@ -161,7 +160,6 @@ class ControllerGeneratorTest extends TestCase
 
         $this->assertEquals(['created' => ['src/path/Other/Http/UserController.php']], $this->subject->output($tree));
     }
-
 
     /**
      * @test

@@ -5,7 +5,6 @@ namespace Tests\Unit;
 use Blueprint\Blueprint;
 use Blueprint\Builder;
 use Blueprint\Tree;
-use Illuminate\Filesystem\Filesystem;
 use Tests\TestCase;
 
 class BuilderTest extends TestCase
@@ -62,7 +61,7 @@ class BuilderTest extends TestCase
         ];
         $draft = 'draft blueprint content';
         $tokens = [
-            'models' => [1, 2, 3]
+            'models' => [1, 2, 3],
         ];
         $registry = new Tree(['registry']);
         $only = [];
@@ -86,7 +85,7 @@ class BuilderTest extends TestCase
             ->with([
                 'created' => [1, 2],
                 'updated' => [3],
-                'models' => [4, 5, 6, 1, 2, 3]
+                'models' => [4, 5, 6, 1, 2, 3],
             ])
             ->andReturn('cacheable blueprint content');
 
@@ -119,7 +118,7 @@ class BuilderTest extends TestCase
         $draft .= PHP_EOL . '      - index: author_id, published_at';
 
         $tokens = [
-            'models' => [1, 2, 3]
+            'models' => [1, 2, 3],
         ];
         $registry = new Tree(['registry']);
         $only = [];
@@ -140,7 +139,7 @@ class BuilderTest extends TestCase
             ->with([
                 'created' => [1, 2],
                 'updated' => [3],
-                'models' => [1, 2, 3]
+                'models' => [1, 2, 3],
             ])
             ->andReturn('cacheable blueprint content');
 

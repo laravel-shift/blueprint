@@ -1,0 +1,19 @@
+{
+    "preset": "laravel",
+    "rules": {
+        "blank_line_before_statement": {
+            "statements": ["return", "try"]
+        },
+        "cast_spaces": {
+            "space": "none"
+        },
+        "concat_space": {
+            "spacing": "one"
+        },
+        "not_operator_with_successor_space": false,
+        "logical_operators": true
+    },
+    "notPath": [
+        "tests/fixtures"
+    ]
+}

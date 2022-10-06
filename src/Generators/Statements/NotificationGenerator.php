@@ -17,7 +17,7 @@ class NotificationGenerator extends StatementGenerator
 
         /**
          * @var \Blueprint\Models\Controller $controller
-        */
+         */
         foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
@@ -64,7 +64,7 @@ class NotificationGenerator extends StatementGenerator
                 [
                     'via($notifiable): array',
                     sprintf('toMail($notifiable): %s', $sendStatement->mail()),
-                    'toArray($notifiable): array'
+                    'toArray($notifiable): array',
                 ],
                 $stub
             );

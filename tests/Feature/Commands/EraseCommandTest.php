@@ -21,7 +21,7 @@ class EraseCommandTest extends TestCase
             ->with('.blueprint')
             ->andReturn("created: created_file.php \nupdated: updated_file.php \nother: test.php");
 
-        $this->filesystem->expects('delete')->with("created_file.php");
+        $this->filesystem->expects('delete')->with('created_file.php');
 
         $this->filesystem->expects('put')
             ->with('.blueprint', "other: test.php\n");
@@ -40,8 +40,8 @@ class EraseCommandTest extends TestCase
             ->andReturn("created:\n  -  created_file1.php\n  -  created_file2.php");
 
         $this->filesystem->expects('delete')->with([
-            "created_file1.php",
-            "created_file2.php",
+            'created_file1.php',
+            'created_file2.php',
         ]);
 
         $this->filesystem->expects('put')->with('.blueprint', '{  }');
@@ -49,9 +49,9 @@ class EraseCommandTest extends TestCase
 
         $this->artisan('blueprint:erase')
             ->assertExitCode(0)
-            ->expectsOutput("Deleted:")
-            ->expectsOutput("- created_file1.php")
-            ->expectsOutput("- created_file2.php");
+            ->expectsOutput('Deleted:')
+            ->expectsOutput('- created_file1.php')
+            ->expectsOutput('- created_file2.php');
     }
 
     /** @test */
@@ -66,15 +66,15 @@ class EraseCommandTest extends TestCase
 
         $this->artisan('blueprint:erase')
             ->assertExitCode(0)
-            ->expectsOutput("The updates to the following files can not be erased automatically.")
-            ->expectsOutput("- updated_file1.php")
-            ->expectsOutput("- updated_file2.php");
+            ->expectsOutput('The updates to the following files can not be erased automatically.')
+            ->expectsOutput('- updated_file1.php')
+            ->expectsOutput('- updated_file2.php');
     }
 
     /** @test */
     public function it_calls_the_trace_command()
     {
-        $this->filesystem->expects('get')->with('.blueprint')->andReturn("other: test.php");
+        $this->filesystem->expects('get')->with('.blueprint')->andReturn('other: test.php');
         $this->filesystem->expects('put')->with('.blueprint', "other: test.php\n");
 
         $tracer = $this->spy(Tracer::class);

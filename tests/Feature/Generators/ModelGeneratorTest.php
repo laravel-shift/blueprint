@@ -5,7 +5,6 @@ namespace Tests\Feature\Generators;
 use Blueprint\Blueprint;
 use Blueprint\Generators\ModelGenerator;
 use Blueprint\Tree;
-use Illuminate\Support\Facades\App;
 use Tests\TestCase;
 
 class ModelGeneratorTest extends TestCase

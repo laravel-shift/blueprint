@@ -25,7 +25,7 @@ class FormRequestGenerator extends AbstractClassGenerator implements Generator
 
         /**
          * @var \Blueprint\Models\Controller $controller
-        */
+         */
         foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
@@ -111,8 +111,8 @@ class FormRequestGenerator extends AbstractClassGenerator implements Generator
     private function validationRules(string $qualifier, string $column)
     {
         /**
- * @var \Blueprint\Models\Model $model
-*/
+         * @var \Blueprint\Models\Model $model
+         */
         $model = $this->tree->modelForContext($qualifier);
 
         $rules = [];
@@ -127,7 +127,7 @@ class FormRequestGenerator extends AbstractClassGenerator implements Generator
             } else {
                 /**
                  * @var \Blueprint\Models\Model $column
-                */
+                 */
                 foreach ($model->columns() as $column) {
                     if ($column->name() === 'id') {
                         continue;

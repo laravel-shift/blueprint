@@ -5,8 +5,11 @@ namespace Blueprint\Models;
 class Column
 {
     private $modifiers;
+
     private $name;
+
     private $dataType;
+
     private $attributes;
 
     public function __construct(string $name, string $dataType = 'string', array $modifiers = [], array $attributes = [])

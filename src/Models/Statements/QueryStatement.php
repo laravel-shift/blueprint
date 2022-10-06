@@ -120,14 +120,14 @@ class QueryStatement
 
     private function determineModel(?string $controller)
     {
-        if (! is_null($controller) && ! empty($controller)) {
+        if (!is_null($controller) && !empty($controller)) {
             $this->model = Str::studly(Str::singular($controller));
         }
 
         if (
             is_null($this->model()) &&
-            ! empty($this->clauses()) &&
-            ! in_array($this->operation(), ['count','exists'])
+            !empty($this->clauses()) &&
+            !in_array($this->operation(), ['count', 'exists'])
         ) {
             $this->model = Str::studly(Str::singular(Str::before(Str::after($this->clauses()[0], ':'), '.')));
         }

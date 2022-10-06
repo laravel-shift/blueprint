@@ -79,8 +79,8 @@ class TestGeneratorTest extends TestCase
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function output_works_for_pascal_case_definition_l8()
     {
         $this->filesystem->expects('stub')
@@ -136,7 +136,7 @@ class TestGeneratorTest extends TestCase
             'User' => [
                 'email' => 'string',
                 'password' => 'string',
-            ]
+            ],
         ];
         $tree = $this->blueprint->analyze($tokens);
 
@@ -225,7 +225,7 @@ class TestGeneratorTest extends TestCase
                 'tests/Feature/Http/Controllers/SubscriptionControllerTest.php',
                 'tests/Feature/Http/Controllers/TelegramControllerTest.php',
                 'tests/Feature/Http/Controllers/PaymentControllerTest.php',
-                'tests/Feature/Http/Controllers/Api/PaymentControllerTest.php'
+                'tests/Feature/Http/Controllers/Api/PaymentControllerTest.php',
             ], [
                 'tests/call-to-a-member-function-columns-on-null-SubscriptionControllerTest.php',
                 'tests/call-to-a-member-function-columns-on-null-TelegramControllerTest.php',

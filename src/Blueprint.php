@@ -10,6 +10,7 @@ use Symfony\Component\Yaml\Yaml;
 class Blueprint
 {
     private $lexers = [];
+
     private $generators = [];
 
     public static function relativeNamespace(string $fullyQualifiedClassName)

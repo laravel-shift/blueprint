@@ -192,7 +192,7 @@ class NotificationGeneratorTest extends TestCase
     {
         return [
             ['drafts/send-statements-notification-facade.yaml'],
-            ['drafts/send-statements-notification-model.yaml']
+            ['drafts/send-statements-notification-model.yaml'],
         ];
     }
 }

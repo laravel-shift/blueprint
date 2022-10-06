@@ -24,11 +24,11 @@ class NewCommand extends Command
      */
     protected $description = 'Create a draft.yaml file and load existing models';
 
-    /** @var Filesystem $files */
+    /** @var Filesystem */
     protected $filesystem;
 
     /**
-     * @param Filesystem $filesystem
+     * @param  Filesystem  $filesystem
      */
     public function __construct(Filesystem $filesystem)
     {

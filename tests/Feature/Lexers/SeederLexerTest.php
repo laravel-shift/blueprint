@@ -28,7 +28,7 @@ class SeederLexerTest extends TestCase
     public function it_returns_nothing_without_seeders_token()
     {
         $this->assertEquals([
-            'seeders' => []
+            'seeders' => [],
         ], $this->subject->analyze([]));
     }
 
@@ -38,7 +38,7 @@ class SeederLexerTest extends TestCase
     public function it_returns_seeders()
     {
         $tokens = [
-            'seeders' => 'Post'
+            'seeders' => 'Post',
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -55,7 +55,7 @@ class SeederLexerTest extends TestCase
     public function it_returns_multiple_seeders()
     {
         $tokens = [
-            'seeders' => 'Post, Comment'
+            'seeders' => 'Post, Comment',
         ];
 
         $actual = $this->subject->analyze($tokens);

@@ -10,7 +10,7 @@ class Controller implements BlueprintModel
     /** @var array */
     public static $resourceMethods = ['index', 'create', 'store', 'edit', 'update', 'show', 'destroy'];
 
-    /** @var array  */
+    /** @var array */
     public static $apiResourceMethods = ['index', 'store', 'update', 'show', 'destroy'];
 
     /**
@@ -101,7 +101,7 @@ class Controller implements BlueprintModel
     }
 
     /**
-     * @param bool $apiResource
+     * @param  bool  $apiResource
      */
     public function setApiResource(bool $apiResource)
     {

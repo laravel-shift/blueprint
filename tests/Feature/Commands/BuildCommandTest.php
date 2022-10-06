@@ -73,10 +73,10 @@ class BuildCommandTest extends TestCase
         $builder->shouldReceive('execute')
             ->with(resolve(Blueprint::class), $this->files, 'draft.yaml', '', '', false)
             ->andReturn(collect([
-                "created" => [
-                    "file1",
-                    "file2",
-                ]
+                'created' => [
+                    'file1',
+                    'file2',
+                ],
             ]));
         $this->artisan('blueprint:build')
             ->assertExitCode(0)

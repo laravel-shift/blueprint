@@ -3,8 +3,8 @@
 namespace Blueprint;
 
 use Doctrine\DBAL\Types\Type;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Filesystem\Filesystem;
 
 class Tracer
 {
@@ -19,7 +19,7 @@ class Tracer
             $paths = [Blueprint::appPath()];
 
             if (config('blueprint.models_namespace')) {
-                $paths[0] .= '/'.str_replace('\\', '/', config('blueprint.models_namespace'));
+                $paths[0] .= '/' . str_replace('\\', '/', config('blueprint.models_namespace'));
             }
         }
 
@@ -69,7 +69,7 @@ class Tracer
             preg_match("/namespace ([\w\\\\]+)/", $content, $namespace);
             preg_match("/class (\w+)/", $content, $class);
 
-            return ($namespace[1] ?? '').'\\'.($class[1] ?? '');
+            return ($namespace[1] ?? '') . '\\' . ($class[1] ?? '');
         }, $classes));
     }
 
@@ -125,7 +125,7 @@ class Tracer
     }
 
     /**
-     * @param \Doctrine\DBAL\Schema\Column[] $columns
+     * @param  \Doctrine\DBAL\Schema\Column[]  $columns
      */
     private function mapColumns($columns)
     {

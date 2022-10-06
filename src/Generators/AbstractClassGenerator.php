@@ -29,6 +29,7 @@ class AbstractClassGenerator
     protected function getPath(Model $model)
     {
         $path = str_replace('\\', '/', Blueprint::relativeNamespace($model->fullyQualifiedClassName()));
+
         return sprintf('%s/%s.php', $this->basePath ?? Blueprint::appPath(), $path);
     }
 

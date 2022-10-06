@@ -58,6 +58,7 @@ class SeederGenerator extends AbstractClassGenerator implements Generator
     protected function build(BlueprintModel $model)
     {
         $this->addImport($model, $this->tree->fqcnForContext($model->name()));
+
         return sprintf('%s::factory()->count(5)->create();', class_basename($this->tree->fqcnForContext($model->name())));
     }
 }

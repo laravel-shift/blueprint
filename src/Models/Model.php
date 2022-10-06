@@ -8,14 +8,23 @@ use Illuminate\Support\Str;
 class Model implements BlueprintModel
 {
     private $name;
+
     private $namespace;
+
     private $primaryKey = 'id';
+
     private $timestamps = 'timestamps';
+
     private $softDeletes = false;
+
     private $columns = [];
+
     private $relationships = [];
+
     private $pivotTables = [];
+
     private $polymorphicManyToManyTables = [];
+
     private $indexes = [];
 
     /**

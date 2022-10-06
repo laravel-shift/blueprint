@@ -38,7 +38,6 @@ class FireStatement
         return preg_match('/^[a-z0-9.]+$/', $this->event) === 1;
     }
 
-
     public function output()
     {
         $code = 'event(';

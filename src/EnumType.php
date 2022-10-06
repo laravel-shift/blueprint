@@ -18,7 +18,7 @@ class EnumType extends Type
             $this->values
         );
 
-        return "ENUM(" . implode(", ", $values) . ")";
+        return 'ENUM(' . implode(', ', $values) . ')';
     }
 
     public function convertToPHPValue($value, AbstractPlatform $platform)
@@ -31,6 +31,7 @@ class EnumType extends Type
         if (!in_array($value, $this->values)) {
             throw new \InvalidArgumentException("Invalid '" . $this->getName() . "' value.");
         }
+
         return $value;
     }
 

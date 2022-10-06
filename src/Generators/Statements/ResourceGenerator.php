@@ -70,6 +70,7 @@ class ResourceGenerator extends StatementGenerator implements Generator
         if (Blueprint::useReturnTypeHints()) {
             $stub = str_replace('toArray($request)', 'toArray($request): array', $stub);
         }
+
         return $stub;
     }
 

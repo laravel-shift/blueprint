@@ -35,7 +35,6 @@ class RedirectStatement
         return $this->data;
     }
 
-
     public function output()
     {
         $code = "return redirect()->route('" . $this->route() . "'";

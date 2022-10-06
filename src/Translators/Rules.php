@@ -8,21 +8,21 @@ use Illuminate\Support\Str;
 class Rules
 {
     const INTEGER_TYPES = [
-            'integer',
-            'tinyInteger',
-            'smallInteger',
-            'mediumInteger',
-            'bigInteger',
-            'increments',
-            'tinyIncrements',
-            'smallIncrements',
-            'mediumIncrements',
-            'bigIncrements',
-            'unsignedBigInteger',
-            'unsignedInteger',
-            'unsignedMediumInteger',
-            'unsignedSmallInteger',
-            'unsignedTinyInteger',
+        'integer',
+        'tinyInteger',
+        'smallInteger',
+        'mediumInteger',
+        'bigInteger',
+        'increments',
+        'tinyIncrements',
+        'smallIncrements',
+        'mediumIncrements',
+        'bigIncrements',
+        'unsignedBigInteger',
+        'unsignedInteger',
+        'unsignedMediumInteger',
+        'unsignedSmallInteger',
+        'unsignedTinyInteger',
     ];
 
     public static function fromColumn(string $context, Column $column)
@@ -100,16 +100,15 @@ class Rules
         return 'string';
     }
 
-
     private static function betweenRuleForColumn(Column $column)
     {
         $precision = $column->attributes()[0];
         $scale = $column->attributes()[1] ?? 0;
 
-        $value = substr_replace(str_pad("", $precision, '9'), ".", $precision - $scale, 0);
+        $value = substr_replace(str_pad('', $precision, '9'), '.', $precision - $scale, 0);
 
         if (intval($scale) === 0) {
-            $value = trim($value, ".");
+            $value = trim($value, '.');
         }
 
         if ($precision == $scale) {

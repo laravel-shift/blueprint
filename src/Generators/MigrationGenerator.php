@@ -154,7 +154,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
 
         /**
          * @var \Blueprint\Models\Column $column
-        */
+         */
         foreach ($model->columns() as $column) {
             $dataType = $column->dataType();
 

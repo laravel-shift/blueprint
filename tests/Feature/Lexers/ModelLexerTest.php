@@ -625,7 +625,7 @@ class ModelLexerTest extends TestCase
                 'Model' => [
                     'relationships' => [
                         'morphTo' => 'Morphable',
-                    ]
+                    ],
                 ],
             ],
         ];

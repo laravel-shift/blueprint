@@ -127,10 +127,10 @@ class ViewGeneratorTest extends TestCase
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals([
-            "skipped" => [
-                "resources/views/user/index.blade.php",
-                "resources/views/user/create.blade.php",
-                "resources/views/post/show.blade.php",
+            'skipped' => [
+                'resources/views/user/index.blade.php',
+                'resources/views/user/create.blade.php',
+                'resources/views/post/show.blade.php',
             ],
         ], $this->subject->output($tree));
     }

@@ -37,8 +37,8 @@ class BuildCommand extends Command
     private $builder;
 
     /**
-     * @param Filesystem $filesystem
-     * @param Builder    $builder
+     * @param  Filesystem  $filesystem
+     * @param  Builder  $builder
      */
     public function __construct(Filesystem $filesystem, Builder $builder)
     {
@@ -54,6 +54,7 @@ class BuildCommand extends Command
 
         if (!$this->filesystem->exists($file)) {
             $this->error('Draft file could not be found: ' . ($file ?: 'draft.yaml'));
+
             return 1;
         }
 

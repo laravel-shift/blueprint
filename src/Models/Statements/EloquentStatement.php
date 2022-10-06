@@ -50,7 +50,7 @@ class EloquentStatement
 
         if ($this->operation() == 'save') {
             if ($context === 'store') {
-                $code = "$" . Str::camel($model);
+                $code = '$' . Str::camel($model);
                 $code .= ' = ';
                 $code .= $model;
 
@@ -60,7 +60,7 @@ class EloquentStatement
                     $code .= '::create($request->all());';
                 }
             } else {
-                $code = "$" . Str::camel($model) . '->save();';
+                $code = '$' . Str::camel($model) . '->save();';
             }
         }
 
@@ -68,11 +68,11 @@ class EloquentStatement
             if (!empty($this->columns())) {
                 $columns = implode(', ', array_map(fn ($column) => sprintf("'%s' => \$%s", $column, $column), $this->columns()));
 
-                $code = "$" . Str::camel($model) . '->update([' . $columns . ']);';
+                $code = '$' . Str::camel($model) . '->update([' . $columns . ']);';
             } elseif ($using_validation) {
-                $code = "$" . Str::camel($model) . '->update($request->validated());';
+                $code = '$' . Str::camel($model) . '->update($request->validated());';
             } else {
-                $code = "$" . Str::camel($model) . '->update([]);';
+                $code = '$' . Str::camel($model) . '->update([]);';
             }
         }
 
@@ -81,7 +81,7 @@ class EloquentStatement
                 $model = $this->extractModel();
             }
 
-            $code = "$" . Str::camel($model);
+            $code = '$' . Str::camel($model);
             $code .= ' = ';
             $code .= $model;
             $code .= '::find($' . $this->columnName($this->reference()) . ');';
@@ -93,7 +93,7 @@ class EloquentStatement
                 $code .= '::destroy($' . str_replace('.', '->', $this->reference()) . ');';
             } else {
                 // TODO: only for certain contexts or no matter what given simple reference?
-                $code = "$" . Str::camel($model) . '->delete();';
+                $code = '$' . Str::camel($model) . '->delete();';
             }
         }
 

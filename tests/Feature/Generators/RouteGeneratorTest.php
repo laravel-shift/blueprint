@@ -14,6 +14,7 @@ use Tests\TestCase;
 class RouteGeneratorTest extends TestCase
 {
     protected $files;
+
     private $blueprint;
 
     /** @var RouteGenerator */

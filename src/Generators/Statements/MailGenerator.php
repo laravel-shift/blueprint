@@ -17,7 +17,7 @@ class MailGenerator extends StatementGenerator
 
         /**
          * @var \Blueprint\Models\Controller $controller
-        */
+         */
         foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {

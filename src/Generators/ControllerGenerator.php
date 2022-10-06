@@ -125,7 +125,7 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
                             $queryStatement = new QueryStatement('all', [$statement->reference()]);
                             $body = implode(PHP_EOL, [
                                 self::INDENT . $queryStatement->output($statement->reference()),
-                                PHP_EOL . $body
+                                PHP_EOL . $body,
                             ]);
 
                             $this->addImport($controller, $this->determineModel($controller, $queryStatement->model()));
