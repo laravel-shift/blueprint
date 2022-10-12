@@ -197,6 +197,10 @@ class Model implements BlueprintModel
 
     public function addPivotTable(string $reference)
     {
+        if (str_contains($reference, ':&')) {
+            return;
+        }
+
         $segments = [$this->name(), class_basename($reference)];
         sort($segments);
         $this->pivotTables[] = $segments;

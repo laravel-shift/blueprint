@@ -1,0 +1,17 @@
+models:
+  User:
+    email: string
+    relationships:
+      belongsToMany: Team:&Membership
+
+  Team:
+    name: string
+    relationships:
+      belongsToMany: User:&Membership
+
+  Membership:
+    meta:
+      pivot: true
+      table: team_user
+    user_id: id
+    team_id: id

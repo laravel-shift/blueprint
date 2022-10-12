@@ -660,6 +660,37 @@ class MigrationGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
     }
 
+    /**
+     * @test
+     */
+    public function output_generates_custom_pivot_tables()
+    {
+        $this->filesystem->expects('stub')
+            ->with('migration.stub')
+            ->andReturn($this->stub('migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $user_migration = str_replace('timestamp', $now->copy()->subSeconds(2)->format('Y_m_d_His'), 'database/migrations/timestamp_create_users_table.php');
+        $team_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_teams_table.php');
+        $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_team_user_table.php');
+
+        $this->filesystem->expects('exists')->times(3)->andReturn(false);
+
+        $this->filesystem->expects('put')
+            ->with($user_migration, $this->fixture('migrations/custom_pivot_users_table.php'));
+        $this->filesystem->expects('put')
+            ->with($team_migration, $this->fixture('migrations/custom_pivot_teams_table.php'));
+        $this->filesystem->expects('put')
+            ->with($pivot_migration, $this->fixture('migrations/custom_pivot_team_user_table.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/custom-pivot.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$user_migration, $team_migration, $pivot_migration]], $this->subject->output($tree));
+    }
+
     public function modelTreeDataProvider()
     {
         return [
