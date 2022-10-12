@@ -1,0 +1,7 @@
+models:
+  Post:
+    meta:
+      pivot: true
+      table: post
+    title: string:400
+    content: text

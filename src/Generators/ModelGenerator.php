@@ -32,6 +32,11 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
 
     protected function populateStub(string $stub, Model $model)
     {
+        if ($model->isPivot()) {
+            $stub = str_replace('class {{ class }} extends Model', 'class {{ class }} extends Pivot', $stub);
+            $stub = str_replace('use Illuminate\\Database\\Eloquent\\Model;', 'use Illuminate\\Database\\Eloquent\\Relations\\Pivot;', $stub);
+        }
+
         $stub = str_replace('{{ namespace }}', $model->fullyQualifiedNamespace(), $stub);
         $stub = str_replace(PHP_EOL . 'class {{ class }}', $this->buildClassPhpDoc($model) . PHP_EOL . 'class {{ class }}', $stub);
         $stub = str_replace('{{ class }}', $model->name(), $stub);
@@ -104,6 +109,10 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
     protected function buildProperties(Model $model)
     {
         $properties = '';
+
+        if ($model->usesCustomTableName()) {
+            $properties .= str_replace('{{ name }}', $model->tableName(), $this->filesystem->stub('model.table.stub'));
+        }
 
         if (!$model->usesTimestamps()) {
             $properties .= $this->filesystem->stub('model.timestamps.stub');

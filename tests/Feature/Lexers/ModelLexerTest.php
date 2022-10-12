@@ -651,6 +651,42 @@ class ModelLexerTest extends TestCase
         $this->assertEquals(['Morphable'], $relationships['morphTo']);
     }
 
+    /**
+     * @test
+     */
+    public function it_sets_meta_data()
+    {
+        $tokens = [
+            'models' => [
+                'Post' => [
+                    'meta' => [
+                        'pivot' => true,
+                        'table' => 'post',
+                    ],
+                ],
+            ],
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertIsArray($actual['models']);
+        $this->assertCount(1, $actual['models']);
+
+        $model = $actual['models']['Post'];
+        $this->assertEquals('Post', $model->name());
+        $this->assertSame('post', $model->tableName());
+        $this->assertTrue($model->isPivot());
+        $this->assertTrue($model->usesTimestamps());
+
+        $columns = $model->columns();
+        $this->assertCount(1, $columns);
+        $this->assertEquals('id', $columns['id']->name());
+        $this->assertEquals('id', $columns['id']->dataType());
+        $this->assertEquals([], $columns['id']->modifiers());
+
+        $this->assertCount(0, $model->relationships());
+    }
+
     public function dataTypeAttributesDataProvider()
     {
         return [

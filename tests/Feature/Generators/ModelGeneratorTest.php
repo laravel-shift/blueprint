@@ -65,6 +65,12 @@ class ModelGeneratorTest extends TestCase
                 ->andReturn($this->stub('model.hidden.stub'));
         }
 
+        if ($definition === 'drafts/model-with-meta.yaml') {
+            $this->filesystem->expects('stub')
+                ->with('model.table.stub')
+                ->andReturn($this->stub('model.table.stub'));
+        }
+
         $this->filesystem->expects('stub')
             ->with('model.casts.stub')
             ->andReturn($this->stub('model.casts.stub'));
@@ -600,6 +606,7 @@ class ModelGeneratorTest extends TestCase
             ['drafts/alias-relationships.yaml', 'app/Models/Salesman.php', 'models/alias-relationships.php'],
             ['drafts/return-type-declarations.yaml', 'app/Models/Term.php', 'models/return-type-declarations.php'],
             ['drafts/uuid-shorthand-invalid-relationship.yaml', 'app/Models/AgeCohort.php', 'models/uuid-shorthand-invalid-relationship.php'],
+            ['drafts/model-with-meta.yaml', 'app/Models/Post.php', 'models/model-with-meta.php'],
         ];
     }
 
