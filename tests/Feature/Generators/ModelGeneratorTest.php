@@ -562,7 +562,7 @@ class ModelGeneratorTest extends TestCase
     /**
      * @test
      */
-    public function output_generates_models_with_custom_pivot_columns()
+    public function output_generates_models_with_custom_pivot_table_name()
     {
         $this->filesystem->expects('stub')
             ->with($this->modelStub)
@@ -590,6 +590,45 @@ class ModelGeneratorTest extends TestCase
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => ['app/Models/User.php']], $this->subject->output($tree));
+    }
+
+    /**
+     * @test
+     */
+    public function output_generates_models_with_custom_pivot()
+    {
+        $this->filesystem->expects('stub')
+            ->with($this->modelStub)
+            ->andReturn($this->stub($this->modelStub));
+        $this->filesystem->expects('stub')
+            ->times(3)
+            ->with('model.fillable.stub')
+            ->andReturn($this->stub('model.fillable.stub'));
+        $this->filesystem->expects('stub')
+            ->times(3)
+            ->with('model.casts.stub')
+            ->andReturn($this->stub('model.casts.stub'));
+        $this->filesystem->expects('stub')
+            ->times(3)
+            ->with('model.method.stub')
+            ->andReturn($this->stub('model.method.stub'));
+
+        $this->filesystem->expects('exists')
+            ->times(3)
+            ->with('app/Models')
+            ->andReturnTrue();
+
+        $this->filesystem->expects('put')
+            ->with('app/Models/User.php', $this->fixture('models/custom-pivot-user.php'));
+        $this->filesystem->expects('put')
+            ->with('app/Models/Team.php', $this->fixture('models/custom-pivot-team.php'));
+        $this->filesystem->expects('put')
+            ->with('app/Models/Membership.php', $this->fixture('models/custom-pivot-membership.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/custom-pivot.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['app/Models/User.php', 'app/Models/Team.php', 'app/Models/Membership.php']], $this->subject->output($tree));
     }
 
     public function modelTreeDataProvider()
