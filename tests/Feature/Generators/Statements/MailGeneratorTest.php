@@ -180,11 +180,23 @@ class MailGeneratorTest extends TestCase
             ->with('src/path/Mail', 0755, true);
         $this->filesystem->expects('put')
             ->with('src/path/Mail/ReviewPost.php', $this->fixture('mailables/mail-configured.php'));
+        $this->filesystem->expects('exists')
+            ->with('resources/views/emails/review-post.blade.php')
+            ->andReturnFalse();
+        $this->filesystem->expects('makeDirectory')
+            ->with('resources/views/emails', 0755, true);
+        $this->filesystem->expects('put')
+            ->with('resources/views/emails/review-post.blade.php', $this->fixture('mailables/review-post-view.blade.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['src/path/Mail/ReviewPost.php']], $this->subject->output($tree));
+        $this->assertEquals([
+            'created' => [
+                'src/path/Mail/ReviewPost.php',
+                'resources/views/emails/review-post.blade.php',
+            ],
+        ], $this->subject->output($tree));
     }
 
     /**
@@ -215,17 +227,29 @@ class MailGeneratorTest extends TestCase
             ->with('src/path/Mail', 0755, true);
         $this->filesystem->expects('put')
             ->with('src/path/Mail/ReviewPost.php', $this->fixture('mailables/return-type-declarations.php'));
+        $this->filesystem->expects('exists')
+            ->with('resources/views/emails/review-post.blade.php')
+            ->andReturnFalse();
+        $this->filesystem->expects('makeDirectory')
+            ->with('resources/views/emails', 0755, true);
+        $this->filesystem->expects('put')
+            ->with('resources/views/emails/review-post.blade.php', $this->fixture('mailables/review-post-view.blade.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['src/path/Mail/ReviewPost.php']], $this->subject->output($tree));
+        $this->assertEquals([
+            'created' => [
+                'src/path/Mail/ReviewPost.php',
+                'resources/views/emails/review-post.blade.php',
+            ],
+        ], $this->subject->output($tree));
     }
 
     /**
      * @test
      */
-    public function output_writes_mails_but_not_template()
+    public function output_writes_mails_but_not_existing_templates()
     {
         $this->filesystem->expects('stub')
             ->with('mail.stub')
@@ -268,7 +292,6 @@ class MailGeneratorTest extends TestCase
             ],
         ], $this->subject->output($tree));
     }
-
 
     /**
      * @test
