@@ -166,6 +166,7 @@ class StatementLexerTest extends TestCase
         $this->assertEquals('ReviewPost', $actual[0]->mail());
         $this->assertNull($actual[0]->to());
         $this->assertSame([], $actual[0]->data());
+        $this->assertEquals('emails.review-post', $actual[0]->view());
         $this->assertEquals(SendStatement::TYPE_MAIL, $actual[0]->type());
     }
 
@@ -186,6 +187,7 @@ class StatementLexerTest extends TestCase
         $this->assertEquals('ReviewPost', $actual[0]->mail());
         $this->assertEquals('post.author', $actual[0]->to());
         $this->assertSame([], $actual[0]->data());
+        $this->assertEquals('emails.review-post', $actual[0]->view());
         $this->assertEquals(SendStatement::TYPE_MAIL, $actual[0]->type());
     }
 
@@ -206,6 +208,7 @@ class StatementLexerTest extends TestCase
         $this->assertEquals('ReviewPost', $actual[0]->mail());
         $this->assertNull($actual[0]->to());
         $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
+        $this->assertEquals('emails.review-post', $actual[0]->view());
         $this->assertEquals(SendStatement::TYPE_MAIL, $actual[0]->type());
     }
 
@@ -226,6 +229,28 @@ class StatementLexerTest extends TestCase
         $this->assertEquals('ReviewPost', $actual[0]->mail());
         $this->assertEquals('post.author', $actual[0]->to());
         $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
+        $this->assertEquals('emails.review-post', $actual[0]->view());
+        $this->assertEquals(SendStatement::TYPE_MAIL, $actual[0]->type());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_send_statement_to_with_and_view()
+    {
+        $tokens = [
+            'send' => 'ReviewPost to:post.author with:foo, bar, baz view:email.review-post',
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(SendStatement::class, $actual[0]);
+
+        $this->assertEquals('ReviewPost', $actual[0]->mail());
+        $this->assertEquals('post.author', $actual[0]->to());
+        $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
+        $this->assertEquals('email.review-post', $actual[0]->view());
         $this->assertEquals(SendStatement::TYPE_MAIL, $actual[0]->type());
     }
 

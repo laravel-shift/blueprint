@@ -2,6 +2,8 @@
 
 namespace Blueprint\Models\Statements;
 
+use Illuminate\Support\Str;
+
 class SendStatement
 {
     const TYPE_MAIL = 'mail';
@@ -30,12 +32,18 @@ class SendStatement
      */
     private $type;
 
-    public function __construct(string $mail, string $to = null, array $data, string $type)
+    /**
+     * @var string
+     */
+    private $view;
+
+    public function __construct(string $mail, ?string $to, array $data, string $type, string $view = null)
     {
         $this->mail = $mail;
         $this->data = $data;
         $this->to = $to;
         $this->type = $type;
+        $this->view = $view ?? 'emails.' . Str::kebab($this->mail);
     }
 
     public function mail()
@@ -77,6 +85,11 @@ class SendStatement
     public function isNotification()
     {
         return $this->type() === SendStatement::TYPE_NOTIFICATION_WITH_FACADE || $this->type() === SendStatement::TYPE_NOTIFICATION_WITH_MODEL;
+    }
+
+    public function view()
+    {
+        return $this->view;
     }
 
     private function mailOutput()
