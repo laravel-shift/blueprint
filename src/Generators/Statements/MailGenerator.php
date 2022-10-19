@@ -53,7 +53,6 @@ class MailGenerator extends StatementGenerator
     private function createView(string $stub, SendStatement $statement)
     {
         return str_replace('{{ class }}', $statement->mail(), $stub);
-
     }
 
     private function getViewPath($view)
