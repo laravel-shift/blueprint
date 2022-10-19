@@ -42,7 +42,7 @@ class MailGenerator extends StatementGenerator
                         continue;
                     }
 
-                    $this->create($path, $this->createView($view_stub, $statement));
+                    $this->create($path, $this->populateViewStub($view_stub, $statement));
                 }
             }
         }
@@ -50,7 +50,7 @@ class MailGenerator extends StatementGenerator
         return $this->output;
     }
 
-    private function createView(string $stub, SendStatement $statement)
+    private function populateViewStub(string $stub, SendStatement $statement)
     {
         return str_replace('{{ class }}', $statement->mail(), $stub);
     }
