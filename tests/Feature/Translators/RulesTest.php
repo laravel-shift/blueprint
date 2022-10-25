@@ -26,9 +26,9 @@ class RulesTest extends TestCase
      */
     public function forColumn_returns_nullable_rule()
     {
-        $column = new Column('test', 'nullable string');
+        $column = new Column('test', 'string', ['nullable']);
 
-        $this->assertEquals(['required', 'string'], Rules::fromColumn('context', $column));
+        $this->assertEquals(['nullable', 'string'], Rules::fromColumn('context', $column));
     }
 
     /**
