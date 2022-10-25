@@ -29,9 +29,7 @@ class Rules
     {
         $rules = [];
 
-        if (!in_array('nullable', $column->modifiers())) {
-            array_push($rules, 'required');
-        }
+        array_push($rules, in_array('nullable', $column->modifiers()) ? 'nullable' : 'required');
 
         // hack for tests...
         if (in_array($column->dataType(), ['string', 'char', 'text', 'longText', 'fullText'])) {
