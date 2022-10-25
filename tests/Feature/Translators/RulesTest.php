@@ -23,6 +23,16 @@ class RulesTest extends TestCase
 
     /**
      * @test
+     */
+    public function forColumn_returns_nullable_rule()
+    {
+        $column = new Column('test', 'string', ['nullable']);
+
+        $this->assertEquals(['nullable', 'string'], Rules::fromColumn('context', $column));
+    }
+
+    /**
+     * @test
      * @dataProvider stringDataTypesProvider
      */
     public function forColumn_returns_string_rule_for_string_data_types($data_type)
@@ -201,7 +211,7 @@ class RulesTest extends TestCase
     /**
      * @test
      */
-    public function forColumn_does_not_return_between_rule_for_unsigned_decimal_without_precion_and_scale()
+    public function forColumn_does_not_return_between_rule_for_unsigned_decimal_without_precision_and_scale()
     {
         $unsignedBeforeDecimalColumn = new Column('column', 'unsigned decimal');
 
@@ -216,7 +226,7 @@ class RulesTest extends TestCase
      * @test
      * @dataProvider noBetweenRuleDataProvider
      */
-    public function forColumn_does_not_return_between_rule_for_double_without_precion_and_scale($column)
+    public function forColumn_does_not_return_between_rule_for_double_without_precision_and_scale($column)
     {
         $this->assertNotContains('between', Rules::fromColumn('context', $column));
     }
