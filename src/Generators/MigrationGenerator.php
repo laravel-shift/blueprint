@@ -161,7 +161,12 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             if ($column->name() === 'id' && $dataType === 'id') {
                 $dataType = 'bigIncrements';
             } elseif ($dataType === 'id') {
-                $dataType = 'unsignedBigInteger';
+                if ($model->isPivot()) {
+                    // TODO: what if constraints are enabled?
+                    $dataType = 'foreignId';
+                } else {
+                    $dataType = 'unsignedBigInteger';
+                }
             }
 
             if (in_array($dataType, self::UNSIGNABLE_TYPES) && in_array('unsigned', $column->modifiers())) {
@@ -404,24 +409,18 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
 
         if ($overwrite) {
             $migrations = collect($this->filesystem->files($dir))
-                ->filter(
-                    fn (SplFileInfo $file) => str_contains($file->getFilename(), $name)
-                )
+                ->filter(fn (SplFileInfo $file) => str_contains($file->getFilename(), $name))
                 ->sort();
 
             if ($migrations->isNotEmpty()) {
                 $migration = $migrations->first()->getPathname();
 
                 $migrations->diff($migration)
-                    ->each(
-                        function (SplFileInfo $file) {
-                            $path = $file->getPathname();
-
-                            $this->filesystem->delete($path);
-
-                            $this->output['deleted'][] = $path;
-                        }
-                    );
+                    ->each(function (SplFileInfo $file) {
+                        $path = $file->getPathname();
+                        $this->filesystem->delete($path);
+                        $this->output['deleted'][] = $path;
+                    });
 
                 return $migration;
             }
@@ -430,22 +429,10 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         return $dir . $timestamp->format('Y_m_d_His') . $name;
     }
 
-    protected function getPivotClassName(array $segments)
-    {
-        return 'Create' . Str::studly($this->getPivotTableName($segments)) . 'Table';
-    }
-
-    protected function getPolyClassName(string $parentTable)
-    {
-        return 'Create' . Str::studly($this->getPolyTableName($parentTable)) . 'Table';
-    }
-
     protected function getPivotTableName(array $segments)
     {
         $isCustom = collect($segments)
-            ->filter(
-                fn ($segment) => Str::contains($segment, ':')
-            )->first();
+            ->filter(fn ($segment) => Str::contains($segment, ':'))->first();
 
         if ($isCustom) {
             $table = Str::after($isCustom, ':');
@@ -453,10 +440,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             return $table;
         }
 
-        $segments = array_map(
-            fn ($name) => Str::snake($name),
-            $segments
-        );
+        $segments = array_map(fn ($name) => Str::snake($name), $segments);
         sort($segments);
 
         return strtolower(implode('_', $segments));
@@ -492,9 +476,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         }
 
         return collect(self::UNSIGNABLE_TYPES)
-            ->contains(
-                fn ($value) => strtolower($value) === strtolower($type)
-            );
+            ->contains(fn ($value) => strtolower($value) === strtolower($type));
     }
 
     protected function isIdOrUuid(string $dataType)

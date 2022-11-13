@@ -11,11 +11,15 @@ class Model implements BlueprintModel
 
     private $namespace;
 
+    private $pivot = false;
+
     private $primaryKey = 'id';
 
     private $timestamps = 'timestamps';
 
     private $softDeletes = false;
+
+    private $table;
 
     private $columns = [];
 
@@ -100,9 +104,29 @@ class Model implements BlueprintModel
         $this->primaryKey = false;
     }
 
+    public function isPivot()
+    {
+        return $this->pivot;
+    }
+
+    public function setPivot()
+    {
+        $this->pivot = true;
+    }
+
+    public function usesCustomTableName()
+    {
+        return isset($this->table);
+    }
+
     public function tableName()
     {
-        return Str::snake(Str::pluralStudly($this->name));
+        return $this->table ?? Str::snake(Str::pluralStudly($this->name));
+    }
+
+    public function setTableName($name)
+    {
+        $this->table = $name;
     }
 
     public function timestampsDataType(): string
@@ -173,6 +197,10 @@ class Model implements BlueprintModel
 
     public function addPivotTable(string $reference)
     {
+        if (str_contains($reference, ':&')) {
+            return;
+        }
+
         $segments = [$this->name(), class_basename($reference)];
         sort($segments);
         $this->pivotTables[] = $segments;

@@ -20,7 +20,6 @@ class ModelGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->modelStub = 'model.class.stub';
         $this->subject = new ModelGenerator($this->files);
 
         $this->blueprint = new Blueprint();
@@ -34,8 +33,8 @@ class ModelGeneratorTest extends TestCase
     public function output_generates_nothing_for_empty_tree()
     {
         $this->filesystem->expects('stub')
-            ->with($this->modelStub)
-            ->andReturn($this->stub($this->modelStub));
+            ->with('model.class.stub')
+            ->andReturn($this->stub('model.class.stub'));
 
         $this->filesystem->shouldNotHaveReceived('put');
 
@@ -52,8 +51,8 @@ class ModelGeneratorTest extends TestCase
             $this->app['config']->set('blueprint.use_return_types', true);
         }
         $this->filesystem->expects('stub')
-            ->with($this->modelStub)
-            ->andReturn($this->stub($this->modelStub));
+            ->with('model.class.stub')
+            ->andReturn($this->stub('model.class.stub'));
 
         $this->filesystem->expects('stub')
             ->with('model.fillable.stub')
@@ -63,6 +62,12 @@ class ModelGeneratorTest extends TestCase
             $this->filesystem->expects('stub')
                 ->with('model.hidden.stub')
                 ->andReturn($this->stub('model.hidden.stub'));
+        }
+
+        if ($definition === 'drafts/model-with-meta.yaml') {
+            $this->filesystem->expects('stub')
+                ->with('model.table.stub')
+                ->andReturn($this->stub('model.table.stub'));
         }
 
         $this->filesystem->expects('stub')
@@ -95,8 +100,8 @@ class ModelGeneratorTest extends TestCase
     public function output_works_for_pascal_case_definition()
     {
         $this->filesystem->expects('stub')
-            ->with($this->modelStub)
-            ->andReturn($this->stub($this->modelStub));
+            ->with('model.class.stub')
+            ->andReturn($this->stub('model.class.stub'));
         $this->filesystem->expects('stub')
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'))
@@ -137,8 +142,8 @@ class ModelGeneratorTest extends TestCase
     public function output_generates_relationships()
     {
         $this->filesystem->expects('stub')
-            ->with($this->modelStub)
-            ->andReturn($this->stub($this->modelStub));
+            ->with('model.class.stub')
+            ->andReturn($this->stub('model.class.stub'));
         $this->filesystem->expects('stub')
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'));
@@ -167,8 +172,8 @@ class ModelGeneratorTest extends TestCase
     public function output_generates_relationships_added_with_full_model_namespace()
     {
         $this->files->expects('stub')
-            ->with($this->modelStub)
-            ->andReturn($this->stub($this->modelStub));
+            ->with('model.class.stub')
+            ->andReturn($this->stub('model.class.stub'));
         $this->files->expects('stub')
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'));
@@ -198,8 +203,8 @@ class ModelGeneratorTest extends TestCase
     public function output_generates_morphone_morphmany_relation_string_when_using_fqn()
     {
         $this->files->expects('stub')
-            ->with($this->modelStub)
-            ->andReturn($this->stub($this->modelStub));
+            ->with('model.class.stub')
+            ->andReturn($this->stub('model.class.stub'));
         $this->files->expects('stub')
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'));
@@ -229,8 +234,8 @@ class ModelGeneratorTest extends TestCase
     public function output_generates_polymorphic_relationships()
     {
         $this->filesystem->expects('stub')
-            ->with($this->modelStub)
-            ->andReturn($this->stub($this->modelStub));
+            ->with('model.class.stub')
+            ->andReturn($this->stub('model.class.stub'));
         $this->filesystem->expects('stub')
             ->times(3)
             ->with('model.fillable.stub')
@@ -274,8 +279,8 @@ class ModelGeneratorTest extends TestCase
     public function output_generates_morphtomany_relationship_with_intermediate_models()
     {
         $this->filesystem->expects('stub')
-            ->with($this->modelStub)
-            ->andReturn($this->stub($this->modelStub));
+            ->with('model.class.stub')
+            ->andReturn($this->stub('model.class.stub'));
         $this->filesystem->expects('stub')
             ->times(3)
             ->with('model.fillable.stub')
@@ -320,8 +325,8 @@ class ModelGeneratorTest extends TestCase
     public function output_generates_disabled_auto_columns()
     {
         $this->filesystem->expects('stub')
-            ->with($this->modelStub)
-            ->andReturn($this->stub($this->modelStub));
+            ->with('model.class.stub')
+            ->andReturn($this->stub('model.class.stub'));
         $this->filesystem->expects('stub')
             ->with('model.timestamps.stub')
             ->andReturn($this->stub('model.timestamps.stub'));
@@ -357,8 +362,8 @@ class ModelGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.models_namespace', 'Models');
 
         $this->filesystem->expects('stub')
-            ->with($this->modelStub)
-            ->andReturn($this->stub($this->modelStub));
+            ->with('model.class.stub')
+            ->andReturn($this->stub('model.class.stub'));
 
         $this->filesystem->expects('stub')
             ->with('model.fillable.stub')
@@ -395,8 +400,8 @@ class ModelGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.generate_phpdocs', true);
 
         $this->filesystem->expects('stub')
-            ->with($this->modelStub)
-            ->andReturn($this->stub($this->modelStub));
+            ->with('model.class.stub')
+            ->andReturn($this->stub('model.class.stub'));
 
         if ($definition === 'drafts/disable-auto-columns.yaml') {
             $this->filesystem->expects('stub')
@@ -441,8 +446,8 @@ class ModelGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.use_guarded', true);
 
         $this->filesystem->expects('stub')
-            ->with($this->modelStub)
-            ->andReturn($this->stub($this->modelStub));
+            ->with('model.class.stub')
+            ->andReturn($this->stub('model.class.stub'));
 
         $this->filesystem->expects('stub')
             ->with('model.guarded.stub')
@@ -477,8 +482,8 @@ class ModelGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.models_namespace', 'Models');
 
         $this->filesystem->expects('stub')
-            ->with($this->modelStub)
-            ->andReturn($this->stub($this->modelStub));
+            ->with('model.class.stub')
+            ->andReturn($this->stub('model.class.stub'));
         $this->filesystem->expects('stub')
             ->times(4)
             ->with('model.fillable.stub')
@@ -529,8 +534,8 @@ class ModelGeneratorTest extends TestCase
         $model = 'models/custom-models-namespace.php';
 
         $this->filesystem->expects('stub')
-            ->with($this->modelStub)
-            ->andReturn($this->stub($this->modelStub));
+            ->with('model.class.stub')
+            ->andReturn($this->stub('model.class.stub'));
         $this->filesystem->expects('stub')
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'));
@@ -556,11 +561,11 @@ class ModelGeneratorTest extends TestCase
     /**
      * @test
      */
-    public function output_generates_models_with_custom_pivot_columns()
+    public function output_generates_models_with_custom_pivot_table_name()
     {
         $this->filesystem->expects('stub')
-            ->with($this->modelStub)
-            ->andReturn($this->stub($this->modelStub));
+            ->with('model.class.stub')
+            ->andReturn($this->stub('model.class.stub'));
         $this->filesystem->expects('stub')
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'));
@@ -586,6 +591,51 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Models/User.php']], $this->subject->output($tree));
     }
 
+    /**
+     * @test
+     */
+    public function output_generates_models_with_custom_pivot()
+    {
+        $this->filesystem->expects('stub')
+            ->with('model.class.stub')
+            ->andReturn($this->stub('model.class.stub'));
+        $this->filesystem->expects('stub')
+            ->times(3)
+            ->with('model.fillable.stub')
+            ->andReturn($this->stub('model.fillable.stub'));
+        $this->filesystem->expects('stub')
+            ->times(3)
+            ->with('model.casts.stub')
+            ->andReturn($this->stub('model.casts.stub'));
+        $this->filesystem->expects('stub')
+            ->times(3)
+            ->with('model.method.stub')
+            ->andReturn($this->stub('model.method.stub'));
+        $this->filesystem->expects('stub')
+            ->with('model.table.stub')
+            ->andReturn($this->stub('model.table.stub'));
+        $this->filesystem->expects('stub')
+            ->with('model.incrementing.stub')
+            ->andReturn($this->stub('model.incrementing.stub'));
+
+        $this->filesystem->expects('exists')
+            ->times(3)
+            ->with('app/Models')
+            ->andReturnTrue();
+
+        $this->filesystem->expects('put')
+            ->with('app/Models/User.php', $this->fixture('models/custom-pivot-user.php'));
+        $this->filesystem->expects('put')
+            ->with('app/Models/Team.php', $this->fixture('models/custom-pivot-team.php'));
+        $this->filesystem->expects('put')
+            ->with('app/Models/Membership.php', $this->fixture('models/custom-pivot-membership.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/custom-pivot.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['app/Models/User.php', 'app/Models/Team.php', 'app/Models/Membership.php']], $this->subject->output($tree));
+    }
+
     public function modelTreeDataProvider()
     {
         return [
@@ -600,6 +650,7 @@ class ModelGeneratorTest extends TestCase
             ['drafts/alias-relationships.yaml', 'app/Models/Salesman.php', 'models/alias-relationships.php'],
             ['drafts/return-type-declarations.yaml', 'app/Models/Term.php', 'models/return-type-declarations.php'],
             ['drafts/uuid-shorthand-invalid-relationship.yaml', 'app/Models/AgeCohort.php', 'models/uuid-shorthand-invalid-relationship.php'],
+            ['drafts/model-with-meta.yaml', 'app/Models/Post.php', 'models/model-with-meta.php'],
         ];
     }
 

@@ -30,8 +30,22 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         return $this->output;
     }
 
+    private function pivotColumns(array $columns, array $relationships): array
+    {
+        // TODO: ideally restrict to only "belongsTo" columns used for pivot relationship
+        return collect($columns)
+            ->map(fn ($column) => $column->name())
+            ->reject(fn ($column) => in_array($column, ['created_at', 'updated_at']) || in_array($column, $relationships['belongsTo'] ?? []))
+            ->all();
+    }
+
     protected function populateStub(string $stub, Model $model)
     {
+        if ($model->isPivot()) {
+            $stub = str_replace('class {{ class }} extends Model', 'class {{ class }} extends Pivot', $stub);
+            $stub = str_replace('use Illuminate\\Database\\Eloquent\\Model;', 'use Illuminate\\Database\\Eloquent\\Relations\\Pivot;', $stub);
+        }
+
         $stub = str_replace('{{ namespace }}', $model->fullyQualifiedNamespace(), $stub);
         $stub = str_replace(PHP_EOL . 'class {{ class }}', $this->buildClassPhpDoc($model) . PHP_EOL . 'class {{ class }}', $stub);
         $stub = str_replace('{{ class }}', $model->name(), $stub);
@@ -103,34 +117,42 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
 
     protected function buildProperties(Model $model)
     {
-        $properties = '';
+        $properties = [];
+
+        if ($model->usesCustomTableName() || $model->isPivot()) {
+            $properties[] = str_replace('{{ name }}', $model->tableName(), $this->filesystem->stub('model.table.stub'));
+        }
 
         if (!$model->usesTimestamps()) {
-            $properties .= $this->filesystem->stub('model.timestamps.stub');
+            $properties[] = $this->filesystem->stub('model.timestamps.stub');
+        }
+
+        if ($model->isPivot() && $model->usesPrimaryKey()) {
+            $properties[] = $this->filesystem->stub('model.incrementing.stub');
         }
 
         if (config('blueprint.use_guarded')) {
-            $properties .= $this->filesystem->stub('model.guarded.stub');
+            $properties[] = $this->filesystem->stub('model.guarded.stub');
         } else {
             $columns = $this->fillableColumns($model->columns());
             if (!empty($columns)) {
-                $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->filesystem->stub('model.fillable.stub'));
+                $properties[] = str_replace('[]', $this->pretty_print_array($columns, false), $this->filesystem->stub('model.fillable.stub'));
             } else {
-                $properties .= $this->filesystem->stub('model.fillable.stub');
+                $properties[] = $this->filesystem->stub('model.fillable.stub');
             }
         }
 
         $columns = $this->hiddenColumns($model->columns());
         if (!empty($columns)) {
-            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns, false), $this->filesystem->stub('model.hidden.stub'));
+            $properties[] = str_replace('[]', $this->pretty_print_array($columns, false), $this->filesystem->stub('model.hidden.stub'));
         }
 
         $columns = $this->castableColumns($model->columns());
         if (!empty($columns)) {
-            $properties .= PHP_EOL . str_replace('[]', $this->pretty_print_array($columns), $this->filesystem->stub('model.casts.stub'));
+            $properties[] = str_replace('[]', $this->pretty_print_array($columns), $this->filesystem->stub('model.casts.stub'));
         }
 
-        return trim($properties);
+        return trim(implode(PHP_EOL, array_filter($properties, fn ($property) => !empty(trim($property)))));
     }
 
     protected function buildRelationships(Model $model)
@@ -146,6 +168,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         foreach ($model->relationships() as $type => $references) {
             foreach ($references as $reference) {
                 $is_model_fqn = Str::startsWith($reference, '\\');
+                $is_pivot = false;
 
                 $custom_template = $template;
                 $key = null;
@@ -157,7 +180,13 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
                 if (Str::contains($reference, ':')) {
                     [$foreign_reference, $column_name] = explode(':', $reference);
 
-                    $method_name = Str::beforeLast($column_name, '_id');
+                    if (Str::startsWith($column_name, '&')) {
+                        $is_pivot = true;
+                        $column_name = Str::after($column_name, '&');
+                        $method_name = $column_name;
+                    } else {
+                        $method_name = Str::beforeLast($column_name, '_id');
+                    }
 
                     if (Str::contains($foreign_reference, '.')) {
                         [$class, $key] = explode('.', $foreign_reference);
@@ -192,7 +221,22 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
                 } elseif (!is_null($key)) {
                     $relationship = sprintf('$this->%s(%s::class, \'%s\', \'%s\')', $type, $fqcn, $column_name, $key);
                 } elseif (!is_null($class) && $type === 'belongsToMany') {
-                    $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, $fqcn, $column_name);
+                    if ($is_pivot) {
+                        $relationship = sprintf('$this->%s(%s::class)', $type, $fqcn);
+                        $relationship .= sprintf('%s->using(%s::class)', PHP_EOL . str_pad(' ', 12), $column_name);
+                        $relationship .= sprintf('%s->as(\'%s\')', PHP_EOL . str_pad(' ', 12), Str::snake($column_name));
+
+                        $foreign = $this->tree->modelForContext($column_name);
+                        $columns = $this->pivotColumns($foreign->columns(), $foreign->relationships());
+                        if ($columns) {
+                            $relationship .= sprintf('%s->withPivot(\'%s\')', PHP_EOL . str_pad(' ', 12), implode("', '", $columns));
+                        }
+                        if ($foreign->usesTimestamps()) {
+                            $relationship .= sprintf('%s->withTimestamps()', PHP_EOL . str_pad(' ', 12));
+                        }
+                    } else {
+                        $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, $fqcn, $column_name);
+                    }
                     $column_name = $class;
                 } else {
                     $relationship = sprintf('$this->%s(%s::class)', $type, $fqcn);
