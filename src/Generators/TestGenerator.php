@@ -110,6 +110,8 @@ class TestGenerator extends AbstractClassGenerator implements Generator
                 $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
             }
 
+            $this->addImport($controller, $modelNamespace . '\\' . $model);
+
             foreach ($statements as $statement) {
                 if ($statement instanceof SendStatement) {
                     if ($statement->isNotification()) {
@@ -393,7 +395,6 @@ class TestGenerator extends AbstractClassGenerator implements Generator
                     $this->addRefreshDatabaseTrait($controller);
 
                     $model = $this->determineModel($controller->prefix(), $statement->reference());
-                    $this->addImport($controller, $modelNamespace . '\\' . $model);
 
                     if ($statement->operation() === 'save') {
                         $tested_bits |= self::TESTS_SAVE;
@@ -639,8 +640,6 @@ END;
         }
 
         $faker = sprintf('$%s = %s::factory()->create();', Str::beforeLast($local_column->name(), '_id'), Str::studly($reference));
-
-        $this->addImport($controller, $modelNamespace . '\\' . Str::studly($reference));
 
         return [$faker, $variable_name];
     }
