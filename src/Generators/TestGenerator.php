@@ -107,6 +107,8 @@ class TestGenerator extends AbstractClassGenerator implements Generator
                 : config('blueprint.namespace');
 
             if (in_array($name, ['edit', 'update', 'show', 'destroy'])) {
+                $this->addImport($controller, $modelNamespace . '\\' . $model);
+
                 $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
             }
 
