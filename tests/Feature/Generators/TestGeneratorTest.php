@@ -70,11 +70,12 @@ class TestGeneratorTest extends TestCase
                 ->with($dirname, 0755, true);
 
             $this->filesystem->expects('put')
-            ->with($path, $this->fixture($test));
+                ->with($path, $this->fixture($test));
         }
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
+
         $this->assertEquals(['created' => array_keys($paths)], $this->subject->output($tree));
     }
 
@@ -97,17 +98,20 @@ class TestGeneratorTest extends TestCase
         $this->filesystem->expects('exists')
             ->with(dirname($certificateControllerTest))
             ->andReturnTrue();
+
         $this->filesystem->expects('put')
             ->with($certificateControllerTest, $this->fixture('tests/certificate-pascal-case-example.php'));
 
         $this->filesystem->expects('exists')
             ->with(dirname($certificateTypeControllerTest))
             ->andReturnTrue();
+
         $this->filesystem->expects('put')
             ->with($certificateTypeControllerTest, $this->fixture('tests/certificate-type-pascal-case-example.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/pascal-case.yaml'));
         $tree = $this->blueprint->analyze($tokens);
+
         $this->assertEquals(['created' => [$certificateControllerTest, $certificateTypeControllerTest]], $this->subject->output($tree));
     }
 
@@ -123,11 +127,14 @@ class TestGeneratorTest extends TestCase
         $this->filesystem->expects('stub')
             ->with('test.case.stub')
             ->andReturn($this->stub('test.case.stub'));
+
         $this->filesystem->expects('exists')
             ->with('tests/Feature/Http/Controllers')
             ->andReturnFalse();
+
         $this->filesystem->expects('makeDirectory')
             ->with('tests/Feature/Http/Controllers', 0755, true);
+
         $this->filesystem->expects('put')
             ->with('tests/Feature/Http/Controllers/UserControllerTest.php', $this->fixture('tests/reference-cache.php'));
 
@@ -161,17 +168,21 @@ class TestGeneratorTest extends TestCase
         $this->filesystem->expects('stub')
             ->with('test.case.stub')
             ->andReturn($this->stub('test.case.stub'));
+
         $dirname = dirname($path);
         $this->filesystem->expects('exists')
             ->with($dirname)
             ->andReturnFalse();
+
         $this->filesystem->expects('makeDirectory')
-        ->with($dirname, 0755, true);
+            ->with($dirname, 0755, true);
+
         $this->filesystem->expects('put')
             ->with($path, $this->fixture($test));
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
+
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
@@ -187,8 +198,8 @@ class TestGeneratorTest extends TestCase
         $this->app['config']->set('blueprint.use_return_types', true);
 
         $this->filesystem->expects('stub')
-        ->with('test.class.stub')
-        ->andReturn($this->stub('test.class.stub'));
+            ->with('test.class.stub')
+            ->andReturn($this->stub('test.class.stub'));
 
         $this->filesystem->expects('stub')
             ->with('test.case.stub')
