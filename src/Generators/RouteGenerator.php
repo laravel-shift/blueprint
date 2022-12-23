@@ -31,11 +31,13 @@ class RouteGenerator extends AbstractClassGenerator implements Generator
 
         foreach (array_filter($routes) as $type => $definitions) {
             $path = 'routes/' . $type . '.php';
-            $this->filesystem->append($path, $definitions . PHP_EOL);
-            $paths[] = $path;
+            if (!$this->alreadyAppended($path, $definitions)) {
+                $this->filesystem->append($path, $definitions . PHP_EOL);
+                $paths[] = $path;
+            }
         }
 
-        return ['updated' => $paths];
+        return empty($paths) ? [] : ['updated' => $paths];
     }
 
     protected function buildRoutes(Controller $controller)
@@ -86,5 +88,10 @@ class RouteGenerator extends AbstractClassGenerator implements Generator
         }
 
         return sprintf("Route::get('%s/%s', [%s, '%s']);", $slug, Str::kebab($method), $className, $method);
+    }
+
+    protected function alreadyAppended(string $path, string $definitions): bool
+    {
+        return str_contains($this->filesystem->get($path), $definitions);
     }
 }

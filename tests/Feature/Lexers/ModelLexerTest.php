@@ -269,6 +269,7 @@ class ModelLexerTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider dataTypeAttributesDataProvider
      */
     public function it_handles_data_type_attributes($definition, $data_type, $attributes)
@@ -304,6 +305,7 @@ class ModelLexerTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider modifierAttributesProvider
      */
     public function it_handles_modifier_attributes($definition, $modifier, $attributes)

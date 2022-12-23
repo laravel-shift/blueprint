@@ -48,6 +48,7 @@ class MigrationGeneratorTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider modelTreeDataProvider
      */
     public function output_writes_migration_for_model_tree($definition, $path, $migration)
@@ -80,6 +81,7 @@ class MigrationGeneratorTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider modelTreeDataProvider
      */
     public function output_updates_migration_for_model_tree($definition, $path, $migration)

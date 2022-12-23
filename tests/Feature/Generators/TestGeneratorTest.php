@@ -46,6 +46,7 @@ class TestGeneratorTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider controllerTreeDataProvider
      */
     public function output_generates_test_for_controller_tree_l8($definition, $path, $test)

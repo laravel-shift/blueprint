@@ -662,6 +662,7 @@ class BlueprintTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider namespacesDataProvider
      */
     public function relative_namespace_removes_namespace_prefix_from_reference($namespace, $expected, $reference)

@@ -43,6 +43,7 @@ class ModelGeneratorTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider modelTreeDataProvider
      */
     public function output_generates_models($definition, $path, $model)
@@ -393,6 +394,7 @@ class ModelGeneratorTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider docBlockModelsDataProvider
      */
     public function output_generates_phpdoc_for_model($definition, $path, $model)

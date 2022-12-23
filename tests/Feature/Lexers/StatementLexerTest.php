@@ -433,6 +433,7 @@ class StatementLexerTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider eloquentTokensProvider
      */
     public function it_returns_an_eloquent_statement($operation, $reference)
@@ -471,6 +472,7 @@ class StatementLexerTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider sessionTokensProvider
      */
     public function it_returns_a_session_statement($operation, $reference)

@@ -11,6 +11,7 @@ class EnumTypeTest extends TestCase
 {
     /**
      * @test
+     *
      * @dataProvider enumOptionsDataProvider
      */
     public function it_returns_options_for_enum($definition, $expected)

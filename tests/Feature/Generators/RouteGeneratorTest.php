@@ -43,6 +43,7 @@ class RouteGeneratorTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider controllerTreeDataProvider
      */
     public function output_generates_web_routes($definition, $routes)
