@@ -243,7 +243,10 @@ class TestGenerator extends AbstractClassGenerator implements Generator
 
                                     $factory = $this->generateReferenceFactory($local_column, $controller, $modelNamespace);
                                     if ($factory) {
-                                        [$faker, $variable_name] = $factory;
+                                        [$faker, $variable_name] = $factory;                                
+                                    } else if ($local_column->name() === 'remember_token') {
+                                        $variable_name = $local_column->name();
+                                        $faker = sprintf('$%s = $this->faker->uuid;', $variable_name);
                                     } else {
                                         $faker = sprintf('$%s = $this->faker->%s;', $local_column->name(), FakerRegistry::fakerData($local_column->name()) ?? FakerRegistry::fakerDataType($local_column->dataType()));
                                         $variable_name = $local_column->name();
