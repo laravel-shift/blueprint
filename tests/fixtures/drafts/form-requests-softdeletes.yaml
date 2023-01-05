@@ -1,0 +1,8 @@
+models:
+  Project:
+    title: string
+    softDeletes
+
+controllers:
+  Project:
+    resource

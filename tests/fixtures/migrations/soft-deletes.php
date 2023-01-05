@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('post_id');
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -280,4 +280,68 @@ class FormRequestGeneratorTest extends TestCase
 
         $this->assertEquals(['created' => ['app/Http/Requests/UserStoreRequest.php']], $this->subject->output($tree));
     }
+
+    public function testOutputGeneratesFormRequestWithoutSoftdeletes(): void
+    {
+        $this->filesystem->expects('stub')
+            ->with('request.stub')
+            ->andReturn($this->stub('request.stub'));
+        $this->filesystem->expects('exists')
+            ->twice()
+            ->with('app/Http/Requests')
+            ->andReturnFalse();
+        $this->filesystem->expects('exists')
+            ->with('app/Http/Requests/ProjectStoreRequest.php')
+            ->andReturnFalse();
+        $this->filesystem->expects('exists')
+            ->with('app/Http/Requests/ProjectUpdateRequest.php')
+            ->andReturnFalse();
+        $this->filesystem->expects('makeDirectory')
+            ->twice()
+            ->with('app/Http/Requests', 0755, true);
+        $this->filesystem->expects('put')
+            ->with('app/Http/Requests/ProjectStoreRequest.php', $this->fixture('form-requests/form-requests-softdeletes.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/form-requests-softdeletes.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        self::assertSame([
+            'created' => [
+                'app/Http/Requests/ProjectStoreRequest.php',
+                'app/Http/Requests/ProjectUpdateRequest.php',
+            ],
+        ], $this->subject->output($tree));
+    }
+
+    public function testOutputGeneratesFormRequestWithoutSoftdeletestz(): void
+    {
+        $this->filesystem->expects('stub')
+            ->with('request.stub')
+            ->andReturn($this->stub('request.stub'));
+        $this->filesystem->expects('exists')
+            ->twice()
+            ->with('app/Http/Requests')
+            ->andReturnFalse();
+        $this->filesystem->expects('exists')
+            ->with('app/Http/Requests/RepoStoreRequest.php')
+            ->andReturnFalse();
+        $this->filesystem->expects('exists')
+            ->with('app/Http/Requests/RepoUpdateRequest.php')
+            ->andReturnFalse();
+        $this->filesystem->expects('makeDirectory')
+            ->twice()
+            ->with('app/Http/Requests', 0755, true);
+        $this->filesystem->expects('put')
+            ->with('app/Http/Requests/RepoUpdateRequest.php', $this->fixture('form-requests/form-requests-softdeletestz.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/form-requests-softdeletestz.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        self::assertSame([
+            'created' => [
+                'app/Http/Requests/RepoStoreRequest.php',
+                'app/Http/Requests/RepoUpdateRequest.php',
+            ],
+        ], $this->subject->output($tree));
+    }
 }

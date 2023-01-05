@@ -94,9 +94,6 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
                 $phpDoc .= PHP_EOL;
                 $phpDoc .= ' * @property string|null $' . $column->name() . '_type';
                 $phpDoc .= PHP_EOL;
-            } elseif (in_array($column->dataType(), ['softDeletesTz', 'softDeletes'])) {
-                $phpDoc .= ' * @property \Carbon\Carbon $deleted_at';
-                $phpDoc .= PHP_EOL;
             } else {
                 $phpDoc .= sprintf(' * @property %s $%s', $this->phpDataType($column->dataType()), $column->name());
                 $phpDoc .= PHP_EOL;
@@ -107,6 +104,11 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
             $phpDoc .= ' * @property \Carbon\Carbon $created_at';
             $phpDoc .= PHP_EOL;
             $phpDoc .= ' * @property \Carbon\Carbon $updated_at';
+            $phpDoc .= PHP_EOL;
+        }
+
+        if ($model->usesSoftDeletes()) {
+            $phpDoc .= ' * @property \Carbon\Carbon $deleted_at';
             $phpDoc .= PHP_EOL;
         }
 
