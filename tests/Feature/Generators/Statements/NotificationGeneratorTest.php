@@ -64,6 +64,7 @@ class NotificationGeneratorTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider notificationDraftProvider
      */
     public function output_writes_notifications($draft)

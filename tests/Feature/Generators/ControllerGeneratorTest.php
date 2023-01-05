@@ -46,6 +46,7 @@ class ControllerGeneratorTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider controllerTreeDataProvider
      */
     public function output_writes_migration_for_controller_tree($definition, $path, $controller)
@@ -239,5 +240,32 @@ class ControllerGeneratorTest extends TestCase
             ['drafts/invokable-controller.yaml', 'app/Http/Controllers/ReportController.php', 'controllers/invokable-controller.php'],
             ['drafts/invokable-controller-shorthand.yaml', 'app/Http/Controllers/ReportController.php', 'controllers/invokable-controller-shorthand.php'],
         ];
+    }
+
+    public function testOutputGeneratesControllersWithTypehints(): void
+    {
+        $definition = 'drafts/controller-returns-view-typehint.yaml';
+        $path = 'app/Http/Controllers/UserController.php';
+        $controller = 'controllers/controller-returns-view-typehint.php';
+
+        $this->app['config']->set('blueprint.use_return_types', true);
+
+        $this->filesystem->expects('stub')
+            ->with('controller.class.stub')
+            ->andReturn($this->stub('controller.class.stub'));
+        $this->filesystem->expects('stub')
+            ->with('controller.method.stub')
+            ->andReturn($this->stub('controller.method.stub'));
+
+        $this->filesystem->expects('exists')
+            ->with(dirname($path))
+            ->andReturnTrue();
+        $this->filesystem->expects('put')
+            ->with($path, $this->fixture($controller));
+
+        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tree = $this->blueprint->analyze($tokens);
+
+        self::assertSame(['created' => [$path]], $this->subject->output($tree));
     }
 }
