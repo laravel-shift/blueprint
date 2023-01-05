@@ -1,0 +1,8 @@
+models:
+  Repo:
+    title: string
+    softDeletestz
+
+controllers:
+  Repo:
+    resource
