@@ -637,7 +637,7 @@ class MigrationGeneratorTest extends TestCase
     /**
      * @test
      */
-    public function output_respects_softdelete_order()
+    public function output_softdelete_column_last()
     {
         $this->app->config->set('blueprint.use_constraints', true);
 

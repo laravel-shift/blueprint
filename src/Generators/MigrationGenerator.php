@@ -182,10 +182,6 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
                 $column_definition .= '$table->id(';
             } elseif ($dataType === 'rememberToken') {
                 $column_definition .= '$table->rememberToken(';
-            } elseif ($dataType === 'softDeletes') {
-                $column_definition .= '$table->softDeletes(';
-            } elseif ($dataType === 'softDeletesTz') {
-                $column_definition .= '$table->softDeletesTz(';
             } else {
                 $column_definition .= '$table->' . $dataType . "('{$column->name()}'";
             }
@@ -277,6 +273,10 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         }
         if ($model->usesTimestamps()) {
             $definition .= self::INDENT . '$table->' . $model->timestampsDataType() . '();' . PHP_EOL;
+        }
+
+        if ($model->usesSoftDeletes()) {
+            $definition .= self::INDENT . '$table->' . $model->softDeletesDataType() . '();' . PHP_EOL;
         }
 
         return trim($definition);
