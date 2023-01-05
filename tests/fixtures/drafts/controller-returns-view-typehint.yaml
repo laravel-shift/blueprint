@@ -1,0 +1,12 @@
+models:
+  User:
+    name: string
+    email: string unique
+    email_verified_at: datetime nullable
+    password: string
+    remember_token: rememberToken
+    softDeletes
+
+controllers:
+  User:
+    resource
