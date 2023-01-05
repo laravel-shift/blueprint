@@ -267,5 +267,4 @@ class ControllerGeneratorTest extends TestCase
 
         self::assertSame(['created' => [$path]], $this->subject->output($tree));
     }
-
 }
