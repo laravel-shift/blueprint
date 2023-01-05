@@ -47,6 +47,7 @@ class FactoryGeneratorTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider modelTreeDataProvider
      */
     public function output_writes_factory_for_model_tree($definition, $path, $factory)

@@ -33,6 +33,7 @@ class RulesTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider stringDataTypesProvider
      */
     public function forColumn_returns_string_rule_for_string_data_types($data_type)
@@ -58,6 +59,7 @@ class RulesTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider stringDataTypesProvider
      */
     public function forColumn_uses_email_rule_for_columns_named_email_or_email_address($data_type)
@@ -75,6 +77,7 @@ class RulesTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider stringDataTypesProvider
      */
     public function forColumn_uses_password_rule_for_columns_named_password($data_type)
@@ -87,6 +90,7 @@ class RulesTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider numericDataTypesProvider
      */
     public function forColumn_returns_numeric_rule_for_numeric_types($data_type)
@@ -98,6 +102,7 @@ class RulesTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider integerDataTypesProvider
      */
     public function forColumn_returns_integer_rule_for_integer_types($data_type)
@@ -138,6 +143,7 @@ class RulesTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider relationshipColumnProvider
      */
     public function forColumn_returns_exists_rule_for_foreign_keys($name, $table)
@@ -179,6 +185,7 @@ class RulesTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider dateDataTypesProvider
      */
     public function forColumn_returns_date_rule_for_date_types($data_type)
@@ -224,6 +231,7 @@ class RulesTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider noBetweenRuleDataProvider
      */
     public function forColumn_does_not_return_between_rule_for_double_without_precision_and_scale($column)
@@ -233,6 +241,7 @@ class RulesTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider noBetweenRuleDataProvider
      */
     public function forColumn_does_not_return_between_rule($column)
@@ -242,6 +251,7 @@ class RulesTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider betweenRuleDataProvider
      */
     public function forColumn_returns_between_rule($column, $interval)

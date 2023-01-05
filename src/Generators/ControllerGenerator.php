@@ -158,7 +158,7 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
                 if (isset($fqcn) && $name !== 'destroy' && $controller->isApiResource()) {
                     $method = str_replace(')' . PHP_EOL, '): \\' . $fqcn . PHP_EOL, $method);
                 } else {
-                    $returnType  = match (true) {
+                    $returnType = match (true) {
                         $statement instanceof RenderStatement => 'Illuminate\View\View',
                         $statement instanceof RedirectStatement => 'Illuminate\Routing\Redirector',
                         default => 'Illuminate\Http\Response'

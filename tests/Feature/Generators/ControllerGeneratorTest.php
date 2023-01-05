@@ -46,6 +46,7 @@ class ControllerGeneratorTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider controllerTreeDataProvider
      */
     public function output_writes_migration_for_controller_tree($definition, $path, $controller)
