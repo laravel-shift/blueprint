@@ -11,9 +11,9 @@ class TermController extends Controller
 {
     /**
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
-    public function index(Request $request): \Illuminate\Http\Response
+    public function index(Request $request): \Illuminate\View\View
     {
         $terms = Term::all();
 
@@ -22,18 +22,18 @@ class TermController extends Controller
 
     /**
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
-    public function create(Request $request): \Illuminate\Http\Response
+    public function create(Request $request): \Illuminate\View\View
     {
         return view('term.create');
     }
 
     /**
      * @param \App\Http\Requests\TermStoreRequest $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Routing\Redirector
      */
-    public function store(TermStoreRequest $request): \Illuminate\Http\Response
+    public function store(TermStoreRequest $request): \Illuminate\Routing\Redirector
     {
         $term = Term::create($request->validated());
 
@@ -45,9 +45,9 @@ class TermController extends Controller
     /**
      * @param \Illuminate\Http\Request $request
      * @param \App\Models\Term $term
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
-    public function show(Request $request, Term $term): \Illuminate\Http\Response
+    public function show(Request $request, Term $term): \Illuminate\View\View
     {
         return view('term.show', compact('term'));
     }
@@ -55,9 +55,9 @@ class TermController extends Controller
     /**
      * @param \Illuminate\Http\Request $request
      * @param \App\Models\Term $term
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
-    public function edit(Request $request, Term $term): \Illuminate\Http\Response
+    public function edit(Request $request, Term $term): \Illuminate\View\View
     {
         return view('term.edit', compact('term'));
     }
@@ -65,9 +65,9 @@ class TermController extends Controller
     /**
      * @param \App\Http\Requests\TermUpdateRequest $request
      * @param \App\Models\Term $term
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Routing\Redirector
      */
-    public function update(TermUpdateRequest $request, Term $term): \Illuminate\Http\Response
+    public function update(TermUpdateRequest $request, Term $term): \Illuminate\Routing\Redirector
     {
         $term->update($request->validated());
 
@@ -79,9 +79,9 @@ class TermController extends Controller
     /**
      * @param \Illuminate\Http\Request $request
      * @param \App\Models\Term $term
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Routing\Redirector
      */
-    public function destroy(Request $request, Term $term): \Illuminate\Http\Response
+    public function destroy(Request $request, Term $term): \Illuminate\Routing\Redirector
     {
         $term->delete();
 
