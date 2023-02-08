@@ -3,28 +3,22 @@
 namespace Some\App\Other\Http;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Some\App\Http\Requests\UserStoreRequest;
 use Some\App\User;
 
 class UserController extends Controller
 {
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $users = User::all();
 
         return view('user.index', compact('users'));
     }
 
-    /**
-     * @param \Some\App\Http\Requests\UserStoreRequest $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(UserStoreRequest $request)
+    public function store(UserStoreRequest $request): RedirectResponse
     {
         $user = User::create($request->validated());
 

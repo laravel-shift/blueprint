@@ -48,10 +48,6 @@ class SeederGenerator extends AbstractClassGenerator implements Generator
         $stub = str_replace('//', $this->build($model), $stub);
         $stub = str_replace('use Illuminate\Database\Seeder;', $this->buildImports($model), $stub);
 
-        if (Blueprint::useReturnTypeHints()) {
-            $stub = str_replace('public function run()', 'public function run(): void', $stub);
-        }
-
         return $stub;
     }
 

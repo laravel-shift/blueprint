@@ -2,12 +2,10 @@
 
 namespace Blueprint\Generators;
 
-use Blueprint\Blueprint;
 use Blueprint\Concerns\HandlesImports;
 use Blueprint\Concerns\HandlesTraits;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Controller;
-use Blueprint\Models\Model;
 use Blueprint\Models\Statements\DispatchStatement;
 use Blueprint\Models\Statements\EloquentStatement;
 use Blueprint\Models\Statements\FireStatement;
@@ -154,21 +152,22 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
                 $method = str_replace('{{ body }}', trim($body), $method);
             }
 
-            if (Blueprint::useReturnTypeHints()) {
-                if (isset($fqcn) && $name !== 'destroy' && $controller->isApiResource()) {
-                    $method = str_replace(')' . PHP_EOL, '): \\' . $fqcn . PHP_EOL, $method);
-                } else {
-                    $returnType = match (true) {
-                        $statement instanceof RenderStatement => 'Illuminate\View\View',
-                        $statement instanceof RedirectStatement => 'Illuminate\Routing\Redirector',
-                        default => 'Illuminate\Http\Response'
-                    };
+            if (isset($fqcn) && $name !== 'destroy' && $controller->isApiResource()) {
+                $method = str_replace('): Response' . PHP_EOL, '): ' . Str::afterLast($fqcn, '\\') . PHP_EOL, $method);
+                $this->addImport($controller, $fqcn);
+            } else {
+                $returnType = match (true) {
+                    $statement instanceof RenderStatement => 'Illuminate\View\View',
+                    $statement instanceof RedirectStatement => 'Illuminate\Http\RedirectResponse',
+                    default => 'Illuminate\Http\Response'
+                };
 
-                    $method = Str::of($method)
-                        ->replace('* @return \\Illuminate\\Http\\Response', '* @return \\' . $returnType)
-                        ->replace(')' . PHP_EOL, '): \\' . $returnType . PHP_EOL)
-                        ->toString();
-                }
+                $method = Str::of($method)
+                    ->replace('* @return \\Illuminate\\Http\\Response', '* @return \\' . $returnType)
+                    ->replace('): Response' . PHP_EOL, '): ' . Str::afterLast($returnType, '\\') . PHP_EOL)
+                    ->toString();
+
+                $this->addImport($controller, $returnType);
             }
 
             $methods .= PHP_EOL . $method;

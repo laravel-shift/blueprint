@@ -250,13 +250,12 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
                     $method_name = Str::plural($is_model_fqn ? Str::afterLast($column_name, '\\') : $column_name);
                 }
 
-                if (Blueprint::useReturnTypeHints()) {
-                    $custom_template = str_replace(
-                        '{{ method }}()',
-                        '{{ method }}(): ' . Str::of('\Illuminate\Database\Eloquent\Relations\\')->append(Str::studly($type)),
-                        $custom_template
-                    );
-                }
+                $custom_template = str_replace(
+                    '{{ method }}()',
+                    '{{ method }}(): ' . Str::of('\Illuminate\Database\Eloquent\Relations\\')->append(Str::studly($type)),
+                    $custom_template
+                );
+
                 $method = str_replace('{{ method }}', Str::camel($method_name), $custom_template);
                 $method = str_replace('null', $relationship, $method);
 

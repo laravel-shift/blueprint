@@ -2,17 +2,14 @@
 
 namespace {{ namespace }};
 
-use {{ import }};
+{{ imports }}
 
 class {{ class }} extends {{ parentClass }}
 {
     /**
      * Transform the {{ resource }} into an array.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array
      */
-    public function toArray($request)
+    public function toArray(Request $request): array
     {
         {{ body }}
     }
