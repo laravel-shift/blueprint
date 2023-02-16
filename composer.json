@@ -9,16 +9,16 @@
     "license": "MIT",
     "require": {
         "doctrine/dbal": "^3.3",
-        "illuminate/console": "^9.0",
-        "illuminate/filesystem": "^9.0",
-        "illuminate/support": "^9.0",
+        "illuminate/console": "^9.0|^10.0",
+        "illuminate/filesystem": "^9.0|^10.0",
+        "illuminate/support": "^9.0|^10.0",
         "laravel-shift/faker-registry": "^0.2.0",
         "symfony/yaml": "^6.0"
     },
     "require-dev": {
         "laravel/pint": "^1.2",
         "mockery/mockery": "^1.4.4",
-        "orchestra/testbench": "^7.0",
+        "orchestra/testbench": "^7.0|^8.0",
         "phpunit/phpunit": "^9.5.10"
     },
     "suggest": {
