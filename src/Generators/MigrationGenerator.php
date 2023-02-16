@@ -2,7 +2,6 @@
 
 namespace Blueprint\Generators;
 
-use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Model;
 use Blueprint\Tree;

@@ -2,7 +2,6 @@
 
 namespace Blueprint\Generators;
 
-use Blueprint\Blueprint;
 use Blueprint\Concerns\HandlesImports;
 use Blueprint\Concerns\HandlesTraits;
 use Blueprint\Contracts\Generator;
