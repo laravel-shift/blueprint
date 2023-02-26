@@ -525,7 +525,7 @@ class TestGenerator extends AbstractClassGenerator implements Generator
     /**
      * @test
      */
-    public function ${action}_uses_form_request_validation()
+    public function ${action}_uses_form_request_validation(): void
     {
         \$this->assertActionUsesFormRequest(
             \\${controller}::class,

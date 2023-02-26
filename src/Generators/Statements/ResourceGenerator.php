@@ -28,7 +28,7 @@ class ResourceGenerator extends StatementGenerator implements Generator
          * @var \Blueprint\Models\Controller $controller
          */
         foreach ($tree->controllers() as $controller) {
-            foreach ($controller->methods() as $method => $statements) {
+            foreach ($controller->methods() as $statements) {
                 foreach ($statements as $statement) {
                     if (!$statement instanceof ResourceStatement) {
                         continue;
@@ -59,8 +59,11 @@ class ResourceGenerator extends StatementGenerator implements Generator
             . '\\Http\\Resources'
             . ($controller->namespace() ? '\\' . $controller->namespace() : '');
 
+        $imports = ['use Illuminate\\Http\\Request;'];
+        $imports[] = $resource->collection() ? 'use Illuminate\\Http\\Resources\\Json\\ResourceCollection;' : 'use Illuminate\\Http\\Resources\\Json\\JsonResource;';
+
         $stub = str_replace('{{ namespace }}', $namespace, $stub);
-        $stub = str_replace('{{ import }}', $resource->collection() ? 'Illuminate\\Http\\Resources\\Json\\ResourceCollection' : 'Illuminate\\Http\\Resources\\Json\\JsonResource', $stub);
+        $stub = str_replace('{{ imports }}', implode(PHP_EOL, $imports), $stub);
         $stub = str_replace('{{ parentClass }}', $resource->collection() ? 'ResourceCollection' : 'JsonResource', $stub);
         $stub = str_replace('{{ class }}', $resource->name(), $stub);
         $stub = str_replace('{{ parentClass }}', $resource->collection() ? 'ResourceCollection' : 'JsonResource', $stub);

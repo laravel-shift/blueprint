@@ -70,10 +70,6 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
                 $reference = $this->fullyQualifyModelReference($controller->namespace(), Str::camel($context));
                 $variable = '$' . Str::camel($context);
 
-                // TODO: verify controller prefix references a model
-                $search = '     * @return \\Illuminate\\Http\\Response';
-                $method = str_replace($search, '     * @param \\' . $reference . ' ' . $variable . PHP_EOL . $search, $method);
-
                 $search = '(Request $request';
                 $method = str_replace($search, $search . ', ' . $context . ' ' . $variable, $method);
                 $this->addImport($controller, $reference);
@@ -114,7 +110,6 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
                 } elseif ($statement instanceof ResourceStatement) {
                     $fqcn = config('blueprint.namespace') . '\\Http\\Resources\\' . ($controller->namespace() ? $controller->namespace() . '\\' : '') . $statement->name();
-                    $method = str_replace('* @return \\Illuminate\\Http\\Response', '* @return \\' . $fqcn, $method);
                     $this->addImport($controller, $fqcn);
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
 
@@ -152,21 +147,17 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
                 $method = str_replace('{{ body }}', trim($body), $method);
             }
 
-            if (isset($fqcn) && $name !== 'destroy' && $controller->isApiResource()) {
-                $method = str_replace('): Response' . PHP_EOL, '): ' . Str::afterLast($fqcn, '\\') . PHP_EOL, $method);
-                $this->addImport($controller, $fqcn);
+            if ($statement instanceof RespondStatement && $statement->content()) {
+                $method = str_replace('): Response' . PHP_EOL, ')' . PHP_EOL, $method);
             } else {
                 $returnType = match (true) {
                     $statement instanceof RenderStatement => 'Illuminate\View\View',
                     $statement instanceof RedirectStatement => 'Illuminate\Http\RedirectResponse',
+                    $statement instanceof ResourceStatement => config('blueprint.namespace') . '\\Http\\Resources\\' . ($controller->namespace() ? $controller->namespace() . '\\' : '') . $statement->name(),
                     default => 'Illuminate\Http\Response'
                 };
 
-                $method = Str::of($method)
-                    ->replace('* @return \\Illuminate\\Http\\Response', '* @return \\' . $returnType)
-                    ->replace('): Response' . PHP_EOL, '): ' . Str::afterLast($returnType, '\\') . PHP_EOL)
-                    ->toString();
-
+                $method = str_replace('): Response' . PHP_EOL, '): ' . Str::afterLast($returnType, '\\') . PHP_EOL, $method);
                 $this->addImport($controller, $returnType);
             }
 
