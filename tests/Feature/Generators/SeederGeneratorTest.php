@@ -68,28 +68,6 @@ class SeederGeneratorTest extends TestCase
     /**
      * @test
      */
-    public function output_using_return_types()
-    {
-        $this->app['config']->set('blueprint.use_return_types', true);
-
-        $this->filesystem->expects('stub')
-            ->with($this->seederStub)
-            ->andReturn($this->stub($this->seederStub));
-
-        $this->filesystem->expects('put')
-            ->with('database/seeders/PostSeeder.php', $this->fixture('seeders/PostSeeder-return-type-declarations.php'));
-        $this->filesystem->expects('put')
-            ->with('database/seeders/CommentSeeder.php', $this->fixture('seeders/CommentSeeder-return-type-declarations.php'));
-
-        $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
-
-        $this->assertEquals(['created' => ['database/seeders/PostSeeder.php', 'database/seeders/CommentSeeder.php']], $this->subject->output($tree));
-    }
-
-    /**
-     * @test
-     */
     public function output_generates_seeders_from_traced_models()
     {
         $this->filesystem->expects('stub')

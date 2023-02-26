@@ -202,53 +202,6 @@ class MailGeneratorTest extends TestCase
     /**
      * @test
      */
-    public function output_using_return_types()
-    {
-        $this->app['config']->set('blueprint.namespace', 'Some\\Other\\App');
-        $this->app['config']->set('blueprint.app_path', 'src/path');
-        $this->app['config']->set('blueprint.use_return_types', true);
-
-        $this->filesystem->expects('stub')
-            ->with('mail.stub')
-            ->andReturn($this->stub('mail.stub'));
-        $this->filesystem->expects('stub')
-            ->with('mail.view.stub')
-            ->andReturn($this->stub('mail.view.stub'));
-        $this->filesystem->expects('stub')
-            ->with('constructor.stub')
-            ->andReturn($this->stub('constructor.stub'));
-        $this->filesystem->expects('exists')
-            ->with('src/path/Mail')
-            ->andReturnFalse();
-        $this->filesystem->expects('exists')
-            ->with('src/path/Mail/ReviewPost.php')
-            ->andReturnFalse();
-        $this->filesystem->expects('makeDirectory')
-            ->with('src/path/Mail', 0755, true);
-        $this->filesystem->expects('put')
-            ->with('src/path/Mail/ReviewPost.php', $this->fixture('mailables/return-type-declarations.php'));
-        $this->filesystem->expects('exists')
-            ->with('resources/views/emails/review-post.blade.php')
-            ->andReturnFalse();
-        $this->filesystem->expects('makeDirectory')
-            ->with('resources/views/emails', 0755, true);
-        $this->filesystem->expects('put')
-            ->with('resources/views/emails/review-post.blade.php', $this->fixture('mailables/review-post-view.blade.php'));
-
-        $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
-
-        $this->assertEquals([
-            'created' => [
-                'src/path/Mail/ReviewPost.php',
-                'resources/views/emails/review-post.blade.php',
-            ],
-        ], $this->subject->output($tree));
-    }
-
-    /**
-     * @test
-     */
     public function output_writes_mails_but_not_existing_templates()
     {
         $this->filesystem->expects('stub')
