@@ -13,8 +13,6 @@ class PublishedPost extends Mailable
 
     /**
      * Create a new message instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -23,10 +21,8 @@ class PublishedPost extends Mailable
 
     /**
      * Build the message.
-     *
-     * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->view('emails.published-post');
     }

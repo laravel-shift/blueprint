@@ -49,7 +49,7 @@ class ControllerGeneratorTest extends TestCase
      *
      * @dataProvider controllerTreeDataProvider
      */
-    public function output_writes_migration_for_controller_tree($definition, $path, $controller)
+    public function output_generates_controllers_for_tree($definition, $path, $controller)
     {
         $this->filesystem->expects('stub')
             ->with('controller.class.stub')
@@ -72,7 +72,7 @@ class ControllerGeneratorTest extends TestCase
     /**
      * @test
      */
-    public function output_generates_controllers_with_models_with_custom_namespace_correctly()
+    public function output_generates_controllers_with_models_using_custom_namespace()
     {
         $definition = 'drafts/custom-models-namespace.yaml';
         $path = 'app/Http/Controllers/TagController.php';
@@ -162,68 +162,6 @@ class ControllerGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['src/path/Other/Http/UserController.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function output_using_return_types()
-    {
-        $this->app['config']->set('blueprint.use_return_types', true);
-
-        $this->filesystem->expects('stub')
-            ->with('controller.class.stub')
-            ->andReturn($this->stub('controller.class.stub'));
-
-        $this->filesystem->expects('stub')
-            ->with('controller.method.stub')
-            ->andReturn($this->stub('controller.method.stub'));
-
-        $this->filesystem->expects('exists')
-            ->with('app/Http/Controllers')
-            ->andReturnFalse();
-
-        $this->filesystem->expects('makeDirectory')
-            ->with('app/Http/Controllers', 0755, true);
-
-        $this->filesystem->expects('put')
-            ->with('app/Http/Controllers/TermController.php', $this->fixture('controllers/return-type-declarations.php'));
-
-        $tokens = $this->blueprint->parse($this->fixture('drafts/return-type-declarations.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
-
-        $this->assertEquals(['created' => ['app/Http/Controllers/TermController.php']], $this->subject->output($tree));
-    }
-
-    /**
-     * @test
-     */
-    public function output_using_return_types_for_api_resource_controller()
-    {
-        $this->app['config']->set('blueprint.use_return_types', true);
-
-        $this->filesystem->expects('stub')
-            ->with('controller.class.stub')
-            ->andReturn($this->stub('controller.class.stub'));
-
-        $this->filesystem->expects('stub')
-            ->with('controller.method.stub')
-            ->andReturn($this->stub('controller.method.stub'));
-
-        $this->filesystem->expects('exists')
-            ->with('app/Http/Controllers')
-            ->andReturnFalse();
-
-        $this->filesystem->expects('makeDirectory')
-            ->with('app/Http/Controllers', 0755, true);
-
-        $this->filesystem->expects('put')
-            ->with('app/Http/Controllers/PostController.php', $this->fixture('controllers/return-type-declarations-api-resource.php'));
-
-        $tokens = $this->blueprint->parse($this->fixture('drafts/return-type-declarations-api-controller.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
-
-        $this->assertEquals(['created' => ['app/Http/Controllers/PostController.php']], $this->subject->output($tree));
-    }
-
     public function controllerTreeDataProvider()
     {
         return [
@@ -240,32 +178,5 @@ class ControllerGeneratorTest extends TestCase
             ['drafts/invokable-controller.yaml', 'app/Http/Controllers/ReportController.php', 'controllers/invokable-controller.php'],
             ['drafts/invokable-controller-shorthand.yaml', 'app/Http/Controllers/ReportController.php', 'controllers/invokable-controller-shorthand.php'],
         ];
-    }
-
-    public function testOutputGeneratesControllersWithTypehints(): void
-    {
-        $definition = 'drafts/controller-returns-view-typehint.yaml';
-        $path = 'app/Http/Controllers/UserController.php';
-        $controller = 'controllers/controller-returns-view-typehint.php';
-
-        $this->app['config']->set('blueprint.use_return_types', true);
-
-        $this->filesystem->expects('stub')
-            ->with('controller.class.stub')
-            ->andReturn($this->stub('controller.class.stub'));
-        $this->filesystem->expects('stub')
-            ->with('controller.method.stub')
-            ->andReturn($this->stub('controller.method.stub'));
-
-        $this->filesystem->expects('exists')
-            ->with(dirname($path))
-            ->andReturnTrue();
-        $this->filesystem->expects('put')
-            ->with($path, $this->fixture($controller));
-
-        $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree = $this->blueprint->analyze($tokens);
-
-        self::assertSame(['created' => [$path]], $this->subject->output($tree));
     }
 }

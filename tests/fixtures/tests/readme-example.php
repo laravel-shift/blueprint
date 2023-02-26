@@ -25,7 +25,7 @@ class PostControllerTest extends TestCase
     /**
      * @test
      */
-    public function index_displays_view()
+    public function index_displays_view(): void
     {
         $posts = Post::factory()->count(3)->create();
 
@@ -40,7 +40,7 @@ class PostControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_uses_form_request_validation()
+    public function store_uses_form_request_validation(): void
     {
         $this->assertActionUsesFormRequest(
             \App\Http\Controllers\PostController::class,
@@ -52,7 +52,7 @@ class PostControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_saves_and_redirects()
+    public function store_saves_and_redirects(): void
     {
         $title = $this->faker->sentence(4);
         $content = $this->faker->paragraphs(3, true);

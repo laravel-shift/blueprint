@@ -13,7 +13,7 @@ class PostControllerTest extends TestCase
     /**
      * @test
      */
-    public function show_displays_view()
+    public function show_displays_view(): void
     {
         $post = Post::factory()->create();
 

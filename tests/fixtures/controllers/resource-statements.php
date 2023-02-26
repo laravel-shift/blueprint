@@ -9,41 +9,24 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @return \App\Http\Resources\UserCollection
-     */
-    public function index(Request $request)
+    public function index(Request $request): UserCollection
     {
         $users = User::paginate();
 
         return new UserCollection($users);
     }
 
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @return \App\Http\Resources\UserResource
-     */
-    public function store(Request $request)
+    public function store(Request $request): UserResource
     {
         return new UserResource($user);
     }
 
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\User $user
-     * @return \App\Http\Resources\UserResource
-     */
-    public function show(Request $request, User $user)
+    public function show(Request $request, User $user): UserResource
     {
         return new UserResource($user);
     }
 
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @return \App\Http\Resources\UserCollection
-     */
-    public function all(Request $request)
+    public function all(Request $request): UserCollection
     {
         return new UserCollection($users);
     }

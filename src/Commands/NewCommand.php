@@ -27,9 +27,6 @@ class NewCommand extends Command
     /** @var Filesystem */
     protected $filesystem;
 
-    /**
-     * @param  Filesystem  $filesystem
-     */
     public function __construct(Filesystem $filesystem)
     {
         parent::__construct();

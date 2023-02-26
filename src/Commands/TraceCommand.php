@@ -32,10 +32,6 @@ class TraceCommand extends Command
     /** @var Tracer */
     private $tracer;
 
-    /**
-     * @param  Filesystem  $filesystem
-     * @param  Tracer  $tracer
-     */
     public function __construct(Filesystem $filesystem, Tracer $tracer)
     {
         parent::__construct();

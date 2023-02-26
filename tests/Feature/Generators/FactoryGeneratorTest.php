@@ -96,30 +96,6 @@ class FactoryGeneratorTest extends TestCase
     /**
      * @test
      */
-    public function output_using_return_types()
-    {
-        $this->app['config']->set('blueprint.use_return_types', true);
-
-        $this->filesystem->expects('stub')
-            ->with($this->factoryStub)
-            ->andReturn($this->stub($this->factoryStub));
-
-        $this->filesystem->expects('exists')
-            ->with('database/factories')
-            ->andReturnTrue();
-
-        $this->filesystem->expects('put')
-            ->with('database/factories/PostFactory.php', $this->fixture('factories/return-type-declarations.php'));
-
-        $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
-
-        $this->assertEquals(['created' => ['database/factories/PostFactory.php']], $this->subject->output($tree));
-    }
-
-    /**
-     * @test
-     */
     public function output_generates_references_for_nested_models()
     {
         $this->filesystem->expects('stub')

@@ -187,42 +187,6 @@ class TestGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function output_using_return_types()
-    {
-        $definition = 'drafts/readme-example.yaml';
-        $path = 'tests/Feature/Http/Controllers/PostControllerTest.php';
-        $test = 'tests/return-type-declarations.php';
-
-        $this->app['config']->set('blueprint.use_return_types', true);
-
-        $this->filesystem->expects('stub')
-            ->with('test.class.stub')
-            ->andReturn($this->stub('test.class.stub'));
-
-        $this->filesystem->expects('stub')
-            ->with('test.case.stub')
-            ->andReturn($this->stub('test.case.stub'));
-
-        $dirname = dirname($path);
-        $this->filesystem->expects('exists')
-            ->with($dirname)
-            ->andReturnFalse();
-
-        $this->filesystem->expects('makeDirectory')
-            ->with($dirname, 0755, true);
-
-        $this->filesystem->expects('put')
-            ->with($path, $this->fixture($test));
-
-        $tokens = $this->blueprint->parse($this->fixture($definition));
-        $tree = $this->blueprint->analyze($tokens);
-
-        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
-    }
-
     public function controllerTreeDataProvider()
     {
         return [

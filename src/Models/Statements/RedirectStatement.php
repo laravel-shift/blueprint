@@ -27,9 +27,6 @@ class RedirectStatement
         return $this->route;
     }
 
-    /**
-     * @return array
-     */
     public function data(): array
     {
         return $this->data;

@@ -8,59 +8,37 @@ use App\Http\Resources\TagCollection;
 use App\Http\Resources\TagResource;
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class TagController extends Controller
 {
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @return \App\Http\Resources\TagCollection
-     */
-    public function index(Request $request)
+    public function index(Request $request): TagCollection
     {
         $tags = Tag::all();
 
         return new TagCollection($tags);
     }
 
-    /**
-     * @param \App\Http\Requests\TagStoreRequest $request
-     * @return \App\Http\Resources\TagResource
-     */
-    public function store(TagStoreRequest $request)
+    public function store(TagStoreRequest $request): TagResource
     {
         $tag = Tag::create($request->validated());
 
         return new TagResource($tag);
     }
 
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Tag $tag
-     * @return \App\Http\Resources\TagResource
-     */
-    public function show(Request $request, Tag $tag)
+    public function show(Request $request, Tag $tag): TagResource
     {
         return new TagResource($tag);
     }
 
-    /**
-     * @param \App\Http\Requests\TagUpdateRequest $request
-     * @param \App\Models\Tag $tag
-     * @return \App\Http\Resources\TagResource
-     */
-    public function update(TagUpdateRequest $request, Tag $tag)
+    public function update(TagUpdateRequest $request, Tag $tag): TagResource
     {
         $tag->update($request->validated());
 
         return new TagResource($tag);
     }
 
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Tag $tag
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Request $request, Tag $tag)
+    public function destroy(Request $request, Tag $tag): Response
     {
         $tag->delete();
 

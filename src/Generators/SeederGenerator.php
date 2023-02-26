@@ -2,7 +2,6 @@
 
 namespace Blueprint\Generators;
 
-use Blueprint\Blueprint;
 use Blueprint\Concerns\HandlesImports;
 use Blueprint\Concerns\HandlesTraits;
 use Blueprint\Contracts\Generator;
@@ -47,10 +46,6 @@ class SeederGenerator extends AbstractClassGenerator implements Generator
         $this->addImport($model, 'Illuminate\Database\Seeder');
         $stub = str_replace('//', $this->build($model), $stub);
         $stub = str_replace('use Illuminate\Database\Seeder;', $this->buildImports($model), $stub);
-
-        if (Blueprint::useReturnTypeHints()) {
-            $stub = str_replace('public function run()', 'public function run(): void', $stub);
-        }
 
         return $stub;
     }

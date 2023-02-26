@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Tag extends Model
 {
@@ -27,12 +28,12 @@ class Tag extends Model
         'id' => 'integer',
     ];
 
-    public function posts()
+    public function posts(): MorphToMany
     {
         return $this->morphedByMany(Post::class, 'tagable');
     }
 
-    public function videos()
+    public function videos(): MorphToMany
     {
         return $this->morphedByMany(Video::class, 'tagable');
     }

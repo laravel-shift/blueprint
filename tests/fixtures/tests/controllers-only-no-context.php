@@ -20,7 +20,7 @@ class ReportControllerTest extends TestCase
     /**
      * @test
      */
-    public function __invoke_displays_view()
+    public function __invoke_displays_view(): void
     {
         Queue::fake();
         Event::fake();

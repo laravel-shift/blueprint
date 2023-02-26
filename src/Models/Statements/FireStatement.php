@@ -25,9 +25,6 @@ class FireStatement
         return $this->event;
     }
 
-    /**
-     * @return array
-     */
     public function data(): array
     {
         return $this->data;

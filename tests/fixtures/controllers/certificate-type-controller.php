@@ -8,59 +8,37 @@ use App\Http\Resources\CertificateTypeCollection;
 use App\Http\Resources\CertificateTypeResource;
 use App\Models\CertificateType;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class CertificateTypeController extends Controller
 {
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @return \App\Http\Resources\CertificateTypeCollection
-     */
-    public function index(Request $request)
+    public function index(Request $request): CertificateTypeCollection
     {
         $certificateTypes = CertificateType::all();
 
         return new CertificateTypeCollection($certificateTypes);
     }
 
-    /**
-     * @param \App\Http\Requests\CertificateTypeStoreRequest $request
-     * @return \App\Http\Resources\CertificateTypeResource
-     */
-    public function store(CertificateTypeStoreRequest $request)
+    public function store(CertificateTypeStoreRequest $request): CertificateTypeResource
     {
         $certificateType = CertificateType::create($request->validated());
 
         return new CertificateTypeResource($certificateType);
     }
 
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\CertificateType $certificateType
-     * @return \App\Http\Resources\CertificateTypeResource
-     */
-    public function show(Request $request, CertificateType $certificateType)
+    public function show(Request $request, CertificateType $certificateType): CertificateTypeResource
     {
         return new CertificateTypeResource($certificateType);
     }
 
-    /**
-     * @param \App\Http\Requests\CertificateTypeUpdateRequest $request
-     * @param \App\Models\CertificateType $certificateType
-     * @return \App\Http\Resources\CertificateTypeResource
-     */
-    public function update(CertificateTypeUpdateRequest $request, CertificateType $certificateType)
+    public function update(CertificateTypeUpdateRequest $request, CertificateType $certificateType): CertificateTypeResource
     {
         $certificateType->update($request->validated());
 
         return new CertificateTypeResource($certificateType);
     }
 
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\CertificateType $certificateType
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Request $request, CertificateType $certificateType)
+    public function destroy(Request $request, CertificateType $certificateType): Response
     {
         $certificateType->delete();
 

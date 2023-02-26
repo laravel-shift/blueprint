@@ -2,7 +2,6 @@
 
 namespace Blueprint\Generators;
 
-use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Model;
 use Blueprint\Tree;
@@ -109,10 +108,6 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         $stub = str_replace('{{ table }}', $model->tableName(), $stub);
         $stub = str_replace('{{ definition }}', $this->buildDefinition($model), $stub);
 
-        if (Blueprint::useReturnTypeHints()) {
-            $stub = str_replace(['up()', 'down()'], ['up(): void', 'down(): void'], $stub);
-        }
-
         if ($this->hasForeignKeyConstraints) {
             $stub = $this->disableForeignKeyConstraints($stub);
         }
@@ -136,10 +131,6 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
     {
         $stub = str_replace('{{ table }}', $this->getPolyTableName($parentTable), $stub);
         $stub = str_replace('{{ definition }}', $this->buildPolyTableDefinition($parentTable), $stub);
-
-        if (Blueprint::useReturnTypeHints()) {
-            $stub = str_replace(['up()', 'down()'], ['up(): void', 'down(): void'], $stub);
-        }
 
         if ($this->hasForeignKeyConstraints) {
             $stub = $this->disableForeignKeyConstraints($stub);

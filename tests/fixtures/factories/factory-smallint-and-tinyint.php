@@ -17,10 +17,8 @@ class ModelFactory extends Factory
 
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'market_type' => $this->faker->numberBetween(-8, 8),

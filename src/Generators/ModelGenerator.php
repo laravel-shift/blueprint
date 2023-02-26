@@ -2,7 +2,7 @@
 
 namespace Blueprint\Generators;
 
-use Blueprint\Blueprint;
+use Blueprint\Concerns\HandlesImports;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Column;
 use Blueprint\Models\Model;
@@ -11,6 +11,8 @@ use Illuminate\Support\Str;
 
 class ModelGenerator extends AbstractClassGenerator implements Generator
 {
+    use HandlesImports;
+
     protected $types = ['models'];
 
     public function output(Tree $tree): array
@@ -43,7 +45,9 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
     {
         if ($model->isPivot()) {
             $stub = str_replace('class {{ class }} extends Model', 'class {{ class }} extends Pivot', $stub);
-            $stub = str_replace('use Illuminate\\Database\\Eloquent\\Model;', 'use Illuminate\\Database\\Eloquent\\Relations\\Pivot;', $stub);
+            $this->addImport($model, 'Illuminate\\Database\\Eloquent\\Relations\\Pivot');
+        } else {
+            $this->addImport($model, 'Illuminate\\Database\\Eloquent\\Model');
         }
 
         $stub = str_replace('{{ namespace }}', $model->fullyQualifiedNamespace(), $stub);
@@ -54,9 +58,11 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         $body .= PHP_EOL . PHP_EOL;
         $body .= $this->buildRelationships($model);
 
+        $this->addImport($model, 'Illuminate\\Database\\Eloquent\\Factories\\HasFactory');
         $stub = str_replace('use HasFactory;', 'use HasFactory;' . PHP_EOL . PHP_EOL . '    ' . trim($body), $stub);
 
         $stub = $this->addTraits($model, $stub);
+        $stub = str_replace('{{ imports }}', $this->buildImports($model), $stub);
 
         return $stub;
     }
@@ -161,11 +167,6 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
     {
         $methods = '';
         $template = $this->filesystem->stub('model.method.stub');
-        $commentTemplate = '';
-
-        if (config('blueprint.generate_phpdocs')) {
-            $commentTemplate = $this->filesystem->stub('model.method.comment.stub');
-        }
 
         foreach ($model->relationships() as $type => $references) {
             foreach ($references as $reference) {
@@ -250,19 +251,18 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
                     $method_name = Str::plural($is_model_fqn ? Str::afterLast($column_name, '\\') : $column_name);
                 }
 
-                if (Blueprint::useReturnTypeHints()) {
-                    $custom_template = str_replace(
-                        '{{ method }}()',
-                        '{{ method }}(): ' . Str::of('\Illuminate\Database\Eloquent\Relations\\')->append(Str::studly($type)),
-                        $custom_template
-                    );
-                }
+                $relationship_type = 'Illuminate\\Database\\Eloquent\\Relations\\' . Str::studly($type === 'morphedByMany' ? 'morphToMany' : $type);
+                $this->addImport($model, $relationship_type);
+                $custom_template = str_replace(
+                    '{{ method }}()',
+                    '{{ method }}(): ' . Str::afterLast($relationship_type, '\\'),
+                    $custom_template
+                );
+
                 $method = str_replace('{{ method }}', Str::camel($method_name), $custom_template);
                 $method = str_replace('null', $relationship, $method);
 
-                $phpDoc = str_replace('{{ namespacedReturnClass }}', '\Illuminate\Database\Eloquent\Relations\\' . Str::ucfirst($type), $commentTemplate);
-
-                $methods .= $phpDoc . $method . PHP_EOL;
+                $methods .= $method . PHP_EOL;
             }
         }
 
@@ -275,7 +275,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
             return $stub;
         }
 
-        $stub = str_replace('use Illuminate\\Database\\Eloquent\\Model;', 'use Illuminate\\Database\\Eloquent\\Model;' . PHP_EOL . 'use Illuminate\\Database\\Eloquent\\SoftDeletes;', $stub);
+        $this->addImport($model, 'Illuminate\\Database\\Eloquent\\SoftDeletes');
         $stub = Str::replaceFirst('use HasFactory', 'use HasFactory, SoftDeletes', $stub);
 
         return $stub;

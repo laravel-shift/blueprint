@@ -72,10 +72,6 @@ class MailGenerator extends StatementGenerator
         $stub = str_replace('{{ view }}', $sendStatement->view(), $stub);
         $stub = str_replace('{{ properties }}', $this->populateConstructor('message', $sendStatement), $stub);
 
-        if (Blueprint::useReturnTypeHints()) {
-            $stub = str_replace('build()', sprintf('build(): %s', $sendStatement->mail()), $stub);
-        }
-
         return $stub;
     }
 }

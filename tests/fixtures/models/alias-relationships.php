@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Salesman extends Model
 {
@@ -27,17 +30,17 @@ class Salesman extends Model
         'id' => 'integer',
     ];
 
-    public function lead()
+    public function lead(): HasOne
     {
         return $this->hasOne(User::class);
     }
 
-    public function methodNames()
+    public function methodNames(): HasMany
     {
         return $this->hasMany(ClassName::class);
     }
 
-    public function methodName()
+    public function methodName(): BelongsTo
     {
         return $this->belongsTo(ClassName::class);
     }

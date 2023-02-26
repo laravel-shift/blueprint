@@ -14,7 +14,7 @@ jobs:
 
     services:
       mysql:
-        image: mysql:5.7
+        image: mysql:8.0
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_DATABASE: laravel
@@ -25,8 +25,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: [8.0, 8.1]
-        laravel-version: [9]
+        php-version: ['8.1', '8.2']
+        laravel-version: [10]
         os: [ubuntu-latest]
 
     runs-on: ${{ matrix.os }}

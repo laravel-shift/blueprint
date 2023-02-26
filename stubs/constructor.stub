@@ -1,7 +1,5 @@
     /**
      * Create a new {{ type }} instance.
-     *
-     * @return void
      */
     public function __construct()
     {

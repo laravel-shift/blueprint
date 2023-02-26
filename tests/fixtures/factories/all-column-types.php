@@ -17,10 +17,8 @@ class AllTypeFactory extends Factory
 
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'bigInteger' => $this->faker->numberBetween(-100000, 100000),
