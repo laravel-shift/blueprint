@@ -31,9 +31,6 @@ class Model implements BlueprintModel
 
     private $indexes = [];
 
-    /**
-     * @param $name
-     */
     public function __construct($name)
     {
         $this->name = class_basename($name);

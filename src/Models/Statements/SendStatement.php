@@ -61,9 +61,6 @@ class SendStatement
         return $this->type;
     }
 
-    /**
-     * @return array
-     */
     public function data(): array
     {
         return $this->data;

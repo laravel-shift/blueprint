@@ -25,9 +25,6 @@ class DispatchStatement
         return $this->job;
     }
 
-    /**
-     * @return array
-     */
     public function data(): array
     {
         return $this->data;

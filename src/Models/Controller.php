@@ -100,17 +100,11 @@ class Controller implements BlueprintModel
         return $this->name();
     }
 
-    /**
-     * @param  bool  $apiResource
-     */
     public function setApiResource(bool $apiResource)
     {
         $this->apiResource = $apiResource;
     }
 
-    /**
-     * @return bool
-     */
     public function isApiResource(): bool
     {
         return $this->apiResource;

@@ -25,9 +25,6 @@ class RenderStatement
         return $this->view;
     }
 
-    /**
-     * @return array
-     */
     public function data(): array
     {
         return $this->data;

@@ -36,10 +36,6 @@ class BuildCommand extends Command
     /** @var Builder */
     private $builder;
 
-    /**
-     * @param  Filesystem  $filesystem
-     * @param  Builder  $builder
-     */
     public function __construct(Filesystem $filesystem, Builder $builder)
     {
         parent::__construct();
