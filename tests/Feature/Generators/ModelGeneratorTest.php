@@ -48,9 +48,6 @@ class ModelGeneratorTest extends TestCase
      */
     public function output_generates_models($definition, $path, $model)
     {
-        if ($model === 'models/return-type-declarations.php') {
-            $this->app['config']->set('blueprint.use_return_types', true);
-        }
         $this->filesystem->expects('stub')
             ->with('model.class.stub')
             ->andReturn($this->stub('model.class.stub'));
@@ -642,7 +639,6 @@ class ModelGeneratorTest extends TestCase
             ['drafts/resource-statements.yaml', 'app/Models/User.php', 'models/resource-statements.php'],
             ['drafts/all-column-types.yaml', 'app/Models/AllType.php', 'models/all-column-types.php'],
             ['drafts/alias-relationships.yaml', 'app/Models/Salesman.php', 'models/alias-relationships.php'],
-            ['drafts/return-type-declarations.yaml', 'app/Models/Term.php', 'models/return-type-declarations.php'],
             ['drafts/uuid-shorthand-invalid-relationship.yaml', 'app/Models/AgeCohort.php', 'models/uuid-shorthand-invalid-relationship.php'],
             ['drafts/model-with-meta.yaml', 'app/Models/Post.php', 'models/model-with-meta.php'],
         ];

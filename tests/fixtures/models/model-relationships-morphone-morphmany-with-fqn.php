@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Flag extends Model
 {
@@ -28,22 +31,22 @@ class Flag extends Model
         'user_id' => 'integer',
     ];
 
-    public function stars()
+    public function stars(): MorphOne
     {
         return $this->morphOne(\Other\Package\Order::class, 'starable');
     }
 
-    public function durations()
+    public function durations(): MorphMany
     {
         return $this->morphMany(\Other\Package\Duration::class, 'durationable');
     }
 
-    public function lines()
+    public function lines(): MorphMany
     {
         return $this->morphMany(\App\MyCustom\Folder\Transaction::class, 'lineable');
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

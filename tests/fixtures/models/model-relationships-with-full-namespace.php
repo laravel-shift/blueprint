@@ -4,6 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Recurrency extends Model
 {
@@ -29,32 +33,32 @@ class Recurrency extends Model
         'user_id' => 'integer',
     ];
 
-    public function teams()
+    public function teams(): BelongsToMany
     {
         return $this->belongsToMany(\Some\Package\Team::class);
     }
 
-    public function orders()
+    public function orders(): HasMany
     {
         return $this->hasMany(\Other\Package\Order::class);
     }
 
-    public function duration()
+    public function duration(): HasOne
     {
         return $this->hasOne(\Other\Package\Duration::class);
     }
 
-    public function transaction()
+    public function transaction(): HasOne
     {
         return $this->hasOne(\App\MyCustom\Folder\Transaction::class);
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function product()
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }

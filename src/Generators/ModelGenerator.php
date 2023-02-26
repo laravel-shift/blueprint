@@ -251,7 +251,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
                     $method_name = Str::plural($is_model_fqn ? Str::afterLast($column_name, '\\') : $column_name);
                 }
 
-                $relationship_type = 'Illuminate\\Database\\Eloquent\\Relations\\' . Str::studly($type);
+                $relationship_type = 'Illuminate\\Database\\Eloquent\\Relations\\' . Str::studly($type === 'morphedByMany' ? 'morphToMany' : $type);
                 $this->addImport($model, $relationship_type);
                 $custom_template = str_replace(
                     '{{ method }}()',
@@ -275,7 +275,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
             return $stub;
         }
 
-        $stub = str_replace('use Illuminate\\Database\\Eloquent\\Model;', 'use Illuminate\\Database\\Eloquent\\Model;' . PHP_EOL . 'use Illuminate\\Database\\Eloquent\\SoftDeletes;', $stub);
+        $this->addImport($model, 'Illuminate\\Database\\Eloquent\\SoftDeletes');
         $stub = Str::replaceFirst('use HasFactory', 'use HasFactory, SoftDeletes', $stub);
 
         return $stub;

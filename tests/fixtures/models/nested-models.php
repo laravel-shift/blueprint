@@ -4,6 +4,7 @@ namespace App\Models\Screening;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ScreeningQuestion extends Model
 {
@@ -32,17 +33,17 @@ class ScreeningQuestion extends Model
         'question_type_id' => 'integer',
     ];
 
-    public function report()
+    public function report(): BelongsTo
     {
         return $this->belongsTo(Report::class);
     }
 
-    public function appointmentType()
+    public function appointmentType(): BelongsTo
     {
         return $this->belongsTo(\App\Models\Appointment\AppointmentType::class);
     }
 
-    public function questionType()
+    public function questionType(): BelongsTo
     {
         return $this->belongsTo(\App\Models\QuestionType::class);
     }
