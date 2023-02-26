@@ -18,7 +18,7 @@ class CertificateTypeControllerTest extends TestCase
     /**
      * @test
      */
-    public function index_behaves_as_expected()
+    public function index_behaves_as_expected(): void
     {
         $certificateTypes = CertificateType::factory()->count(3)->create();
 
@@ -32,7 +32,7 @@ class CertificateTypeControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_uses_form_request_validation()
+    public function store_uses_form_request_validation(): void
     {
         $this->assertActionUsesFormRequest(
             \App\Http\Controllers\CertificateTypeController::class,
@@ -44,7 +44,7 @@ class CertificateTypeControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_saves()
+    public function store_saves(): void
     {
         $name = $this->faker->name;
 
@@ -66,7 +66,7 @@ class CertificateTypeControllerTest extends TestCase
     /**
      * @test
      */
-    public function show_behaves_as_expected()
+    public function show_behaves_as_expected(): void
     {
         $certificateType = CertificateType::factory()->create();
 
@@ -80,7 +80,7 @@ class CertificateTypeControllerTest extends TestCase
     /**
      * @test
      */
-    public function update_uses_form_request_validation()
+    public function update_uses_form_request_validation(): void
     {
         $this->assertActionUsesFormRequest(
             \App\Http\Controllers\CertificateTypeController::class,
@@ -92,7 +92,7 @@ class CertificateTypeControllerTest extends TestCase
     /**
      * @test
      */
-    public function update_behaves_as_expected()
+    public function update_behaves_as_expected(): void
     {
         $certificateType = CertificateType::factory()->create();
         $name = $this->faker->name;
@@ -113,7 +113,7 @@ class CertificateTypeControllerTest extends TestCase
     /**
      * @test
      */
-    public function destroy_deletes_and_responds_with()
+    public function destroy_deletes_and_responds_with(): void
     {
         $certificateType = CertificateType::factory()->create();
 

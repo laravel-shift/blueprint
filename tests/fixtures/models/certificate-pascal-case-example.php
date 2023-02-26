@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Certificate extends Model
 {
@@ -34,7 +35,7 @@ class Certificate extends Model
         'expiry_date' => 'date',
     ];
 
-    public function certificateType()
+    public function certificateType(): BelongsTo
     {
         return $this->belongsTo(CertificateType::class);
     }

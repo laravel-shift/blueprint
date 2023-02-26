@@ -23,7 +23,7 @@ class PaymentControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_uses_form_request_validation()
+    public function store_uses_form_request_validation(): void
     {
         $this->assertActionUsesFormRequest(
             \App\Http\Controllers\Api\PaymentController::class,
@@ -35,7 +35,7 @@ class PaymentControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_saves_and_responds_with()
+    public function store_saves_and_responds_with(): void
     {
         $status = $this->faker->word;
         $amount = $this->faker->randomFloat(/** decimal_attributes **/);

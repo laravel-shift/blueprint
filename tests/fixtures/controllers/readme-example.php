@@ -7,27 +7,21 @@ use App\Http\Requests\PostStoreRequest;
 use App\Jobs\SyncMedia;
 use App\Mail\ReviewPost;
 use App\Models\Post;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\View\View;
 
 class PostController extends Controller
 {
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $posts = Post::all();
 
         return view('post.index', compact('posts'));
     }
 
-    /**
-     * @param \App\Http\Requests\PostStoreRequest $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(PostStoreRequest $request)
+    public function store(PostStoreRequest $request): RedirectResponse
     {
         $post = Post::create($request->validated());
 

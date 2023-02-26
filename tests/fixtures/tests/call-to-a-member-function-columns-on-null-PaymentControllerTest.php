@@ -23,7 +23,7 @@ class PaymentControllerTest extends TestCase
     /**
      * @test
      */
-    public function create_displays_view()
+    public function create_displays_view(): void
     {
         $response = $this->get(route('payment.create'));
 
@@ -35,7 +35,7 @@ class PaymentControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_uses_form_request_validation()
+    public function store_uses_form_request_validation(): void
     {
         $this->assertActionUsesFormRequest(
             \App\Http\Controllers\PaymentController::class,
@@ -47,7 +47,7 @@ class PaymentControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_saves_and_redirects()
+    public function store_saves_and_redirects(): void
     {
         $status = $this->faker->word;
         $amount = $this->faker->randomFloat(/** decimal_attributes **/);

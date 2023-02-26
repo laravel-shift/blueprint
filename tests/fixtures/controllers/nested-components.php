@@ -8,27 +8,21 @@ use App\Http\Requests\Admin\UserStoreRequest;
 use App\Jobs\BuildAccount;
 use App\Models\Admin\User;
 use App\Notification\InviteNotification;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\View\View;
 
 class UserController extends Controller
 {
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $users = User::all();
 
         return view('admin.user.index', compact('users'));
     }
 
-    /**
-     * @param \App\Http\Requests\Admin\UserStoreRequest $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(UserStoreRequest $request)
+    public function store(UserStoreRequest $request): RedirectResponse
     {
         $user = User::create($request->validated());
 

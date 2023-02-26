@@ -15,8 +15,6 @@ class AddedAdmin extends Mailable
 
     /**
      * Create a new message instance.
-     *
-     * @return void
      */
     public function __construct($user)
     {
@@ -25,10 +23,8 @@ class AddedAdmin extends Mailable
 
     /**
      * Build the message.
-     *
-     * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->view('emails.admin.added');
     }

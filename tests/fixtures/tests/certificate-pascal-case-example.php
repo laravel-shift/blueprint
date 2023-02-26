@@ -20,7 +20,7 @@ class CertificateControllerTest extends TestCase
     /**
      * @test
      */
-    public function index_behaves_as_expected()
+    public function index_behaves_as_expected(): void
     {
         $certificates = Certificate::factory()->count(3)->create();
 
@@ -34,7 +34,7 @@ class CertificateControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_uses_form_request_validation()
+    public function store_uses_form_request_validation(): void
     {
         $this->assertActionUsesFormRequest(
             \App\Http\Controllers\CertificateController::class,
@@ -46,7 +46,7 @@ class CertificateControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_saves()
+    public function store_saves(): void
     {
         $name = $this->faker->name;
         $certificate_type = CertificateType::factory()->create();
@@ -80,7 +80,7 @@ class CertificateControllerTest extends TestCase
     /**
      * @test
      */
-    public function show_behaves_as_expected()
+    public function show_behaves_as_expected(): void
     {
         $certificate = Certificate::factory()->create();
 
@@ -94,7 +94,7 @@ class CertificateControllerTest extends TestCase
     /**
      * @test
      */
-    public function update_uses_form_request_validation()
+    public function update_uses_form_request_validation(): void
     {
         $this->assertActionUsesFormRequest(
             \App\Http\Controllers\CertificateController::class,
@@ -106,7 +106,7 @@ class CertificateControllerTest extends TestCase
     /**
      * @test
      */
-    public function update_behaves_as_expected()
+    public function update_behaves_as_expected(): void
     {
         $certificate = Certificate::factory()->create();
         $name = $this->faker->name;
@@ -139,7 +139,7 @@ class CertificateControllerTest extends TestCase
     /**
      * @test
      */
-    public function destroy_deletes_and_responds_with()
+    public function destroy_deletes_and_responds_with(): void
     {
         $certificate = Certificate::factory()->create();
 

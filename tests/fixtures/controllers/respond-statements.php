@@ -6,13 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\PostStoreRequest;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class PostController extends Controller
 {
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
     public function index(Request $request)
     {
         $posts = Post::all();
@@ -20,20 +17,12 @@ class PostController extends Controller
         return $posts;
     }
 
-    /**
-     * @param \App\Http\Requests\Api\PostStoreRequest $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(PostStoreRequest $request)
+    public function store(PostStoreRequest $request): Response
     {
         return response()->noContent();
     }
 
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function error(Request $request)
+    public function error(Request $request): Response
     {
         return response()->noContent(400);
     }

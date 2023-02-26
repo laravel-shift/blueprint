@@ -16,8 +16,6 @@ class ReviewNotification extends Notification
 
     /**
      * Create a new message instance.
-     *
-     * @return void
      */
     public function __construct($post)
     {
@@ -26,22 +24,16 @@ class ReviewNotification extends Notification
 
     /**
      * Get the notification's delivery channels.
-     *
-     * @param mixed $notifiable
-     * @return array
      */
-    public function via($notifiable): array
+    public function via(mixed $notifiable): array
     {
         return ['mail'];
     }
 
     /**
      * Get the mail representation of the notification.
-     *
-     * @param mixed $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    public function toMail($notifiable): ReviewNotification
+    public function toMail(mixed $notifiable): MailMessage
     {
         return (new MailMessage)
             ->line('The introduction to the notification.')
@@ -51,11 +43,8 @@ class ReviewNotification extends Notification
 
     /**
      * Get the array representation of the notification.
-     *
-     * @param mixed $notifiable
-     * @return array
      */
-    public function toArray($notifiable): array
+    public function toArray(mixed $notifiable): array
     {
         return [
             //

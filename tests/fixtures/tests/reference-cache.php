@@ -18,7 +18,7 @@ class UserControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_uses_form_request_validation()
+    public function store_uses_form_request_validation(): void
     {
         $this->assertActionUsesFormRequest(
             \App\Http\Controllers\UserController::class,
@@ -30,7 +30,7 @@ class UserControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_saves_and_redirects()
+    public function store_saves_and_redirects(): void
     {
         $email = $this->faker->safeEmail;
         $password = $this->faker->password;

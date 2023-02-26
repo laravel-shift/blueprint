@@ -16,7 +16,7 @@ class SubscriptionControllerTest extends TestCase
     /**
      * @test
      */
-    public function index_displays_view()
+    public function index_displays_view(): void
     {
         $subscriptions = Subscription::factory()->count(3)->create();
 
@@ -31,7 +31,7 @@ class SubscriptionControllerTest extends TestCase
     /**
      * @test
      */
-    public function show_displays_view()
+    public function show_displays_view(): void
     {
         $subscription = Subscription::factory()->create();
 
