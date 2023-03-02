@@ -27,7 +27,7 @@ class PublishedPost extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '',
+            subject: 'Published Post',
         );
     }
 

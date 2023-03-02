@@ -69,6 +69,7 @@ class MailGenerator extends StatementGenerator
     {
         $stub = str_replace('{{ namespace }}', config('blueprint.namespace') . '\\Mail', $stub);
         $stub = str_replace('{{ class }}', $sendStatement->mail(), $stub);
+        $stub = str_replace('{{ subject }}', $sendStatement->subject(), $stub);
         $stub = str_replace('{{ view }}', $sendStatement->view(), $stub);
         $stub = str_replace('{{ properties }}', $this->populateConstructor('message', $sendStatement), $stub);
 

@@ -37,6 +37,11 @@ class SendStatement
      */
     private $view;
 
+    /**
+     * @var string
+     */
+    private $subject;
+
     public function __construct(string $mail, ?string $to, array $data, string $type, string $view = null)
     {
         $this->mail = $mail;
@@ -44,6 +49,12 @@ class SendStatement
         $this->to = $to;
         $this->type = $type;
         $this->view = $view ?? 'emails.' . Str::kebab($this->mail);
+        $this->subject = $type === self::TYPE_MAIL ? Str::headline($this->mail) : '';
+    }
+
+    public function subject(): string
+    {
+        return $this->subject;
     }
 
     public function mail()

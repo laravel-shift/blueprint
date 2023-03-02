@@ -29,7 +29,7 @@ class AddedAdmin extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '',
+            subject: 'Added Admin',
         );
     }
 
