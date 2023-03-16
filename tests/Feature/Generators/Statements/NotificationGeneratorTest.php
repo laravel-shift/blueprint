@@ -148,7 +148,7 @@ class NotificationGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['src/path/Notification/ReviewNotification.php']], $this->subject->output($tree));
     }
 
-    public function notificationDraftProvider()
+    public static function notificationDraftProvider()
     {
         return [
             ['drafts/send-statements-notification-facade.yaml'],

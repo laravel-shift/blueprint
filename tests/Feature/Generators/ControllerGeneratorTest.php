@@ -153,7 +153,7 @@ class ControllerGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['src/path/Other/Http/UserController.php']], $this->subject->output($tree));
     }
 
-    public function controllerTreeDataProvider()
+    public static function controllerTreeDataProvider()
     {
         return [
             ['drafts/readme-example.yaml', 'app/Http/Controllers/PostController.php', 'controllers/readme-example.php'],

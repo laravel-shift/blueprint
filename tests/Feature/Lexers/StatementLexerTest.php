@@ -662,7 +662,7 @@ class StatementLexerTest extends TestCase
         $this->assertTrue($actual[0]->paginate());
     }
 
-    public function sessionTokensProvider()
+    public static function sessionTokensProvider()
     {
         return [
             ['flash', 'post.title'],
@@ -670,7 +670,7 @@ class StatementLexerTest extends TestCase
         ];
     }
 
-    public function eloquentTokensProvider()
+    public static function eloquentTokensProvider()
     {
         return [
             ['save', 'post'],

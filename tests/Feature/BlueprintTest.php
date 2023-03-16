@@ -631,7 +631,7 @@ class BlueprintTest extends TestCase
         $this->assertEquals($expected, Blueprint::relativeNamespace($reference));
     }
 
-    public function namespacesDataProvider()
+    public static function namespacesDataProvider()
     {
         return [
             ['App', 'Models\User', 'App\Models\User'],

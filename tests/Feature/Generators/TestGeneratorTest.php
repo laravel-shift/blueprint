@@ -178,7 +178,7 @@ class TestGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
-    public function controllerTreeDataProvider()
+    public static function controllerTreeDataProvider()
     {
         return [
             ['drafts/readme-example.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/readme-example.php'],

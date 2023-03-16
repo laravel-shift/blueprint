@@ -210,7 +210,7 @@ class RulesTest extends TestCase
         $this->assertContains("between:$interval", $fromColumn);
     }
 
-    public function stringDataTypesProvider()
+    public static function stringDataTypesProvider()
     {
         return [
             ['string'],
@@ -219,7 +219,7 @@ class RulesTest extends TestCase
         ];
     }
 
-    public function integerDataTypesProvider()
+    public static function integerDataTypesProvider()
     {
         return [
             ['integer'],
@@ -240,7 +240,7 @@ class RulesTest extends TestCase
         ];
     }
 
-    public function numericDataTypesProvider()
+    public static function numericDataTypesProvider()
     {
         return [
             ['decimal'],
@@ -250,7 +250,7 @@ class RulesTest extends TestCase
         ];
     }
 
-    public function dateDataTypesProvider()
+    public static function dateDataTypesProvider()
     {
         return [
             ['date'],
@@ -259,7 +259,7 @@ class RulesTest extends TestCase
         ];
     }
 
-    public function relationshipColumnProvider()
+    public static function relationshipColumnProvider()
     {
         return [
             ['test_id', 'tests'],
@@ -268,7 +268,7 @@ class RulesTest extends TestCase
         ];
     }
 
-    public function noBetweenRuleDataProvider()
+    public static function noBetweenRuleDataProvider()
     {
         return [
             [new Column('column', 'float')],
@@ -281,7 +281,7 @@ class RulesTest extends TestCase
         ];
     }
 
-    public function betweenRuleDataProvider()
+    public static function betweenRuleDataProvider()
     {
         return [
             [new Column('column', 'double', [], [8, 0]), '-99999999,99999999'],
