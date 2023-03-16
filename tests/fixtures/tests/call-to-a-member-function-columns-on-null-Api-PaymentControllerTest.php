@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers\Api;
 
+use PHPUnit\Framework\Attributes\Test;
 use App\Events\NewPayment;
 use App\Mail\PaymentCreated;
 use App\Models\Payment;
@@ -20,9 +21,7 @@ class PaymentControllerTest extends TestCase
 {
     use AdditionalAssertions, RefreshDatabase, WithFaker;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function store_uses_form_request_validation(): void
     {
         $this->assertActionUsesFormRequest(
@@ -32,9 +31,7 @@ class PaymentControllerTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function store_saves_and_responds_with(): void
     {
         $status = $this->faker->word;

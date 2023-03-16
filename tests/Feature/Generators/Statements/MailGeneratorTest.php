@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Generators\Statements;
 
+use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Blueprint;
 use Blueprint\Generators\Statements\MailGenerator;
 use Blueprint\Lexers\StatementLexer;
@@ -31,9 +32,7 @@ class MailGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_writes_nothing_for_empty_tree()
     {
         $this->filesystem->expects('stub')
@@ -48,9 +47,7 @@ class MailGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_writes_nothing_tree_without_validate_statements()
     {
         $this->filesystem->expects('stub')
@@ -68,9 +65,7 @@ class MailGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_writes_mails()
     {
         $this->filesystem->expects('stub')
@@ -129,9 +124,7 @@ class MailGeneratorTest extends TestCase
         ], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_only_outputs_new_mails()
     {
         $this->filesystem->expects('stub')
@@ -153,9 +146,7 @@ class MailGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_respects_configuration()
     {
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
@@ -199,9 +190,7 @@ class MailGeneratorTest extends TestCase
         ], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_writes_mails_but_not_existing_templates()
     {
         $this->filesystem->expects('stub')
@@ -246,9 +235,7 @@ class MailGeneratorTest extends TestCase
         ], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_writes_mail_with_custom_template()
     {
         $this->filesystem->expects('stub')

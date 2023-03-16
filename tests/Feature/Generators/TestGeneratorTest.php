@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Generators;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Blueprint;
 use Blueprint\Generators\TestGenerator;
 use Blueprint\Lexers\StatementLexer;
@@ -30,9 +32,7 @@ class TestGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_writes_nothing_for_empty_tree()
     {
         $this->filesystem->expects('stub')
@@ -44,11 +44,8 @@ class TestGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider controllerTreeDataProvider
-     */
+    #[Test]
+    #[DataProvider('controllerTreeDataProvider')]
     public function output_generates_test_for_controller_tree_l8($definition, $path, $test)
     {
         $this->filesystem->expects('stub')
@@ -80,9 +77,7 @@ class TestGeneratorTest extends TestCase
         $this->assertEquals(['created' => array_keys($paths)], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_works_for_pascal_case_definition_l8()
     {
         $this->filesystem->expects('stub')
@@ -116,9 +111,7 @@ class TestGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$certificateControllerTest, $certificateTypeControllerTest]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_generates_test_for_controller_tree_using_cached_model_l8()
     {
         $this->filesystem->expects('stub')
@@ -151,9 +144,7 @@ class TestGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['tests/Feature/Http/Controllers/UserControllerTest.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_generates_tests_with_models_with_custom_namespace_correctly_l8()
     {
         $definition = 'drafts/models-with-custom-namespace.yaml';

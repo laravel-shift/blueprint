@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Commands;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Blueprint;
 use Blueprint\Builder;
 use Blueprint\Tracer;
@@ -9,14 +11,12 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Symfony\Component\Yaml\Yaml;
 use Tests\TestCase;
 
-/**
- * @covers \Blueprint\Commands\TraceCommand
- */
+#[CoversClass(\Blueprint\Commands\TraceCommand::class)]
 class TraceCommandTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
-    /** @test */
+    #[Test]
     public function it_shows_error_if_no_model_found()
     {
         $tracer = $this->mock(Tracer::class);
@@ -30,7 +30,7 @@ class TraceCommandTest extends TestCase
             ->expectsOutput('No models found');
     }
 
-    /** @test */
+    #[Test]
     public function it_shows_the_number_of_traced_models()
     {
         $tracer = $this->mock(Tracer::class);
@@ -47,7 +47,7 @@ class TraceCommandTest extends TestCase
             ->expectsOutput('Traced 2 models');
     }
 
-    /** @test */
+    #[Test]
     public function relative_class_name_removes_models_namespace()
     {
         $this->requireFixture('models/comment.php');
@@ -86,7 +86,7 @@ class TraceCommandTest extends TestCase
             ->assertExitCode(0);
     }
 
-    /** @test */
+    #[Test]
     public function it_traces_models_with_differente_namespaces()
     {
         $this->requireFixture('models/comment.php');

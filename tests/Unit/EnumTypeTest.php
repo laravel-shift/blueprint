@@ -2,18 +2,16 @@
 
 namespace Tests\Unit;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-/**
- * @covers \Blueprint\EnumType
- */
+#[CoversClass(\Blueprint\EnumType::class)]
 class EnumTypeTest extends TestCase
 {
-    /**
-     * @test
-     *
-     * @dataProvider enumOptionsDataProvider
-     */
+    #[Test]
+    #[DataProvider('enumOptionsDataProvider')]
     public function it_returns_options_for_enum($definition, $expected)
     {
         $this->assertEquals($expected, \Blueprint\EnumType::extractOptions($definition));
