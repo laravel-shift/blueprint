@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Translators;
 
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Models\Column;
 use Blueprint\Translators\Rules;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**

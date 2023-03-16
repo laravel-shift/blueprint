@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Lexers;
 
+use Blueprint\Lexers\ModelLexer;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use Blueprint\Lexers\ModelLexer;
 use Tests\TestCase;
 
 final class ModelLexerTest extends TestCase

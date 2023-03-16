@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Lexers;
 
-use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Lexers\SeederLexer;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 /**

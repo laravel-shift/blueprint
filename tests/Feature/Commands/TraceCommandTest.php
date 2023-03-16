@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\Commands;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Blueprint;
 use Blueprint\Builder;
 use Blueprint\Tracer;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Yaml\Yaml;
 use Tests\TestCase;
 

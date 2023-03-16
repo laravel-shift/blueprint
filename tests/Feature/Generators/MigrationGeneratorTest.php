@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Generators;
 
-use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Blueprint;
 use Blueprint\Generators\MigrationGenerator;
 use Blueprint\Tree;
 use Carbon\Carbon;
+use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Finder\SplFileInfo;
 use Tests\TestCase;
 

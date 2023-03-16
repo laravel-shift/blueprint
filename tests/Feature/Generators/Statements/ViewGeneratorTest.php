@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Generators\Statements;
 
-use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Blueprint;
 use Blueprint\Generators\Statements\ViewGenerator;
 use Blueprint\Lexers\StatementLexer;
 use Blueprint\Tree;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
