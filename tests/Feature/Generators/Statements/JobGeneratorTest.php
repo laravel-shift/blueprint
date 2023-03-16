@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Generators\Statements;
 
+use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Blueprint;
 use Blueprint\Generators\Statements\JobGenerator;
 use Blueprint\Lexers\StatementLexer;
@@ -31,9 +32,7 @@ class JobGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_writes_nothing_for_empty_tree()
     {
         $this->filesystem->expects('stub')
@@ -45,9 +44,7 @@ class JobGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_writes_nothing_tree_without_validate_statements()
     {
         $this->filesystem->expects('stub')
@@ -62,9 +59,7 @@ class JobGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_writes_jobs()
     {
         $this->filesystem->expects('stub')
@@ -96,9 +91,7 @@ class JobGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Jobs/CreateUser.php', 'app/Jobs/DeleteRole.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_only_outputs_new_jobs()
     {
         $this->filesystem->expects('stub')
@@ -117,9 +110,7 @@ class JobGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_respects_configuration()
     {
         $this->app['config']->set('blueprint.namespace', 'Some\\App');

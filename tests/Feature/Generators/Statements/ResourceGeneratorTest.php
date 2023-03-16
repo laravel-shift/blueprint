@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Generators\Statements;
 
+use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Blueprint;
 use Blueprint\Generators\Statements\ResourceGenerator;
 use Blueprint\Lexers\StatementLexer;
@@ -32,9 +33,7 @@ class ResourceGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_writes_nothing_for_empty_tree()
     {
         $this->filesystem->expects('stub')
@@ -46,9 +45,7 @@ class ResourceGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_writes_nothing_without_resource_statements()
     {
         $this->filesystem->expects('stub')
@@ -63,9 +60,7 @@ class ResourceGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_writes_resources_for_render_statements()
     {
         $template = $this->stub('resource.stub');
@@ -100,9 +95,7 @@ class ResourceGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Http/Resources/UserCollection.php', 'app/Http/Resources/UserResource.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_writes_namespaced_classes()
     {
         $this->filesystem->expects('stub')
@@ -136,9 +129,7 @@ class ResourceGeneratorTest extends TestCase
         ], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_writes_nested_resource()
     {
         $this->filesystem->expects('stub')
@@ -172,9 +163,7 @@ class ResourceGeneratorTest extends TestCase
         ], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_api_resource_pagination()
     {
         $this->files->expects('stub')
