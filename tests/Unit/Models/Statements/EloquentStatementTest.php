@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @see EloquentStatement
  */
-class EloquentStatementTest extends TestCase
+final class EloquentStatementTest extends TestCase
 {
     #[Test]
     public function output_generates_code_for_find()

@@ -7,7 +7,7 @@ use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Lexers\ModelLexer;
 use Tests\TestCase;
 
-class ModelLexerTest extends TestCase
+final class ModelLexerTest extends TestCase
 {
     /**
      * @var ModelLexer

@@ -8,7 +8,7 @@ use Blueprint\Builder;
 use Blueprint\Tree;
 use Tests\TestCase;
 
-class BuilderTest extends TestCase
+final class BuilderTest extends TestCase
 {
     #[Test]
     public function execute_builds_draft_content()

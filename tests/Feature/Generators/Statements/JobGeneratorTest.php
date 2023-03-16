@@ -12,7 +12,7 @@ use Tests\TestCase;
 /**
  * @see JobGenerator
  */
-class JobGeneratorTest extends TestCase
+final class JobGeneratorTest extends TestCase
 {
     private $blueprint;
 
