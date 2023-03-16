@@ -12,7 +12,7 @@ use Tests\TestCase;
 /**
  * @see ResourceGenerator
  */
-class ResourceGeneratorTest extends TestCase
+final class ResourceGeneratorTest extends TestCase
 {
     private $blueprint;
 

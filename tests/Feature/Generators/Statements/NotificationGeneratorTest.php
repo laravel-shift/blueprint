@@ -13,7 +13,7 @@ use Tests\TestCase;
 /**
  * @see NotificationGenerator
  */
-class NotificationGeneratorTest extends TestCase
+final class NotificationGeneratorTest extends TestCase
 {
     private $blueprint;
 

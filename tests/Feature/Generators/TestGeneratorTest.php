@@ -13,7 +13,7 @@ use Tests\TestCase;
 /**
  * @see TestGenerator
  */
-class TestGeneratorTest extends TestCase
+final class TestGeneratorTest extends TestCase
 {
     private $blueprint;
 

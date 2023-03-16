@@ -11,7 +11,7 @@ use Tests\TestCase;
 /**
  * @see SeederGenerator
  */
-class SeederGeneratorTest extends TestCase
+final class SeederGeneratorTest extends TestCase
 {
     /**
      * @var Blueprint

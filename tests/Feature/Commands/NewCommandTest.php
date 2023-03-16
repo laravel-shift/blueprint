@@ -8,7 +8,7 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Tests\TestCase;
 
 #[CoversClass(\Blueprint\Commands\NewCommand::class)]
-class NewCommandTest extends TestCase
+final class NewCommandTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 

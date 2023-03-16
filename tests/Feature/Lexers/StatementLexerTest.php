@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @see StatementLexer
  */
-class StatementLexerTest extends TestCase
+final class StatementLexerTest extends TestCase
 {
     /**
      * @var StatementLexer

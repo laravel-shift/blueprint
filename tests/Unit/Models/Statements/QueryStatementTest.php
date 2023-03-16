@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @see QueryStatement
  */
-class QueryStatementTest extends TestCase
+final class QueryStatementTest extends TestCase
 {
     #[Test]
     public function output_generates_code_for_all()

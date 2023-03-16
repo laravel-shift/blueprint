@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 #[CoversClass(\Blueprint\EnumType::class)]
-class EnumTypeTest extends TestCase
+final class EnumTypeTest extends TestCase
 {
     #[Test]
     #[DataProvider('enumOptionsDataProvider')]
