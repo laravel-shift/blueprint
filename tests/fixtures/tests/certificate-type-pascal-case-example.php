@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers;
 
+use PHPUnit\Framework\Attributes\Test;
 use App\Models\CertificateType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -15,9 +16,7 @@ class CertificateTypeControllerTest extends TestCase
 {
     use AdditionalAssertions, RefreshDatabase, WithFaker;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function index_behaves_as_expected(): void
     {
         $certificateTypes = CertificateType::factory()->count(3)->create();
@@ -29,9 +28,7 @@ class CertificateTypeControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function store_uses_form_request_validation(): void
     {
         $this->assertActionUsesFormRequest(
@@ -41,9 +38,7 @@ class CertificateTypeControllerTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function store_saves(): void
     {
         $name = $this->faker->name;
@@ -63,9 +58,7 @@ class CertificateTypeControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function show_behaves_as_expected(): void
     {
         $certificateType = CertificateType::factory()->create();
@@ -77,9 +70,7 @@ class CertificateTypeControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function update_uses_form_request_validation(): void
     {
         $this->assertActionUsesFormRequest(
@@ -89,9 +80,7 @@ class CertificateTypeControllerTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function update_behaves_as_expected(): void
     {
         $certificateType = CertificateType::factory()->create();
@@ -110,9 +99,7 @@ class CertificateTypeControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function destroy_deletes_and_responds_with(): void
     {
         $certificateType = CertificateType::factory()->create();

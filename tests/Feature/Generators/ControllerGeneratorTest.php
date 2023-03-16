@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Generators;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Blueprint;
 use Blueprint\Generators\ControllerGenerator;
 use Blueprint\Lexers\StatementLexer;
@@ -30,9 +32,7 @@ class ControllerGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_writes_nothing_for_empty_tree()
     {
         $this->filesystem->expects('stub')
@@ -44,11 +44,8 @@ class ControllerGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider controllerTreeDataProvider
-     */
+    #[Test]
+    #[DataProvider('controllerTreeDataProvider')]
     public function output_generates_controllers_for_tree($definition, $path, $controller)
     {
         $this->filesystem->expects('stub')
@@ -69,9 +66,7 @@ class ControllerGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_generates_controllers_with_models_using_custom_namespace()
     {
         $definition = 'drafts/custom-models-namespace.yaml';
@@ -99,9 +94,7 @@ class ControllerGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_works_for_pascal_case_definition()
     {
         $this->filesystem->expects('stub')
@@ -132,9 +125,7 @@ class ControllerGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$certificateController, $certificateTypeController]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_respects_configuration()
     {
         $this->app['config']->set('blueprint.app_path', 'src/path');

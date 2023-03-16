@@ -2,19 +2,19 @@
 
 namespace Tests\Feature\Commands;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Blueprint;
 use Blueprint\Tracer;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Tests\TestCase;
 
-/**
- * @covers \Blueprint\Commands\EraseCommand
- */
+#[CoversClass(\Blueprint\Commands\EraseCommand::class)]
 class EraseCommandTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
-    /** @test */
+    #[Test]
     public function it_parses_and_update_the_trace_file()
     {
         $this->filesystem->expects('get')
@@ -32,7 +32,7 @@ class EraseCommandTest extends TestCase
             ->assertExitCode(0);
     }
 
-    /** @test */
+    #[Test]
     public function it_deletes_the_created_files()
     {
         $this->filesystem->expects('get')
@@ -54,7 +54,7 @@ class EraseCommandTest extends TestCase
             ->expectsOutput('- created_file2.php');
     }
 
-    /** @test */
+    #[Test]
     public function it_notify_about_the_updated_files()
     {
         $this->filesystem->expects('get')
@@ -71,7 +71,7 @@ class EraseCommandTest extends TestCase
             ->expectsOutput('- updated_file2.php');
     }
 
-    /** @test */
+    #[Test]
     public function it_calls_the_trace_command()
     {
         $this->filesystem->expects('get')->with('.blueprint')->andReturn('other: test.php');

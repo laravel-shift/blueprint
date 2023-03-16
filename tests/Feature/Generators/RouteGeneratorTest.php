@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Generators;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Blueprint;
 use Blueprint\Generators\RouteGenerator;
 use Blueprint\Lexers\StatementLexer;
@@ -31,9 +33,7 @@ class RouteGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_generates_nothing_for_empty_tree()
     {
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
@@ -41,11 +41,8 @@ class RouteGeneratorTest extends TestCase
         $this->files->shouldNotHaveReceived('append');
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider controllerTreeDataProvider
-     */
+    #[Test]
+    #[DataProvider('controllerTreeDataProvider')]
     public function output_generates_web_routes($definition, $routes)
     {
         $path = 'routes/web.php';
@@ -58,9 +55,7 @@ class RouteGeneratorTest extends TestCase
         $this->assertEquals(['updated' => [$path]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_generates_api_routes()
     {
         $this->filesystem->expects('append')
@@ -72,9 +67,7 @@ class RouteGeneratorTest extends TestCase
         $this->assertEquals(['updated' => ['routes/api.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_generates_routes_with_plural_slug()
     {
         $this->app['config']->set('blueprint.plural_routes', true);
@@ -88,9 +81,7 @@ class RouteGeneratorTest extends TestCase
         $this->assertEquals(['updated' => ['routes/web.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_generates_api_routes_with_plural_slug()
     {
         $this->app['config']->set('blueprint.plural_routes', true);
@@ -104,9 +95,7 @@ class RouteGeneratorTest extends TestCase
         $this->assertEquals(['updated' => ['routes/api.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_generates_routes_for_mixed_resources()
     {
         $this->filesystem->expects('append')

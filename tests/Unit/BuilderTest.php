@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Blueprint;
 use Blueprint\Builder;
 use Blueprint\Tree;
@@ -9,9 +10,7 @@ use Tests\TestCase;
 
 class BuilderTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function execute_builds_draft_content()
     {
         $draft = 'draft blueprint content';
@@ -49,9 +48,7 @@ class BuilderTest extends TestCase
         $this->assertSame($generated, $actual);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function execute_uses_cache_and_remembers_models()
     {
         $cache = [
@@ -106,9 +103,7 @@ class BuilderTest extends TestCase
         $this->assertSame($generated, $actual);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function execute_calls_builder_without_stripping_dashes_for_draft_file_with_indexes_defined()
     {
         $draft = 'models:';

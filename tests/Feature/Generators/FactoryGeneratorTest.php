@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Generators;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Blueprint;
 use Blueprint\Generators\FactoryGenerator;
 use Blueprint\Tree;
@@ -31,9 +33,7 @@ class FactoryGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_writes_nothing_for_empty_tree()
     {
         $this->filesystem->expects('stub')
@@ -45,11 +45,8 @@ class FactoryGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output(new Tree(['models' => []])));
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider modelTreeDataProvider
-     */
+    #[Test]
+    #[DataProvider('modelTreeDataProvider')]
     public function output_writes_factory_for_model_tree($definition, $path, $factory)
     {
         $this->filesystem->expects('stub')
@@ -69,9 +66,7 @@ class FactoryGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_ignores_nullables_if_fake_nullables_configuration_is_set_to_false()
     {
         $this->app['config']->set('blueprint.fake_nullables', false);
@@ -93,9 +88,7 @@ class FactoryGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['database/factories/PostFactory.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_generates_references_for_nested_models()
     {
         $this->filesystem->expects('stub')
@@ -128,9 +121,7 @@ class FactoryGeneratorTest extends TestCase
         ], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_respects_configuration()
     {
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
@@ -153,9 +144,7 @@ class FactoryGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['database/factories/PostFactory.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_creates_directory_for_nested_components()
     {
         $this->filesystem->expects('stub')

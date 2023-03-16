@@ -2,19 +2,19 @@
 
 namespace Tests\Feature\Commands;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Blueprint;
 use Blueprint\Builder;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Tests\TestCase;
 
-/**
- * @covers \Blueprint\Commands\BuildCommand
- */
+#[CoversClass(\Blueprint\Commands\BuildCommand::class)]
 class BuildCommandTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
-    /** @test */
+    #[Test]
     public function it_uses_the_default_draft_file()
     {
         $this->filesystem->shouldReceive('exists')
@@ -31,7 +31,7 @@ class BuildCommandTest extends TestCase
             ->assertExitCode(0);
     }
 
-    /** @test */
+    #[Test]
     public function it_passes_the_command_args_to_the_builder_in_right_order()
     {
         $this->filesystem->shouldReceive('exists')
@@ -48,7 +48,7 @@ class BuildCommandTest extends TestCase
             ->assertExitCode(0);
     }
 
-    /** @test */
+    #[Test]
     public function it_fails_if_the_draft_file_not_exists()
     {
         $this->filesystem->shouldReceive('exists')
@@ -63,7 +63,7 @@ class BuildCommandTest extends TestCase
             ->assertExitCode(1);
     }
 
-    /** @test */
+    #[Test]
     public function it_shows_the_generated_files_grouped_by_actions()
     {
         $this->filesystem->shouldReceive('exists')

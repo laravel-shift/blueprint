@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Lexers;
 
+use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Blueprint;
 use Blueprint\Generators\ControllerGenerator;
 use Blueprint\Generators\ModelGenerator;
@@ -39,9 +40,7 @@ class ConfigLexerTest extends TestCase
         $this->blueprint->registerGenerator($this->modelGenerator);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_updates_config(): void
     {
         $tokens = ['config' => ['key' => 'value']];
@@ -51,9 +50,7 @@ class ConfigLexerTest extends TestCase
         $this->assertSame($tokens['config']['key'], config('blueprint.key'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_uses_app_path_and_namespace_from_inline_configuration(): void
     {
         $this->filesystem->expects('stub')
@@ -86,9 +83,7 @@ class ConfigLexerTest extends TestCase
         $this->assertEquals(['created' => ['atum/Models/Comment.php']], $this->modelGenerator->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_uses_controller_namespace_config_from_yaml_override()
     {
         $this->filesystem->expects('stub')

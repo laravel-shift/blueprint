@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers;
 
+use PHPUnit\Framework\Attributes\Test;
 use App\Events\NewPost;
 use App\Jobs\SyncMedia;
 use App\Mail\ReviewPost;
@@ -22,9 +23,7 @@ class PostControllerTest extends TestCase
 {
     use AdditionalAssertions, RefreshDatabase, WithFaker;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function index_displays_view(): void
     {
         $posts = Post::factory()->count(3)->create();
@@ -37,9 +36,7 @@ class PostControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function store_uses_form_request_validation(): void
     {
         $this->assertActionUsesFormRequest(
@@ -49,9 +46,7 @@ class PostControllerTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function store_saves_and_redirects(): void
     {
         $title = $this->faker->sentence(4);

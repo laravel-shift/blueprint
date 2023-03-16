@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Generators\Statements;
 
+use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Blueprint;
 use Blueprint\Generators\Statements\EventGenerator;
 use Blueprint\Lexers\StatementLexer;
@@ -31,9 +32,7 @@ class EventGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_writes_nothing_for_empty_tree()
     {
         $this->filesystem->expects('stub')
@@ -45,9 +44,7 @@ class EventGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_writes_nothing_tree_without_validate_statements()
     {
         $this->filesystem->expects('stub')
@@ -62,9 +59,7 @@ class EventGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_writes_events()
     {
         $this->filesystem->expects('stub')
@@ -97,9 +92,7 @@ class EventGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Events/UserCreated.php', 'app/Events/UserDeleted.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_only_outputs_new_events()
     {
         $this->filesystem->expects('stub')
@@ -119,9 +112,7 @@ class EventGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_respects_configuration()
     {
         $this->app['config']->set('blueprint.namespace', 'Some\\App');

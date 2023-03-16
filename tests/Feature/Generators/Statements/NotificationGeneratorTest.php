@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Generators\Statements;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Blueprint;
 use Blueprint\Generators\Statements\NotificationGenerator;
 use Blueprint\Lexers\StatementLexer;
@@ -31,9 +33,7 @@ class NotificationGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_writes_nothing_for_empty_tree()
     {
         $this->filesystem->expects('stub')
@@ -45,9 +45,7 @@ class NotificationGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_writes_nothing_tree_without_validate_statements()
     {
         $this->filesystem->expects('stub')
@@ -62,11 +60,8 @@ class NotificationGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider notificationDraftProvider
-     */
+    #[Test]
+    #[DataProvider('notificationDraftProvider')]
     public function output_writes_notifications($draft)
     {
         $this->filesystem->expects('stub')
@@ -105,9 +100,7 @@ class NotificationGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Notification/ReviewPostNotification.php', 'app/Notification/PublishedPostNotification.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_only_outputs_new_notifications()
     {
         $this->filesystem->expects('stub')
@@ -126,9 +119,7 @@ class NotificationGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_respects_configuration()
     {
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
