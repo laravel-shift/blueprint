@@ -2,7 +2,11 @@
     "name": "laravel-shift/blueprint",
     "type": "library",
     "description": "An expressive, human readable code generation tool.",
-    "keywords": ["framework", "laravel", "code generation"],
+    "keywords": [
+        "framework",
+        "laravel",
+        "code generation"
+    ],
     "license": "MIT",
     "require": {
         "doctrine/dbal": "^3.3",
@@ -16,7 +20,7 @@
         "laravel/pint": "^1.2",
         "mockery/mockery": "^1.4.4",
         "orchestra/testbench": "^8.0",
-        "phpunit/phpunit": "^9.5.10"
+        "phpunit/phpunit": "^10.0"
     },
     "suggest": {
         "jasonmccreary/laravel-test-assertions": "Required to use additional assertions in generated tests (^1.0)."
