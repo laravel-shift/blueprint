@@ -4,49 +4,42 @@ namespace Tests\Feature\Translators;
 
 use Blueprint\Models\Column;
 use Blueprint\Translators\Rules;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
  * @see Rules
  */
-class RulesTest extends TestCase
+final class RulesTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function forColumn_returns_required_rule_by_default()
+    #[Test]
+    public function forColumn_returns_required_rule_by_default(): void
     {
         $column = new Column('test', 'unknown');
 
         $this->assertEquals(['required'], Rules::fromColumn('context', $column));
     }
 
-    /**
-     * @test
-     */
-    public function forColumn_returns_nullable_rule()
+    #[Test]
+    public function forColumn_returns_nullable_rule(): void
     {
         $column = new Column('test', 'string', ['nullable']);
 
         $this->assertEquals(['nullable', 'string'], Rules::fromColumn('context', $column));
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider stringDataTypesProvider
-     */
-    public function forColumn_returns_string_rule_for_string_data_types($data_type)
+    #[Test]
+    #[DataProvider('stringDataTypesProvider')]
+    public function forColumn_returns_string_rule_for_string_data_types($data_type): void
     {
         $column = new Column('test', $data_type);
 
         $this->assertContains('string', Rules::fromColumn('context', $column));
     }
 
-    /**
-     * @test
-     */
-    public function forColumn_returns_max_rule_for_string_attributes()
+    #[Test]
+    public function forColumn_returns_max_rule_for_string_attributes(): void
     {
         $column = new Column('test', 'string', [], [1000]);
 
@@ -57,12 +50,9 @@ class RulesTest extends TestCase
         $this->assertContains('max:10', Rules::fromColumn('context', $column));
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider stringDataTypesProvider
-     */
-    public function forColumn_uses_email_rule_for_columns_named_email_or_email_address($data_type)
+    #[Test]
+    #[DataProvider('stringDataTypesProvider')]
+    public function forColumn_uses_email_rule_for_columns_named_email_or_email_address($data_type): void
     {
         $column = new Column('email', $data_type);
 
@@ -75,12 +65,9 @@ class RulesTest extends TestCase
         $this->assertNotContains('string', Rules::fromColumn('context', $column));
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider stringDataTypesProvider
-     */
-    public function forColumn_uses_password_rule_for_columns_named_password($data_type)
+    #[Test]
+    #[DataProvider('stringDataTypesProvider')]
+    public function forColumn_uses_password_rule_for_columns_named_password($data_type): void
     {
         $column = new Column('password', $data_type);
 
@@ -88,65 +75,50 @@ class RulesTest extends TestCase
         $this->assertNotContains('string', Rules::fromColumn('context', $column));
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider numericDataTypesProvider
-     */
-    public function forColumn_returns_numeric_rule_for_numeric_types($data_type)
+    #[Test]
+    #[DataProvider('numericDataTypesProvider')]
+    public function forColumn_returns_numeric_rule_for_numeric_types($data_type): void
     {
         $column = new Column('test', $data_type);
 
         $this->assertContains('numeric', Rules::fromColumn('context', $column));
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider integerDataTypesProvider
-     */
-    public function forColumn_returns_integer_rule_for_integer_types($data_type)
+    #[Test]
+    #[DataProvider('integerDataTypesProvider')]
+    public function forColumn_returns_integer_rule_for_integer_types($data_type): void
     {
         $column = new Column('test', $data_type);
         $this->assertContains('integer', Rules::fromColumn('context', $column));
     }
 
-    /**
-     * @test
-     */
-    public function forColumn_return_exists_rule_for_id_column()
+    #[Test]
+    public function forColumn_return_exists_rule_for_id_column(): void
     {
         $column = new Column('user_id', 'id');
 
         $this->assertContains('exists:users,id', Rules::fromColumn('context', $column));
     }
 
-    /**
-     * @test
-     */
-    public function forColumn_return_exists_rule_id_column_with_attribute()
+    #[Test]
+    public function forColumn_return_exists_rule_id_column_with_attribute(): void
     {
         $column = new Column('author_id', 'id', [], ['user']);
 
         $this->assertContains('exists:users,id', Rules::fromColumn('context', $column));
     }
 
-    /**
-     * @test
-     */
-    public function forColumn_return_exists_rule_for_the_unique_modifier()
+    #[Test]
+    public function forColumn_return_exists_rule_for_the_unique_modifier(): void
     {
         $column = new Column('column', 'string', ['unique']);
 
         $this->assertContains('unique:connection.table,column', Rules::fromColumn('connection.table', $column));
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider relationshipColumnProvider
-     */
-    public function forColumn_returns_exists_rule_for_foreign_keys($name, $table)
+    #[Test]
+    #[DataProvider('relationshipColumnProvider')]
+    public function forColumn_returns_exists_rule_for_foreign_keys($name, $table): void
     {
         $column = new Column($name, 'id');
 
@@ -156,10 +128,8 @@ class RulesTest extends TestCase
         $this->assertContains("exists:{$table},id", $actual);
     }
 
-    /**
-     * @test
-     */
-    public function forColumn_returns_gt0_rule_for_unsigned_numeric_types()
+    #[Test]
+    public function forColumn_returns_gt0_rule_for_unsigned_numeric_types(): void
     {
         $column = new Column('test', 'integer');
 
@@ -170,10 +140,8 @@ class RulesTest extends TestCase
         $this->assertContains('gt:0', Rules::fromColumn('context', $column));
     }
 
-    /**
-     * @test
-     */
-    public function forColumn_returns_in_rule_for_enums_and_sets()
+    #[Test]
+    public function forColumn_returns_in_rule_for_enums_and_sets(): void
     {
         $column = new Column('test', 'enum', [], ['alpha', 'bravo', 'charlie']);
         $this->assertContains('in:alpha,bravo,charlie', Rules::fromColumn('context', $column));
@@ -183,42 +151,33 @@ class RulesTest extends TestCase
         $this->assertContains('in:2,4,6', Rules::fromColumn('context', $column));
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider dateDataTypesProvider
-     */
-    public function forColumn_returns_date_rule_for_date_types($data_type)
+    #[Test]
+    #[DataProvider('dateDataTypesProvider')]
+    public function forColumn_returns_date_rule_for_date_types($data_type): void
     {
         $column = new Column('test', $data_type);
 
         $this->assertContains('date', Rules::fromColumn('context', $column));
     }
 
-    /**
-     * @test
-     */
-    public function forColumn_return_json_rule_for_the_json_type()
+    #[Test]
+    public function forColumn_return_json_rule_for_the_json_type(): void
     {
         $column = new Column('column', 'json');
 
         $this->assertContains('json', Rules::fromColumn('context', $column));
     }
 
-    /**
-     * @test
-     */
-    public function forColumn_does_not_return_between_rule_for_decimal_without_precion_and_scale()
+    #[Test]
+    public function forColumn_does_not_return_between_rule_for_decimal_without_precion_and_scale(): void
     {
         $column = new Column('column', 'decimal');
 
         $this->assertNotContains('between', Rules::fromColumn('context', $column));
     }
 
-    /**
-     * @test
-     */
-    public function forColumn_does_not_return_between_rule_for_unsigned_decimal_without_precision_and_scale()
+    #[Test]
+    public function forColumn_does_not_return_between_rule_for_unsigned_decimal_without_precision_and_scale(): void
     {
         $unsignedBeforeDecimalColumn = new Column('column', 'unsigned decimal');
 
@@ -229,38 +188,29 @@ class RulesTest extends TestCase
         $this->assertNotContains('between', Rules::fromColumn('context', $unsignedAfterDecimalColumn));
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider noBetweenRuleDataProvider
-     */
-    public function forColumn_does_not_return_between_rule_for_double_without_precision_and_scale($column)
+    #[Test]
+    #[DataProvider('noBetweenRuleDataProvider')]
+    public function forColumn_does_not_return_between_rule_for_double_without_precision_and_scale($column): void
     {
         $this->assertNotContains('between', Rules::fromColumn('context', $column));
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider noBetweenRuleDataProvider
-     */
-    public function forColumn_does_not_return_between_rule($column)
+    #[Test]
+    #[DataProvider('noBetweenRuleDataProvider')]
+    public function forColumn_does_not_return_between_rule($column): void
     {
         $this->assertNotContains('between', Rules::fromColumn('context', $column));
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider betweenRuleDataProvider
-     */
-    public function forColumn_returns_between_rule($column, $interval)
+    #[Test]
+    #[DataProvider('betweenRuleDataProvider')]
+    public function forColumn_returns_between_rule($column, $interval): void
     {
         $fromColumn = Rules::fromColumn('context', $column);
         $this->assertContains("between:$interval", $fromColumn);
     }
 
-    public function stringDataTypesProvider()
+    public static function stringDataTypesProvider(): array
     {
         return [
             ['string'],
@@ -269,7 +219,7 @@ class RulesTest extends TestCase
         ];
     }
 
-    public function integerDataTypesProvider()
+    public static function integerDataTypesProvider(): array
     {
         return [
             ['integer'],
@@ -290,7 +240,7 @@ class RulesTest extends TestCase
         ];
     }
 
-    public function numericDataTypesProvider()
+    public static function numericDataTypesProvider(): array
     {
         return [
             ['decimal'],
@@ -300,7 +250,7 @@ class RulesTest extends TestCase
         ];
     }
 
-    public function dateDataTypesProvider()
+    public static function dateDataTypesProvider(): array
     {
         return [
             ['date'],
@@ -309,7 +259,7 @@ class RulesTest extends TestCase
         ];
     }
 
-    public function relationshipColumnProvider()
+    public static function relationshipColumnProvider(): array
     {
         return [
             ['test_id', 'tests'],
@@ -318,7 +268,7 @@ class RulesTest extends TestCase
         ];
     }
 
-    public function noBetweenRuleDataProvider()
+    public static function noBetweenRuleDataProvider(): array
     {
         return [
             [new Column('column', 'float')],
@@ -331,7 +281,7 @@ class RulesTest extends TestCase
         ];
     }
 
-    public function betweenRuleDataProvider()
+    public static function betweenRuleDataProvider(): array
     {
         return [
             [new Column('column', 'double', [], [8, 0]), '-99999999,99999999'],

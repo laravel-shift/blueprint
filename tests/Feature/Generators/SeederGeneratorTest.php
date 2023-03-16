@@ -5,12 +5,13 @@ namespace Tests\Feature\Generators;
 use Blueprint\Blueprint;
 use Blueprint\Generators\SeederGenerator;
 use Blueprint\Tree;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
  * @see SeederGenerator
  */
-class SeederGeneratorTest extends TestCase
+final class SeederGeneratorTest extends TestCase
 {
     /**
      * @var Blueprint
@@ -35,20 +36,16 @@ class SeederGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /**
-     * @test
-     */
-    public function output_generates_nothing_for_empty_tree()
+    #[Test]
+    public function output_generates_nothing_for_empty_tree(): void
     {
         $this->filesystem->shouldNotHaveReceived('put');
 
         $this->assertEquals([], $this->subject->output(new Tree(['seeders' => []])));
     }
 
-    /**
-     * @test
-     */
-    public function output_generates_seeders()
+    #[Test]
+    public function output_generates_seeders(): void
     {
         $this->filesystem->expects('stub')
             ->with($this->seederStub)
@@ -65,10 +62,8 @@ class SeederGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['database/seeders/PostSeeder.php', 'database/seeders/CommentSeeder.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function output_generates_seeders_from_traced_models()
+    #[Test]
+    public function output_generates_seeders_from_traced_models(): void
     {
         $this->filesystem->expects('stub')
             ->with($this->seederStub)

@@ -4,9 +4,10 @@ namespace Tests\Feature\Lexers;
 
 use Blueprint\Lexers\ControllerLexer;
 use Blueprint\Lexers\StatementLexer;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-class ControllerLexerTest extends TestCase
+final class ControllerLexerTest extends TestCase
 {
     /**
      * @var ControllerLexer
@@ -27,18 +28,14 @@ class ControllerLexerTest extends TestCase
         $this->subject = new ControllerLexer($this->statementLexer);
     }
 
-    /**
-     * @test
-     */
-    public function it_returns_nothing_without_controllers_token()
+    #[Test]
+    public function it_returns_nothing_without_controllers_token(): void
     {
         $this->assertEquals(['controllers' => []], $this->subject->analyze([]));
     }
 
-    /**
-     * @test
-     */
-    public function it_returns_controllers()
+    #[Test]
+    public function it_returns_controllers(): void
     {
         $tokens = [
             'controllers' => [
@@ -105,10 +102,8 @@ class ControllerLexerTest extends TestCase
         $this->assertEquals('index-statement-1', $methods['index'][0]);
     }
 
-    /**
-     * @test
-     */
-    public function it_returns_a_web_resource_controller()
+    #[Test]
+    public function it_returns_a_web_resource_controller(): void
     {
         $tokens = [
             'controllers' => [
@@ -194,10 +189,8 @@ class ControllerLexerTest extends TestCase
         $this->assertEquals('destroy-statements', $methods['destroy'][0]);
     }
 
-    /**
-     * @test
-     */
-    public function it_returns_an_api_resource_controller()
+    #[Test]
+    public function it_returns_an_api_resource_controller(): void
     {
         $tokens = [
             'controllers' => [
@@ -254,10 +247,8 @@ class ControllerLexerTest extends TestCase
         $this->assertEquals('api-update-statements', $methods['update'][0]);
     }
 
-    /**
-     * @test
-     */
-    public function it_returns_a_specific_resource_controller()
+    #[Test]
+    public function it_returns_a_specific_resource_controller(): void
     {
         $tokens = [
             'controllers' => [
@@ -316,10 +307,8 @@ class ControllerLexerTest extends TestCase
         $this->assertEquals('destroy-statements', $methods['destroy'][0]);
     }
 
-    /**
-     * @test
-     */
-    public function it_returns_a_resource_controller_with_overrides()
+    #[Test]
+    public function it_returns_a_resource_controller_with_overrides(): void
     {
         $tokens = [
             'controllers' => [
@@ -372,10 +361,8 @@ class ControllerLexerTest extends TestCase
         $this->assertEquals('custom-statements', $methods['custom'][0]);
     }
 
-    /**
-     * @test
-     */
-    public function it_returns_a_resource_controllers_with_api_flag_set()
+    #[Test]
+    public function it_returns_a_resource_controllers_with_api_flag_set(): void
     {
         $tokens = [
             'controllers' => [
@@ -421,10 +408,8 @@ class ControllerLexerTest extends TestCase
         $this->assertTrue($controller->isApiResource());
     }
 
-    /**
-     * @test
-     */
-    public function it_returns_an_invokable_controller()
+    #[Test]
+    public function it_returns_an_invokable_controller(): void
     {
         $tokens = [
             'controllers' => [

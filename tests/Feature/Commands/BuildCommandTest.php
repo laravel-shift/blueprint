@@ -5,17 +5,17 @@ namespace Tests\Feature\Commands;
 use Blueprint\Blueprint;
 use Blueprint\Builder;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-/**
- * @covers \Blueprint\Commands\BuildCommand
- */
-class BuildCommandTest extends TestCase
+#[CoversClass(\Blueprint\Commands\BuildCommand::class)]
+final class BuildCommandTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
-    /** @test */
-    public function it_uses_the_default_draft_file()
+    #[Test]
+    public function it_uses_the_default_draft_file(): void
     {
         $this->filesystem->shouldReceive('exists')
             ->with('draft.yaml')
@@ -31,8 +31,8 @@ class BuildCommandTest extends TestCase
             ->assertExitCode(0);
     }
 
-    /** @test */
-    public function it_passes_the_command_args_to_the_builder_in_right_order()
+    #[Test]
+    public function it_passes_the_command_args_to_the_builder_in_right_order(): void
     {
         $this->filesystem->shouldReceive('exists')
             ->with('test.yml')
@@ -48,8 +48,8 @@ class BuildCommandTest extends TestCase
             ->assertExitCode(0);
     }
 
-    /** @test */
-    public function it_fails_if_the_draft_file_not_exists()
+    #[Test]
+    public function it_fails_if_the_draft_file_not_exists(): void
     {
         $this->filesystem->shouldReceive('exists')
             ->with('test.yml')
@@ -63,8 +63,8 @@ class BuildCommandTest extends TestCase
             ->assertExitCode(1);
     }
 
-    /** @test */
-    public function it_shows_the_generated_files_grouped_by_actions()
+    #[Test]
+    public function it_shows_the_generated_files_grouped_by_actions(): void
     {
         $this->filesystem->shouldReceive('exists')
             ->with('draft.yaml')

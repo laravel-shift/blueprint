@@ -6,12 +6,13 @@ use Blueprint\Blueprint;
 use Blueprint\Generators\Statements\ResourceGenerator;
 use Blueprint\Lexers\StatementLexer;
 use Blueprint\Tree;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
  * @see ResourceGenerator
  */
-class ResourceGeneratorTest extends TestCase
+final class ResourceGeneratorTest extends TestCase
 {
     private $blueprint;
 
@@ -32,10 +33,8 @@ class ResourceGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /**
-     * @test
-     */
-    public function output_writes_nothing_for_empty_tree()
+    #[Test]
+    public function output_writes_nothing_for_empty_tree(): void
     {
         $this->filesystem->expects('stub')
             ->with('resource.stub')
@@ -46,10 +45,8 @@ class ResourceGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
 
-    /**
-     * @test
-     */
-    public function output_writes_nothing_without_resource_statements()
+    #[Test]
+    public function output_writes_nothing_without_resource_statements(): void
     {
         $this->filesystem->expects('stub')
             ->with('resource.stub')
@@ -63,10 +60,8 @@ class ResourceGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function output_writes_resources_for_render_statements()
+    #[Test]
+    public function output_writes_resources_for_render_statements(): void
     {
         $template = $this->stub('resource.stub');
         $this->filesystem->expects('stub')
@@ -100,10 +95,8 @@ class ResourceGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Http/Resources/UserCollection.php', 'app/Http/Resources/UserResource.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function output_writes_namespaced_classes()
+    #[Test]
+    public function output_writes_namespaced_classes(): void
     {
         $this->filesystem->expects('stub')
             ->with('resource.stub')
@@ -136,10 +129,8 @@ class ResourceGeneratorTest extends TestCase
         ], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function output_writes_nested_resource()
+    #[Test]
+    public function output_writes_nested_resource(): void
     {
         $this->filesystem->expects('stub')
             ->with('resource.stub')
@@ -172,10 +163,8 @@ class ResourceGeneratorTest extends TestCase
         ], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function output_api_resource_pagination()
+    #[Test]
+    public function output_api_resource_pagination(): void
     {
         $this->files->expects('stub')
             ->with('resource.stub')

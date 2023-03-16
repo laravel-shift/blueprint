@@ -6,12 +6,13 @@ use Blueprint\Blueprint;
 use Blueprint\Generators\Statements\JobGenerator;
 use Blueprint\Lexers\StatementLexer;
 use Blueprint\Tree;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
  * @see JobGenerator
  */
-class JobGeneratorTest extends TestCase
+final class JobGeneratorTest extends TestCase
 {
     private $blueprint;
 
@@ -31,10 +32,8 @@ class JobGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /**
-     * @test
-     */
-    public function output_writes_nothing_for_empty_tree()
+    #[Test]
+    public function output_writes_nothing_for_empty_tree(): void
     {
         $this->filesystem->expects('stub')
             ->with('job.stub')
@@ -45,10 +44,8 @@ class JobGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
 
-    /**
-     * @test
-     */
-    public function output_writes_nothing_tree_without_validate_statements()
+    #[Test]
+    public function output_writes_nothing_tree_without_validate_statements(): void
     {
         $this->filesystem->expects('stub')
             ->with('job.stub')
@@ -62,10 +59,8 @@ class JobGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function output_writes_jobs()
+    #[Test]
+    public function output_writes_jobs(): void
     {
         $this->filesystem->expects('stub')
             ->with('job.stub')
@@ -96,10 +91,8 @@ class JobGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Jobs/CreateUser.php', 'app/Jobs/DeleteRole.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function it_only_outputs_new_jobs()
+    #[Test]
+    public function it_only_outputs_new_jobs(): void
     {
         $this->filesystem->expects('stub')
             ->with('job.stub')
@@ -117,10 +110,8 @@ class JobGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function it_respects_configuration()
+    #[Test]
+    public function it_respects_configuration(): void
     {
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
         $this->app['config']->set('blueprint.app_path', 'src/path');

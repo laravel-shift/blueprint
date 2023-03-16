@@ -6,12 +6,14 @@ use Blueprint\Blueprint;
 use Blueprint\Generators\Statements\NotificationGenerator;
 use Blueprint\Lexers\StatementLexer;
 use Blueprint\Tree;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
  * @see NotificationGenerator
  */
-class NotificationGeneratorTest extends TestCase
+final class NotificationGeneratorTest extends TestCase
 {
     private $blueprint;
 
@@ -31,10 +33,8 @@ class NotificationGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /**
-     * @test
-     */
-    public function output_writes_nothing_for_empty_tree()
+    #[Test]
+    public function output_writes_nothing_for_empty_tree(): void
     {
         $this->filesystem->expects('stub')
             ->with('notification.stub')
@@ -45,10 +45,8 @@ class NotificationGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
 
-    /**
-     * @test
-     */
-    public function output_writes_nothing_tree_without_validate_statements()
+    #[Test]
+    public function output_writes_nothing_tree_without_validate_statements(): void
     {
         $this->filesystem->expects('stub')
             ->with('notification.stub')
@@ -62,12 +60,9 @@ class NotificationGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider notificationDraftProvider
-     */
-    public function output_writes_notifications($draft)
+    #[Test]
+    #[DataProvider('notificationDraftProvider')]
+    public function output_writes_notifications($draft): void
     {
         $this->filesystem->expects('stub')
             ->with('notification.stub')
@@ -105,10 +100,8 @@ class NotificationGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Notification/ReviewPostNotification.php', 'app/Notification/PublishedPostNotification.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function it_only_outputs_new_notifications()
+    #[Test]
+    public function it_only_outputs_new_notifications(): void
     {
         $this->filesystem->expects('stub')
             ->with('notification.stub')
@@ -126,10 +119,8 @@ class NotificationGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function it_respects_configuration()
+    #[Test]
+    public function it_respects_configuration(): void
     {
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
         $this->app['config']->set('blueprint.app_path', 'src/path');
@@ -157,7 +148,7 @@ class NotificationGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['src/path/Notification/ReviewNotification.php']], $this->subject->output($tree));
     }
 
-    public function notificationDraftProvider()
+    public static function notificationDraftProvider(): array
     {
         return [
             ['drafts/send-statements-notification-facade.yaml'],

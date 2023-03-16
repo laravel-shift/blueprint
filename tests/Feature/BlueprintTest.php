@@ -6,13 +6,15 @@ use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Contracts\Lexer;
 use Blueprint\Tree;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Tests\TestCase;
 
 /**
  * @see Blueprint
  */
-class BlueprintTest extends TestCase
+final class BlueprintTest extends TestCase
 {
     /**
      * @var Blueprint
@@ -26,10 +28,8 @@ class BlueprintTest extends TestCase
         $this->subject = new Blueprint();
     }
 
-    /**
-     * @test
-     */
-    public function it_parses_models()
+    #[Test]
+    public function it_parses_models(): void
     {
         $blueprint = $this->fixture('drafts/models-only.yaml');
 
@@ -68,10 +68,8 @@ class BlueprintTest extends TestCase
         ], $this->subject->parse($blueprint));
     }
 
-    /**
-     * @test
-     */
-    public function it_parses_controllers()
+    #[Test]
+    public function it_parses_controllers(): void
     {
         $blueprint = $this->fixture('drafts/controllers-only.yaml');
 
@@ -95,10 +93,8 @@ class BlueprintTest extends TestCase
         ], $this->subject->parse($blueprint));
     }
 
-    /**
-     * @test
-     */
-    public function it_parses_shorthands()
+    #[Test]
+    public function it_parses_shorthands(): void
     {
         $blueprint = $this->fixture('drafts/shorthands.yaml');
 
@@ -121,10 +117,8 @@ class BlueprintTest extends TestCase
         ], $this->subject->parse($blueprint));
     }
 
-    /**
-     * @test
-     */
-    public function it_parses_uuid_shorthand()
+    #[Test]
+    public function it_parses_uuid_shorthand(): void
     {
         $blueprint = $this->fixture('drafts/uuid-shorthand.yaml');
 
@@ -139,10 +133,8 @@ class BlueprintTest extends TestCase
         ], $this->subject->parse($blueprint));
     }
 
-    /**
-     * @test
-     */
-    public function it_parses_shorthands_with_timezones()
+    #[Test]
+    public function it_parses_shorthands_with_timezones(): void
     {
         $blueprint = $this->fixture('drafts/with-timezones.yaml');
 
@@ -156,10 +148,8 @@ class BlueprintTest extends TestCase
         ], $this->subject->parse($blueprint));
     }
 
-    /**
-     * @test
-     */
-    public function it_parses_longhands()
+    #[Test]
+    public function it_parses_longhands(): void
     {
         $blueprint = $this->fixture('drafts/longhands.yaml');
 
@@ -183,10 +173,8 @@ class BlueprintTest extends TestCase
         ], $this->subject->parse($blueprint));
     }
 
-    /**
-     * @test
-     */
-    public function it_parses_resource_shorthands()
+    #[Test]
+    public function it_parses_resource_shorthands(): void
     {
         $blueprint = $this->fixture('drafts/with-timezones.yaml');
 
@@ -200,10 +188,8 @@ class BlueprintTest extends TestCase
         ], $this->subject->parse($blueprint));
     }
 
-    /**
-     * @test
-     */
-    public function it_parses_the_readme_example()
+    #[Test]
+    public function it_parses_the_readme_example(): void
     {
         $blueprint = $this->fixture('drafts/readme-example.yaml');
 
@@ -236,10 +222,8 @@ class BlueprintTest extends TestCase
         ], $this->subject->parse($blueprint));
     }
 
-    /**
-     * @test
-     */
-    public function it_parses_the_readme_example_with_different_platform_eols()
+    #[Test]
+    public function it_parses_the_readme_example_with_different_platform_eols(): void
     {
         $definition = $this->fixture('drafts/readme-example.yaml');
 
@@ -282,10 +266,8 @@ class BlueprintTest extends TestCase
         $this->assertEquals($expected, $this->subject->parse($definition_windows_eol));
     }
 
-    /**
-     * @test
-     */
-    public function it_parses_yaml_with_dashed_syntax()
+    #[Test]
+    public function it_parses_yaml_with_dashed_syntax(): void
     {
         $definition = $this->fixture('drafts/readme-example-dashes.yaml');
 
@@ -314,10 +296,8 @@ class BlueprintTest extends TestCase
         $this->assertEquals($expected, $this->subject->parse($definition));
     }
 
-    /**
-     * @test
-     */
-    public function it_allows_parsing_without_stripping_dashes()
+    #[Test]
+    public function it_allows_parsing_without_stripping_dashes(): void
     {
         $sequence = [
             'numbers' => range(3, 11),
@@ -326,10 +306,8 @@ class BlueprintTest extends TestCase
         $this->assertEquals($sequence, $this->subject->parse($this->subject->dump($sequence), false));
     }
 
-    /**
-     * @test
-     */
-    public function it_throws_a_custom_error_when_parsing_fails()
+    #[Test]
+    public function it_throws_a_custom_error_when_parsing_fails(): void
     {
         $this->expectException(ParseException::class);
 
@@ -338,10 +316,8 @@ class BlueprintTest extends TestCase
         $this->subject->parse($blueprint);
     }
 
-    /**
-     * @test
-     */
-    public function analyze_return_default_tree_for_empty_tokens()
+    #[Test]
+    public function analyze_return_default_tree_for_empty_tokens(): void
     {
         $tokens = [];
 
@@ -354,10 +330,8 @@ class BlueprintTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
-    public function analyze_uses_register_lexers_to_analyze_tokens()
+    #[Test]
+    public function analyze_uses_register_lexers_to_analyze_tokens(): void
     {
         $lexer = \Mockery::mock(Lexer::class);
         $tokens = ['tokens' => ['are', 'here']];
@@ -374,10 +348,8 @@ class BlueprintTest extends TestCase
         ], $this->subject->analyze($tokens)->toArray());
     }
 
-    /**
-     * @test
-     */
-    public function generate_uses_registered_generators_and_returns_generated_files()
+    #[Test]
+    public function generate_uses_registered_generators_and_returns_generated_files(): void
     {
         $generatorOne = \Mockery::mock(Generator::class);
         $tree = new Tree(['branch' => ['code', 'attributes']]);
@@ -421,10 +393,8 @@ class BlueprintTest extends TestCase
         ], $this->subject->generate($tree));
     }
 
-    /**
-     * @test
-     */
-    public function generate_uses_swapped_generator_and_returns_generated_files()
+    #[Test]
+    public function generate_uses_swapped_generator_and_returns_generated_files(): void
     {
         $generatorOne = \Mockery::mock(Generator::class);
         $tree = new Tree(['branch' => ['code', 'attributes']]);
@@ -456,10 +426,8 @@ class BlueprintTest extends TestCase
         ], $this->subject->generate($tree));
     }
 
-    /**
-     * @test
-     */
-    public function generate_only_one_specific_type()
+    #[Test]
+    public function generate_only_one_specific_type(): void
     {
         $generatorFoo = \Mockery::mock(Generator::class);
         $tree = new Tree(['branch' => ['code', 'attributes']]);
@@ -507,10 +475,8 @@ class BlueprintTest extends TestCase
         ], $actual);
     }
 
-    /**
-     * @test
-     */
-    public function generate_only_specific_types()
+    #[Test]
+    public function generate_only_specific_types(): void
     {
         $generatorFoo = \Mockery::mock(Generator::class);
         $tree = new Tree(['branch' => ['code', 'attributes']]);
@@ -558,10 +524,8 @@ class BlueprintTest extends TestCase
         ], $actual);
     }
 
-    /**
-     * @test
-     */
-    public function generate_should_skip_one_specific_type()
+    #[Test]
+    public function generate_should_skip_one_specific_type(): void
     {
         $generatorFoo = \Mockery::mock(Generator::class);
         $tree = new Tree(['branch' => ['code', 'attributes']]);
@@ -609,10 +573,8 @@ class BlueprintTest extends TestCase
         ], $actual);
     }
 
-    /**
-     * @test
-     */
-    public function generate_should_skip_specific_types()
+    #[Test]
+    public function generate_should_skip_specific_types(): void
     {
         $generatorFoo = \Mockery::mock(Generator::class);
         $tree = new Tree(['branch' => ['code', 'attributes']]);
@@ -660,19 +622,16 @@ class BlueprintTest extends TestCase
         ], $actual);
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider namespacesDataProvider
-     */
-    public function relative_namespace_removes_namespace_prefix_from_reference($namespace, $expected, $reference)
+    #[Test]
+    #[DataProvider('namespacesDataProvider')]
+    public function relative_namespace_removes_namespace_prefix_from_reference($namespace, $expected, $reference): void
     {
         config(['blueprint.namespace' => $namespace]);
 
         $this->assertEquals($expected, Blueprint::relativeNamespace($reference));
     }
 
-    public function namespacesDataProvider()
+    public static function namespacesDataProvider(): array
     {
         return [
             ['App', 'Models\User', 'App\Models\User'],

@@ -6,12 +6,14 @@ use Blueprint\Blueprint;
 use Blueprint\Generators\TestGenerator;
 use Blueprint\Lexers\StatementLexer;
 use Blueprint\Tree;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
  * @see TestGenerator
  */
-class TestGeneratorTest extends TestCase
+final class TestGeneratorTest extends TestCase
 {
     private $blueprint;
 
@@ -30,10 +32,8 @@ class TestGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /**
-     * @test
-     */
-    public function output_writes_nothing_for_empty_tree()
+    #[Test]
+    public function output_writes_nothing_for_empty_tree(): void
     {
         $this->filesystem->expects('stub')
             ->with('test.class.stub')
@@ -44,12 +44,9 @@ class TestGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider controllerTreeDataProvider
-     */
-    public function output_generates_test_for_controller_tree_l8($definition, $path, $test)
+    #[Test]
+    #[DataProvider('controllerTreeDataProvider')]
+    public function output_generates_test_for_controller_tree_l8($definition, $path, $test): void
     {
         $this->filesystem->expects('stub')
             ->with('test.class.stub')
@@ -80,10 +77,8 @@ class TestGeneratorTest extends TestCase
         $this->assertEquals(['created' => array_keys($paths)], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function output_works_for_pascal_case_definition_l8()
+    #[Test]
+    public function output_works_for_pascal_case_definition_l8(): void
     {
         $this->filesystem->expects('stub')
             ->with('test.class.stub')
@@ -116,10 +111,8 @@ class TestGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$certificateControllerTest, $certificateTypeControllerTest]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function output_generates_test_for_controller_tree_using_cached_model_l8()
+    #[Test]
+    public function output_generates_test_for_controller_tree_using_cached_model_l8(): void
     {
         $this->filesystem->expects('stub')
             ->with('test.class.stub')
@@ -151,10 +144,8 @@ class TestGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['tests/Feature/Http/Controllers/UserControllerTest.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function output_generates_tests_with_models_with_custom_namespace_correctly_l8()
+    #[Test]
+    public function output_generates_tests_with_models_with_custom_namespace_correctly_l8(): void
     {
         $definition = 'drafts/models-with-custom-namespace.yaml';
         $path = 'tests/Feature/Http/Controllers/CategoryControllerTest.php';
@@ -187,7 +178,7 @@ class TestGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
-    public function controllerTreeDataProvider()
+    public static function controllerTreeDataProvider(): array
     {
         return [
             ['drafts/readme-example.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/readme-example.php'],

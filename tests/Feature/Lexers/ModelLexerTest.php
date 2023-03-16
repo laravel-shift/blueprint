@@ -3,9 +3,11 @@
 namespace Tests\Feature\Lexers;
 
 use Blueprint\Lexers\ModelLexer;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-class ModelLexerTest extends TestCase
+final class ModelLexerTest extends TestCase
 {
     /**
      * @var ModelLexer
@@ -19,10 +21,8 @@ class ModelLexerTest extends TestCase
         $this->subject = new ModelLexer();
     }
 
-    /**
-     * @test
-     */
-    public function it_returns_nothing_without_models_token()
+    #[Test]
+    public function it_returns_nothing_without_models_token(): void
     {
         $this->assertEquals([
             'models' => [],
@@ -30,10 +30,8 @@ class ModelLexerTest extends TestCase
         ], $this->subject->analyze([]));
     }
 
-    /**
-     * @test
-     */
-    public function it_returns_models()
+    #[Test]
+    public function it_returns_models(): void
     {
         $tokens = [
             'models' => [
@@ -96,10 +94,8 @@ class ModelLexerTest extends TestCase
         $this->assertEquals([], $columns['id']->modifiers());
     }
 
-    /**
-     * @test
-     */
-    public function it_defaults_the_id_column()
+    #[Test]
+    public function it_defaults_the_id_column(): void
     {
         $tokens = [
             'models' => [
@@ -131,10 +127,8 @@ class ModelLexerTest extends TestCase
         $this->assertEquals(['nullable'], $columns['title']->modifiers());
     }
 
-    /**
-     * @test
-     */
-    public function it_disables_the_id_column()
+    #[Test]
+    public function it_disables_the_id_column(): void
     {
         $tokens = [
             'models' => [
@@ -156,10 +150,8 @@ class ModelLexerTest extends TestCase
         $this->assertFalse($model->usesPrimaryKey());
     }
 
-    /**
-     * @test
-     */
-    public function it_disables_timestamps()
+    #[Test]
+    public function it_disables_timestamps(): void
     {
         $tokens = [
             'models' => [
@@ -180,10 +172,8 @@ class ModelLexerTest extends TestCase
         $this->assertFalse($model->usesSoftDeletes());
     }
 
-    /**
-     * @test
-     */
-    public function it_defaults_to_string_datatype()
+    #[Test]
+    public function it_defaults_to_string_datatype(): void
     {
         $tokens = [
             'models' => [
@@ -215,10 +205,8 @@ class ModelLexerTest extends TestCase
         $this->assertEquals(['nullable'], $columns['title']->modifiers());
     }
 
-    /**
-     * @test
-     */
-    public function it_accepts_lowercase_keywords()
+    #[Test]
+    public function it_accepts_lowercase_keywords(): void
     {
         $tokens = [
             'models' => [
@@ -267,12 +255,9 @@ class ModelLexerTest extends TestCase
         $this->assertEquals(['useCurrent', 'useCurrentOnUpdate'], $columns['updated_at']->modifiers());
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider dataTypeAttributesDataProvider
-     */
-    public function it_handles_data_type_attributes($definition, $data_type, $attributes)
+    #[Test]
+    #[DataProvider('dataTypeAttributesDataProvider')]
+    public function it_handles_data_type_attributes($definition, $data_type, $attributes): void
     {
         $tokens = [
             'models' => [
@@ -303,12 +288,9 @@ class ModelLexerTest extends TestCase
         $this->assertEquals([], $columns['column']->modifiers());
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider modifierAttributesProvider
-     */
-    public function it_handles_modifier_attributes($definition, $modifier, $attributes)
+    #[Test]
+    #[DataProvider('modifierAttributesProvider')]
+    public function it_handles_modifier_attributes($definition, $modifier, $attributes): void
     {
         $tokens = [
             'models' => [
@@ -339,10 +321,8 @@ class ModelLexerTest extends TestCase
         $this->assertEquals([[$modifier => $attributes], 'nullable'], $columns['column']->modifiers());
     }
 
-    /**
-     * @test
-     */
-    public function it_handles_attributes_and_modifiers_with_attributes()
+    #[Test]
+    public function it_handles_attributes_and_modifiers_with_attributes(): void
     {
         $tokens = [
             'models' => [
@@ -360,10 +340,8 @@ class ModelLexerTest extends TestCase
         $this->assertEquals(['100'], $actual->attributes());
     }
 
-    /**
-     * @test
-     */
-    public function it_enables_soft_deletes()
+    #[Test]
+    public function it_enables_soft_deletes(): void
     {
         $tokens = [
             'models' => [
@@ -390,10 +368,8 @@ class ModelLexerTest extends TestCase
         $this->assertEquals([], $columns['id']->modifiers());
     }
 
-    /**
-     * @test
-     */
-    public function it_converts_foreign_shorthand_to_id()
+    #[Test]
+    public function it_converts_foreign_shorthand_to_id(): void
     {
         $tokens = [
             'models' => [
@@ -427,10 +403,8 @@ class ModelLexerTest extends TestCase
         $this->assertEquals([['foreign' => 'user']], $columns['author_id']->modifiers());
     }
 
-    /**
-     * @test
-     */
-    public function it_sets_belongs_to_with_foreign_attributes()
+    #[Test]
+    public function it_sets_belongs_to_with_foreign_attributes(): void
     {
         $tokens = [
             'models' => [
@@ -497,10 +471,8 @@ class ModelLexerTest extends TestCase
         ], $relationships['belongsTo']);
     }
 
-    /**
-     * @test
-     */
-    public function it_returns_traced_models()
+    #[Test]
+    public function it_returns_traced_models(): void
     {
         $tokens = [
             'models' => [
@@ -572,10 +544,8 @@ class ModelLexerTest extends TestCase
         $this->assertEquals(['nullable'], $columns['name']->modifiers());
     }
 
-    /**
-     * @test
-     */
-    public function it_stores_relationships()
+    #[Test]
+    public function it_stores_relationships(): void
     {
         $tokens = [
             'models' => [
@@ -615,10 +585,8 @@ class ModelLexerTest extends TestCase
         $this->assertEquals(['Duration', 'Transaction:tid'], $relationships['hasOne']);
     }
 
-    /**
-     * @test
-     */
-    public function it_enables_morphable_and_set_its_reference()
+    #[Test]
+    public function it_enables_morphable_and_set_its_reference(): void
     {
         $tokens = [
             'models' => [
@@ -651,10 +619,8 @@ class ModelLexerTest extends TestCase
         $this->assertEquals(['Morphable'], $relationships['morphTo']);
     }
 
-    /**
-     * @test
-     */
-    public function it_sets_meta_data()
+    #[Test]
+    public function it_sets_meta_data(): void
     {
         $tokens = [
             'models' => [
@@ -687,7 +653,7 @@ class ModelLexerTest extends TestCase
         $this->assertCount(0, $model->relationships());
     }
 
-    public function dataTypeAttributesDataProvider()
+    public static function dataTypeAttributesDataProvider(): array
     {
         return [
             ['unsignedDecimal:10,2', 'unsignedDecimal', [10, 2]],
@@ -702,7 +668,7 @@ class ModelLexerTest extends TestCase
         ];
     }
 
-    public function modifierAttributesProvider()
+    public static function modifierAttributesProvider(): array
     {
         return [
             ['default:5', 'default', 5],

@@ -2,24 +2,22 @@
 
 namespace Tests\Unit;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-/**
- * @covers \Blueprint\EnumType
- */
-class EnumTypeTest extends TestCase
+#[CoversClass(\Blueprint\EnumType::class)]
+final class EnumTypeTest extends TestCase
 {
-    /**
-     * @test
-     *
-     * @dataProvider enumOptionsDataProvider
-     */
-    public function it_returns_options_for_enum($definition, $expected)
+    #[Test]
+    #[DataProvider('enumOptionsDataProvider')]
+    public function it_returns_options_for_enum($definition, $expected): void
     {
         $this->assertEquals($expected, \Blueprint\EnumType::extractOptions($definition));
     }
 
-    public function enumOptionsDataProvider()
+    public static function enumOptionsDataProvider(): array
     {
         return [
             ["enum('1','2','3')", [1, 2, 3]],

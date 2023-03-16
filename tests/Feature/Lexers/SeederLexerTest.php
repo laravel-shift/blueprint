@@ -3,12 +3,13 @@
 namespace Tests\Feature\Lexers;
 
 use Blueprint\Lexers\SeederLexer;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @see SeederLexer
  */
-class SeederLexerTest extends TestCase
+final class SeederLexerTest extends TestCase
 {
     /**
      * @var SeederLexer
@@ -22,20 +23,16 @@ class SeederLexerTest extends TestCase
         $this->subject = new SeederLexer();
     }
 
-    /**
-     * @test
-     */
-    public function it_returns_nothing_without_seeders_token()
+    #[Test]
+    public function it_returns_nothing_without_seeders_token(): void
     {
         $this->assertEquals([
             'seeders' => [],
         ], $this->subject->analyze([]));
     }
 
-    /**
-     * @test
-     */
-    public function it_returns_seeders()
+    #[Test]
+    public function it_returns_seeders(): void
     {
         $tokens = [
             'seeders' => 'Post',
@@ -49,10 +46,8 @@ class SeederLexerTest extends TestCase
         $this->assertSame(['Post'], $actual['seeders']);
     }
 
-    /**
-     * @test
-     */
-    public function it_returns_multiple_seeders()
+    #[Test]
+    public function it_returns_multiple_seeders(): void
     {
         $tokens = [
             'seeders' => 'Post, Comment',

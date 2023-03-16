@@ -5,12 +5,14 @@ namespace Tests\Feature\Generators;
 use Blueprint\Blueprint;
 use Blueprint\Generators\FactoryGenerator;
 use Blueprint\Tree;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
  * @see FactoryGenerator
  */
-class FactoryGeneratorTest extends TestCase
+final class FactoryGeneratorTest extends TestCase
 {
     private $blueprint;
 
@@ -31,10 +33,8 @@ class FactoryGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /**
-     * @test
-     */
-    public function output_writes_nothing_for_empty_tree()
+    #[Test]
+    public function output_writes_nothing_for_empty_tree(): void
     {
         $this->filesystem->expects('stub')
             ->with($this->factoryStub)
@@ -45,12 +45,9 @@ class FactoryGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output(new Tree(['models' => []])));
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider modelTreeDataProvider
-     */
-    public function output_writes_factory_for_model_tree($definition, $path, $factory)
+    #[Test]
+    #[DataProvider('modelTreeDataProvider')]
+    public function output_writes_factory_for_model_tree($definition, $path, $factory): void
     {
         $this->filesystem->expects('stub')
             ->with($this->factoryStub)
@@ -69,10 +66,8 @@ class FactoryGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function output_ignores_nullables_if_fake_nullables_configuration_is_set_to_false()
+    #[Test]
+    public function output_ignores_nullables_if_fake_nullables_configuration_is_set_to_false(): void
     {
         $this->app['config']->set('blueprint.fake_nullables', false);
 
@@ -93,10 +88,8 @@ class FactoryGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['database/factories/PostFactory.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function output_generates_references_for_nested_models()
+    #[Test]
+    public function output_generates_references_for_nested_models(): void
     {
         $this->filesystem->expects('stub')
             ->with($this->factoryStub)
@@ -128,10 +121,8 @@ class FactoryGeneratorTest extends TestCase
         ], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function output_respects_configuration()
+    #[Test]
+    public function output_respects_configuration(): void
     {
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
         $this->app['config']->set('blueprint.models_namespace', 'Models');
@@ -153,10 +144,8 @@ class FactoryGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['database/factories/PostFactory.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function output_creates_directory_for_nested_components()
+    #[Test]
+    public function output_creates_directory_for_nested_components(): void
     {
         $this->filesystem->expects('stub')
             ->with($this->factoryStub)
@@ -177,7 +166,7 @@ class FactoryGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['database/factories/Admin/UserFactory.php']], $this->subject->output($tree));
     }
 
-    public function modelTreeDataProvider()
+    public static function modelTreeDataProvider(): array
     {
         return [
             ['drafts/phone.yaml', 'database/factories/PhoneFactory.php', 'factories/phone.php'],

@@ -3,19 +3,17 @@
 namespace Tests\Feature\Commands;
 
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-/**
- * @covers \Blueprint\Commands\InitCommand
- */
-class InitCommandTest extends TestCase
+#[CoversClass(\Blueprint\Commands\InitCommand::class)]
+final class InitCommandTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
-    /**
-     * @test
-     */
-    public function it_creates_a_draft_file_from_stub_if_none_exists()
+    #[Test]
+    public function it_creates_a_draft_file_from_stub_if_none_exists(): void
     {
         $this->filesystem->shouldReceive('exists')
             ->with('draft.yaml')
@@ -32,10 +30,8 @@ class InitCommandTest extends TestCase
             ->assertExitCode(0);
     }
 
-    /**
-     * @test
-     */
-    public function it_does_not_create_a_draft_file_if_one_exists_already()
+    #[Test]
+    public function it_does_not_create_a_draft_file_if_one_exists_already(): void
     {
         $this->filesystem->shouldReceive('exists')
             ->with('draft.yaml')

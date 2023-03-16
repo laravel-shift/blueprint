@@ -6,12 +6,13 @@ use Blueprint\Blueprint;
 use Blueprint\Generators\Statements\FormRequestGenerator;
 use Blueprint\Lexers\StatementLexer;
 use Blueprint\Tree;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
  * @see FormRequestGenerator
  */
-class FormRequestGeneratorTest extends TestCase
+final class FormRequestGeneratorTest extends TestCase
 {
     private $blueprint;
 
@@ -32,10 +33,8 @@ class FormRequestGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /**
-     * @test
-     */
-    public function output_writes_nothing_for_empty_tree()
+    #[Test]
+    public function output_writes_nothing_for_empty_tree(): void
     {
         $this->filesystem->expects('stub')
             ->with('request.stub')
@@ -46,10 +45,8 @@ class FormRequestGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
 
-    /**
-     * @test
-     */
-    public function output_writes_nothing_without_validate_statements()
+    #[Test]
+    public function output_writes_nothing_without_validate_statements(): void
     {
         $this->filesystem->expects('stub')
             ->with('request.stub')
@@ -63,10 +60,8 @@ class FormRequestGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function output_writes_form_requests()
+    #[Test]
+    public function output_writes_form_requests(): void
     {
         $this->filesystem->expects('stub')
             ->with('request.stub')
@@ -102,10 +97,8 @@ class FormRequestGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Http/Requests/PostIndexRequest.php', 'app/Http/Requests/PostStoreRequest.php', 'app/Http/Requests/OtherStoreRequest.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function output_writes_form_requests_with_support_for_model_reference_in_validate_statement()
+    #[Test]
+    public function output_writes_form_requests_with_support_for_model_reference_in_validate_statement(): void
     {
         $this->filesystem->expects('stub')
             ->with('request.stub')
@@ -139,10 +132,8 @@ class FormRequestGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Http/Requests/CertificateStoreRequest.php', 'app/Http/Requests/CertificateUpdateRequest.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function it_only_outputs_new_form_requests()
+    #[Test]
+    public function it_only_outputs_new_form_requests(): void
     {
         $this->filesystem->expects('stub')
             ->with('request.stub')
@@ -164,10 +155,8 @@ class FormRequestGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function output_supports_nested_form_requests()
+    #[Test]
+    public function output_supports_nested_form_requests(): void
     {
         $this->filesystem->expects('stub')
             ->with('request.stub')
@@ -190,10 +179,8 @@ class FormRequestGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Http/Requests/Admin/UserStoreRequest.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function it_respects_configuration()
+    #[Test]
+    public function it_respects_configuration(): void
     {
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
         $this->app['config']->set('blueprint.app_path', 'src/path');
@@ -219,10 +206,8 @@ class FormRequestGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['src/path/Http/Requests/PostStoreRequest.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function output_generates_test_for_controller_tree_using_cached_model()
+    #[Test]
+    public function output_generates_test_for_controller_tree_using_cached_model(): void
     {
         $this->filesystem->expects('stub')
             ->with('request.stub')

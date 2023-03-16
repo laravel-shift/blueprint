@@ -6,12 +6,14 @@ use Blueprint\Blueprint;
 use Blueprint\Generators\ControllerGenerator;
 use Blueprint\Lexers\StatementLexer;
 use Blueprint\Tree;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
  * @see ControllerGenerator
  */
-class ControllerGeneratorTest extends TestCase
+final class ControllerGeneratorTest extends TestCase
 {
     private $blueprint;
 
@@ -30,10 +32,8 @@ class ControllerGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /**
-     * @test
-     */
-    public function output_writes_nothing_for_empty_tree()
+    #[Test]
+    public function output_writes_nothing_for_empty_tree(): void
     {
         $this->filesystem->expects('stub')
             ->with('controller.class.stub')
@@ -44,12 +44,9 @@ class ControllerGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider controllerTreeDataProvider
-     */
-    public function output_generates_controllers_for_tree($definition, $path, $controller)
+    #[Test]
+    #[DataProvider('controllerTreeDataProvider')]
+    public function output_generates_controllers_for_tree($definition, $path, $controller): void
     {
         $this->filesystem->expects('stub')
             ->with('controller.class.stub')
@@ -69,10 +66,8 @@ class ControllerGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function output_generates_controllers_with_models_using_custom_namespace()
+    #[Test]
+    public function output_generates_controllers_with_models_using_custom_namespace(): void
     {
         $definition = 'drafts/custom-models-namespace.yaml';
         $path = 'app/Http/Controllers/TagController.php';
@@ -99,10 +94,8 @@ class ControllerGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function output_works_for_pascal_case_definition()
+    #[Test]
+    public function output_works_for_pascal_case_definition(): void
     {
         $this->filesystem->expects('stub')
             ->with('controller.class.stub')
@@ -132,10 +125,8 @@ class ControllerGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$certificateController, $certificateTypeController]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function output_respects_configuration()
+    #[Test]
+    public function output_respects_configuration(): void
     {
         $this->app['config']->set('blueprint.app_path', 'src/path');
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
@@ -162,7 +153,7 @@ class ControllerGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['src/path/Other/Http/UserController.php']], $this->subject->output($tree));
     }
 
-    public function controllerTreeDataProvider()
+    public static function controllerTreeDataProvider(): array
     {
         return [
             ['drafts/readme-example.yaml', 'app/Http/Controllers/PostController.php', 'controllers/readme-example.php'],

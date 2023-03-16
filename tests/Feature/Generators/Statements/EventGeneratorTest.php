@@ -6,12 +6,13 @@ use Blueprint\Blueprint;
 use Blueprint\Generators\Statements\EventGenerator;
 use Blueprint\Lexers\StatementLexer;
 use Blueprint\Tree;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
  * @see EventGenerator
  */
-class EventGeneratorTest extends TestCase
+final class EventGeneratorTest extends TestCase
 {
     private $blueprint;
 
@@ -31,10 +32,8 @@ class EventGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /**
-     * @test
-     */
-    public function output_writes_nothing_for_empty_tree()
+    #[Test]
+    public function output_writes_nothing_for_empty_tree(): void
     {
         $this->filesystem->expects('stub')
             ->with('event.stub')
@@ -45,10 +44,8 @@ class EventGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
 
-    /**
-     * @test
-     */
-    public function output_writes_nothing_tree_without_validate_statements()
+    #[Test]
+    public function output_writes_nothing_tree_without_validate_statements(): void
     {
         $this->filesystem->expects('stub')
             ->with('event.stub')
@@ -62,10 +59,8 @@ class EventGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function output_writes_events()
+    #[Test]
+    public function output_writes_events(): void
     {
         $this->filesystem->expects('stub')
             ->with('event.stub')
@@ -97,10 +92,8 @@ class EventGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Events/UserCreated.php', 'app/Events/UserDeleted.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function it_only_outputs_new_events()
+    #[Test]
+    public function it_only_outputs_new_events(): void
     {
         $this->filesystem->expects('stub')
             ->with('event.stub')
@@ -119,10 +112,8 @@ class EventGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function it_respects_configuration()
+    #[Test]
+    public function it_respects_configuration(): void
     {
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
         $this->app['config']->set('blueprint.app_path', 'src/path');

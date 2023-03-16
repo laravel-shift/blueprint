@@ -6,12 +6,13 @@ use Blueprint\Blueprint;
 use Blueprint\Generators\Statements\ViewGenerator;
 use Blueprint\Lexers\StatementLexer;
 use Blueprint\Tree;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
  * @see ViewGenerator
  */
-class ViewGeneratorTest extends TestCase
+final class ViewGeneratorTest extends TestCase
 {
     private $blueprint;
 
@@ -31,10 +32,8 @@ class ViewGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /**
-     * @test
-     */
-    public function output_writes_nothing_for_empty_tree()
+    #[Test]
+    public function output_writes_nothing_for_empty_tree(): void
     {
         $this->filesystem->expects('stub')
             ->with('view.stub')
@@ -45,10 +44,8 @@ class ViewGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
     }
 
-    /**
-     * @test
-     */
-    public function output_writes_nothing_without_render_statements()
+    #[Test]
+    public function output_writes_nothing_without_render_statements(): void
     {
         $this->filesystem->expects('stub')
             ->with('view.stub')
@@ -62,10 +59,8 @@ class ViewGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function output_writes_views_for_render_statements()
+    #[Test]
+    public function output_writes_views_for_render_statements(): void
     {
         $this->filesystem->expects('stub')
             ->with('view.stub')
@@ -104,10 +99,8 @@ class ViewGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['resources/views/user/index.blade.php', 'resources/views/user/create.blade.php', 'resources/views/post/show.blade.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
-    public function it_outputs_skipped_views()
+    #[Test]
+    public function it_outputs_skipped_views(): void
     {
         $this->filesystem->expects('stub')
             ->with('view.stub')
