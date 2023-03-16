@@ -6,7 +6,7 @@ use Blueprint\BlueprintServiceProvider;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\File;
 
-class TestCase extends \Orchestra\Testbench\TestCase
+final class TestCase extends \Orchestra\Testbench\TestCase
 {
     /** @var Filesystem */
     protected $filesystem;

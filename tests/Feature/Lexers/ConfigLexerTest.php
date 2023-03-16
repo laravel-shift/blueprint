@@ -15,7 +15,7 @@ use Tests\TestCase;
 /**
  * @see ConfigLexer
  */
-class ConfigLexerTest extends TestCase
+final class ConfigLexerTest extends TestCase
 {
     private $blueprint;
 

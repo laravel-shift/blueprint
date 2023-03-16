@@ -12,7 +12,7 @@ use Tests\TestCase;
 /**
  * @see ViewGenerator
  */
-class ViewGeneratorTest extends TestCase
+final class ViewGeneratorTest extends TestCase
 {
     private $blueprint;
 

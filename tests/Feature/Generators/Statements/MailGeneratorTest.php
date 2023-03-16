@@ -12,7 +12,7 @@ use Tests\TestCase;
 /**
  * @see MailGenerator
  */
-class MailGeneratorTest extends TestCase
+final class MailGeneratorTest extends TestCase
 {
     private $blueprint;
 

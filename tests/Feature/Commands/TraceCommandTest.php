@@ -12,7 +12,7 @@ use Symfony\Component\Yaml\Yaml;
 use Tests\TestCase;
 
 #[CoversClass(\Blueprint\Commands\TraceCommand::class)]
-class TraceCommandTest extends TestCase
+final class TraceCommandTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 

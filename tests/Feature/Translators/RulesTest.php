@@ -11,7 +11,7 @@ use Tests\TestCase;
 /**
  * @see Rules
  */
-class RulesTest extends TestCase
+final class RulesTest extends TestCase
 {
     #[Test]
     public function forColumn_returns_required_rule_by_default(): void

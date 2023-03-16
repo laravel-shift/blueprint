@@ -13,7 +13,7 @@ use Tests\TestCase;
 /**
  * @see ControllerGenerator
  */
-class ControllerGeneratorTest extends TestCase
+final class ControllerGeneratorTest extends TestCase
 {
     private $blueprint;
 

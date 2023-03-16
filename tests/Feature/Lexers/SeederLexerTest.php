@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @see SeederLexer
  */
-class SeederLexerTest extends TestCase
+final class SeederLexerTest extends TestCase
 {
     /**
      * @var SeederLexer
