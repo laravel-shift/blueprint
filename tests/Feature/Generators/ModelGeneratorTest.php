@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Generators;
 
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Blueprint;
 use Blueprint\Generators\ModelGenerator;
 use Blueprint\Tree;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 final class ModelGeneratorTest extends TestCase

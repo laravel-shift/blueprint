@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\Generators;
 
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Blueprint;
 use Blueprint\Generators\RouteGenerator;
 use Blueprint\Lexers\StatementLexer;
 use Blueprint\Tree;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**

@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\Models;
 
-use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Models\Column;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 final class ColumnTest extends TestCase

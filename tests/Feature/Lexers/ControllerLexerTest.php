@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Lexers;
 
-use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Lexers\ControllerLexer;
 use Blueprint\Lexers\StatementLexer;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 final class ControllerLexerTest extends TestCase

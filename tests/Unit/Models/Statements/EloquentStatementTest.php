@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\Models\Statements;
 
-use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Models\Statements\EloquentStatement;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 /**

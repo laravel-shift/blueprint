@@ -2,10 +2,10 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Blueprint;
 use Blueprint\Builder;
 use Blueprint\Tree;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 final class BuilderTest extends TestCase

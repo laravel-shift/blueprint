@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Lexers;
 
-use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Blueprint;
 use Blueprint\Generators\ControllerGenerator;
 use Blueprint\Generators\ModelGenerator;
@@ -10,6 +9,7 @@ use Blueprint\Lexers\ConfigLexer;
 use Blueprint\Lexers\ControllerLexer;
 use Blueprint\Lexers\ModelLexer;
 use Blueprint\Lexers\StatementLexer;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**

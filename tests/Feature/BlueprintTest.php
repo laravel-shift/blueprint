@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Blueprint;
 use Blueprint\Contracts\Generator;
 use Blueprint\Contracts\Lexer;
 use Blueprint\Tree;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Tests\TestCase;
 
