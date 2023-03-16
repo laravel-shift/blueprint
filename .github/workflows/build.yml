@@ -82,4 +82,4 @@ jobs:
         run: composer require laravel/framework --no-update
 
       - name: Run tests
-        run: vendor/bin/phpunit --verbose
+        run: vendor/bin/phpunit

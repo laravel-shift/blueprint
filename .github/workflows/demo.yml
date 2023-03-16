@@ -105,7 +105,7 @@ jobs:
         with:
           timeout_minutes: 5
           max_attempts: 5
-          command: cd /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example; pwd; vendor/bin/phpunit --verbose
+          command: cd /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example; pwd; vendor/bin/phpunit
 
       - name: Run artisan test
         uses: nick-invision/retry@v1
