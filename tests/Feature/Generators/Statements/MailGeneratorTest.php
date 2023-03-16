@@ -33,7 +33,7 @@ class MailGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_nothing_for_empty_tree()
+    public function output_writes_nothing_for_empty_tree(): void
     {
         $this->filesystem->expects('stub')
             ->with('mail.stub')
@@ -48,7 +48,7 @@ class MailGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_nothing_tree_without_validate_statements()
+    public function output_writes_nothing_tree_without_validate_statements(): void
     {
         $this->filesystem->expects('stub')
             ->with('mail.stub')
@@ -66,7 +66,7 @@ class MailGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_mails()
+    public function output_writes_mails(): void
     {
         $this->filesystem->expects('stub')
             ->with('mail.stub')
@@ -125,7 +125,7 @@ class MailGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_only_outputs_new_mails()
+    public function it_only_outputs_new_mails(): void
     {
         $this->filesystem->expects('stub')
             ->with('mail.stub')
@@ -147,7 +147,7 @@ class MailGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_respects_configuration()
+    public function it_respects_configuration(): void
     {
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
         $this->app['config']->set('blueprint.app_path', 'src/path');
@@ -191,7 +191,7 @@ class MailGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_mails_but_not_existing_templates()
+    public function output_writes_mails_but_not_existing_templates(): void
     {
         $this->filesystem->expects('stub')
             ->with('mail.stub')
@@ -236,7 +236,7 @@ class MailGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_mail_with_custom_template()
+    public function output_writes_mail_with_custom_template(): void
     {
         $this->filesystem->expects('stub')
             ->with('mail.stub')

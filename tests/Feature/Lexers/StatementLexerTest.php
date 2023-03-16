@@ -36,13 +36,13 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_nothing_without_statements_token()
+    public function it_returns_nothing_without_statements_token(): void
     {
         $this->assertEquals([], $this->subject->analyze([]));
     }
 
     #[Test]
-    public function it_returns_a_render_statement()
+    public function it_returns_a_render_statement(): void
     {
         $tokens = [
             'render' => 'post.index',
@@ -58,7 +58,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_render_statement_with_data()
+    public function it_returns_a_render_statement_with_data(): void
     {
         $tokens = [
             'render' => 'post.index with:foo,bar,baz',
@@ -74,7 +74,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_an_event_statement()
+    public function it_returns_an_event_statement(): void
     {
         $tokens = [
             'fire' => 'SomeEvent',
@@ -90,7 +90,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_an_event_statement_with_data()
+    public function it_returns_an_event_statement_with_data(): void
     {
         $tokens = [
             'fire' => 'some.event with:foo, bar,  baz',
@@ -106,7 +106,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_dispatch_statement()
+    public function it_returns_a_dispatch_statement(): void
     {
         $tokens = [
             'dispatch' => 'ProcessPodcast',
@@ -122,7 +122,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_dispatch_statement_with_data()
+    public function it_returns_a_dispatch_statement_with_data(): void
     {
         $tokens = [
             'dispatch' => 'ProcessPodcast with:foo, bar,        baz',
@@ -138,7 +138,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_send_statement()
+    public function it_returns_a_send_statement(): void
     {
         $tokens = [
             'send' => 'ReviewPost',
@@ -157,7 +157,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_send_statement_to_only()
+    public function it_returns_a_send_statement_to_only(): void
     {
         $tokens = [
             'send' => 'ReviewPost to:post.author',
@@ -176,7 +176,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_send_statement_with_only()
+    public function it_returns_a_send_statement_with_only(): void
     {
         $tokens = [
             'send' => 'ReviewPost with:foo, bar, baz',
@@ -195,7 +195,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_send_statement_to_and_with()
+    public function it_returns_a_send_statement_to_and_with(): void
     {
         $tokens = [
             'send' => 'ReviewPost to:post.author with:foo, bar, baz',
@@ -214,7 +214,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_send_statement_to_with_and_view()
+    public function it_returns_a_send_statement_to_with_and_view(): void
     {
         $tokens = [
             'send' => 'ReviewPost to:post.author with:foo, bar, baz view:email.review-post',
@@ -233,7 +233,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_send_statement_type_notification_facade()
+    public function it_returns_a_send_statement_type_notification_facade(): void
     {
         $tokens = [
             'send' => 'ReviewNotification',
@@ -251,7 +251,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_send_statement_to_only_type_notification_facade()
+    public function it_returns_a_send_statement_to_only_type_notification_facade(): void
     {
         $tokens = [
             'send' => 'ReviewNotification to:post.author',
@@ -269,7 +269,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_send_statement_with_only_type_notification_facade()
+    public function it_returns_a_send_statement_with_only_type_notification_facade(): void
     {
         $tokens = [
             'send' => 'ReviewNotification with:foo, bar, baz',
@@ -287,7 +287,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_send_statement_to_and_with_type_notification_facade()
+    public function it_returns_a_send_statement_to_and_with_type_notification_facade(): void
     {
         $tokens = [
             'send' => 'ReviewNotification to:post.author with:foo, bar, baz',
@@ -305,7 +305,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_send_statement_with_type_notification_model()
+    public function it_returns_a_send_statement_with_type_notification_model(): void
     {
         $tokens = [
             'notify' => 'user ReviewNotification',
@@ -323,7 +323,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_send_statement_to_only_type_notification_model()
+    public function it_returns_a_send_statement_to_only_type_notification_model(): void
     {
         $tokens = [
             'notify' => 'post.author ReviewNotification',
@@ -341,7 +341,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_send_statement_with_only_type_notification_model()
+    public function it_returns_a_send_statement_with_only_type_notification_model(): void
     {
         $tokens = [
             'notify' => 'user ReviewNotification with:foo, bar, baz',
@@ -359,7 +359,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_send_statement_to_and_with_type_notification_model()
+    public function it_returns_a_send_statement_to_and_with_type_notification_model(): void
     {
         $tokens = [
             'notify' => 'post.author ReviewNotification with:foo, bar, baz',
@@ -377,7 +377,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_validate_statement()
+    public function it_returns_a_validate_statement(): void
     {
         $tokens = [
             'validate' => 'title, author_id, content',
@@ -393,7 +393,7 @@ class StatementLexerTest extends TestCase
 
     #[Test]
     #[DataProvider('eloquentTokensProvider')]
-    public function it_returns_an_eloquent_statement($operation, $reference)
+    public function it_returns_an_eloquent_statement($operation, $reference): void
     {
         $tokens = [
             $operation => $reference,
@@ -409,7 +409,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_an_update_eloquent_statement_with_columns()
+    public function it_returns_an_update_eloquent_statement_with_columns(): void
     {
         $tokens = [
             'update' => 'name, title, age',
@@ -427,7 +427,7 @@ class StatementLexerTest extends TestCase
 
     #[Test]
     #[DataProvider('sessionTokensProvider')]
-    public function it_returns_a_session_statement($operation, $reference)
+    public function it_returns_a_session_statement($operation, $reference): void
     {
         $tokens = [
             $operation => $reference,
@@ -443,7 +443,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_redirect_statement()
+    public function it_returns_a_redirect_statement(): void
     {
         $tokens = [
             'redirect' => 'route.index',
@@ -459,7 +459,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_redirect_statement_with_data()
+    public function it_returns_a_redirect_statement_with_data(): void
     {
         $tokens = [
             'redirect' => 'route.show with:foo, bar,        baz',
@@ -475,7 +475,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_response_statement_with_status_code()
+    public function it_returns_a_response_statement_with_status_code(): void
     {
         $tokens = [
             'respond' => '204',
@@ -491,7 +491,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_response_statement_with_content()
+    public function it_returns_a_response_statement_with_content(): void
     {
         $tokens = [
             'respond' => 'post',
@@ -507,7 +507,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_query_all_statement()
+    public function it_returns_a_query_all_statement(): void
     {
         $tokens = [
             'query' => 'all:posts',
@@ -524,7 +524,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_query_all_statement_without_clause()
+    public function it_returns_a_query_all_statement_without_clause(): void
     {
         $tokens = [
             'query' => 'all',
@@ -541,7 +541,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_query_get_statement()
+    public function it_returns_a_query_get_statement(): void
     {
         $tokens = [
             'query' => 'where:post.title order:post.created_at',
@@ -558,7 +558,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_query_pluck_statement()
+    public function it_returns_a_query_pluck_statement(): void
     {
         $tokens = [
             'query' => 'order:post.created_at pluck:id',
@@ -575,7 +575,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_query_count_statement()
+    public function it_returns_a_query_count_statement(): void
     {
         $tokens = [
             'query' => 'where:title count',
@@ -592,7 +592,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_query_exists_statement()
+    public function it_returns_a_query_exists_statement(): void
     {
         $tokens = [
             'query' => 'where:title exists',
@@ -609,7 +609,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_resource_statement()
+    public function it_returns_a_resource_statement(): void
     {
         $tokens = [
             'resource' => 'user',
@@ -627,7 +627,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_resource_collection_statement()
+    public function it_returns_a_resource_collection_statement(): void
     {
         $tokens = [
             'resource' => 'collection:users',
@@ -645,7 +645,7 @@ class StatementLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_resource_collection_statement_with_pagination()
+    public function it_returns_a_resource_collection_statement_with_pagination(): void
     {
         $tokens = [
             'resource' => 'paginate:users',
@@ -662,7 +662,7 @@ class StatementLexerTest extends TestCase
         $this->assertTrue($actual[0]->paginate());
     }
 
-    public static function sessionTokensProvider()
+    public static function sessionTokensProvider(): array
     {
         return [
             ['flash', 'post.title'],
@@ -670,7 +670,7 @@ class StatementLexerTest extends TestCase
         ];
     }
 
-    public static function eloquentTokensProvider()
+    public static function eloquentTokensProvider(): array
     {
         return [
             ['save', 'post'],

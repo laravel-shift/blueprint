@@ -33,7 +33,7 @@ class ViewGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_nothing_for_empty_tree()
+    public function output_writes_nothing_for_empty_tree(): void
     {
         $this->filesystem->expects('stub')
             ->with('view.stub')
@@ -45,7 +45,7 @@ class ViewGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_nothing_without_render_statements()
+    public function output_writes_nothing_without_render_statements(): void
     {
         $this->filesystem->expects('stub')
             ->with('view.stub')
@@ -60,7 +60,7 @@ class ViewGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_views_for_render_statements()
+    public function output_writes_views_for_render_statements(): void
     {
         $this->filesystem->expects('stub')
             ->with('view.stub')
@@ -100,7 +100,7 @@ class ViewGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_outputs_skipped_views()
+    public function it_outputs_skipped_views(): void
     {
         $this->filesystem->expects('stub')
             ->with('view.stub')

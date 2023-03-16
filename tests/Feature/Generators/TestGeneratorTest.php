@@ -33,7 +33,7 @@ class TestGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_nothing_for_empty_tree()
+    public function output_writes_nothing_for_empty_tree(): void
     {
         $this->filesystem->expects('stub')
             ->with('test.class.stub')
@@ -46,7 +46,7 @@ class TestGeneratorTest extends TestCase
 
     #[Test]
     #[DataProvider('controllerTreeDataProvider')]
-    public function output_generates_test_for_controller_tree_l8($definition, $path, $test)
+    public function output_generates_test_for_controller_tree_l8($definition, $path, $test): void
     {
         $this->filesystem->expects('stub')
             ->with('test.class.stub')
@@ -78,7 +78,7 @@ class TestGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_works_for_pascal_case_definition_l8()
+    public function output_works_for_pascal_case_definition_l8(): void
     {
         $this->filesystem->expects('stub')
             ->with('test.class.stub')
@@ -112,7 +112,7 @@ class TestGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_test_for_controller_tree_using_cached_model_l8()
+    public function output_generates_test_for_controller_tree_using_cached_model_l8(): void
     {
         $this->filesystem->expects('stub')
             ->with('test.class.stub')
@@ -145,7 +145,7 @@ class TestGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_tests_with_models_with_custom_namespace_correctly_l8()
+    public function output_generates_tests_with_models_with_custom_namespace_correctly_l8(): void
     {
         $definition = 'drafts/models-with-custom-namespace.yaml';
         $path = 'tests/Feature/Http/Controllers/CategoryControllerTest.php';
@@ -178,7 +178,7 @@ class TestGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
-    public static function controllerTreeDataProvider()
+    public static function controllerTreeDataProvider(): array
     {
         return [
             ['drafts/readme-example.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/readme-example.php'],

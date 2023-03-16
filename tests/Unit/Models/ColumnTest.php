@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 class ColumnTest extends TestCase
 {
     #[Test]
-    public function it_knows_if_its_nullable()
+    public function it_knows_if_its_nullable(): void
     {
         $this->assertTrue((new Column('foo', 'string', ['nullable']))->isNullable());
 

@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 class QueryStatementTest extends TestCase
 {
     #[Test]
-    public function output_generates_code_for_all()
+    public function output_generates_code_for_all(): void
     {
         $subject = new QueryStatement('all', ['posts']);
 
@@ -20,7 +20,7 @@ class QueryStatementTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_code_for_all_without_reference()
+    public function output_generates_code_for_all_without_reference(): void
     {
         $subject = new QueryStatement('all');
 
@@ -28,7 +28,7 @@ class QueryStatementTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_code_for_get_while_condensing_qualified_columns()
+    public function output_generates_code_for_get_while_condensing_qualified_columns(): void
     {
         $subject = new QueryStatement('get', ['order:post.published_at']);
 
@@ -36,7 +36,7 @@ class QueryStatementTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_code_for_pluck_while_condensing_qualified_columns()
+    public function output_generates_code_for_pluck_while_condensing_qualified_columns(): void
     {
         $subject = new QueryStatement('pluck', ['where:post.title', 'pluck:id']);
 
@@ -44,7 +44,7 @@ class QueryStatementTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_code_for_count_while_preserving_qualified_columns()
+    public function output_generates_code_for_count_while_preserving_qualified_columns(): void
     {
         $subject = new QueryStatement('count', ['where:post.title']);
 

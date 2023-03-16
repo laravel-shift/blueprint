@@ -34,7 +34,7 @@ class RouteGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_nothing_for_empty_tree()
+    public function output_generates_nothing_for_empty_tree(): void
     {
         $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
 
@@ -43,7 +43,7 @@ class RouteGeneratorTest extends TestCase
 
     #[Test]
     #[DataProvider('controllerTreeDataProvider')]
-    public function output_generates_web_routes($definition, $routes)
+    public function output_generates_web_routes($definition, $routes): void
     {
         $path = 'routes/web.php';
         $this->filesystem->expects('append')
@@ -56,7 +56,7 @@ class RouteGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_api_routes()
+    public function output_generates_api_routes(): void
     {
         $this->filesystem->expects('append')
             ->with('routes/api.php', $this->fixture('routes/api-routes.php'));
@@ -68,7 +68,7 @@ class RouteGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_routes_with_plural_slug()
+    public function output_generates_routes_with_plural_slug(): void
     {
         $this->app['config']->set('blueprint.plural_routes', true);
 
@@ -82,7 +82,7 @@ class RouteGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_api_routes_with_plural_slug()
+    public function output_generates_api_routes_with_plural_slug(): void
     {
         $this->app['config']->set('blueprint.plural_routes', true);
 
@@ -96,7 +96,7 @@ class RouteGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_routes_for_mixed_resources()
+    public function output_generates_routes_for_mixed_resources(): void
     {
         $this->filesystem->expects('append')
             ->with('routes/api.php', $this->fixture('routes/multiple-resource-controllers-api.php'));
@@ -109,7 +109,7 @@ class RouteGeneratorTest extends TestCase
         $this->assertEquals(['updated' => ['routes/api.php', 'routes/web.php']], $this->subject->output($tree));
     }
 
-    public static function controllerTreeDataProvider()
+    public static function controllerTreeDataProvider(): array
     {
         return [
             ['drafts/readme-example.yaml', 'routes/readme-example.php'],

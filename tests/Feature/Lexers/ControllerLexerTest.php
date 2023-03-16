@@ -29,13 +29,13 @@ class ControllerLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_nothing_without_controllers_token()
+    public function it_returns_nothing_without_controllers_token(): void
     {
         $this->assertEquals(['controllers' => []], $this->subject->analyze([]));
     }
 
     #[Test]
-    public function it_returns_controllers()
+    public function it_returns_controllers(): void
     {
         $tokens = [
             'controllers' => [
@@ -103,7 +103,7 @@ class ControllerLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_web_resource_controller()
+    public function it_returns_a_web_resource_controller(): void
     {
         $tokens = [
             'controllers' => [
@@ -190,7 +190,7 @@ class ControllerLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_an_api_resource_controller()
+    public function it_returns_an_api_resource_controller(): void
     {
         $tokens = [
             'controllers' => [
@@ -248,7 +248,7 @@ class ControllerLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_specific_resource_controller()
+    public function it_returns_a_specific_resource_controller(): void
     {
         $tokens = [
             'controllers' => [
@@ -308,7 +308,7 @@ class ControllerLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_resource_controller_with_overrides()
+    public function it_returns_a_resource_controller_with_overrides(): void
     {
         $tokens = [
             'controllers' => [
@@ -362,7 +362,7 @@ class ControllerLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_resource_controllers_with_api_flag_set()
+    public function it_returns_a_resource_controllers_with_api_flag_set(): void
     {
         $tokens = [
             'controllers' => [
@@ -409,7 +409,7 @@ class ControllerLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_an_invokable_controller()
+    public function it_returns_an_invokable_controller(): void
     {
         $tokens = [
             'controllers' => [

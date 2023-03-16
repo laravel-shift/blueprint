@@ -37,7 +37,7 @@ class SeederGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_nothing_for_empty_tree()
+    public function output_generates_nothing_for_empty_tree(): void
     {
         $this->filesystem->shouldNotHaveReceived('put');
 
@@ -45,7 +45,7 @@ class SeederGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_seeders()
+    public function output_generates_seeders(): void
     {
         $this->filesystem->expects('stub')
             ->with($this->seederStub)
@@ -63,7 +63,7 @@ class SeederGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_seeders_from_traced_models()
+    public function output_generates_seeders_from_traced_models(): void
     {
         $this->filesystem->expects('stub')
             ->with($this->seederStub)

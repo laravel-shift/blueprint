@@ -33,7 +33,7 @@ class ControllerGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_nothing_for_empty_tree()
+    public function output_writes_nothing_for_empty_tree(): void
     {
         $this->filesystem->expects('stub')
             ->with('controller.class.stub')
@@ -46,7 +46,7 @@ class ControllerGeneratorTest extends TestCase
 
     #[Test]
     #[DataProvider('controllerTreeDataProvider')]
-    public function output_generates_controllers_for_tree($definition, $path, $controller)
+    public function output_generates_controllers_for_tree($definition, $path, $controller): void
     {
         $this->filesystem->expects('stub')
             ->with('controller.class.stub')
@@ -67,7 +67,7 @@ class ControllerGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_controllers_with_models_using_custom_namespace()
+    public function output_generates_controllers_with_models_using_custom_namespace(): void
     {
         $definition = 'drafts/custom-models-namespace.yaml';
         $path = 'app/Http/Controllers/TagController.php';
@@ -95,7 +95,7 @@ class ControllerGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_works_for_pascal_case_definition()
+    public function output_works_for_pascal_case_definition(): void
     {
         $this->filesystem->expects('stub')
             ->with('controller.class.stub')
@@ -126,7 +126,7 @@ class ControllerGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_respects_configuration()
+    public function output_respects_configuration(): void
     {
         $this->app['config']->set('blueprint.app_path', 'src/path');
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
@@ -153,7 +153,7 @@ class ControllerGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['src/path/Other/Http/UserController.php']], $this->subject->output($tree));
     }
 
-    public static function controllerTreeDataProvider()
+    public static function controllerTreeDataProvider(): array
     {
         return [
             ['drafts/readme-example.yaml', 'app/Http/Controllers/PostController.php', 'controllers/readme-example.php'],

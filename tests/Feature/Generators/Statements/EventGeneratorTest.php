@@ -33,7 +33,7 @@ class EventGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_nothing_for_empty_tree()
+    public function output_writes_nothing_for_empty_tree(): void
     {
         $this->filesystem->expects('stub')
             ->with('event.stub')
@@ -45,7 +45,7 @@ class EventGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_nothing_tree_without_validate_statements()
+    public function output_writes_nothing_tree_without_validate_statements(): void
     {
         $this->filesystem->expects('stub')
             ->with('event.stub')
@@ -60,7 +60,7 @@ class EventGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_events()
+    public function output_writes_events(): void
     {
         $this->filesystem->expects('stub')
             ->with('event.stub')
@@ -93,7 +93,7 @@ class EventGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_only_outputs_new_events()
+    public function it_only_outputs_new_events(): void
     {
         $this->filesystem->expects('stub')
             ->with('event.stub')
@@ -113,7 +113,7 @@ class EventGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_respects_configuration()
+    public function it_respects_configuration(): void
     {
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
         $this->app['config']->set('blueprint.app_path', 'src/path');
