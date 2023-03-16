@@ -109,7 +109,7 @@ class RouteGeneratorTest extends TestCase
         $this->assertEquals(['updated' => ['routes/api.php', 'routes/web.php']], $this->subject->output($tree));
     }
 
-    public function controllerTreeDataProvider()
+    public static function controllerTreeDataProvider()
     {
         return [
             ['drafts/readme-example.yaml', 'routes/readme-example.php'],

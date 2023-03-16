@@ -653,7 +653,7 @@ class ModelLexerTest extends TestCase
         $this->assertCount(0, $model->relationships());
     }
 
-    public function dataTypeAttributesDataProvider()
+    public static function dataTypeAttributesDataProvider()
     {
         return [
             ['unsignedDecimal:10,2', 'unsignedDecimal', [10, 2]],
@@ -668,7 +668,7 @@ class ModelLexerTest extends TestCase
         ];
     }
 
-    public function modifierAttributesProvider()
+    public static function modifierAttributesProvider()
     {
         return [
             ['default:5', 'default', 5],

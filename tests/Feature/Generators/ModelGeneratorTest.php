@@ -595,7 +595,7 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Models/User.php', 'app/Models/Team.php', 'app/Models/Membership.php']], $this->subject->output($tree));
     }
 
-    public function modelTreeDataProvider()
+    public static function modelTreeDataProvider()
     {
         return [
             ['drafts/readme-example.yaml', 'app/Models/Post.php', 'models/readme-example.php'],
@@ -612,7 +612,7 @@ class ModelGeneratorTest extends TestCase
         ];
     }
 
-    public function docBlockModelsDataProvider()
+    public static function docBlockModelsDataProvider()
     {
         return [
             ['drafts/readme-example.yaml', 'app/Models/Post.php', 'models/readme-example-phpdoc.php'],

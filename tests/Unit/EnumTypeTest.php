@@ -17,7 +17,7 @@ class EnumTypeTest extends TestCase
         $this->assertEquals($expected, \Blueprint\EnumType::extractOptions($definition));
     }
 
-    public function enumOptionsDataProvider()
+    public static function enumOptionsDataProvider()
     {
         return [
             ["enum('1','2','3')", [1, 2, 3]],

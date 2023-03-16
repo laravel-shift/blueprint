@@ -166,7 +166,7 @@ class FactoryGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['database/factories/Admin/UserFactory.php']], $this->subject->output($tree));
     }
 
-    public function modelTreeDataProvider()
+    public static function modelTreeDataProvider()
     {
         return [
             ['drafts/phone.yaml', 'database/factories/PhoneFactory.php', 'factories/phone.php'],
