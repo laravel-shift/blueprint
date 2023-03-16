@@ -15,7 +15,7 @@ class BuildCommandTest extends TestCase
     use MockeryPHPUnitIntegration;
 
     #[Test]
-    public function it_uses_the_default_draft_file()
+    public function it_uses_the_default_draft_file(): void
     {
         $this->filesystem->shouldReceive('exists')
             ->with('draft.yaml')
@@ -32,7 +32,7 @@ class BuildCommandTest extends TestCase
     }
 
     #[Test]
-    public function it_passes_the_command_args_to_the_builder_in_right_order()
+    public function it_passes_the_command_args_to_the_builder_in_right_order(): void
     {
         $this->filesystem->shouldReceive('exists')
             ->with('test.yml')
@@ -49,7 +49,7 @@ class BuildCommandTest extends TestCase
     }
 
     #[Test]
-    public function it_fails_if_the_draft_file_not_exists()
+    public function it_fails_if_the_draft_file_not_exists(): void
     {
         $this->filesystem->shouldReceive('exists')
             ->with('test.yml')
@@ -64,7 +64,7 @@ class BuildCommandTest extends TestCase
     }
 
     #[Test]
-    public function it_shows_the_generated_files_grouped_by_actions()
+    public function it_shows_the_generated_files_grouped_by_actions(): void
     {
         $this->filesystem->shouldReceive('exists')
             ->with('draft.yaml')

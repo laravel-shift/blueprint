@@ -15,7 +15,7 @@ class EraseCommandTest extends TestCase
     use MockeryPHPUnitIntegration;
 
     #[Test]
-    public function it_parses_and_update_the_trace_file()
+    public function it_parses_and_update_the_trace_file(): void
     {
         $this->filesystem->expects('get')
             ->with('.blueprint')
@@ -33,7 +33,7 @@ class EraseCommandTest extends TestCase
     }
 
     #[Test]
-    public function it_deletes_the_created_files()
+    public function it_deletes_the_created_files(): void
     {
         $this->filesystem->expects('get')
             ->with('.blueprint')
@@ -55,7 +55,7 @@ class EraseCommandTest extends TestCase
     }
 
     #[Test]
-    public function it_notify_about_the_updated_files()
+    public function it_notify_about_the_updated_files(): void
     {
         $this->filesystem->expects('get')
             ->with('.blueprint')
@@ -72,7 +72,7 @@ class EraseCommandTest extends TestCase
     }
 
     #[Test]
-    public function it_calls_the_trace_command()
+    public function it_calls_the_trace_command(): void
     {
         $this->filesystem->expects('get')->with('.blueprint')->andReturn('other: test.php');
         $this->filesystem->expects('put')->with('.blueprint', "other: test.php\n");

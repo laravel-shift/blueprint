@@ -34,7 +34,7 @@ class MigrationGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_nothing_for_empty_tree()
+    public function output_writes_nothing_for_empty_tree(): void
     {
         $this->filesystem->expects('stub')
             ->with('migration.stub')
@@ -46,7 +46,7 @@ class MigrationGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_migration_for_foreign_shorthand()
+    public function output_writes_migration_for_foreign_shorthand(): void
     {
         $this->filesystem->expects('stub')
             ->with('migration.stub')
@@ -69,7 +69,7 @@ class MigrationGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_uses_past_timestamp_for_multiple_migrations()
+    public function output_uses_past_timestamp_for_multiple_migrations(): void
     {
         $this->filesystem->expects('stub')
             ->with('migration.stub')
@@ -95,7 +95,7 @@ class MigrationGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_proper_pascal_case_model_names()
+    public function output_proper_pascal_case_model_names(): void
     {
         $this->filesystem->expects('stub')
             ->with('migration.stub')
@@ -124,7 +124,7 @@ class MigrationGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_creates_constraints_for_unconventional_foreign_reference_migration()
+    public function output_creates_constraints_for_unconventional_foreign_reference_migration(): void
     {
         $this->app->config->set('blueprint.use_constraints', true);
 
@@ -149,7 +149,7 @@ class MigrationGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_also_creates_pivot_table_migration()
+    public function output_also_creates_pivot_table_migration(): void
     {
         $this->filesystem->expects('stub')
             ->with('migration.stub')
@@ -175,7 +175,7 @@ class MigrationGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_also_updates_pivot_table_migration()
+    public function output_also_updates_pivot_table_migration(): void
     {
         $this->filesystem->expects('stub')
             ->with('migration.stub')
@@ -209,7 +209,7 @@ class MigrationGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_also_creates_constraints_for_pivot_table_migration()
+    public function output_also_creates_constraints_for_pivot_table_migration(): void
     {
         $this->app->config->set('blueprint.use_constraints', true);
 
@@ -238,7 +238,7 @@ class MigrationGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_does_not_duplicate_pivot_table_migration()
+    public function output_does_not_duplicate_pivot_table_migration(): void
     {
         $this->filesystem->expects('stub')
             ->with('migration.stub')
@@ -267,7 +267,7 @@ class MigrationGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_also_creates_pivot_table_migration_with_custom_name()
+    public function output_also_creates_pivot_table_migration_with_custom_name(): void
     {
         $this->filesystem->expects('stub')
             ->with('migration.stub')
@@ -293,7 +293,7 @@ class MigrationGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_creates_pivot_table_migration_correctly_when_model_name_contains_path_prefix()
+    public function output_creates_pivot_table_migration_correctly_when_model_name_contains_path_prefix(): void
     {
         $this->filesystem->expects('stub')
             ->with('migration.stub')
@@ -319,7 +319,7 @@ class MigrationGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_also_creates_many_to_many_polymorphic_intermediate_table_migration()
+    public function output_also_creates_many_to_many_polymorphic_intermediate_table_migration(): void
     {
         $this->filesystem->expects('stub')
             ->with('migration.stub')
@@ -345,7 +345,7 @@ class MigrationGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_creates_foreign_keys_with_nullable_chained_correctly()
+    public function output_creates_foreign_keys_with_nullable_chained_correctly(): void
     {
         $this->app->config->set('blueprint.use_constraints', true);
         $this->app->config->set('blueprint.on_delete', 'null');
@@ -372,7 +372,7 @@ class MigrationGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_creates_nullable_foreign_key_without_column_type_beeing_id()
+    public function output_creates_nullable_foreign_key_without_column_type_beeing_id(): void
     {
         $this->filesystem->expects('stub')
             ->with('migration.stub')
@@ -397,7 +397,7 @@ class MigrationGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_creates_foreign_keys_with_on_delete()
+    public function output_creates_foreign_keys_with_on_delete(): void
     {
         $this->filesystem->expects('stub')
             ->with('migration.stub')
@@ -421,7 +421,7 @@ class MigrationGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_works_with_polymorphic_relationships()
+    public function output_works_with_polymorphic_relationships(): void
     {
         $this->filesystem->expects('stub')
             ->with('migration.stub')
@@ -450,7 +450,7 @@ class MigrationGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_works_with_multiple_morphto_statements_in_polymorphic_relationship()
+    public function output_works_with_multiple_morphto_statements_in_polymorphic_relationship(): void
     {
         $this->filesystem->expects('stub')
             ->with('migration.stub')
@@ -473,7 +473,7 @@ class MigrationGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_does_not_generate_relationship_for_uuid()
+    public function output_does_not_generate_relationship_for_uuid(): void
     {
         $this->app->config->set('blueprint.use_constraints', true);
 
@@ -500,7 +500,7 @@ class MigrationGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_constraint_for_uuid()
+    public function output_generates_constraint_for_uuid(): void
     {
         $this->app->config->set('blueprint.use_constraints', true);
 
@@ -527,7 +527,7 @@ class MigrationGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_softdelete_column_last()
+    public function output_softdelete_column_last(): void
     {
         $this->app->config->set('blueprint.use_constraints', true);
 
@@ -553,7 +553,7 @@ class MigrationGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_custom_pivot_tables()
+    public function output_generates_custom_pivot_tables(): void
     {
         $this->filesystem->expects('stub')
             ->with('migration.stub')

@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 class EloquentStatementTest extends TestCase
 {
     #[Test]
-    public function output_generates_code_for_find()
+    public function output_generates_code_for_find(): void
     {
         $subject = new EloquentStatement('find', 'user.id');
 
@@ -20,7 +20,7 @@ class EloquentStatementTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_code_for_find_without_reference()
+    public function output_generates_code_for_find_without_reference(): void
     {
         $subject = new EloquentStatement('find', 'id');
 
@@ -28,7 +28,7 @@ class EloquentStatementTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_code_for_save()
+    public function output_generates_code_for_save(): void
     {
         $subject = new EloquentStatement('save', 'post');
 
@@ -36,7 +36,7 @@ class EloquentStatementTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_code_for_save_using_create()
+    public function output_generates_code_for_save_using_create(): void
     {
         $subject = new EloquentStatement('save', 'Post');
 
@@ -44,7 +44,7 @@ class EloquentStatementTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_code_for_save_using_create_when_validation_is_used()
+    public function output_generates_code_for_save_using_create_when_validation_is_used(): void
     {
         $subject = new EloquentStatement('save', 'Post');
 
@@ -52,7 +52,7 @@ class EloquentStatementTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_code_for_update_using_model()
+    public function output_generates_code_for_update_using_model(): void
     {
         $subject = new EloquentStatement('update', 'post');
 
@@ -60,7 +60,7 @@ class EloquentStatementTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_code_for_update_using_column_list()
+    public function output_generates_code_for_update_using_column_list(): void
     {
         $subject = new EloquentStatement('update', null, ['name', 'title', 'age']);
 
@@ -68,7 +68,7 @@ class EloquentStatementTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_code_for_delete()
+    public function output_generates_code_for_delete(): void
     {
         $subject = new EloquentStatement('delete', 'post');
 
@@ -76,7 +76,7 @@ class EloquentStatementTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_code_for_delete_uses_delete_without_reference()
+    public function output_generates_code_for_delete_uses_delete_without_reference(): void
     {
         $subject = new EloquentStatement('delete', '');
 
@@ -84,7 +84,7 @@ class EloquentStatementTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_code_for_delete_using_destroy()
+    public function output_generates_code_for_delete_using_destroy(): void
     {
         $subject = new EloquentStatement('delete', 'comment.id');
 

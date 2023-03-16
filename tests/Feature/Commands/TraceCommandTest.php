@@ -17,7 +17,7 @@ class TraceCommandTest extends TestCase
     use MockeryPHPUnitIntegration;
 
     #[Test]
-    public function it_shows_error_if_no_model_found()
+    public function it_shows_error_if_no_model_found(): void
     {
         $tracer = $this->mock(Tracer::class);
 
@@ -31,7 +31,7 @@ class TraceCommandTest extends TestCase
     }
 
     #[Test]
-    public function it_shows_the_number_of_traced_models()
+    public function it_shows_the_number_of_traced_models(): void
     {
         $tracer = $this->mock(Tracer::class);
 
@@ -48,7 +48,7 @@ class TraceCommandTest extends TestCase
     }
 
     #[Test]
-    public function relative_class_name_removes_models_namespace()
+    public function relative_class_name_removes_models_namespace(): void
     {
         $this->requireFixture('models/comment.php');
         $this->requireFixture('models/comment-global-namespace.php');
@@ -87,7 +87,7 @@ class TraceCommandTest extends TestCase
     }
 
     #[Test]
-    public function it_traces_models_with_differente_namespaces()
+    public function it_traces_models_with_differente_namespaces(): void
     {
         $this->requireFixture('models/comment.php');
         $this->requireFixture('models/custom-models-namespace.php');

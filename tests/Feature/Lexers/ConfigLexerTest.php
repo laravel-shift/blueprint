@@ -84,7 +84,7 @@ class ConfigLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_uses_controller_namespace_config_from_yaml_override()
+    public function it_uses_controller_namespace_config_from_yaml_override(): void
     {
         $this->filesystem->expects('stub')
             ->with('controller.class.stub')

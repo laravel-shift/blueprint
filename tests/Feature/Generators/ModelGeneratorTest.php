@@ -30,7 +30,7 @@ class ModelGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_nothing_for_empty_tree()
+    public function output_generates_nothing_for_empty_tree(): void
     {
         $this->filesystem->expects('stub')
             ->with('model.class.stub')
@@ -43,7 +43,7 @@ class ModelGeneratorTest extends TestCase
 
     #[Test]
     #[DataProvider('modelTreeDataProvider')]
-    public function output_generates_models($definition, $path, $model)
+    public function output_generates_models($definition, $path, $model): void
     {
         $this->filesystem->expects('stub')
             ->with('model.class.stub')
@@ -86,7 +86,7 @@ class ModelGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_works_for_pascal_case_definition()
+    public function output_works_for_pascal_case_definition(): void
     {
         $this->filesystem->expects('stub')
             ->with('model.class.stub')
@@ -126,7 +126,7 @@ class ModelGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_relationships()
+    public function output_generates_relationships(): void
     {
         $this->filesystem->expects('stub')
             ->with('model.class.stub')
@@ -154,7 +154,7 @@ class ModelGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_relationships_added_with_full_model_namespace()
+    public function output_generates_relationships_added_with_full_model_namespace(): void
     {
         $this->files->expects('stub')
             ->with('model.class.stub')
@@ -183,7 +183,7 @@ class ModelGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_morphone_morphmany_relation_string_when_using_fqn()
+    public function output_generates_morphone_morphmany_relation_string_when_using_fqn(): void
     {
         $this->files->expects('stub')
             ->with('model.class.stub')
@@ -212,7 +212,7 @@ class ModelGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_polymorphic_relationships()
+    public function output_generates_polymorphic_relationships(): void
     {
         $this->filesystem->expects('stub')
             ->with('model.class.stub')
@@ -255,7 +255,7 @@ class ModelGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_morphtomany_relationship_with_intermediate_models()
+    public function output_generates_morphtomany_relationship_with_intermediate_models(): void
     {
         $this->filesystem->expects('stub')
             ->with('model.class.stub')
@@ -299,7 +299,7 @@ class ModelGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_disabled_auto_columns()
+    public function output_generates_disabled_auto_columns(): void
     {
         $this->filesystem->expects('stub')
             ->with('model.class.stub')
@@ -330,7 +330,7 @@ class ModelGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_respects_configuration()
+    public function output_respects_configuration(): void
     {
         $this->app['config']->set('blueprint.app_path', 'src/path');
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
@@ -368,7 +368,7 @@ class ModelGeneratorTest extends TestCase
 
     #[Test]
     #[DataProvider('docBlockModelsDataProvider')]
-    public function output_generates_phpdoc_for_model($definition, $path, $model)
+    public function output_generates_phpdoc_for_model($definition, $path, $model): void
     {
         $this->app['config']->set('blueprint.generate_phpdocs', true);
 
@@ -408,7 +408,7 @@ class ModelGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_models_with_guarded_property_when_config_option_is_set()
+    public function output_generates_models_with_guarded_property_when_config_option_is_set(): void
     {
         $this->app['config']->set('blueprint.use_guarded', true);
 
@@ -442,7 +442,7 @@ class ModelGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_models_with_namespaces_correctly()
+    public function output_generates_models_with_namespaces_correctly(): void
     {
         $this->app['config']->set('blueprint.models_namespace', 'Models');
 
@@ -488,7 +488,7 @@ class ModelGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_models_with_custom_namespace_correctly()
+    public function output_generates_models_with_custom_namespace_correctly(): void
     {
         $this->app['config']->set('blueprint.models_namespace', 'MyCustom');
 
@@ -522,7 +522,7 @@ class ModelGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_models_with_custom_pivot_table_name()
+    public function output_generates_models_with_custom_pivot_table_name(): void
     {
         $this->filesystem->expects('stub')
             ->with('model.class.stub')
@@ -553,7 +553,7 @@ class ModelGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_models_with_custom_pivot()
+    public function output_generates_models_with_custom_pivot(): void
     {
         $this->filesystem->expects('stub')
             ->with('model.class.stub')
@@ -595,7 +595,7 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Models/User.php', 'app/Models/Team.php', 'app/Models/Membership.php']], $this->subject->output($tree));
     }
 
-    public static function modelTreeDataProvider()
+    public static function modelTreeDataProvider(): array
     {
         return [
             ['drafts/readme-example.yaml', 'app/Models/Post.php', 'models/readme-example.php'],
@@ -612,7 +612,7 @@ class ModelGeneratorTest extends TestCase
         ];
     }
 
-    public static function docBlockModelsDataProvider()
+    public static function docBlockModelsDataProvider(): array
     {
         return [
             ['drafts/readme-example.yaml', 'app/Models/Post.php', 'models/readme-example-phpdoc.php'],

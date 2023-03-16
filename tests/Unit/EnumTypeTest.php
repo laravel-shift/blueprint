@@ -12,12 +12,12 @@ class EnumTypeTest extends TestCase
 {
     #[Test]
     #[DataProvider('enumOptionsDataProvider')]
-    public function it_returns_options_for_enum($definition, $expected)
+    public function it_returns_options_for_enum($definition, $expected): void
     {
         $this->assertEquals($expected, \Blueprint\EnumType::extractOptions($definition));
     }
 
-    public static function enumOptionsDataProvider()
+    public static function enumOptionsDataProvider(): array
     {
         return [
             ["enum('1','2','3')", [1, 2, 3]],

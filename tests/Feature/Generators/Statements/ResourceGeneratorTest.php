@@ -34,7 +34,7 @@ class ResourceGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_nothing_for_empty_tree()
+    public function output_writes_nothing_for_empty_tree(): void
     {
         $this->filesystem->expects('stub')
             ->with('resource.stub')
@@ -46,7 +46,7 @@ class ResourceGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_nothing_without_resource_statements()
+    public function output_writes_nothing_without_resource_statements(): void
     {
         $this->filesystem->expects('stub')
             ->with('resource.stub')
@@ -61,7 +61,7 @@ class ResourceGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_resources_for_render_statements()
+    public function output_writes_resources_for_render_statements(): void
     {
         $template = $this->stub('resource.stub');
         $this->filesystem->expects('stub')
@@ -96,7 +96,7 @@ class ResourceGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_namespaced_classes()
+    public function output_writes_namespaced_classes(): void
     {
         $this->filesystem->expects('stub')
             ->with('resource.stub')
@@ -130,7 +130,7 @@ class ResourceGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_nested_resource()
+    public function output_writes_nested_resource(): void
     {
         $this->filesystem->expects('stub')
             ->with('resource.stub')
@@ -164,7 +164,7 @@ class ResourceGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_api_resource_pagination()
+    public function output_api_resource_pagination(): void
     {
         $this->files->expects('stub')
             ->with('resource.stub')

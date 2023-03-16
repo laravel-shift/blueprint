@@ -24,7 +24,7 @@ class SeederLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_nothing_without_seeders_token()
+    public function it_returns_nothing_without_seeders_token(): void
     {
         $this->assertEquals([
             'seeders' => [],
@@ -32,7 +32,7 @@ class SeederLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_seeders()
+    public function it_returns_seeders(): void
     {
         $tokens = [
             'seeders' => 'Post',
@@ -47,7 +47,7 @@ class SeederLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_multiple_seeders()
+    public function it_returns_multiple_seeders(): void
     {
         $tokens = [
             'seeders' => 'Post, Comment',

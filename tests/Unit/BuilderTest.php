@@ -11,7 +11,7 @@ use Tests\TestCase;
 class BuilderTest extends TestCase
 {
     #[Test]
-    public function execute_builds_draft_content()
+    public function execute_builds_draft_content(): void
     {
         $draft = 'draft blueprint content';
         $tokens = ['some', 'blueprint', 'tokens'];
@@ -49,7 +49,7 @@ class BuilderTest extends TestCase
     }
 
     #[Test]
-    public function execute_uses_cache_and_remembers_models()
+    public function execute_uses_cache_and_remembers_models(): void
     {
         $cache = [
             'models' => [4, 5, 6],
@@ -104,7 +104,7 @@ class BuilderTest extends TestCase
     }
 
     #[Test]
-    public function execute_calls_builder_without_stripping_dashes_for_draft_file_with_indexes_defined()
+    public function execute_calls_builder_without_stripping_dashes_for_draft_file_with_indexes_defined(): void
     {
         $draft = 'models:';
         $draft .= PHP_EOL . '  Post:';

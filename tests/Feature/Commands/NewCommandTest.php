@@ -13,7 +13,7 @@ class NewCommandTest extends TestCase
     use MockeryPHPUnitIntegration;
 
     #[Test]
-    public function it_creates_a_draft_file_from_stub_if_none_exists()
+    public function it_creates_a_draft_file_from_stub_if_none_exists(): void
     {
         $this->filesystem->shouldReceive('exists')
             ->with('draft.yaml')
@@ -31,7 +31,7 @@ class NewCommandTest extends TestCase
     }
 
     #[Test]
-    public function it_does_not_create_a_draft_file_if_one_exists_already()
+    public function it_does_not_create_a_draft_file_if_one_exists_already(): void
     {
         $this->filesystem->shouldReceive('exists')
             ->with('draft.yaml')

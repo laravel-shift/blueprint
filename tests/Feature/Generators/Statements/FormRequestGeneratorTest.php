@@ -34,7 +34,7 @@ class FormRequestGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_nothing_for_empty_tree()
+    public function output_writes_nothing_for_empty_tree(): void
     {
         $this->filesystem->expects('stub')
             ->with('request.stub')
@@ -46,7 +46,7 @@ class FormRequestGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_nothing_without_validate_statements()
+    public function output_writes_nothing_without_validate_statements(): void
     {
         $this->filesystem->expects('stub')
             ->with('request.stub')
@@ -61,7 +61,7 @@ class FormRequestGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_form_requests()
+    public function output_writes_form_requests(): void
     {
         $this->filesystem->expects('stub')
             ->with('request.stub')
@@ -98,7 +98,7 @@ class FormRequestGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_form_requests_with_support_for_model_reference_in_validate_statement()
+    public function output_writes_form_requests_with_support_for_model_reference_in_validate_statement(): void
     {
         $this->filesystem->expects('stub')
             ->with('request.stub')
@@ -133,7 +133,7 @@ class FormRequestGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_only_outputs_new_form_requests()
+    public function it_only_outputs_new_form_requests(): void
     {
         $this->filesystem->expects('stub')
             ->with('request.stub')
@@ -156,7 +156,7 @@ class FormRequestGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_supports_nested_form_requests()
+    public function output_supports_nested_form_requests(): void
     {
         $this->filesystem->expects('stub')
             ->with('request.stub')
@@ -180,7 +180,7 @@ class FormRequestGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_respects_configuration()
+    public function it_respects_configuration(): void
     {
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
         $this->app['config']->set('blueprint.app_path', 'src/path');
@@ -207,7 +207,7 @@ class FormRequestGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_test_for_controller_tree_using_cached_model()
+    public function output_generates_test_for_controller_tree_using_cached_model(): void
     {
         $this->filesystem->expects('stub')
             ->with('request.stub')

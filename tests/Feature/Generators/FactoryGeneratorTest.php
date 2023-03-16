@@ -34,7 +34,7 @@ class FactoryGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_nothing_for_empty_tree()
+    public function output_writes_nothing_for_empty_tree(): void
     {
         $this->filesystem->expects('stub')
             ->with($this->factoryStub)
@@ -47,7 +47,7 @@ class FactoryGeneratorTest extends TestCase
 
     #[Test]
     #[DataProvider('modelTreeDataProvider')]
-    public function output_writes_factory_for_model_tree($definition, $path, $factory)
+    public function output_writes_factory_for_model_tree($definition, $path, $factory): void
     {
         $this->filesystem->expects('stub')
             ->with($this->factoryStub)
@@ -67,7 +67,7 @@ class FactoryGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_ignores_nullables_if_fake_nullables_configuration_is_set_to_false()
+    public function output_ignores_nullables_if_fake_nullables_configuration_is_set_to_false(): void
     {
         $this->app['config']->set('blueprint.fake_nullables', false);
 
@@ -89,7 +89,7 @@ class FactoryGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_references_for_nested_models()
+    public function output_generates_references_for_nested_models(): void
     {
         $this->filesystem->expects('stub')
             ->with($this->factoryStub)
@@ -122,7 +122,7 @@ class FactoryGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_respects_configuration()
+    public function output_respects_configuration(): void
     {
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
         $this->app['config']->set('blueprint.models_namespace', 'Models');
@@ -145,7 +145,7 @@ class FactoryGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_creates_directory_for_nested_components()
+    public function output_creates_directory_for_nested_components(): void
     {
         $this->filesystem->expects('stub')
             ->with($this->factoryStub)
@@ -166,7 +166,7 @@ class FactoryGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['database/factories/Admin/UserFactory.php']], $this->subject->output($tree));
     }
 
-    public static function modelTreeDataProvider()
+    public static function modelTreeDataProvider(): array
     {
         return [
             ['drafts/phone.yaml', 'database/factories/PhoneFactory.php', 'factories/phone.php'],
