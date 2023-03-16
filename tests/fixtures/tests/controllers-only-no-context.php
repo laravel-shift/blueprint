@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Http\Controllers;
 
-use PHPUnit\Framework\Attributes\Test;
 use App\Events\ExportReport;
 use App\Jobs\GenerateReport;
 use App\Mail\SendReport;
@@ -18,7 +17,9 @@ use Tests\TestCase;
  */
 class ReportControllerTest extends TestCase
 {
-    #[Test]
+    /**
+     * @test
+     */
     public function __invoke_displays_view(): void
     {
         Queue::fake();

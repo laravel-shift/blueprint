@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Http\Controllers\Api;
 
-use PHPUnit\Framework\Attributes\Test;
 use App\Models\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -16,7 +15,9 @@ class PostControllerTest extends TestCase
 {
     use AdditionalAssertions, RefreshDatabase, WithFaker;
 
-    #[Test]
+    /**
+     * @test
+     */
     public function index_responds_with(): void
     {
         $posts = Post::factory()->count(3)->create();
@@ -28,7 +29,9 @@ class PostControllerTest extends TestCase
     }
 
 
-    #[Test]
+    /**
+     * @test
+     */
     public function store_uses_form_request_validation(): void
     {
         $this->assertActionUsesFormRequest(
@@ -38,7 +41,9 @@ class PostControllerTest extends TestCase
         );
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function store_responds_with(): void
     {
         $title = $this->faker->sentence(4);
@@ -51,7 +56,9 @@ class PostControllerTest extends TestCase
     }
 
 
-    #[Test]
+    /**
+     * @test
+     */
     public function error_responds_with(): void
     {
         $response = $this->get(route('post.error'));
