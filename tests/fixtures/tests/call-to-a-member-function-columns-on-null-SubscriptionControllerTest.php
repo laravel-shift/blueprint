@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Http\Controllers;
 
-use PHPUnit\Framework\Attributes\Test;
 use App\Models\Subscription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -14,7 +13,9 @@ class SubscriptionControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[Test]
+    /**
+     * @test
+     */
     public function index_displays_view(): void
     {
         $subscriptions = Subscription::factory()->count(3)->create();
@@ -27,7 +28,9 @@ class SubscriptionControllerTest extends TestCase
     }
 
 
-    #[Test]
+    /**
+     * @test
+     */
     public function show_displays_view(): void
     {
         $subscription = Subscription::factory()->create();

@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Http\Controllers;
 
-use PHPUnit\Framework\Attributes\Test;
 use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -16,7 +15,9 @@ class CategoryControllerTest extends TestCase
 {
     use AdditionalAssertions, RefreshDatabase, WithFaker;
 
-    #[Test]
+    /**
+     * @test
+     */
     public function index_behaves_as_expected(): void
     {
         $categories = Category::factory()->count(3)->create();
@@ -28,7 +29,9 @@ class CategoryControllerTest extends TestCase
     }
 
 
-    #[Test]
+    /**
+     * @test
+     */
     public function store_uses_form_request_validation(): void
     {
         $this->assertActionUsesFormRequest(
@@ -38,7 +41,9 @@ class CategoryControllerTest extends TestCase
         );
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function store_saves(): void
     {
         $name = $this->faker->name;
@@ -64,7 +69,9 @@ class CategoryControllerTest extends TestCase
     }
 
 
-    #[Test]
+    /**
+     * @test
+     */
     public function show_behaves_as_expected(): void
     {
         $category = Category::factory()->create();
@@ -76,7 +83,9 @@ class CategoryControllerTest extends TestCase
     }
 
 
-    #[Test]
+    /**
+     * @test
+     */
     public function update_uses_form_request_validation(): void
     {
         $this->assertActionUsesFormRequest(
@@ -86,7 +95,9 @@ class CategoryControllerTest extends TestCase
         );
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function update_behaves_as_expected(): void
     {
         $category = Category::factory()->create();
@@ -111,7 +122,9 @@ class CategoryControllerTest extends TestCase
     }
 
 
-    #[Test]
+    /**
+     * @test
+     */
     public function destroy_deletes_and_responds_with(): void
     {
         $category = Category::factory()->create();
