@@ -7,7 +7,7 @@ use Blueprint\Lexers\ControllerLexer;
 use Blueprint\Lexers\StatementLexer;
 use PHPUnit\Framework\TestCase;
 
-class ControllerLexerTest extends TestCase
+final class ControllerLexerTest extends TestCase
 {
     /**
      * @var ControllerLexer

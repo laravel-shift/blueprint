@@ -14,7 +14,7 @@ use Tests\TestCase;
 /**
  * @see Blueprint
  */
-class BlueprintTest extends TestCase
+final class BlueprintTest extends TestCase
 {
     /**
      * @var Blueprint

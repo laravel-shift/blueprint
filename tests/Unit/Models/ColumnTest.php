@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Models\Column;
 use PHPUnit\Framework\TestCase;
 
-class ColumnTest extends TestCase
+final class ColumnTest extends TestCase
 {
     #[Test]
     public function it_knows_if_its_nullable(): void

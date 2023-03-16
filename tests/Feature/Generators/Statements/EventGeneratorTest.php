@@ -12,7 +12,7 @@ use Tests\TestCase;
 /**
  * @see EventGenerator
  */
-class EventGeneratorTest extends TestCase
+final class EventGeneratorTest extends TestCase
 {
     private $blueprint;
 

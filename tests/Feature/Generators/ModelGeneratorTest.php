@@ -9,7 +9,7 @@ use Blueprint\Generators\ModelGenerator;
 use Blueprint\Tree;
 use Tests\TestCase;
 
-class ModelGeneratorTest extends TestCase
+final class ModelGeneratorTest extends TestCase
 {
     private $blueprint;
 

@@ -13,7 +13,7 @@ use Tests\TestCase;
 /**
  * @see MigrationGenerator
  */
-class MigrationGeneratorTest extends TestCase
+final class MigrationGeneratorTest extends TestCase
 {
     private $blueprint;
 

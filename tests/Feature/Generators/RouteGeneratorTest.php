@@ -13,7 +13,7 @@ use Tests\TestCase;
 /**
  * @see RouteGenerator
  */
-class RouteGeneratorTest extends TestCase
+final class RouteGeneratorTest extends TestCase
 {
     protected $files;
 

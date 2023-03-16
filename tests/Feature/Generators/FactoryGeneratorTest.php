@@ -12,7 +12,7 @@ use Tests\TestCase;
 /**
  * @see FactoryGenerator
  */
-class FactoryGeneratorTest extends TestCase
+final class FactoryGeneratorTest extends TestCase
 {
     private $blueprint;
 

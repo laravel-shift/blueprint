@@ -12,7 +12,7 @@ use Tests\TestCase;
 /**
  * @see FormRequestGenerator
  */
-class FormRequestGeneratorTest extends TestCase
+final class FormRequestGeneratorTest extends TestCase
 {
     private $blueprint;
 

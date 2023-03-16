@@ -10,7 +10,7 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Tests\TestCase;
 
 #[CoversClass(\Blueprint\Commands\EraseCommand::class)]
-class EraseCommandTest extends TestCase
+final class EraseCommandTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
