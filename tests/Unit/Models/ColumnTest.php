@@ -2,12 +2,13 @@
 
 namespace Tests\Unit\Models;
 
+use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Models\Column;
 use PHPUnit\Framework\TestCase;
 
 class ColumnTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_knows_if_its_nullable()
     {
         $this->assertTrue((new Column('foo', 'string', ['nullable']))->isNullable());

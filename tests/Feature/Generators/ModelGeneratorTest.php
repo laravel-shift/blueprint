@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Generators;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Blueprint\Blueprint;
 use Blueprint\Generators\ModelGenerator;
 use Blueprint\Tree;
@@ -27,9 +29,7 @@ class ModelGeneratorTest extends TestCase
         $this->blueprint->registerGenerator($this->subject);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_generates_nothing_for_empty_tree()
     {
         $this->filesystem->expects('stub')
@@ -41,11 +41,8 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals([], $this->subject->output(new Tree(['models' => []])));
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider modelTreeDataProvider
-     */
+    #[Test]
+    #[DataProvider('modelTreeDataProvider')]
     public function output_generates_models($definition, $path, $model)
     {
         $this->filesystem->expects('stub')
@@ -88,9 +85,7 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_works_for_pascal_case_definition()
     {
         $this->filesystem->expects('stub')
@@ -130,9 +125,7 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$certificateModel, $certificateTypeModel]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_generates_relationships()
     {
         $this->filesystem->expects('stub')
@@ -160,9 +153,7 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Models/Subscription.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_generates_relationships_added_with_full_model_namespace()
     {
         $this->files->expects('stub')
@@ -191,9 +182,7 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Models/Recurrency.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_generates_morphone_morphmany_relation_string_when_using_fqn()
     {
         $this->files->expects('stub')
@@ -222,9 +211,7 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Models/Flag.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_generates_polymorphic_relationships()
     {
         $this->filesystem->expects('stub')
@@ -267,9 +254,7 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Models/Post.php', 'app/Models/User.php', 'app/Models/Image.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_generates_morphtomany_relationship_with_intermediate_models()
     {
         $this->filesystem->expects('stub')
@@ -313,9 +298,7 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Models/Post.php', 'app/Models/Video.php', 'app/Models/Tag.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_generates_disabled_auto_columns()
     {
         $this->filesystem->expects('stub')
@@ -346,9 +329,7 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Models/State.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_respects_configuration()
     {
         $this->app['config']->set('blueprint.app_path', 'src/path');
@@ -385,11 +366,8 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['src/path/Models/Comment.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider docBlockModelsDataProvider
-     */
+    #[Test]
+    #[DataProvider('docBlockModelsDataProvider')]
     public function output_generates_phpdoc_for_model($definition, $path, $model)
     {
         $this->app['config']->set('blueprint.generate_phpdocs', true);
@@ -429,9 +407,7 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_generates_models_with_guarded_property_when_config_option_is_set()
     {
         $this->app['config']->set('blueprint.use_guarded', true);
@@ -465,9 +441,7 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Models/Comment.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_generates_models_with_namespaces_correctly()
     {
         $this->app['config']->set('blueprint.models_namespace', 'Models');
@@ -513,9 +487,7 @@ class ModelGeneratorTest extends TestCase
         ], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_generates_models_with_custom_namespace_correctly()
     {
         $this->app['config']->set('blueprint.models_namespace', 'MyCustom');
@@ -549,9 +521,7 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_generates_models_with_custom_pivot_table_name()
     {
         $this->filesystem->expects('stub')
@@ -582,9 +552,7 @@ class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Models/User.php']], $this->subject->output($tree));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_generates_models_with_custom_pivot()
     {
         $this->filesystem->expects('stub')
