@@ -6,6 +6,7 @@ use Blueprint\Blueprint;
 use Blueprint\Generators\StatementGenerator;
 use Blueprint\Models\Statements\DispatchStatement;
 use Blueprint\Tree;
+use Illuminate\Support\Arr;
 
 class JobGenerator extends StatementGenerator
 {
@@ -21,17 +22,19 @@ class JobGenerator extends StatementGenerator
         foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
-                    if (!$statement instanceof DispatchStatement) {
-                        continue;
+                    foreach (Arr::wrap($statement) as $statement) {
+                        if (!$statement instanceof DispatchStatement) {
+                            continue;
+                        }
+
+                        $path = $this->getStatementPath($statement->job());
+
+                        if ($this->filesystem->exists($path)) {
+                            continue;
+                        }
+
+                        $this->create($path, $this->populateStub($stub, $statement));
                     }
-
-                    $path = $this->getStatementPath($statement->job());
-
-                    if ($this->filesystem->exists($path)) {
-                        continue;
-                    }
-
-                    $this->create($path, $this->populateStub($stub, $statement));
                 }
             }
         }

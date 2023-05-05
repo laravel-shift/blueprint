@@ -6,6 +6,7 @@ use Blueprint\Blueprint;
 use Blueprint\Generators\StatementGenerator;
 use Blueprint\Models\Statements\FireStatement;
 use Blueprint\Tree;
+use Illuminate\Support\Arr;
 
 class EventGenerator extends StatementGenerator
 {
@@ -21,21 +22,23 @@ class EventGenerator extends StatementGenerator
         foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
-                    if (!$statement instanceof FireStatement) {
-                        continue;
+                    foreach (Arr::wrap($statement) as $statement) {
+                        if (!$statement instanceof FireStatement) {
+                            continue;
+                        }
+
+                        if ($statement->isNamedEvent()) {
+                            continue;
+                        }
+
+                        $path = $this->getStatementPath($statement->event());
+
+                        if ($this->filesystem->exists($path)) {
+                            continue;
+                        }
+
+                        $this->create($path, $this->populateStub($stub, $statement));
                     }
-
-                    if ($statement->isNamedEvent()) {
-                        continue;
-                    }
-
-                    $path = $this->getStatementPath($statement->event());
-
-                    if ($this->filesystem->exists($path)) {
-                        continue;
-                    }
-
-                    $this->create($path, $this->populateStub($stub, $statement));
                 }
             }
         }

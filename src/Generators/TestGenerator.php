@@ -22,6 +22,7 @@ use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
 use Blueprint\Tree;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Shift\Faker\Registry as FakerRegistry;
 
@@ -113,32 +114,170 @@ class TestGenerator extends AbstractClassGenerator implements Generator
             }
 
             foreach ($statements as $statement) {
-                if ($statement instanceof SendStatement) {
-                    if ($statement->isNotification()) {
-                        $this->addImport($controller, 'Illuminate\\Support\\Facades\\Notification');
-                        $this->addImport($controller, config('blueprint.namespace') . '\\Notification\\' . $statement->mail());
+                foreach (Arr::wrap($statement) as $statement) {
+                    if ($statement instanceof SendStatement) {
+                        if ($statement->isNotification()) {
+                            $this->addImport($controller, 'Illuminate\\Support\\Facades\\Notification');
+                            $this->addImport($controller, config('blueprint.namespace') . '\\Notification\\' . $statement->mail());
 
-                        $setup['mock'][] = 'Notification::fake();';
+                            $setup['mock'][] = 'Notification::fake();';
 
-                        $assertion = sprintf(
-                            'Notification::assertSentTo($%s, %s::class',
-                            str_replace('.', '->', $statement->to()),
-                            $statement->mail()
-                        );
+                            $assertion = sprintf(
+                                'Notification::assertSentTo($%s, %s::class',
+                                str_replace('.', '->', $statement->to()),
+                                $statement->mail()
+                            );
+
+                            if ($statement->data()) {
+                                $conditions = [];
+                                $variables = [];
+                                $assertion .= ', function ($notification)';
+
+                                foreach ($statement->data() as $data) {
+                                    if (Str::studly(Str::singular($data)) === $context || !Str::contains($data, '.')) {
+                                        $variables[] .= '$' . $data;
+                                        $conditions[] .= sprintf('$notification->%s->is($%s)', $data, $data);
+                                    } else {
+                                        [$model, $property] = explode('.', $data);
+                                        $variables[] .= '$' . $model;
+                                        $conditions[] .= sprintf('$notification->%s == $%s', $property ?? $model, str_replace('.', '->', $data()));
+                                    }
+                                }
+
+                                if ($variables) {
+                                    $assertion .= ' use (' . implode(', ', array_unique($variables)) . ')';
+                                }
+
+                                $assertion .= ' {' . PHP_EOL;
+                                $assertion .= str_pad(' ', 12);
+                                $assertion .= 'return ' . implode(' && ', $conditions) . ';';
+                                $assertion .= PHP_EOL . str_pad(' ', 8) . '}';
+                            }
+
+                            $assertion .= ');';
+
+                            $assertions['mock'][] = $assertion;
+                        } else {
+                            $this->addImport($controller, 'Illuminate\\Support\\Facades\\Mail');
+                            $this->addImport($controller, config('blueprint.namespace') . '\\Mail\\' . $statement->mail());
+
+                            $setup['mock'][] = 'Mail::fake();';
+
+                            $assertion = sprintf('Mail::assertSent(%s::class', $statement->mail());
+
+                            if ($statement->data() || $statement->to()) {
+                                $conditions = [];
+                                $variables = [];
+                                $assertion .= ', function ($mail)';
+
+                                if ($statement->to()) {
+                                    $conditions[] = '$mail->hasTo($' . str_replace('.', '->', $statement->to()) . ')';
+                                }
+
+                                foreach ($statement->data() as $data) {
+                                    if (Str::studly(Str::singular($data)) === $context || !Str::contains($data, '.')) {
+                                        $variables[] .= '$' . $data;
+                                        $conditions[] .= sprintf('$mail->%s->is($%s)', $data, $data);
+                                    } else {
+                                        [$model, $property] = explode('.', $data);
+                                        $variables[] .= '$' . $model;
+                                        $conditions[] .= sprintf('$mail->%s == $%s', $property ?? $model, str_replace('.', '->', $data()));
+                                    }
+                                }
+
+                                if ($variables) {
+                                    $assertion .= ' use (' . implode(', ', array_unique($variables)) . ')';
+                                }
+
+                                $assertion .= ' {' . PHP_EOL;
+                                $assertion .= str_pad(' ', 12);
+                                $assertion .= 'return ' . implode(' && ', $conditions) . ';';
+                                $assertion .= PHP_EOL . str_pad(' ', 8) . '}';
+                            }
+
+                            $assertion .= ');';
+
+                            $assertions['mock'][] = $assertion;
+                        }
+                    } elseif ($statement instanceof ValidateStatement) {
+                        $this->addTestAssertionsTrait($controller);
+
+                        $class = $this->buildFormRequestName($controller, $name);
+                        $test_case = $this->buildFormRequestTestCase($controller->fullyQualifiedClassName(), $name, config('blueprint.namespace') . '\\Http\\Requests\\' . $class) . PHP_EOL . PHP_EOL . $test_case;
+
+                        if ($statement->data()) {
+                            $this->addFakerTrait($controller);
+
+                            foreach ($statement->data() as $data) {
+                                [$qualifier, $column] = $this->splitField($data);
+
+                                if (is_null($qualifier)) {
+                                    $qualifier = $context;
+                                }
+
+                                $variable_name = $data;
+
+                                /** @var \Blueprint\Models\Model $local_model */
+                                $local_model = $this->tree->modelForContext($qualifier);
+
+                                if (!is_null($local_model) && $local_model->hasColumn($column)) {
+                                    $local_column = $local_model->column($column);
+
+                                    $factory = $this->generateReferenceFactory($local_column, $controller, $modelNamespace);
+
+                                    if ($factory) {
+                                        [$faker, $variable_name] = $factory;
+                                    } else {
+                                        $faker = sprintf('$%s = $this->faker->%s;', $data, FakerRegistry::fakerData($local_column->name()) ?? FakerRegistry::fakerDataType($local_model->column($column)->dataType()));
+                                    }
+
+                                    $setup['data'][] = $faker;
+                                    $request_data[$data] = '$' . $variable_name;
+                                } elseif (!is_null($local_model)) {
+                                    foreach ($local_model->columns() as $local_column) {
+                                        if (in_array($local_column->name(), ['id', 'softdeletes', 'softdeletestz'])) {
+                                            continue;
+                                        }
+
+                                        if (in_array('nullable', $local_column->modifiers())) {
+                                            continue;
+                                        }
+
+                                        $factory = $this->generateReferenceFactory($local_column, $controller, $modelNamespace);
+                                        if ($factory) {
+                                            [$faker, $variable_name] = $factory;
+                                        } else {
+                                            $faker = sprintf('$%s = $this->faker->%s;', $local_column->name(), FakerRegistry::fakerData($local_column->name()) ?? FakerRegistry::fakerDataType($local_column->dataType()));
+                                            $variable_name = $local_column->name();
+                                        }
+
+                                        $setup['data'][] = $faker;
+                                        $request_data[$local_column->name()] = '$' . $variable_name;
+                                    }
+                                }
+                            }
+                        }
+                    } elseif ($statement instanceof DispatchStatement) {
+                        $this->addImport($controller, 'Illuminate\\Support\\Facades\\Queue');
+                        $this->addImport($controller, config('blueprint.namespace') . '\\Jobs\\' . $statement->job());
+
+                        $setup['mock'][] = 'Queue::fake();';
+
+                        $assertion = sprintf('Queue::assertPushed(%s::class', $statement->job());
 
                         if ($statement->data()) {
                             $conditions = [];
                             $variables = [];
-                            $assertion .= ', function ($notification)';
+                            $assertion .= ', function ($job)';
 
                             foreach ($statement->data() as $data) {
                                 if (Str::studly(Str::singular($data)) === $context || !Str::contains($data, '.')) {
                                     $variables[] .= '$' . $data;
-                                    $conditions[] .= sprintf('$notification->%s->is($%s)', $data, $data);
+                                    $conditions[] .= sprintf('$job->%s->is($%s)', $data, $data);
                                 } else {
                                     [$model, $property] = explode('.', $data);
                                     $variables[] .= '$' . $model;
-                                    $conditions[] .= sprintf('$notification->%s == $%s', $property ?? $model, str_replace('.', '->', $data()));
+                                    $conditions[] .= sprintf('$job->%s == $%s', $property ?? $model, str_replace('.', '->', $data()));
                                 }
                             }
 
@@ -155,31 +294,33 @@ class TestGenerator extends AbstractClassGenerator implements Generator
                         $assertion .= ');';
 
                         $assertions['mock'][] = $assertion;
-                    } else {
-                        $this->addImport($controller, 'Illuminate\\Support\\Facades\\Mail');
-                        $this->addImport($controller, config('blueprint.namespace') . '\\Mail\\' . $statement->mail());
+                    } elseif ($statement instanceof FireStatement) {
+                        $this->addImport($controller, 'Illuminate\\Support\\Facades\\Event');
 
-                        $setup['mock'][] = 'Mail::fake();';
+                        $setup['mock'][] = 'Event::fake();';
 
-                        $assertion = sprintf('Mail::assertSent(%s::class', $statement->mail());
+                        $assertion = 'Event::assertDispatched(';
 
-                        if ($statement->data() || $statement->to()) {
+                        if ($statement->isNamedEvent()) {
+                            $assertion .= $statement->event();
+                        } else {
+                            $this->addImport($controller, config('blueprint.namespace') . '\\Events\\' . $statement->event());
+                            $assertion .= $statement->event() . '::class';
+                        }
+
+                        if ($statement->data()) {
                             $conditions = [];
                             $variables = [];
-                            $assertion .= ', function ($mail)';
-
-                            if ($statement->to()) {
-                                $conditions[] = '$mail->hasTo($' . str_replace('.', '->', $statement->to()) . ')';
-                            }
+                            $assertion .= ', function ($event)';
 
                             foreach ($statement->data() as $data) {
                                 if (Str::studly(Str::singular($data)) === $context || !Str::contains($data, '.')) {
                                     $variables[] .= '$' . $data;
-                                    $conditions[] .= sprintf('$mail->%s->is($%s)', $data, $data);
+                                    $conditions[] .= sprintf('$event->%s->is($%s)', $data, $data);
                                 } else {
                                     [$model, $property] = explode('.', $data);
                                     $variables[] .= '$' . $model;
-                                    $conditions[] .= sprintf('$mail->%s == $%s', $property ?? $model, str_replace('.', '->', $data()));
+                                    $conditions[] .= sprintf('$event->%s == $%s', $property ?? $model, str_replace('.', '->', $data()));
                                 }
                             }
 
@@ -196,262 +337,124 @@ class TestGenerator extends AbstractClassGenerator implements Generator
                         $assertion .= ');';
 
                         $assertions['mock'][] = $assertion;
-                    }
-                } elseif ($statement instanceof ValidateStatement) {
-                    $this->addTestAssertionsTrait($controller);
+                    } elseif ($statement instanceof RenderStatement) {
+                        $tested_bits |= self::TESTS_VIEW;
 
-                    $class = $this->buildFormRequestName($controller, $name);
-                    $test_case = $this->buildFormRequestTestCase($controller->fullyQualifiedClassName(), $name, config('blueprint.namespace') . '\\Http\\Requests\\' . $class) . PHP_EOL . PHP_EOL . $test_case;
-
-                    if ($statement->data()) {
-                        $this->addFakerTrait($controller);
+                        $view_assertions = [];
+                        $view_assertions[] = '$response->assertOk();';
+                        $view_assertions[] = sprintf('$response->assertViewIs(\'%s\');', $statement->view());
 
                         foreach ($statement->data() as $data) {
-                            [$qualifier, $column] = $this->splitField($data);
-
-                            if (is_null($qualifier)) {
-                                $qualifier = $context;
-                            }
-
-                            $variable_name = $data;
-
-                            /** @var \Blueprint\Models\Model $local_model */
-                            $local_model = $this->tree->modelForContext($qualifier);
-
-                            if (!is_null($local_model) && $local_model->hasColumn($column)) {
-                                $local_column = $local_model->column($column);
-
-                                $factory = $this->generateReferenceFactory($local_column, $controller, $modelNamespace);
-
-                                if ($factory) {
-                                    [$faker, $variable_name] = $factory;
-                                } else {
-                                    $faker = sprintf('$%s = $this->faker->%s;', $data, FakerRegistry::fakerData($local_column->name()) ?? FakerRegistry::fakerDataType($local_model->column($column)->dataType()));
-                                }
-
-                                $setup['data'][] = $faker;
-                                $request_data[$data] = '$' . $variable_name;
-                            } elseif (!is_null($local_model)) {
-                                foreach ($local_model->columns() as $local_column) {
-                                    if (in_array($local_column->name(), ['id', 'softdeletes', 'softdeletestz'])) {
-                                        continue;
-                                    }
-
-                                    if (in_array('nullable', $local_column->modifiers())) {
-                                        continue;
-                                    }
-
-                                    $factory = $this->generateReferenceFactory($local_column, $controller, $modelNamespace);
-                                    if ($factory) {
-                                        [$faker, $variable_name] = $factory;
-                                    } else {
-                                        $faker = sprintf('$%s = $this->faker->%s;', $local_column->name(), FakerRegistry::fakerData($local_column->name()) ?? FakerRegistry::fakerDataType($local_column->dataType()));
-                                        $variable_name = $local_column->name();
-                                    }
-
-                                    $setup['data'][] = $faker;
-                                    $request_data[$local_column->name()] = '$' . $variable_name;
-                                }
-                            }
+                            // TODO: if data references locally scoped var, strengthen assertion...
+                            $view_assertions[] = sprintf('$response->assertViewHas(\'%s\');', $data);
                         }
-                    }
-                } elseif ($statement instanceof DispatchStatement) {
-                    $this->addImport($controller, 'Illuminate\\Support\\Facades\\Queue');
-                    $this->addImport($controller, config('blueprint.namespace') . '\\Jobs\\' . $statement->job());
 
-                    $setup['mock'][] = 'Queue::fake();';
+                        array_unshift($assertions['response'], ...$view_assertions);
+                    } elseif ($statement instanceof RedirectStatement) {
+                        $tested_bits |= self::TESTS_REDIRECT;
 
-                    $assertion = sprintf('Queue::assertPushed(%s::class', $statement->job());
+                        $assertion = sprintf(
+                            '$response->assertRedirect(route(\'%s\'',
+                            config('blueprint.plural_routes') ? Str::plural(Str::kebab($statement->route())) : Str::kebab($statement->route())
+                        );
 
-                    if ($statement->data()) {
-                        $conditions = [];
-                        $variables = [];
-                        $assertion .= ', function ($job)';
+                        if ($statement->data()) {
+                            $parameters = array_map(fn ($parameter) => '$' . $parameter, $statement->data());
 
-                        foreach ($statement->data() as $data) {
-                            if (Str::studly(Str::singular($data)) === $context || !Str::contains($data, '.')) {
-                                $variables[] .= '$' . $data;
-                                $conditions[] .= sprintf('$job->%s->is($%s)', $data, $data);
-                            } else {
-                                [$model, $property] = explode('.', $data);
-                                $variables[] .= '$' . $model;
-                                $conditions[] .= sprintf('$job->%s == $%s', $property ?? $model, str_replace('.', '->', $data()));
+                            $assertion .= ', [' . implode(', ', $parameters) . ']';
+                        } elseif (Str::contains($statement->route(), '.')) {
+                            [$model, $action] = explode('.', $statement->route());
+                            if (in_array($action, ['edit', 'update', 'show', 'destroy'])) {
+                                $assertion .= sprintf(", ['%s' => $%s]", $model, $model);
                             }
                         }
 
-                        if ($variables) {
-                            $assertion .= ' use (' . implode(', ', array_unique($variables)) . ')';
-                        }
+                        $assertion .= '));';
 
-                        $assertion .= ' {' . PHP_EOL;
-                        $assertion .= str_pad(' ', 12);
-                        $assertion .= 'return ' . implode(' && ', $conditions) . ';';
-                        $assertion .= PHP_EOL . str_pad(' ', 8) . '}';
-                    }
-
-                    $assertion .= ');';
-
-                    $assertions['mock'][] = $assertion;
-                } elseif ($statement instanceof FireStatement) {
-                    $this->addImport($controller, 'Illuminate\\Support\\Facades\\Event');
-
-                    $setup['mock'][] = 'Event::fake();';
-
-                    $assertion = 'Event::assertDispatched(';
-
-                    if ($statement->isNamedEvent()) {
-                        $assertion .= $statement->event();
-                    } else {
-                        $this->addImport($controller, config('blueprint.namespace') . '\\Events\\' . $statement->event());
-                        $assertion .= $statement->event() . '::class';
-                    }
-
-                    if ($statement->data()) {
-                        $conditions = [];
-                        $variables = [];
-                        $assertion .= ', function ($event)';
-
-                        foreach ($statement->data() as $data) {
-                            if (Str::studly(Str::singular($data)) === $context || !Str::contains($data, '.')) {
-                                $variables[] .= '$' . $data;
-                                $conditions[] .= sprintf('$event->%s->is($%s)', $data, $data);
-                            } else {
-                                [$model, $property] = explode('.', $data);
-                                $variables[] .= '$' . $model;
-                                $conditions[] .= sprintf('$event->%s == $%s', $property ?? $model, str_replace('.', '->', $data()));
-                            }
-                        }
-
-                        if ($variables) {
-                            $assertion .= ' use (' . implode(', ', array_unique($variables)) . ')';
-                        }
-
-                        $assertion .= ' {' . PHP_EOL;
-                        $assertion .= str_pad(' ', 12);
-                        $assertion .= 'return ' . implode(' && ', $conditions) . ';';
-                        $assertion .= PHP_EOL . str_pad(' ', 8) . '}';
-                    }
-
-                    $assertion .= ');';
-
-                    $assertions['mock'][] = $assertion;
-                } elseif ($statement instanceof RenderStatement) {
-                    $tested_bits |= self::TESTS_VIEW;
-
-                    $view_assertions = [];
-                    $view_assertions[] = '$response->assertOk();';
-                    $view_assertions[] = sprintf('$response->assertViewIs(\'%s\');', $statement->view());
-
-                    foreach ($statement->data() as $data) {
-                        // TODO: if data references locally scoped var, strengthen assertion...
-                        $view_assertions[] = sprintf('$response->assertViewHas(\'%s\');', $data);
-                    }
-
-                    array_unshift($assertions['response'], ...$view_assertions);
-                } elseif ($statement instanceof RedirectStatement) {
-                    $tested_bits |= self::TESTS_REDIRECT;
-
-                    $assertion = sprintf(
-                        '$response->assertRedirect(route(\'%s\'',
-                        config('blueprint.plural_routes') ? Str::plural(Str::kebab($statement->route())) : Str::kebab($statement->route())
-                    );
-
-                    if ($statement->data()) {
-                        $parameters = array_map(fn ($parameter) => '$' . $parameter, $statement->data());
-
-                        $assertion .= ', [' . implode(', ', $parameters) . ']';
-                    } elseif (Str::contains($statement->route(), '.')) {
-                        [$model, $action] = explode('.', $statement->route());
-                        if (in_array($action, ['edit', 'update', 'show', 'destroy'])) {
-                            $assertion .= sprintf(", ['%s' => $%s]", $model, $model);
-                        }
-                    }
-
-                    $assertion .= '));';
-
-                    array_unshift($assertions['response'], $assertion);
-                } elseif ($statement instanceof ResourceStatement) {
-                    if ($name === 'store') {
-                        $assertions['response'][] = '$response->assertCreated();';
-                    } else {
-                        $assertions['response'][] = '$response->assertOk();';
-                    }
-
-                    $assertions['response'][] = '$response->assertJsonStructure([]);';
-                } elseif ($statement instanceof RespondStatement) {
-                    $tested_bits |= self::TESTS_RESPONDS;
-
-                    if ($statement->content()) {
-                        array_unshift($assertions['response'], '$response->assertJson($' . $statement->content() . ');');
-                    }
-
-                    if ($statement->status() === 200) {
-                        array_unshift($assertions['response'], '$response->assertOk();');
-                    } elseif ($statement->status() === 204) {
-                        array_unshift($assertions['response'], '$response->assertNoContent();');
-                    } else {
-                        array_unshift($assertions['response'], '$response->assertNoContent(' . $statement->status() . ');');
-                    }
-                } elseif ($statement instanceof SessionStatement) {
-                    $assertions['response'][] = sprintf('$response->assertSessionHas(\'%s\', %s);', $statement->reference(), '$' . str_replace('.', '->', $statement->reference()));
-                } elseif ($statement instanceof EloquentStatement) {
-                    $this->addRefreshDatabaseTrait($controller);
-
-                    $model = $this->determineModel($controller->prefix(), $statement->reference());
-                    $this->addImport($controller, $modelNamespace . '\\' . $model);
-
-                    if ($statement->operation() === 'save') {
-                        $tested_bits |= self::TESTS_SAVE;
-
-                        if ($request_data) {
-                            $indent = str_pad(' ', 12);
-                            $plural = Str::plural($variable);
-                            $assertion = sprintf('$%s = %s::query()', $plural, $model);
-                            foreach ($request_data as $key => $datum) {
-                                $assertion .= PHP_EOL . sprintf('%s->where(\'%s\', %s)', $indent, $key, $datum);
-                            }
-                            $assertion .= PHP_EOL . $indent . '->get();';
-
-                            $assertions['sanity'][] = $assertion;
-                            $assertions['sanity'][] = '$this->assertCount(1, $' . $plural . ');';
-                            $assertions['sanity'][] = sprintf('$%s = $%s->first();', $variable, $plural);
+                        array_unshift($assertions['response'], $assertion);
+                    } elseif ($statement instanceof ResourceStatement) {
+                        if ($name === 'store') {
+                            $assertions['response'][] = '$response->assertCreated();';
                         } else {
-                            $assertions['generic'][] = '$this->assertDatabaseHas(' . Str::camel(Str::plural($model)) . ', [ /* ... */ ]);';
+                            $assertions['response'][] = '$response->assertOk();';
                         }
-                    } elseif ($statement->operation() === 'find') {
-                        $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
-                    } elseif ($statement->operation() === 'delete') {
-                        $tested_bits |= self::TESTS_DELETE;
-                        $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
 
-                        /** @var \Blueprint\Models\Model $local_model */
-                        $local_model = $this->tree->modelForContext($model);
-                        if (!is_null($local_model) && $local_model->usesSoftDeletes()) {
-                            $assertions['generic'][] = sprintf('$this->assertSoftDeleted($%s);', $variable);
+                        $assertions['response'][] = '$response->assertJsonStructure([]);';
+                    } elseif ($statement instanceof RespondStatement) {
+                        $tested_bits |= self::TESTS_RESPONDS;
+
+                        if ($statement->content()) {
+                            array_unshift($assertions['response'], '$response->assertJson($' . $statement->content() . ');');
+                        }
+
+                        if ($statement->status() === 200) {
+                            array_unshift($assertions['response'], '$response->assertOk();');
+                        } elseif ($statement->status() === 204) {
+                            array_unshift($assertions['response'], '$response->assertNoContent();');
                         } else {
-                            $assertions['generic'][] = sprintf('$this->assertModelMissing($%s);', $variable);
+                            array_unshift($assertions['response'], '$response->assertNoContent(' . $statement->status() . ');');
                         }
-                    } elseif ($statement->operation() === 'update') {
-                        $assertions['sanity'][] = sprintf('$%s->refresh();', $variable);
+                    } elseif ($statement instanceof SessionStatement) {
+                        $assertions['response'][] = sprintf('$response->assertSessionHas(\'%s\', %s);', $statement->reference(), '$' . str_replace('.', '->', $statement->reference()));
+                    } elseif ($statement instanceof EloquentStatement) {
+                        $this->addRefreshDatabaseTrait($controller);
 
-                        if ($request_data) {
+                        $model = $this->determineModel($controller->prefix(), $statement->reference());
+                        $this->addImport($controller, $modelNamespace . '\\' . $model);
+
+                        if ($statement->operation() === 'save') {
+                            $tested_bits |= self::TESTS_SAVE;
+
+                            if ($request_data) {
+                                $indent = str_pad(' ', 12);
+                                $plural = Str::plural($variable);
+                                $assertion = sprintf('$%s = %s::query()', $plural, $model);
+                                foreach ($request_data as $key => $datum) {
+                                    $assertion .= PHP_EOL . sprintf('%s->where(\'%s\', %s)', $indent, $key, $datum);
+                                }
+                                $assertion .= PHP_EOL . $indent . '->get();';
+
+                                $assertions['sanity'][] = $assertion;
+                                $assertions['sanity'][] = '$this->assertCount(1, $' . $plural . ');';
+                                $assertions['sanity'][] = sprintf('$%s = $%s->first();', $variable, $plural);
+                            } else {
+                                $assertions['generic'][] = '$this->assertDatabaseHas(' . Str::camel(Str::plural($model)) . ', [ /* ... */ ]);';
+                            }
+                        } elseif ($statement->operation() === 'find') {
+                            $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
+                        } elseif ($statement->operation() === 'delete') {
+                            $tested_bits |= self::TESTS_DELETE;
+                            $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
+
                             /** @var \Blueprint\Models\Model $local_model */
                             $local_model = $this->tree->modelForContext($model);
-                            foreach ($request_data as $key => $datum) {
-                                if (!is_null($local_model) && $local_model->hasColumn($key) && $local_model->column($key)->dataType() === 'date') {
-                                    $this->addImport($controller, 'Carbon\\Carbon');
-                                    $assertions['generic'][] = sprintf('$this->assertEquals(Carbon::parse(%s), $%s->%s);', $datum, $variable, $key);
-                                } else {
-                                    $assertions['generic'][] = sprintf('$this->assertEquals(%s, $%s->%s);', $datum, $variable, $key);
+                            if (!is_null($local_model) && $local_model->usesSoftDeletes()) {
+                                $assertions['generic'][] = sprintf('$this->assertSoftDeleted($%s);', $variable);
+                            } else {
+                                $assertions['generic'][] = sprintf('$this->assertModelMissing($%s);', $variable);
+                            }
+                        } elseif ($statement->operation() === 'update') {
+                            $assertions['sanity'][] = sprintf('$%s->refresh();', $variable);
+
+                            if ($request_data) {
+                                /** @var \Blueprint\Models\Model $local_model */
+                                $local_model = $this->tree->modelForContext($model);
+                                foreach ($request_data as $key => $datum) {
+                                    if (!is_null($local_model) && $local_model->hasColumn($key) && $local_model->column($key)->dataType() === 'date') {
+                                        $this->addImport($controller, 'Carbon\\Carbon');
+                                        $assertions['generic'][] = sprintf('$this->assertEquals(Carbon::parse(%s), $%s->%s);', $datum, $variable, $key);
+                                    } else {
+                                        $assertions['generic'][] = sprintf('$this->assertEquals(%s, $%s->%s);', $datum, $variable, $key);
+                                    }
                                 }
                             }
                         }
-                    }
-                } elseif ($statement instanceof QueryStatement) {
-                    $this->addRefreshDatabaseTrait($controller);
-                    $setup['data'][] = sprintf('$%s = %s::factory()->count(3)->create();', Str::plural($variable), $model);
+                    } elseif ($statement instanceof QueryStatement) {
+                        $this->addRefreshDatabaseTrait($controller);
+                        $setup['data'][] = sprintf('$%s = %s::factory()->count(3)->create();', Str::plural($variable), $model);
 
-                    $this->addImport($controller, $modelNamespace . '\\' . $this->determineModel($controller->prefix(), $statement->model()));
+                        $this->addImport($controller, $modelNamespace . '\\' . $this->determineModel($controller->prefix(), $statement->model()));
+                    }
                 }
             }
 

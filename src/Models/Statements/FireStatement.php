@@ -37,26 +37,21 @@ class FireStatement
 
     public function output()
     {
-        $code = 'event(';
-
         if ($this->isNamedEvent()) {
-            $code .= "'" . $this->event() . "'";
-
             if ($this->data()) {
-                $code .= ', [' . $this->buildParameters($this->data()) . ']';
+                $template = "event('%s', [%s]);";
+            } else {
+                $template = "event('%s');";
             }
         } else {
-            $code .= 'new ' . $this->event() . '(';
-            if ($this->data()) {
-                $code .= $this->buildParameters($this->data());
-            }
-
-            $code .= ')';
+            $template = '%s::dispatch(%s);';
         }
 
-        $code .= ');';
-
-        return $code;
+        return sprintf(
+            $template,
+            $this->event(),
+            $this->data() ? $this->buildParameters($this->data()) : ''
+        );
     }
 
     private function buildParameters(array $data)
