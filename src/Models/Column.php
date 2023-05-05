@@ -2,6 +2,8 @@
 
 namespace Blueprint\Models;
 
+use Illuminate\Support\Str;
+
 class Column
 {
     private $modifiers;
@@ -60,5 +62,14 @@ class Column
     public function isUnsigned()
     {
         return in_array('unsigned', $this->modifiers);
+    }
+
+    public static function columnName($qualifiedName)
+    {
+        if (Str::contains($qualifiedName, '.')) {
+            return Str::after($qualifiedName, '.');
+        }
+
+        return $qualifiedName;
     }
 }
