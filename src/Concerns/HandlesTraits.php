@@ -20,9 +20,9 @@ trait HandlesTraits
         }
 
         $traits = collect($this->traits[$model->name()])
-                        ->unique()
-                        ->sort()
-                        ->implode(', ');
+            ->unique()
+            ->sort()
+            ->implode(', ');
 
         return "use {$traits};";
     }
