@@ -2,6 +2,7 @@
 
 namespace Blueprint\Models\Statements;
 
+use Blueprint\Models\Column;
 use Illuminate\Support\Str;
 
 class EloquentStatement
@@ -84,7 +85,7 @@ class EloquentStatement
             $code = '$' . Str::camel($model);
             $code .= ' = ';
             $code .= $model;
-            $code .= '::find($' . $this->columnName($this->reference()) . ');';
+            $code .= '::find($' . Column::columnName($this->reference()) . ');';
         }
 
         if ($this->operation() === 'delete') {
@@ -98,16 +99,6 @@ class EloquentStatement
         }
 
         return $code;
-    }
-
-    // TODO: Share this so all other places can use it (Column::columnName($qualifiedName))
-    private function columnName($value)
-    {
-        if (Str::contains($value, '.')) {
-            return Str::after($value, '.');
-        }
-
-        return $value;
     }
 
     private function usesQualifiedReference()
