@@ -4,6 +4,8 @@ namespace Blueprint\Lexers;
 
 use Blueprint\Contracts\Lexer;
 use Blueprint\Models\Controller;
+use Blueprint\Models\Policy;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class ControllerLexer implements Lexer
@@ -20,7 +22,10 @@ class ControllerLexer implements Lexer
 
     public function analyze(array $tokens): array
     {
-        $registry = ['controllers' => []];
+        $registry = [
+            'controllers' => [],
+            'policies' => [],
+        ];
 
         if (empty($tokens['controllers'])) {
             return $registry;
@@ -48,6 +53,26 @@ class ControllerLexer implements Lexer
                     : $definition['__invoke'] = $definition['invokable'];
 
                 unset($definition['invokable']);
+            }
+
+            if (isset($definition['meta'])) {
+                if (isset($definition['meta']['policies'])) {
+                    $authorizeResource = Arr::get($definition, 'meta.policies', true);
+
+                    $policy = new Policy(
+                        $controller->prefix(),
+                        $authorizeResource === true
+                            ? array_keys(Policy::$resourceAbilityMap)
+                            : preg_split('/,([ \t]+)?/', $definition['meta']['policies']),
+                        $authorizeResource === true,
+                    );
+
+                    $controller->policy($policy);
+
+                    $registry['policies'][] = $policy;
+                }
+
+                unset($definition['meta']);
             }
 
             foreach ($definition as $method => $body) {

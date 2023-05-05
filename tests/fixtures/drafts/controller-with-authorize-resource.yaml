@@ -1,0 +1,5 @@
+controllers:
+  Post:
+    resource
+    meta:
+      policies: true

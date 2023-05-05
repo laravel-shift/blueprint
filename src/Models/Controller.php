@@ -29,6 +29,11 @@ class Controller implements BlueprintModel
     private $methods = [];
 
     /**
+     * @var Policy
+     */
+    private $policy;
+
+    /**
      * @var bool
      */
     private $apiResource = false;
@@ -89,6 +94,15 @@ class Controller implements BlueprintModel
     public function addMethod(string $name, array $statements)
     {
         $this->methods[$name] = $statements;
+    }
+
+    public function policy(?Policy $policy = null): ?Policy
+    {
+        if ($policy) {
+            $this->policy = $policy;
+        }
+
+        return $this->policy;
     }
 
     public function prefix()

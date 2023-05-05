@@ -6,6 +6,7 @@ use Blueprint\Concerns\HandlesImports;
 use Blueprint\Concerns\HandlesTraits;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Controller;
+use Blueprint\Models\Policy;
 use Blueprint\Models\Statements\DispatchStatement;
 use Blueprint\Models\Statements\EloquentStatement;
 use Blueprint\Models\Statements\FireStatement;
@@ -62,21 +63,54 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
 
         $methods = '';
 
+        $controllerModelName = Str::singular($controller->prefix());
+
+        if ($controller->policy()?->authorizeResource()) {
+            $methods .= str_replace(
+                [
+                    '{{ modelClass }}',
+                    '{{ modelVariable }}',
+                ],
+                [
+                    Str::studly($controllerModelName),
+                    Str::camel($controllerModelName),
+                ],
+                $this->filesystem->stub('controller.authorize-resource.stub')
+            );
+        }
+
         foreach ($controller->methods() as $name => $statements) {
             $method = str_replace('{{ method }}', $name, $template);
 
             if (in_array($name, ['edit', 'update', 'show', 'destroy'])) {
-                $context = Str::singular($controller->prefix());
-                $reference = $this->fullyQualifyModelReference($controller->namespace(), Str::camel($context));
-                $variable = '$' . Str::camel($context);
+                $reference = $this->fullyQualifyModelReference($controller->namespace(), $controllerModelName);
+                $variable = '$' . Str::camel($controllerModelName);
 
                 $search = '(Request $request';
-                $method = str_replace($search, $search . ', ' . $context . ' ' . $variable, $method);
+                $method = str_replace($search, $search . ', ' . $controllerModelName . ' ' . $variable, $method);
                 $this->addImport($controller, $reference);
             }
 
             $body = '';
             $using_validation = false;
+
+            if ($controller->policy() && !$controller->policy()->authorizeResource()) {
+                if (in_array($name, $controller->policy()->methods())) {
+                    $body .= str_replace(
+                        [
+                            '{{ method }}',
+                            '{{ modelClass }}',
+                            '{{ modelVariable }}',
+                        ],
+                        [
+                            $name,
+                            Str::studly($controllerModelName),
+                            '$' . Str::camel($controllerModelName),
+                        ],
+                        $this->filesystem->stub(Policy::$resourceAbilityStubMap[$name])
+                    ) . PHP_EOL;
+                }
+            }
 
             foreach ($statements as $statement) {
                 if ($statement instanceof SendStatement) {

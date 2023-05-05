@@ -4,6 +4,7 @@ namespace Tests\Feature\Lexers;
 
 use Blueprint\Lexers\ControllerLexer;
 use Blueprint\Lexers\StatementLexer;
+use Blueprint\Models\Policy;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -31,7 +32,10 @@ final class ControllerLexerTest extends TestCase
     #[Test]
     public function it_returns_nothing_without_controllers_token(): void
     {
-        $this->assertEquals(['controllers' => []], $this->subject->analyze([]));
+        $this->assertEquals([
+            'controllers' => [],
+            'policies' => [],
+        ], $this->subject->analyze([]));
     }
 
     #[Test]
@@ -431,5 +435,55 @@ final class ControllerLexerTest extends TestCase
         $this->assertEquals('ReportController', $controller->className());
         $this->assertCount(1, $controller->methods());
         $this->assertFalse($controller->isApiResource());
+    }
+
+    #[Test]
+    public function it_returns_an_authorized_controller_with_all_policies(): void
+    {
+        $tokens = [
+            'controllers' => [
+                'Report' => [
+                    'meta' => [
+                        'policies' => true,
+                    ],
+                ],
+            ],
+        ];
+
+        $this->statementLexer->shouldReceive('analyze');
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual['controllers']);
+        $this->assertCount(1, $actual['policies']);
+
+        $controller = $actual['controllers']['Report'];
+        $this->assertInstanceOf(Policy::class, $controller->policy());
+        $this->assertEquals(array_keys(Policy::$resourceAbilityMap), $controller->policy()->methods());
+    }
+
+    #[Test]
+    public function it_returns_an_authorized_controller_with_specific_policies(): void
+    {
+        $tokens = [
+            'controllers' => [
+                'Report' => [
+                    'meta' => [
+                        'policies' => 'index,show',
+                    ],
+                ],
+            ],
+        ];
+
+        $this->statementLexer->shouldReceive('analyze');
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual['controllers']);
+        $this->assertCount(1, $actual['policies']);
+
+        $controller = $actual['controllers']['Report'];
+        $this->assertInstanceOf(Policy::class, $controller->policy());
+        $this->assertEquals(['index', 'show'], $controller->policy()->methods());
     }
 }

@@ -30,6 +30,8 @@ return [
 
     'controllers_namespace' => 'Http\\Controllers',
 
+    'policy_namespace' => 'Policies',
+
     /*
     |--------------------------------------------------------------------------
     | Application Path
@@ -141,6 +143,7 @@ return [
         'notification' => \Blueprint\Generators\Statements\NotificationGenerator::class,
         'resource' => \Blueprint\Generators\Statements\ResourceGenerator::class,
         'view' => \Blueprint\Generators\Statements\ViewGenerator::class,
+        'policy' => \Blueprint\Generators\PolicyGenerator::class,
     ],
 
 ];

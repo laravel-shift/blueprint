@@ -1,0 +1,4 @@
+    public function __construct()
+    {
+        $this->authorizeResource({{ modelClass }}::class, '{{ modelVariable }}');
+    }
