@@ -178,6 +178,41 @@ final class TestGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
+    #[Test]
+    public function output_generates_tests_with_pluralized_route_names(): void
+    {
+        $definition = 'drafts/models-with-custom-namespace.yaml';
+        $path = 'tests/Feature/Http/Controllers/CategoryControllerTest.php';
+        $test = 'tests/routes-with-pluralized-names.php';
+
+        $this->app['config']->set('blueprint.models_namespace', 'Models');
+        $this->app['config']->set('blueprint.plural_routes', true);
+
+        $this->filesystem->expects('stub')
+            ->with('test.class.stub')
+            ->andReturn($this->stub('test.class.stub'));
+
+        $this->filesystem->expects('stub')
+            ->with('test.case.stub')
+            ->andReturn($this->stub('test.case.stub'));
+
+        $dirname = dirname($path);
+        $this->filesystem->expects('exists')
+            ->with($dirname)
+            ->andReturnFalse();
+
+        $this->filesystem->expects('makeDirectory')
+            ->with($dirname, 0755, true);
+
+        $this->filesystem->expects('put')
+            ->with($path, $this->fixture($test));
+
+        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+    }
+
     public static function controllerTreeDataProvider(): array
     {
         return [
