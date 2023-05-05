@@ -14,6 +14,7 @@ use Blueprint\Models\Statements\RespondStatement;
 use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class StatementLexer implements Lexer
@@ -79,34 +80,40 @@ class StatementLexer implements Lexer
 
     private function analyzeSend($statement)
     {
-        $to = null;
-        $view = null;
+        $statements = [];
 
-        $found = preg_match('/\\s+to:(\\S+)/', $statement, $matches);
-        if ($found) {
-            $to = $matches[1];
-            $statement = str_replace($matches[0], '', $statement);
+        foreach (Arr::wrap($statement) as $statement) {
+            $to = null;
+            $view = null;
+
+            $found = preg_match('/\\s+to:(\\S+)/', $statement, $matches);
+            if ($found) {
+                $to = $matches[1];
+                $statement = str_replace($matches[0], '', $statement);
+            }
+
+            $found = preg_match('/\\s+view:(\\S+)/', $statement, $matches);
+            if ($found) {
+                $view = $matches[1];
+                $statement = str_replace($matches[0], '', $statement);
+            }
+
+            [$object, $with] = $this->extractTokens($statement, 2);
+
+            $data = [];
+            if (!empty($with)) {
+                $data = preg_split('/,([ \t]+)?/', substr($with, 5));
+            }
+
+            $type = SendStatement::TYPE_MAIL;
+            if (Str::endsWith($object, 'Notification')) {
+                $type = SendStatement::TYPE_NOTIFICATION_WITH_FACADE;
+            }
+
+            $statements[] = new SendStatement($object, $to, $data, $type, $view);
         }
 
-        $found = preg_match('/\\s+view:(\\S+)/', $statement, $matches);
-        if ($found) {
-            $view = $matches[1];
-            $statement = str_replace($matches[0], '', $statement);
-        }
-
-        [$object, $with] = $this->extractTokens($statement, 2);
-
-        $data = [];
-        if (!empty($with)) {
-            $data = preg_split('/,([ \t]+)?/', substr($with, 5));
-        }
-
-        $type = SendStatement::TYPE_MAIL;
-        if (Str::endsWith($object, 'Notification')) {
-            $type = SendStatement::TYPE_NOTIFICATION_WITH_FACADE;
-        }
-
-        return new SendStatement($object, $to, $data, $type, $view);
+        return $statements;
     }
 
     private function analyzeNotify($statement)

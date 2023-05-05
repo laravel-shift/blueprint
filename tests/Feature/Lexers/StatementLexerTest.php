@@ -147,13 +147,13 @@ final class StatementLexerTest extends TestCase
         $actual = $this->subject->analyze($tokens);
 
         $this->assertCount(1, $actual);
-        $this->assertInstanceOf(SendStatement::class, $actual[0]);
+        $this->assertInstanceOf(SendStatement::class, $actual[0][0]);
 
-        $this->assertEquals('ReviewPost', $actual[0]->mail());
-        $this->assertNull($actual[0]->to());
-        $this->assertSame([], $actual[0]->data());
-        $this->assertEquals('emails.review-post', $actual[0]->view());
-        $this->assertEquals(SendStatement::TYPE_MAIL, $actual[0]->type());
+        $this->assertEquals('ReviewPost', $actual[0][0]->mail());
+        $this->assertNull($actual[0][0]->to());
+        $this->assertSame([], $actual[0][0]->data());
+        $this->assertEquals('emails.review-post', $actual[0][0]->view());
+        $this->assertEquals(SendStatement::TYPE_MAIL, $actual[0][0]->type());
     }
 
     #[Test]
@@ -166,13 +166,13 @@ final class StatementLexerTest extends TestCase
         $actual = $this->subject->analyze($tokens);
 
         $this->assertCount(1, $actual);
-        $this->assertInstanceOf(SendStatement::class, $actual[0]);
+        $this->assertInstanceOf(SendStatement::class, $actual[0][0]);
 
-        $this->assertEquals('ReviewPost', $actual[0]->mail());
-        $this->assertEquals('post.author', $actual[0]->to());
-        $this->assertSame([], $actual[0]->data());
-        $this->assertEquals('emails.review-post', $actual[0]->view());
-        $this->assertEquals(SendStatement::TYPE_MAIL, $actual[0]->type());
+        $this->assertEquals('ReviewPost', $actual[0][0]->mail());
+        $this->assertEquals('post.author', $actual[0][0]->to());
+        $this->assertSame([], $actual[0][0]->data());
+        $this->assertEquals('emails.review-post', $actual[0][0]->view());
+        $this->assertEquals(SendStatement::TYPE_MAIL, $actual[0][0]->type());
     }
 
     #[Test]
@@ -185,13 +185,13 @@ final class StatementLexerTest extends TestCase
         $actual = $this->subject->analyze($tokens);
 
         $this->assertCount(1, $actual);
-        $this->assertInstanceOf(SendStatement::class, $actual[0]);
+        $this->assertInstanceOf(SendStatement::class, $actual[0][0]);
 
-        $this->assertEquals('ReviewPost', $actual[0]->mail());
-        $this->assertNull($actual[0]->to());
-        $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
-        $this->assertEquals('emails.review-post', $actual[0]->view());
-        $this->assertEquals(SendStatement::TYPE_MAIL, $actual[0]->type());
+        $this->assertEquals('ReviewPost', $actual[0][0]->mail());
+        $this->assertNull($actual[0][0]->to());
+        $this->assertEquals(['foo', 'bar', 'baz'], $actual[0][0]->data());
+        $this->assertEquals('emails.review-post', $actual[0][0]->view());
+        $this->assertEquals(SendStatement::TYPE_MAIL, $actual[0][0]->type());
     }
 
     #[Test]
@@ -204,13 +204,13 @@ final class StatementLexerTest extends TestCase
         $actual = $this->subject->analyze($tokens);
 
         $this->assertCount(1, $actual);
-        $this->assertInstanceOf(SendStatement::class, $actual[0]);
+        $this->assertInstanceOf(SendStatement::class, $actual[0][0]);
 
-        $this->assertEquals('ReviewPost', $actual[0]->mail());
-        $this->assertEquals('post.author', $actual[0]->to());
-        $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
-        $this->assertEquals('emails.review-post', $actual[0]->view());
-        $this->assertEquals(SendStatement::TYPE_MAIL, $actual[0]->type());
+        $this->assertEquals('ReviewPost', $actual[0][0]->mail());
+        $this->assertEquals('post.author', $actual[0][0]->to());
+        $this->assertEquals(['foo', 'bar', 'baz'], $actual[0][0]->data());
+        $this->assertEquals('emails.review-post', $actual[0][0]->view());
+        $this->assertEquals(SendStatement::TYPE_MAIL, $actual[0][0]->type());
     }
 
     #[Test]
@@ -223,13 +223,13 @@ final class StatementLexerTest extends TestCase
         $actual = $this->subject->analyze($tokens);
 
         $this->assertCount(1, $actual);
-        $this->assertInstanceOf(SendStatement::class, $actual[0]);
+        $this->assertInstanceOf(SendStatement::class, $actual[0][0]);
 
-        $this->assertEquals('ReviewPost', $actual[0]->mail());
-        $this->assertEquals('post.author', $actual[0]->to());
-        $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
-        $this->assertEquals('email.review-post', $actual[0]->view());
-        $this->assertEquals(SendStatement::TYPE_MAIL, $actual[0]->type());
+        $this->assertEquals('ReviewPost', $actual[0][0]->mail());
+        $this->assertEquals('post.author', $actual[0][0]->to());
+        $this->assertEquals(['foo', 'bar', 'baz'], $actual[0][0]->data());
+        $this->assertEquals('email.review-post', $actual[0][0]->view());
+        $this->assertEquals(SendStatement::TYPE_MAIL, $actual[0][0]->type());
     }
 
     #[Test]
@@ -242,12 +242,12 @@ final class StatementLexerTest extends TestCase
         $actual = $this->subject->analyze($tokens);
 
         $this->assertCount(1, $actual);
-        $this->assertInstanceOf(SendStatement::class, $actual[0]);
+        $this->assertInstanceOf(SendStatement::class, $actual[0][0]);
 
-        $this->assertEquals('ReviewNotification', $actual[0]->mail());
-        $this->assertNull($actual[0]->to());
-        $this->assertSame([], $actual[0]->data());
-        $this->assertEquals(SendStatement::TYPE_NOTIFICATION_WITH_FACADE, $actual[0]->type());
+        $this->assertEquals('ReviewNotification', $actual[0][0]->mail());
+        $this->assertNull($actual[0][0]->to());
+        $this->assertSame([], $actual[0][0]->data());
+        $this->assertEquals(SendStatement::TYPE_NOTIFICATION_WITH_FACADE, $actual[0][0]->type());
     }
 
     #[Test]
@@ -260,12 +260,12 @@ final class StatementLexerTest extends TestCase
         $actual = $this->subject->analyze($tokens);
 
         $this->assertCount(1, $actual);
-        $this->assertInstanceOf(SendStatement::class, $actual[0]);
+        $this->assertInstanceOf(SendStatement::class, $actual[0][0]);
 
-        $this->assertEquals('ReviewNotification', $actual[0]->mail());
-        $this->assertEquals('post.author', $actual[0]->to());
-        $this->assertSame([], $actual[0]->data());
-        $this->assertEquals(SendStatement::TYPE_NOTIFICATION_WITH_FACADE, $actual[0]->type());
+        $this->assertEquals('ReviewNotification', $actual[0][0]->mail());
+        $this->assertEquals('post.author', $actual[0][0]->to());
+        $this->assertSame([], $actual[0][0]->data());
+        $this->assertEquals(SendStatement::TYPE_NOTIFICATION_WITH_FACADE, $actual[0][0]->type());
     }
 
     #[Test]
@@ -278,12 +278,12 @@ final class StatementLexerTest extends TestCase
         $actual = $this->subject->analyze($tokens);
 
         $this->assertCount(1, $actual);
-        $this->assertInstanceOf(SendStatement::class, $actual[0]);
+        $this->assertInstanceOf(SendStatement::class, $actual[0][0]);
 
-        $this->assertEquals('ReviewNotification', $actual[0]->mail());
-        $this->assertNull($actual[0]->to());
-        $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
-        $this->assertEquals(SendStatement::TYPE_NOTIFICATION_WITH_FACADE, $actual[0]->type());
+        $this->assertEquals('ReviewNotification', $actual[0][0]->mail());
+        $this->assertNull($actual[0][0]->to());
+        $this->assertEquals(['foo', 'bar', 'baz'], $actual[0][0]->data());
+        $this->assertEquals(SendStatement::TYPE_NOTIFICATION_WITH_FACADE, $actual[0][0]->type());
     }
 
     #[Test]
@@ -296,12 +296,12 @@ final class StatementLexerTest extends TestCase
         $actual = $this->subject->analyze($tokens);
 
         $this->assertCount(1, $actual);
-        $this->assertInstanceOf(SendStatement::class, $actual[0]);
+        $this->assertInstanceOf(SendStatement::class, $actual[0][0]);
 
-        $this->assertEquals('ReviewNotification', $actual[0]->mail());
-        $this->assertEquals('post.author', $actual[0]->to());
-        $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
-        $this->assertEquals(SendStatement::TYPE_NOTIFICATION_WITH_FACADE, $actual[0]->type());
+        $this->assertEquals('ReviewNotification', $actual[0][0]->mail());
+        $this->assertEquals('post.author', $actual[0][0]->to());
+        $this->assertEquals(['foo', 'bar', 'baz'], $actual[0][0]->data());
+        $this->assertEquals(SendStatement::TYPE_NOTIFICATION_WITH_FACADE, $actual[0][0]->type());
     }
 
     #[Test]

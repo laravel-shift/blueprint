@@ -6,6 +6,7 @@ use Blueprint\Blueprint;
 use Blueprint\Generators\StatementGenerator;
 use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Tree;
+use Illuminate\Support\Arr;
 
 class NotificationGenerator extends StatementGenerator
 {
@@ -21,21 +22,23 @@ class NotificationGenerator extends StatementGenerator
         foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
-                    if (!$statement instanceof SendStatement) {
-                        continue;
+                    foreach (Arr::wrap($statement) as $statement) {
+                        if (!$statement instanceof SendStatement) {
+                            continue;
+                        }
+
+                        if (!$statement->isNotification()) {
+                            continue;
+                        }
+
+                        $path = $this->getStatementPath($statement->mail());
+
+                        if ($this->filesystem->exists($path)) {
+                            continue;
+                        }
+
+                        $this->create($path, $this->populateStub($stub, $statement));
                     }
-
-                    if (!$statement->isNotification()) {
-                        continue;
-                    }
-
-                    $path = $this->getStatementPath($statement->mail());
-
-                    if ($this->filesystem->exists($path)) {
-                        continue;
-                    }
-
-                    $this->create($path, $this->populateStub($stub, $statement));
                 }
             }
         }
