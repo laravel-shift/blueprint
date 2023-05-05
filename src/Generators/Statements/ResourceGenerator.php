@@ -80,7 +80,7 @@ class ResourceGenerator extends StatementGenerator implements Generator
         /**
          * @var \Blueprint\Models\Model $model
          */
-        $model = $this->tree->modelForContext($context);
+        $model = $this->tree->modelForContext($context, true);
 
         $data = [];
         if ($resource->collection()) {
