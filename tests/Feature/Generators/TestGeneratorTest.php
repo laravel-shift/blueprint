@@ -210,7 +210,6 @@ final class TestGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
 
-
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
