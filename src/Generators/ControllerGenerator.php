@@ -18,7 +18,6 @@ use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
 use Blueprint\Tree;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class ControllerGenerator extends AbstractClassGenerator implements Generator
@@ -80,70 +79,68 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
             $using_validation = false;
 
             foreach ($statements as $statement) {
-                foreach (Arr::wrap($statement) as $statement) {
-                    if ($statement instanceof SendStatement) {
-                        $body .= self::INDENT . $statement->output() . PHP_EOL;
-                        if ($statement->type() === SendStatement::TYPE_NOTIFICATION_WITH_FACADE) {
-                            $this->addImport($controller, 'Illuminate\\Support\\Facades\\Notification');
-                            $this->addImport($controller, config('blueprint.namespace') . '\\Notification\\' . $statement->mail());
-                        } elseif ($statement->type() === SendStatement::TYPE_MAIL) {
-                            $this->addImport($controller, 'Illuminate\\Support\\Facades\\Mail');
-                            $this->addImport($controller, config('blueprint.namespace') . '\\Mail\\' . $statement->mail());
-                        }
-                    } elseif ($statement instanceof ValidateStatement) {
-                        $using_validation = true;
-                        $class_name = $controller->name() . Str::studly($name) . 'Request';
-
-                        $fqcn = config('blueprint.namespace') . '\\Http\\Requests\\' . ($controller->namespace() ? $controller->namespace() . '\\' : '') . $class_name;
-
-                        $method = str_replace('\Illuminate\Http\Request $request', '\\' . $fqcn . ' $request', $method);
-                        $method = str_replace('(Request $request', '(' . $class_name . ' $request', $method);
-
-                        $this->addImport($controller, $fqcn);
-                    } elseif ($statement instanceof DispatchStatement) {
-                        $body .= self::INDENT . $statement->output() . PHP_EOL;
-                        $this->addImport($controller, config('blueprint.namespace') . '\\Jobs\\' . $statement->job());
-                    } elseif ($statement instanceof FireStatement) {
-                        $body .= self::INDENT . $statement->output() . PHP_EOL;
-                        if (!$statement->isNamedEvent()) {
-                            $this->addImport($controller, config('blueprint.namespace') . '\\Events\\' . $statement->event());
-                        }
-                    } elseif ($statement instanceof RenderStatement) {
-                        $body .= self::INDENT . $statement->output() . PHP_EOL;
-                    } elseif ($statement instanceof ResourceStatement) {
-                        $fqcn = config('blueprint.namespace') . '\\Http\\Resources\\' . ($controller->namespace() ? $controller->namespace() . '\\' : '') . $statement->name();
-                        $this->addImport($controller, $fqcn);
-                        $body .= self::INDENT . $statement->output() . PHP_EOL;
-
-                        if ($statement->paginate()) {
-                            if (!Str::contains($body, '::all();')) {
-                                $queryStatement = new QueryStatement('all', [$statement->reference()]);
-                                $body = implode(PHP_EOL, [
-                                    self::INDENT . $queryStatement->output($statement->reference()),
-                                    PHP_EOL . $body,
-                                ]);
-
-                                $this->addImport($controller, $this->determineModel($controller, $queryStatement->model()));
-                            }
-
-                            $body = str_replace('::all();', '::paginate();', $body);
-                        }
-                    } elseif ($statement instanceof RedirectStatement) {
-                        $body .= self::INDENT . $statement->output() . PHP_EOL;
-                    } elseif ($statement instanceof RespondStatement) {
-                        $body .= self::INDENT . $statement->output() . PHP_EOL;
-                    } elseif ($statement instanceof SessionStatement) {
-                        $body .= self::INDENT . $statement->output() . PHP_EOL;
-                    } elseif ($statement instanceof EloquentStatement) {
-                        $body .= self::INDENT . $statement->output($controller->prefix(), $name, $using_validation) . PHP_EOL;
-                        $this->addImport($controller, $this->determineModel($controller, $statement->reference()));
-                    } elseif ($statement instanceof QueryStatement) {
-                        $body .= self::INDENT . $statement->output($controller->prefix()) . PHP_EOL;
-                        $this->addImport($controller, $this->determineModel($controller, $statement->model()));
+                if ($statement instanceof SendStatement) {
+                    $body .= self::INDENT . $statement->output() . PHP_EOL;
+                    if ($statement->type() === SendStatement::TYPE_NOTIFICATION_WITH_FACADE) {
+                        $this->addImport($controller, 'Illuminate\\Support\\Facades\\Notification');
+                        $this->addImport($controller, config('blueprint.namespace') . '\\Notification\\' . $statement->mail());
+                    } elseif ($statement->type() === SendStatement::TYPE_MAIL) {
+                        $this->addImport($controller, 'Illuminate\\Support\\Facades\\Mail');
+                        $this->addImport($controller, config('blueprint.namespace') . '\\Mail\\' . $statement->mail());
                     }
+                } elseif ($statement instanceof ValidateStatement) {
+                    $using_validation = true;
+                    $class_name = $controller->name() . Str::studly($name) . 'Request';
 
-                    $body .= PHP_EOL;
+                    $fqcn = config('blueprint.namespace') . '\\Http\\Requests\\' . ($controller->namespace() ? $controller->namespace() . '\\' : '') . $class_name;
+
+                    $method = str_replace('\Illuminate\Http\Request $request', '\\' . $fqcn . ' $request', $method);
+                    $method = str_replace('(Request $request', '(' . $class_name . ' $request', $method);
+
+                    $this->addImport($controller, $fqcn);
+                } elseif ($statement instanceof DispatchStatement) {
+                    $body .= self::INDENT . $statement->output() . PHP_EOL;
+                    $this->addImport($controller, config('blueprint.namespace') . '\\Jobs\\' . $statement->job());
+                } elseif ($statement instanceof FireStatement) {
+                    $body .= self::INDENT . $statement->output() . PHP_EOL;
+                    if (!$statement->isNamedEvent()) {
+                        $this->addImport($controller, config('blueprint.namespace') . '\\Events\\' . $statement->event());
+                    }
+                } elseif ($statement instanceof RenderStatement) {
+                    $body .= self::INDENT . $statement->output() . PHP_EOL;
+                } elseif ($statement instanceof ResourceStatement) {
+                    $fqcn = config('blueprint.namespace') . '\\Http\\Resources\\' . ($controller->namespace() ? $controller->namespace() . '\\' : '') . $statement->name();
+                    $this->addImport($controller, $fqcn);
+                    $body .= self::INDENT . $statement->output() . PHP_EOL;
+
+                    if ($statement->paginate()) {
+                        if (!Str::contains($body, '::all();')) {
+                            $queryStatement = new QueryStatement('all', [$statement->reference()]);
+                            $body = implode(PHP_EOL, [
+                                self::INDENT . $queryStatement->output($statement->reference()),
+                                PHP_EOL . $body,
+                            ]);
+
+                            $this->addImport($controller, $this->determineModel($controller, $queryStatement->model()));
+                        }
+
+                        $body = str_replace('::all();', '::paginate();', $body);
+                    }
+                } elseif ($statement instanceof RedirectStatement) {
+                    $body .= self::INDENT . $statement->output() . PHP_EOL;
+                } elseif ($statement instanceof RespondStatement) {
+                    $body .= self::INDENT . $statement->output() . PHP_EOL;
+                } elseif ($statement instanceof SessionStatement) {
+                    $body .= self::INDENT . $statement->output() . PHP_EOL;
+                } elseif ($statement instanceof EloquentStatement) {
+                    $body .= self::INDENT . $statement->output($controller->prefix(), $name, $using_validation) . PHP_EOL;
+                    $this->addImport($controller, $this->determineModel($controller, $statement->reference()));
+                } elseif ($statement instanceof QueryStatement) {
+                    $body .= self::INDENT . $statement->output($controller->prefix()) . PHP_EOL;
+                    $this->addImport($controller, $this->determineModel($controller, $statement->model()));
                 }
+
+                $body .= PHP_EOL;
             }
 
             if (!empty($body)) {

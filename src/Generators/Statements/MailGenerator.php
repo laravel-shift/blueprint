@@ -6,7 +6,6 @@ use Blueprint\Blueprint;
 use Blueprint\Generators\StatementGenerator;
 use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Tree;
-use Illuminate\Support\Arr;
 
 class MailGenerator extends StatementGenerator
 {
@@ -23,29 +22,27 @@ class MailGenerator extends StatementGenerator
         foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $statements) {
                 foreach ($statements as $statement) {
-                    foreach (Arr::wrap($statement) as $statement) {
-                        if (!$statement instanceof SendStatement) {
-                            continue;
-                        }
-
-                        if ($statement->type() !== SendStatement::TYPE_MAIL) {
-                            continue;
-                        }
-
-                        $path = $this->getStatementPath($statement->mail());
-                        if ($this->filesystem->exists($path)) {
-                            continue;
-                        }
-
-                        $this->create($path, $this->populateStub($stub, $statement));
-
-                        $path = $this->getViewPath($statement->view());
-                        if ($this->filesystem->exists($path)) {
-                            continue;
-                        }
-
-                        $this->create($path, $this->populateViewStub($view_stub, $statement));
+                    if (!$statement instanceof SendStatement) {
+                        continue;
                     }
+
+                    if ($statement->type() !== SendStatement::TYPE_MAIL) {
+                        continue;
+                    }
+
+                    $path = $this->getStatementPath($statement->mail());
+                    if ($this->filesystem->exists($path)) {
+                        continue;
+                    }
+
+                    $this->create($path, $this->populateStub($stub, $statement));
+
+                    $path = $this->getViewPath($statement->view());
+                    if ($this->filesystem->exists($path)) {
+                        continue;
+                    }
+
+                    $this->create($path, $this->populateViewStub($view_stub, $statement));
                 }
             }
         }

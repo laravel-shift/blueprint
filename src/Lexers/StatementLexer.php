@@ -37,7 +37,7 @@ class StatementLexer implements Lexer
                 'save', 'delete', 'find' => new EloquentStatement($command, $statement),
                 'update' => $this->analyzeUpdate($statement),
                 'flash', 'store' => new SessionStatement($command, $statement),
-                default => null,
+                default => $this->analyzeDefault($command, $statement),
             };
         }
 
@@ -189,5 +189,24 @@ class StatementLexer implements Lexer
         $columns = preg_split('/,([ \t]+)?/', $statement);
 
         return new EloquentStatement('update', null, $columns);
+    }
+
+    private function analyzeDefault(string $command, string $statement)
+    {
+        if (fnmatch('fire-*', $command)) {
+            return $this->analyzeEvent($statement);
+        }
+
+        if (fnmatch('dispatch-*', $command)) {
+            return $this->analyzeDispatch($statement);
+        }
+
+        if (fnmatch('send-*', $command)) {
+            return $this->analyzeSend($statement);
+        }
+
+        if (fnmatch('notify-*', $command)) {
+            return $this->analyzeNotify($statement);
+        }
     }
 }

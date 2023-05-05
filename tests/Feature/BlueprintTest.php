@@ -297,6 +297,39 @@ final class BlueprintTest extends TestCase
     }
 
     #[Test]
+    public function it_parses_yaml_with_multiple_dispatch_fire_notify_send_keys(): void
+    {
+        $definition = $this->fixture('drafts/multiple-dispatch-fire-notify-send-keys.yaml');
+
+        $expected = [
+            'controllers' => [
+                'Post' => [
+                    'store' => [
+                        'dispatch-4' => 'SyncMedia with:post',
+                        'dispatch-5' => 'SyncMedia with:post',
+                        'dispatch-6' => 'SyncMedia with:post',
+                        'fire-7' => 'NewPost with:post',
+                        'fire-8' => 'NewPost with:post',
+                        'fire-9' => 'NewPost with:post',
+                    ],
+                ],
+                'User' => [
+                    'store' => [
+                        'notify-12' => 'post.author ReviewPost with:post',
+                        'notify-13' => 'post.author ReviewPost with:post',
+                        'notify-14' => 'post.author ReviewPost with:post',
+                        'send-15' => 'ReviewNotification to:post.author with:post',
+                        'send-16' => 'ReviewNotification to:post.author with:post',
+                        'send-17' => 'ReviewNotification to:post.author with:post',
+                    ],
+                ],
+            ],
+        ];
+
+        $this->assertEquals($expected, $this->subject->parse($definition));
+    }
+
+    #[Test]
     public function it_allows_parsing_without_stripping_dashes(): void
     {
         $sequence = [
