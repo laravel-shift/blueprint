@@ -229,7 +229,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
                         $relationship .= sprintf('%s->using(%s::class)', PHP_EOL . str_pad(' ', 12), $column_name);
                         $relationship .= sprintf('%s->as(\'%s\')', PHP_EOL . str_pad(' ', 12), Str::snake($column_name));
 
-                        $foreign = $this->tree->modelForContext($column_name);
+                        $foreign = $this->tree->modelForContext($column_name, true);
                         $columns = $this->pivotColumns($foreign->columns(), $foreign->relationships());
                         if ($columns) {
                             $relationship .= sprintf('%s->withPivot(\'%s\')', PHP_EOL . str_pad(' ', 12), implode("', '", $columns));
