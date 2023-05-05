@@ -351,7 +351,10 @@ class TestGenerator extends AbstractClassGenerator implements Generator
                 } elseif ($statement instanceof RedirectStatement) {
                     $tested_bits |= self::TESTS_REDIRECT;
 
-                    $assertion = sprintf('$response->assertRedirect(route(\'%s\'', $statement->route());
+                    $assertion = sprintf(
+                        '$response->assertRedirect(route(\'%s\'',
+                        config('blueprint.plural_routes') ? Str::plural(Str::kebab($statement->route())) : Str::kebab($statement->route())
+                    );
 
                     if ($statement->data()) {
                         $parameters = array_map(fn ($parameter) => '$' . $parameter, $statement->data());
@@ -452,7 +455,12 @@ class TestGenerator extends AbstractClassGenerator implements Generator
                 }
             }
 
-            $call = sprintf('$response = $this->%s(route(\'%s.%s\'', $this->httpMethodForAction($name), Str::kebab($context), $name);
+            $call = sprintf(
+                '$response = $this->%s(route(\'%s.%s\'',
+                $this->httpMethodForAction($name),
+                config('blueprint.plural_routes') ? Str::plural(Str::kebab($context)) : Str::kebab($context),
+                $name,
+            );
 
             if (in_array($name, ['edit', 'update', 'show', 'destroy'])) {
                 $call .= ', $' . Str::camel($context);
