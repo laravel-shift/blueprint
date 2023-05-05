@@ -29,7 +29,7 @@ class PostController extends Controller
 
         SyncMedia::dispatch($post);
 
-        event(new NewPost($post));
+        NewPost::dispatch($post);
 
         $request->session()->flash('post.title', $post->title);
 

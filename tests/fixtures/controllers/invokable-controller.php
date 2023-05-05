@@ -10,7 +10,7 @@ class ReportController extends Controller
 {
     public function __invoke(Request $request): View
     {
-        event(new ReportGenerated());
+        ReportGenerated::dispatch();
 
         return view('report');
     }
