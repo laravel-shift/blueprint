@@ -30,7 +30,7 @@ class UserController extends Controller
 
         BuildAccount::dispatch($user);
 
-        event(new NewUser($user));
+        NewUser::dispatch($user);
 
         $request->session()->flash('user.name', $user->name);
 
