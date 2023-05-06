@@ -1,0 +1,12 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Models\User;
+{{ imports }}
+use Illuminate\Auth\Access\Response;
+
+class {{ class }}
+{
+    {{ methods }}
+}

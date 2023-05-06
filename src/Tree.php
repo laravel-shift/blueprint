@@ -30,6 +30,11 @@ class Tree
         return $this->tree['models'];
     }
 
+    public function policies()
+    {
+        return $this->tree['policies'];
+    }
+
     public function seeders()
     {
         return $this->tree['seeders'];

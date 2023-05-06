@@ -153,6 +153,84 @@ final class ControllerGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['src/path/Other/Http/UserController.php']], $this->subject->output($tree));
     }
 
+    #[Test]
+    public function output_generates_controller_with_all_policies(): void
+    {
+        $definition = 'drafts/controller-with-all-policies.yaml';
+        $path = 'app/Http/Controllers/PostController.php';
+        $controller = 'controllers/with-all-policies.php';
+
+        $this->filesystem->expects('stub')
+            ->with('controller.class.stub')
+            ->andReturn($this->stub('controller.class.stub'));
+        $this->filesystem->expects('stub')
+            ->with('controller.method.stub')
+            ->andReturn($this->stub('controller.method.stub'));
+
+        $this->filesystem->expects('exists')
+            ->with(dirname($path))
+            ->andReturnTrue();
+        $this->filesystem->expects('put')
+            ->with($path, $this->fixture($controller));
+
+        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tree = $this->blueprint->analyze($tokens);
+        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+    }
+
+    #[Test]
+    public function output_generates_controller_with_some_policies(): void
+    {
+        $definition = 'drafts/controller-with-some-policies.yaml';
+        $path = 'app/Http/Controllers/PostController.php';
+        $controller = 'controllers/with-some-policies.php';
+
+        $this->filesystem->expects('stub')
+            ->with('controller.class.stub')
+            ->andReturn($this->stub('controller.class.stub'));
+        $this->filesystem->expects('stub')
+            ->with('controller.method.stub')
+            ->andReturn($this->stub('controller.method.stub'));
+
+        $this->filesystem->expects('exists')
+            ->with(dirname($path))
+            ->andReturnTrue();
+        $this->filesystem->expects('put')
+            ->with($path, $this->fixture($controller));
+
+        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tree = $this->blueprint->analyze($tokens);
+        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+    }
+
+    #[Test]
+    public function output_generates_controller_with_authorize_resource(): void
+    {
+        $definition = 'drafts/controller-with-authorize-resource.yaml';
+        $path = 'app/Http/Controllers/PostController.php';
+        $controller = 'controllers/with-authorize-resource.php';
+
+        $this->filesystem->expects('stub')
+            ->with('controller.class.stub')
+            ->andReturn($this->stub('controller.class.stub'));
+        $this->filesystem->expects('stub')
+            ->with('controller.method.stub')
+            ->andReturn($this->stub('controller.method.stub'));
+        $this->filesystem->expects('stub')
+            ->with('controller.authorize-resource.stub')
+            ->andReturn($this->stub('controller.authorize-resource.stub'));
+
+        $this->filesystem->expects('exists')
+            ->with(dirname($path))
+            ->andReturnTrue();
+        $this->filesystem->expects('put')
+            ->with($path, $this->fixture($controller));
+
+        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tree = $this->blueprint->analyze($tokens);
+        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+    }
+
     public static function controllerTreeDataProvider(): array
     {
         return [
