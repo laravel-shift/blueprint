@@ -38,6 +38,8 @@ class Blueprint
             $content = preg_replace('/^(\s*)-\s*/m', '\1', $content);
         }
 
+        $content = $this->transformDuplicatePropertyKeys($content, ['dispatch', 'fire', 'notify', 'send']);
+
         $content = preg_replace_callback(
             '/^(\s+)(id|timestamps(Tz)?|softDeletes(Tz)?)$/mi',
             fn ($matches) => $matches[1] . strtolower($matches[2]) . ': ' . $matches[2],
@@ -135,5 +137,45 @@ class Blueprint
         }
 
         return true;
+    }
+
+    private function transformDuplicatePropertyKeys(string $content, array $properties): string
+    {
+        $contentArray = explode("\n", $content);
+
+        foreach ($properties as $property) {
+            if (!str_contains($content, $property)) {
+                continue;
+            }
+
+            preg_match_all(
+                sprintf('/[^\S\r\n]*%s: .*/', $property),
+                $content,
+                $lines,
+                PREG_OFFSET_CAPTURE
+            );
+
+            if (count($lines) === 0) {
+                return $content;
+            }
+
+            if (count($lines[0]) <= 1) {
+                return $content;
+            }
+
+            foreach ($lines[0] as $line) {
+                $lineNumber = count(explode("\n", mb_substr($content, 0, $line[1])));
+
+                $replacement = str_replace(
+                    $property . ':',
+                    sprintf('"%s-%s":', $property, $lineNumber, trim($line[0])),
+                    $line[0]
+                );
+
+                $contentArray[$lineNumber - 1] = $replacement;
+            }
+        }
+
+        return implode("\n", $contentArray);
     }
 }
