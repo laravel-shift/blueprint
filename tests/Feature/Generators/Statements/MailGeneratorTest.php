@@ -191,6 +191,51 @@ final class MailGeneratorTest extends TestCase
     }
 
     #[Test]
+    public function it_respects_configuration_for_constructor_property_promotion(): void
+    {
+        $this->app['config']->set('blueprint.namespace', 'Some\\App');
+        $this->app['config']->set('blueprint.app_path', 'src/path');
+        $this->app['config']->set('blueprint.constructor_property_promotion', true);
+
+        $this->filesystem->expects('stub')
+            ->with('mail.stub')
+            ->andReturn($this->stub('mail.stub'));
+        $this->filesystem->expects('stub')
+            ->with('mail.view.stub')
+            ->andReturn($this->stub('mail.view.stub'));
+        $this->filesystem->expects('stub')
+            ->with('constructor.stub')
+            ->andReturn($this->stub('constructor.stub'));
+        $this->filesystem->expects('exists')
+            ->with('src/path/Mail')
+            ->andReturnFalse();
+        $this->filesystem->expects('exists')
+            ->with('src/path/Mail/ReviewPost.php')
+            ->andReturnFalse();
+        $this->filesystem->expects('makeDirectory')
+            ->with('src/path/Mail', 0755, true);
+        $this->filesystem->expects('put')
+            ->with('src/path/Mail/ReviewPost.php', $this->fixture('mailables/mail-configured-with-constructor-property-promotion.php'));
+        $this->filesystem->expects('exists')
+            ->with('resources/views/emails/review-post.blade.php')
+            ->andReturnFalse();
+        $this->filesystem->expects('makeDirectory')
+            ->with('resources/views/emails', 0755, true);
+        $this->filesystem->expects('put')
+            ->with('resources/views/emails/review-post.blade.php', $this->fixture('mailables/review-post-view.blade.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals([
+            'created' => [
+                'src/path/Mail/ReviewPost.php',
+                'resources/views/emails/review-post.blade.php',
+            ],
+        ], $this->subject->output($tree));
+    }
+
+    #[Test]
     public function output_writes_mails_but_not_existing_templates(): void
     {
         $this->filesystem->expects('stub')
