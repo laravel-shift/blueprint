@@ -25,7 +25,7 @@ use Blueprint\Tree;
 use Illuminate\Support\Str;
 use Shift\Faker\Registry as FakerRegistry;
 
-class TestGenerator extends AbstractClassGenerator implements Generator
+class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
 {
     use HandlesImports, HandlesTraits;
 
@@ -47,11 +47,12 @@ class TestGenerator extends AbstractClassGenerator implements Generator
     {
         $this->tree = $tree;
 
-        $stub = $this->filesystem->stub('test.class.stub');
+        $stub = $this->filesystem->stub('phpunit.test.class.stub');
 
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree->controllers() as $controller) {
             $this->addImport($controller, \Tests\TestCase::class);
+
             $path = $this->getPath($controller);
 
             $this->create($path, $this->populateStub($stub, $controller));
@@ -459,7 +460,7 @@ class TestGenerator extends AbstractClassGenerator implements Generator
                 '$response = $this->%s(route(\'%s.%s\'',
                 $this->httpMethodForAction($name),
                 config('blueprint.plural_routes') ? Str::plural(Str::kebab($context)) : Str::kebab($context),
-                $name,
+                $name
             );
 
             if (in_array($name, ['edit', 'update', 'show', 'destroy'])) {
@@ -499,7 +500,7 @@ class TestGenerator extends AbstractClassGenerator implements Generator
     private function testCaseStub()
     {
         if (empty($this->stubs['test-case'])) {
-            $this->stubs['test-case'] = $this->filesystem->stub('test.case.stub');
+            $this->stubs['test-case'] = $this->filesystem->stub('phpunit.test.case.stub');
         }
 
         return $this->stubs['test-case'];
