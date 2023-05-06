@@ -166,14 +166,6 @@ final class ControllerGeneratorTest extends TestCase
         $this->filesystem->expects('stub')
             ->with('controller.method.stub')
             ->andReturn($this->stub('controller.method.stub'));
-        $this->filesystem->expects('stub')
-            ->times(3)
-            ->with('controller.policy-with-model.stub')
-            ->andReturn($this->stub('controller.policy-with-model.stub'));
-        $this->filesystem->expects('stub')
-            ->times(4)
-            ->with('controller.policy-without-model.stub')
-            ->andReturn($this->stub('controller.policy-without-model.stub'));
 
         $this->filesystem->expects('exists')
             ->with(dirname($path))
@@ -199,10 +191,6 @@ final class ControllerGeneratorTest extends TestCase
         $this->filesystem->expects('stub')
             ->with('controller.method.stub')
             ->andReturn($this->stub('controller.method.stub'));
-        $this->filesystem->expects('stub')
-            ->times(2)
-            ->with('controller.policy-without-model.stub')
-            ->andReturn($this->stub('controller.policy-without-model.stub'));
 
         $this->filesystem->expects('exists')
             ->with(dirname($path))
@@ -231,14 +219,6 @@ final class ControllerGeneratorTest extends TestCase
         $this->filesystem->expects('stub')
             ->with('controller.authorize-resource.stub')
             ->andReturn($this->stub('controller.authorize-resource.stub'));
-        $this->filesystem->expects('stub')
-            ->times(0)
-            ->with('controller.policy-with-model.stub')
-            ->andReturn($this->stub('controller.policy-with-model.stub'));
-        $this->filesystem->expects('stub')
-            ->times(0)
-            ->with('controller.policy-without-model.stub')
-            ->andReturn($this->stub('controller.policy-without-model.stub'));
 
         $this->filesystem->expects('exists')
             ->with(dirname($path))

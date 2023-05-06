@@ -62,8 +62,13 @@ class ControllerLexer implements Lexer
                     $policy = new Policy(
                         $controller->prefix(),
                         $authorizeResource === true
-                            ? array_keys(Policy::$resourceAbilityMap)
-                            : preg_split('/,([ \t]+)?/', $definition['meta']['policies']),
+                            ? Policy::$supportedMethods
+                            : array_unique(
+                                array_map(
+                                    fn (string $method): string => Policy::$resourceAbilityMap[$method],
+                                    preg_split('/,([ \t]+)?/', $definition['meta']['policies'])
+                                )
+                            ),
                         $authorizeResource === true,
                     );
 

@@ -459,7 +459,7 @@ final class ControllerLexerTest extends TestCase
 
         $controller = $actual['controllers']['Report'];
         $this->assertInstanceOf(Policy::class, $controller->policy());
-        $this->assertEquals(array_keys(Policy::$resourceAbilityMap), $controller->policy()->methods());
+        $this->assertEquals(Policy::$supportedMethods, $controller->policy()->methods());
     }
 
     #[Test]
@@ -484,6 +484,6 @@ final class ControllerLexerTest extends TestCase
 
         $controller = $actual['controllers']['Report'];
         $this->assertInstanceOf(Policy::class, $controller->policy());
-        $this->assertEquals(['index', 'show'], $controller->policy()->methods());
+        $this->assertEquals(['viewAny', 'view'], $controller->policy()->methods());
     }
 }

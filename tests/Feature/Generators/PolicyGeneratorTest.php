@@ -63,12 +63,6 @@ final class PolicyGeneratorTest extends TestCase
             ->with('policy.method.create.stub')
             ->andReturn($this->stub('policy.method.create.stub'));
         $this->filesystem->expects('stub')
-            ->with('policy.method.create.stub')
-            ->andReturn($this->stub('policy.method.create.stub'));
-        $this->filesystem->expects('stub')
-            ->with('policy.method.update.stub')
-            ->andReturn($this->stub('policy.method.update.stub'));
-        $this->filesystem->expects('stub')
             ->with('policy.method.update.stub')
             ->andReturn($this->stub('policy.method.update.stub'));
         $this->filesystem->expects('stub')
@@ -135,12 +129,6 @@ final class PolicyGeneratorTest extends TestCase
         $this->filesystem->expects('stub')
             ->with('policy.method.create.stub')
             ->andReturn($this->stub('policy.method.create.stub'));
-        $this->filesystem->expects('stub')
-            ->with('policy.method.create.stub')
-            ->andReturn($this->stub('policy.method.create.stub'));
-        $this->filesystem->expects('stub')
-            ->with('policy.method.update.stub')
-            ->andReturn($this->stub('policy.method.update.stub'));
         $this->filesystem->expects('stub')
             ->with('policy.method.update.stub')
             ->andReturn($this->stub('policy.method.update.stub'));

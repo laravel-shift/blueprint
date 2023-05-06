@@ -29,17 +29,6 @@ class Policy implements BlueprintModel
         'destroy' => 'delete',
     ];
 
-    /** @var array */
-    public static $resourceAbilityStubMap = [
-        'index' => 'controller.policy-without-model.stub',
-        'show' => 'controller.policy-without-model.stub',
-        'create' => 'controller.policy-without-model.stub',
-        'store' => 'controller.policy-without-model.stub',
-        'edit' => 'controller.policy-with-model.stub',
-        'update' => 'controller.policy-with-model.stub',
-        'destroy' => 'controller.policy-with-model.stub',
-    ];
-
     /**
      * @var string
      */

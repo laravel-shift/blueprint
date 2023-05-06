@@ -56,10 +56,10 @@ class PolicyGenerator extends AbstractClassGenerator implements Generator
                     Str::studly($policy->name()),
                     Str::camel($policy->name()),
                 ],
-                $this->filesystem->stub('policy.method.' . Policy::$resourceAbilityMap[$name] . '.stub'),
+                $this->filesystem->stub('policy.method.' . $name . '.stub'),
             ) . PHP_EOL;
         }
 
-        return $methods;
+        return trim($methods);
     }
 }

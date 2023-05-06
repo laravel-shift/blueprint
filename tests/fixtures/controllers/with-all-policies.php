@@ -41,7 +41,7 @@ class PostController extends Controller
 
     public function show(Request $request, Post $post): View
     {
-        $this->authorize('show', Post::class);
+        $this->authorize('show', $post);
 
         return view('post.show', compact('post'));
     }

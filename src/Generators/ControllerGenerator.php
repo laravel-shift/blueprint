@@ -95,8 +95,8 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
             $using_validation = false;
 
             if ($controller->policy() && !$controller->policy()->authorizeResource()) {
-                if (in_array($name, $controller->policy()->methods())) {
-                    $body .= str_replace(
+                if (in_array(Policy::$resourceAbilityMap[$name], $controller->policy()->methods())) {
+                    $body .= self::INDENT . str_replace(
                         [
                             '{{ method }}',
                             '{{ modelClass }}',
@@ -107,8 +107,10 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
                             Str::studly($controllerModelName),
                             '$' . Str::camel($controllerModelName),
                         ],
-                        $this->filesystem->stub(Policy::$resourceAbilityStubMap[$name])
-                    ) . PHP_EOL;
+                        in_array($name, ['index', 'create', 'store'])
+                            ? "\$this->authorize('{{ method }}', {{ modelClass }}::class);"
+                            : "\$this->authorize('{{ method }}', {{ modelVariable }});"
+                    ) . PHP_EOL . PHP_EOL;
                 }
             }
 
