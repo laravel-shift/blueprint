@@ -140,4 +140,34 @@ final class EventGeneratorTest extends TestCase
 
         $this->assertEquals(['created' => ['src/path/Events/NewPost.php']], $this->subject->output($tree));
     }
+
+    #[Test]
+    public function it_respects_configuration_for_constructor_property_promotion(): void
+    {
+        $this->app['config']->set('blueprint.namespace', 'Some\\App');
+        $this->app['config']->set('blueprint.app_path', 'src/path');
+        $this->app['config']->set('blueprint.constructor_property_promotion', true);
+
+        $this->filesystem->expects('stub')
+            ->with('event.stub')
+            ->andReturn($this->stub('event.stub'));
+        $this->filesystem->expects('stub')
+            ->with('constructor.stub')
+            ->andReturn($this->stub('constructor.stub'));
+        $this->filesystem->expects('exists')
+            ->with('src/path/Events')
+            ->andReturnFalse();
+        $this->filesystem->expects('makeDirectory')
+            ->with('src/path/Events', 0755, true);
+        $this->filesystem->expects('exists')
+            ->with('src/path/Events/NewPost.php')
+            ->andReturnFalse();
+        $this->filesystem->expects('put')
+            ->with('src/path/Events/NewPost.php', $this->fixture('events/event-configured-with-constructor-property-promotion.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['src/path/Events/NewPost.php']], $this->subject->output($tree));
+    }
 }

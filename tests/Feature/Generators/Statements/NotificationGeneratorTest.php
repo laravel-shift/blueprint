@@ -148,6 +148,36 @@ final class NotificationGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['src/path/Notification/ReviewNotification.php']], $this->subject->output($tree));
     }
 
+    #[Test]
+    public function it_respects_configuration_for_constructor_property_promotion(): void
+    {
+        $this->app['config']->set('blueprint.namespace', 'Some\\App');
+        $this->app['config']->set('blueprint.app_path', 'src/path');
+        $this->app['config']->set('blueprint.constructor_property_promotion', true);
+
+        $this->filesystem->expects('stub')
+            ->with('notification.stub')
+            ->andReturn($this->stub('notification.stub'));
+        $this->filesystem->expects('stub')
+            ->with('constructor.stub')
+            ->andReturn($this->stub('constructor.stub'));
+        $this->filesystem->expects('exists')
+            ->with('src/path/Notification')
+            ->andReturnFalse();
+        $this->filesystem->expects('exists')
+            ->with('src/path/Notification/ReviewNotification.php')
+            ->andReturnFalse();
+        $this->filesystem->expects('makeDirectory')
+            ->with('src/path/Notification', 0755, true);
+        $this->filesystem->expects('put')
+            ->with('src/path/Notification/ReviewNotification.php', $this->fixture('notifications/notification-configured-with-constructor-property-promotion.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example-notification-facade.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['src/path/Notification/ReviewNotification.php']], $this->subject->output($tree));
+    }
+
     public static function notificationDraftProvider(): array
     {
         return [
