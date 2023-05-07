@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('tagables', function (Blueprint $table) {
             $table->foreignId('tag_id');
-            $table->unsignedBigInteger('tagable_id');
-            $table->string('tagable_type');
+            $table->morphs('tagable');
         });
     }
 

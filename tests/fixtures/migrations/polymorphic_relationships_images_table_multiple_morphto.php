@@ -14,10 +14,8 @@ return new class extends Migration
         Schema::create('images', function (Blueprint $table) {
             $table->id();
             $table->string('url', 400);
-            $table->unsignedBigInteger('imageable_id');
-            $table->string('imageable_type');
-            $table->unsignedBigInteger('tagable_id');
-            $table->string('tagable_type');
+            $table->morphs('imageable');
+            $table->morphs('tagable');
             $table->timestamps();
         });
     }
