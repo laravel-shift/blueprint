@@ -247,8 +247,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
 
         if (array_key_exists('morphTo', $relationships)) {
             foreach ($relationships['morphTo'] as $morphTo) {
-                $definition .= self::INDENT . sprintf('$table->unsignedBigInteger(\'%s\');', Str::lower($morphTo . '_id')) . PHP_EOL;
-                $definition .= self::INDENT . sprintf('$table->string(\'%s\');', Str::lower($morphTo . '_type')) . PHP_EOL;
+                $definition .= self::INDENT . sprintf('$table->morphs(\'%s\');', Str::lower($morphTo)) . PHP_EOL;
             }
         }
 
@@ -309,8 +308,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             $definition .= self::INDENT . '$table->foreignId(\'' . $foreign . '\');' . PHP_EOL;
         }
 
-        $definition .= self::INDENT . sprintf('$table->unsignedBigInteger(\'%s\');', Str::lower(Str::singular($parentTable) . 'able' . '_id')) . PHP_EOL;
-        $definition .= self::INDENT . sprintf('$table->string(\'%s\');', Str::lower(Str::singular($parentTable) . 'able' . '_type')) . PHP_EOL;
+        $definition .= self::INDENT . sprintf('$table->morphs(\'%s\');', Str::lower(Str::singular($parentTable) . 'able')) . PHP_EOL;
 
         return trim($definition);
     }
