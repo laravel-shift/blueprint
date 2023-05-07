@@ -54,8 +54,11 @@ class Tree
 
         $matches = array_filter(
             array_keys($this->models),
-            fn ($key) => Str::endsWith(Str::afterLast(Str::afterLast($key, '\\'), '/'), [Str::studly($context), Str::studly(Str::plural($context))]
-            ));
+            fn ($key) => Str::endsWith(
+                Str::afterLast(Str::afterLast($key, '\\'), '/'),
+                [Str::studly($context), Str::studly(Str::plural($context))]
+            )
+        );
 
         if (count($matches) !== 1) {
             if ($throw) {
