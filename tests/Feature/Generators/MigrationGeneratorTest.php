@@ -581,6 +581,31 @@ final class MigrationGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$user_migration, $team_migration, $pivot_migration]], $this->subject->output($tree));
     }
 
+    #[Test]
+    public function output_omits_length_for_integers(): void
+    {
+        $this->filesystem->expects('stub')
+            ->with('migration.stub')
+            ->andReturn($this->stub('migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $timestamp_path = 'database/migrations/' . $now->format('Y_m_d_His') . '_create_omits_table.php';
+
+        $this->filesystem->expects('exists')
+            ->with($timestamp_path)
+            ->andReturn(false);
+
+        $this->filesystem->expects('put')
+            ->with($timestamp_path, $this->fixture('migrations/omits-length-for-integers.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/omits-length-for-integers.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
+    }
+
     public function modelTreeDataProvider()
     {
         return [

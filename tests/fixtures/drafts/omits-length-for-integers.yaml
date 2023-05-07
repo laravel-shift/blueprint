@@ -1,0 +1,12 @@
+models:
+  Omit:
+    integer: integer:3 unique
+    tiny_integer: tinyInteger:3 unique
+    small_integer: smallInteger:3 unique
+    medium_integer: mediumInteger:3 unique
+    big_integer: bigInteger:3 unique
+    unsigned_integer: unsignedInteger:3 unique
+    unsigned_tiny_integer: unsignedTinyInteger:3 unique
+    unsigned_small_integer: unsignedSmallInteger:3 unique
+    unsigned_medium_integer: unsignedMediumInteger:3 unique
+    unsigned_big_integer: unsignedBigInteger:3 unique
