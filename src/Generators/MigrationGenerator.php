@@ -43,6 +43,19 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         'tinyInteger',
     ];
 
+    const INTEGER_TYPES = [
+        'integer',
+        'tinyInteger',
+        'smallInteger',
+        'mediumInteger',
+        'bigInteger',
+        'unsignedInteger',
+        'unsignedTinyInteger',
+        'unsignedSmallInteger',
+        'unsignedMediumInteger',
+        'unsignedBigInteger',
+    ];
+
     private $hasForeignKeyConstraints = false;
 
     public function output(Tree $tree, $overwrite = false): array
@@ -177,12 +190,22 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
                 $column_definition .= '$table->' . $dataType . "('{$column->name()}'";
             }
 
-            if (!empty($column->attributes()) && !$this->isIdOrUuid($column->dataType())) {
+            $columnAttributes = $column->attributes();
+
+            if (in_array($dataType, self::INTEGER_TYPES)) {
+                $columnAttributes = array_filter(
+                    $columnAttributes,
+                    fn ($columnAttribute) => !is_numeric($columnAttribute),
+                );
+            }
+
+            if (!empty($columnAttributes) && !$this->isIdOrUuid($column->dataType())) {
                 $column_definition .= ', ';
+
                 if (in_array($column->dataType(), ['set', 'enum'])) {
-                    $column_definition .= json_encode($column->attributes());
+                    $column_definition .= json_encode($columnAttributes);
                 } else {
-                    $column_definition .= implode(', ', $column->attributes());
+                    $column_definition .= implode(', ', $columnAttributes);
                 }
             }
 
@@ -199,7 +222,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
                     $column->name(),
                     $foreign_modifier === 'foreign' ? null : $foreign_modifier,
                     $column->dataType(),
-                    $column->attributes(),
+                    $columnAttributes,
                     $column->modifiers()
                 );
 
