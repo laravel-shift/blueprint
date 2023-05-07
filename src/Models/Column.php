@@ -64,12 +64,8 @@ class Column
         return in_array('unsigned', $this->modifiers);
     }
 
-    public static function columnName($qualifiedName)
+    public static function columnName($reference)
     {
-        if (Str::contains($qualifiedName, '.')) {
-            return Str::after($qualifiedName, '.');
-        }
-
-        return $qualifiedName;
+        return Str::after($reference, '.');
     }
 }

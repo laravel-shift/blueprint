@@ -37,14 +37,14 @@ class FireStatement
 
     public function output()
     {
+        $template = '%s::dispatch(%s);';
+
         if ($this->isNamedEvent()) {
             if ($this->data()) {
                 $template = "event('%s', [%s]);";
             } else {
                 $template = "event('%s');";
             }
-        } else {
-            $template = '%s::dispatch(%s);';
         }
 
         return sprintf(

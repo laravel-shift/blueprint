@@ -191,11 +191,11 @@ final class MailGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_respects_configuration_for_constructor_property_promotion(): void
+    public function it_respects_configuration_for_property_promotion(): void
     {
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
         $this->app['config']->set('blueprint.app_path', 'src/path');
-        $this->app['config']->set('blueprint.constructor_property_promotion', true);
+        $this->app['config']->set('blueprint.property_promotion', true);
 
         $this->filesystem->expects('stub')
             ->with('mail.stub')

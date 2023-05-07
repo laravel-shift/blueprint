@@ -38,7 +38,7 @@ class Blueprint
             $content = preg_replace('/^(\s*)-\s*/m', '\1', $content);
         }
 
-        $content = $this->transformDuplicatePropertyKeys($content, ['dispatch', 'fire', 'notify', 'send']);
+        $content = $this->transformDuplicatePropertyKeys($content);
 
         $content = preg_replace_callback(
             '/^(\s+)(id|timestamps(Tz)?|softDeletes(Tz)?)$/mi',
@@ -139,43 +139,58 @@ class Blueprint
         return true;
     }
 
-    private function transformDuplicatePropertyKeys(string $content, array $properties): string
+    private function transformDuplicatePropertyKeys(string $content): string
     {
-        $contentArray = explode("\n", $content);
+        preg_match('/^controllers:$/m', $content, $matches, PREG_OFFSET_CAPTURE);
 
-        foreach ($properties as $property) {
-            if (!str_contains($content, $property)) {
+        if (empty($matches)) {
+            return $content;
+        }
+
+        $offset = $matches[0][1];
+        $lines = explode("\n", substr($content, $offset));
+
+        $methods = [];
+        $statements = [];
+        foreach ($lines as $index => $line) {
+            $method = preg_match('/^( {2}| {4}|\t){2}\w+:$/', $line);
+            if ($method) {
+                $methods[] = $statements ?? [];
+                $statements = [];
+
                 continue;
             }
 
-            preg_match_all(
-                sprintf('/[^\S\r\n]*%s: .*/', $property),
-                $content,
-                $lines,
-                PREG_OFFSET_CAPTURE
-            );
-
-            if (count($lines) === 0) {
-                return $content;
+            preg_match('/^( {2}| {4}|\t){3}(dispatch|fire|notify|send):\s/', $line, $matches);
+            if (empty($matches)) {
+                continue;
             }
 
-            if (count($lines[0]) <= 1) {
-                return $content;
-            }
-
-            foreach ($lines[0] as $line) {
-                $lineNumber = count(explode("\n", mb_substr($content, 0, $line[1])));
-
-                $replacement = str_replace(
-                    $property . ':',
-                    sprintf('"%s-%s":', $property, $lineNumber, trim($line[0])),
-                    $line[0]
-                );
-
-                $contentArray[$lineNumber - 1] = $replacement;
-            }
+            $statements[$index] = $matches[2];
         }
 
-        return implode("\n", $contentArray);
+        $methods[] = $statements ?? [];
+
+        $multiples = collect($methods)
+            ->filter(fn ($statements) => count(array_unique($statements)) !== count($statements))
+            ->mapWithKeys(fn ($statements) => $statements);
+
+        if ($multiples->isEmpty()) {
+            return $content;
+        }
+
+        foreach ($multiples as $line => $statement) {
+            $lines[$line] = preg_replace(
+                '/^(\s+)' . $statement . ':/',
+                '$1' . $statement . '-' . $line . ':',
+                $lines[$line]
+            );
+        }
+
+        return substr_replace(
+            $content,
+            implode("\n", $lines),
+            $offset
+        );
     }
 }

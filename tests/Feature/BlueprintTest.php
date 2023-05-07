@@ -305,22 +305,22 @@ final class BlueprintTest extends TestCase
             'controllers' => [
                 'Post' => [
                     'store' => [
+                        'dispatch-3' => 'SyncMedia with:post',
                         'dispatch-4' => 'SyncMedia with:post',
                         'dispatch-5' => 'SyncMedia with:post',
-                        'dispatch-6' => 'SyncMedia with:post',
+                        'fire-6' => 'NewPost with:post',
                         'fire-7' => 'NewPost with:post',
                         'fire-8' => 'NewPost with:post',
-                        'fire-9' => 'NewPost with:post',
                     ],
                 ],
                 'User' => [
                     'store' => [
+                        'notify-11' => 'post.author ReviewPost with:post',
                         'notify-12' => 'post.author ReviewPost with:post',
                         'notify-13' => 'post.author ReviewPost with:post',
-                        'notify-14' => 'post.author ReviewPost with:post',
+                        'send-14' => 'ReviewNotification to:post.author with:post',
                         'send-15' => 'ReviewNotification to:post.author with:post',
                         'send-16' => 'ReviewNotification to:post.author with:post',
-                        'send-17' => 'ReviewNotification to:post.author with:post',
                     ],
                 ],
             ],

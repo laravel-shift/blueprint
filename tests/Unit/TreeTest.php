@@ -15,7 +15,7 @@ final class TreeTest extends TestCase
     public function it_throws_when_a_referenced_model_cannot_be_found(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The [App\Models\Unknown] model class could not be found or autoloaded. Please ensure that the model class name is correctly spelled, adheres to the appropriate namespace, and that the file containing the class is properly located within the "app/Models" directory or another relevant directory as configured.');
+        $this->expectExceptionMessage('The model class [App\Models\Unknown] could not be found.');
 
         $tree = new Tree(['models' => []]);
         $tree->modelForContext('Unknown', true);

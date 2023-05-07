@@ -23,7 +23,7 @@ abstract class StatementGenerator extends AbstractClassGenerator implements Gene
 
     protected function buildProperties(array $data)
     {
-        if (config('blueprint.constructor_property_promotion')) {
+        if (config('blueprint.property_promotion')) {
             return '';
         }
 
@@ -42,7 +42,7 @@ abstract class StatementGenerator extends AbstractClassGenerator implements Gene
 
     protected function buildAssignments(array $data)
     {
-        if (config('blueprint.constructor_property_promotion')) {
+        if (config('blueprint.property_promotion')) {
             return '//';
         }
 
@@ -61,7 +61,7 @@ abstract class StatementGenerator extends AbstractClassGenerator implements Gene
 
     protected function buildParameters(array $data)
     {
-        if (config('blueprint.constructor_property_promotion')) {
+        if (config('blueprint.property_promotion')) {
             $parameters = array_map(
                 fn ($parameter) => 'public $' . $parameter,
                 $data

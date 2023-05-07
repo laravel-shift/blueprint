@@ -56,10 +56,6 @@ class PestTestGenerator extends AbstractClassGenerator implements Generator
             $this->create($path, $this->populateStub($stub, $controller));
         }
 
-        if (count($this->output) > 0) {
-            $this->create('tests/Pest.php', $this->filesystem->stub('pest.pest.stub'));
-        }
-
         return $this->output;
     }
 

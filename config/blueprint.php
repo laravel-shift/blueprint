@@ -121,13 +121,12 @@ return [
     | Constructor Property Promotion
     |--------------------------------------------------------------------------
     |
-    | PHP 8.0 offers a new feature called "constructor property promotion."
-    | If you are running PHP >= 8.0, you may enable this feature to tell
-    | Blueprint to generate constructor signatures and properties for
-    | your classes automatically if you don't explicitly do so.
+    | By default, Blueprint generates class properties explicitly. You may enable
+    | this option to have Blueprint generate code for classes which contain a
+    | constructor to set properties with "constructor property promotion".
     |
     */
-    'constructor_property_promotion' => false,
+    'property_promotion' => false,
 
     /*
     |--------------------------------------------------------------------------

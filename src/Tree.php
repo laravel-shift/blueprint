@@ -8,6 +8,8 @@ class Tree
 {
     private $tree;
 
+    private $models = [];
+
     public function __construct(array $tree)
     {
         $this->tree = $tree;
@@ -40,7 +42,7 @@ class Tree
         return $this->tree['seeders'];
     }
 
-    public function modelForContext(string $context, bool $throwWhenMissing = false)
+    public function modelForContext(string $context, bool $throw = false)
     {
         if (isset($this->models[Str::studly($context)])) {
             return $this->models[Str::studly($context)];
@@ -50,20 +52,20 @@ class Tree
             return $this->models[Str::studly(Str::plural($context))];
         }
 
-        $matches = array_filter(array_keys($this->models), fn ($key) => Str::endsWith(Str::afterLast(Str::afterLast($key, '\\'), '/'), [Str::studly($context), Str::studly(Str::plural($context))]));
+        $matches = array_filter(
+            array_keys($this->models),
+            fn ($key) => Str::endsWith(Str::afterLast(Str::afterLast($key, '\\'), '/'), [Str::studly($context), Str::studly(Str::plural($context))]
+            ));
 
-        if (count($matches) === 1) {
-            return $this->models[current($matches)];
+        if (count($matches) !== 1) {
+            if ($throw) {
+                throw new \InvalidArgumentException(sprintf('The model class [%s] could not be found.', $this->fqcnForContext($context)));
+            }
+
+            return null;
         }
 
-        if ($throwWhenMissing) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'The [%s] model class could not be found or autoloaded. Please ensure that the model class name is correctly spelled, adheres to the appropriate namespace, and that the file containing the class is properly located within the "app/Models" directory or another relevant directory as configured.',
-                    $this->fqcnForContext($context),
-                )
-            );
-        }
+        return $this->models[current($matches)];
     }
 
     public function fqcnForContext(string $context)
