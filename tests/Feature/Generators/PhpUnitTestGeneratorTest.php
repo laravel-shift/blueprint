@@ -3,7 +3,7 @@
 namespace Tests\Feature\Generators;
 
 use Blueprint\Blueprint;
-use Blueprint\Generators\TestGenerator;
+use Blueprint\Generators\PhpUnitTestGenerator;
 use Blueprint\Lexers\StatementLexer;
 use Blueprint\Tree;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -11,20 +11,20 @@ use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
- * @see TestGenerator
+ * @see PhpUnitTestGenerator
  */
-final class TestGeneratorTest extends TestCase
+final class PhpUnitTestGeneratorTest extends TestCase
 {
     private $blueprint;
 
-    /** @var TestGenerator */
+    /** @var PhpUnitTestGenerator */
     private $subject;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->subject = new TestGenerator($this->filesystem);
+        $this->subject = new PhpUnitTestGenerator($this->filesystem);
 
         $this->blueprint = new Blueprint();
         $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
@@ -36,8 +36,8 @@ final class TestGeneratorTest extends TestCase
     public function output_writes_nothing_for_empty_tree(): void
     {
         $this->filesystem->expects('stub')
-            ->with('test.class.stub')
-            ->andReturn($this->stub('test.class.stub'));
+            ->with('phpunit.test.class.stub')
+            ->andReturn($this->stub('phpunit.test.class.stub'));
 
         $this->filesystem->shouldNotHaveReceived('put');
 
@@ -49,12 +49,12 @@ final class TestGeneratorTest extends TestCase
     public function output_generates_test_for_controller_tree_l8($definition, $path, $test): void
     {
         $this->filesystem->expects('stub')
-            ->with('test.class.stub')
-            ->andReturn($this->stub('test.class.stub'));
+            ->with('phpunit.test.class.stub')
+            ->andReturn($this->stub('phpunit.test.class.stub'));
 
         $this->filesystem->expects('stub')
-            ->with('test.case.stub')
-            ->andReturn($this->stub('test.case.stub'));
+            ->with('phpunit.test.case.stub')
+            ->andReturn($this->stub('phpunit.test.case.stub'));
 
         $paths = collect($path)->combine($test)->toArray();
         foreach ($paths as $path => $test) {
@@ -81,12 +81,12 @@ final class TestGeneratorTest extends TestCase
     public function output_works_for_pascal_case_definition_l8(): void
     {
         $this->filesystem->expects('stub')
-            ->with('test.class.stub')
-            ->andReturn($this->stub('test.class.stub'));
+            ->with('phpunit.test.class.stub')
+            ->andReturn($this->stub('phpunit.test.class.stub'));
 
         $this->filesystem->expects('stub')
-            ->with('test.case.stub')
-            ->andReturn($this->stub('test.case.stub'));
+            ->with('phpunit.test.case.stub')
+            ->andReturn($this->stub('phpunit.test.case.stub'));
 
         $certificateControllerTest = 'tests/Feature/Http/Controllers/CertificateControllerTest.php';
         $certificateTypeControllerTest = 'tests/Feature/Http/Controllers/CertificateTypeControllerTest.php';
@@ -96,14 +96,14 @@ final class TestGeneratorTest extends TestCase
             ->andReturnTrue();
 
         $this->filesystem->expects('put')
-            ->with($certificateControllerTest, $this->fixture('tests/certificate-pascal-case-example.php'));
+            ->with($certificateControllerTest, $this->fixture('tests/phpunit/certificate-pascal-case-example.php'));
 
         $this->filesystem->expects('exists')
             ->with(dirname($certificateTypeControllerTest))
             ->andReturnTrue();
 
         $this->filesystem->expects('put')
-            ->with($certificateTypeControllerTest, $this->fixture('tests/certificate-type-pascal-case-example.php'));
+            ->with($certificateTypeControllerTest, $this->fixture('tests/phpunit/certificate-type-pascal-case-example.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/pascal-case.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -115,12 +115,12 @@ final class TestGeneratorTest extends TestCase
     public function output_generates_test_for_controller_tree_using_cached_model_l8(): void
     {
         $this->filesystem->expects('stub')
-            ->with('test.class.stub')
-            ->andReturn($this->stub('test.class.stub'));
+            ->with('phpunit.test.class.stub')
+            ->andReturn($this->stub('phpunit.test.class.stub'));
 
         $this->filesystem->expects('stub')
-            ->with('test.case.stub')
-            ->andReturn($this->stub('test.case.stub'));
+            ->with('phpunit.test.case.stub')
+            ->andReturn($this->stub('phpunit.test.case.stub'));
 
         $this->filesystem->expects('exists')
             ->with('tests/Feature/Http/Controllers')
@@ -130,7 +130,7 @@ final class TestGeneratorTest extends TestCase
             ->with('tests/Feature/Http/Controllers', 0755, true);
 
         $this->filesystem->expects('put')
-            ->with('tests/Feature/Http/Controllers/UserControllerTest.php', $this->fixture('tests/reference-cache.php'));
+            ->with('tests/Feature/Http/Controllers/UserControllerTest.php', $this->fixture('tests/phpunit/reference-cache.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/reference-cache.yaml'));
         $tokens['cache'] = [
@@ -149,17 +149,17 @@ final class TestGeneratorTest extends TestCase
     {
         $definition = 'drafts/models-with-custom-namespace.yaml';
         $path = 'tests/Feature/Http/Controllers/CategoryControllerTest.php';
-        $test = 'tests/models-with-custom-namespace.php';
+        $test = 'tests/phpunit/models-with-custom-namespace.php';
 
         $this->app['config']->set('blueprint.models_namespace', 'Models');
 
         $this->filesystem->expects('stub')
-            ->with('test.class.stub')
-            ->andReturn($this->stub('test.class.stub'));
+            ->with('phpunit.test.class.stub')
+            ->andReturn($this->stub('phpunit.test.class.stub'));
 
         $this->filesystem->expects('stub')
-            ->with('test.case.stub')
-            ->andReturn($this->stub('test.case.stub'));
+            ->with('phpunit.test.case.stub')
+            ->andReturn($this->stub('phpunit.test.case.stub'));
 
         $dirname = dirname($path);
         $this->filesystem->expects('exists')
@@ -183,18 +183,18 @@ final class TestGeneratorTest extends TestCase
     {
         $definition = 'drafts/models-with-custom-namespace.yaml';
         $path = 'tests/Feature/Http/Controllers/CategoryControllerTest.php';
-        $test = 'tests/routes-with-pluralized-names.php';
+        $test = 'tests/phpunit/routes-with-pluralized-names.php';
 
         $this->app['config']->set('blueprint.models_namespace', 'Models');
         $this->app['config']->set('blueprint.plural_routes', true);
 
         $this->filesystem->expects('stub')
-            ->with('test.class.stub')
-            ->andReturn($this->stub('test.class.stub'));
+            ->with('phpunit.test.class.stub')
+            ->andReturn($this->stub('phpunit.test.class.stub'));
 
         $this->filesystem->expects('stub')
-            ->with('test.case.stub')
-            ->andReturn($this->stub('test.case.stub'));
+            ->with('phpunit.test.case.stub')
+            ->andReturn($this->stub('phpunit.test.case.stub'));
 
         $dirname = dirname($path);
         $this->filesystem->expects('exists')
@@ -216,24 +216,24 @@ final class TestGeneratorTest extends TestCase
     public static function controllerTreeDataProvider(): array
     {
         return [
-            ['drafts/readme-example.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/readme-example.php'],
-            ['drafts/readme-example-notification-facade.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/readme-example-notification.php'],
-            ['drafts/readme-example-notification-model.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/readme-example-notification.php'],
-            ['drafts/respond-statements.yaml', 'tests/Feature/Http/Controllers/Api/PostControllerTest.php', 'tests/respond-statements.php'],
-            ['drafts/full-crud-example.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/full-crud-example.php'],
-            ['drafts/crud-show-only.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/crud-show-only.php'],
-            ['drafts/model-reference-validate.yaml', 'tests/Feature/Http/Controllers/CertificateControllerTest.php', 'tests/api-shorthand-validation.php'],
-            ['drafts/controllers-only-no-context.yaml', 'tests/Feature/Http/Controllers/ReportControllerTest.php', 'tests/controllers-only-no-context.php'],
+            ['drafts/readme-example.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/phpunit/readme-example.php'],
+            ['drafts/readme-example-notification-facade.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/phpunit/readme-example-notification.php'],
+            ['drafts/readme-example-notification-model.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/phpunit/readme-example-notification.php'],
+            ['drafts/respond-statements.yaml', 'tests/Feature/Http/Controllers/Api/PostControllerTest.php', 'tests/phpunit/respond-statements.php'],
+            ['drafts/full-crud-example.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/phpunit/full-crud-example.php'],
+            ['drafts/crud-show-only.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/phpunit/crud-show-only.php'],
+            ['drafts/model-reference-validate.yaml', 'tests/Feature/Http/Controllers/CertificateControllerTest.php', 'tests/phpunit/api-shorthand-validation.php'],
+            ['drafts/controllers-only-no-context.yaml', 'tests/Feature/Http/Controllers/ReportControllerTest.php', 'tests/phpunit/controllers-only-no-context.php'],
             ['drafts/call-to-a-member-function-columns-on-null.yaml', [
                 'tests/Feature/Http/Controllers/SubscriptionControllerTest.php',
                 'tests/Feature/Http/Controllers/TelegramControllerTest.php',
                 'tests/Feature/Http/Controllers/PaymentControllerTest.php',
                 'tests/Feature/Http/Controllers/Api/PaymentControllerTest.php',
             ], [
-                'tests/call-to-a-member-function-columns-on-null-SubscriptionControllerTest.php',
-                'tests/call-to-a-member-function-columns-on-null-TelegramControllerTest.php',
-                'tests/call-to-a-member-function-columns-on-null-PaymentControllerTest.php',
-                'tests/call-to-a-member-function-columns-on-null-Api-PaymentControllerTest.php',
+                'tests/phpunit/call-to-a-member-function-columns-on-null-SubscriptionControllerTest.php',
+                'tests/phpunit/call-to-a-member-function-columns-on-null-TelegramControllerTest.php',
+                'tests/phpunit/call-to-a-member-function-columns-on-null-PaymentControllerTest.php',
+                'tests/phpunit/call-to-a-member-function-columns-on-null-Api-PaymentControllerTest.php',
             ]],
         ];
     }
