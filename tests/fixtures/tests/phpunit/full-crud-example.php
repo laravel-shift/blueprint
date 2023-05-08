@@ -6,18 +6,17 @@ use App\Models\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use JMac\Testing\Traits\AdditionalAssertions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
  * @see \App\Http\Controllers\PostController
  */
-class PostControllerTest extends TestCase
+final class PostControllerTest extends TestCase
 {
     use AdditionalAssertions, RefreshDatabase, WithFaker;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function index_displays_view(): void
     {
         $posts = Post::factory()->count(3)->create();
@@ -30,9 +29,7 @@ class PostControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function create_displays_view(): void
     {
         $response = $this->get(route('post.create'));
@@ -43,9 +40,7 @@ class PostControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function store_uses_form_request_validation(): void
     {
         $this->assertActionUsesFormRequest(
@@ -55,9 +50,7 @@ class PostControllerTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function store_saves_and_redirects(): void
     {
         $title = $this->faker->sentence(4);
@@ -79,9 +72,7 @@ class PostControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function show_displays_view(): void
     {
         $post = Post::factory()->create();
@@ -94,9 +85,7 @@ class PostControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function edit_displays_view(): void
     {
         $post = Post::factory()->create();
@@ -109,9 +98,7 @@ class PostControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function update_uses_form_request_validation(): void
     {
         $this->assertActionUsesFormRequest(
@@ -121,9 +108,7 @@ class PostControllerTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function update_saves_and_redirects(): void
     {
         $post = Post::factory()->create();
@@ -146,9 +131,7 @@ class PostControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function destroy_deletes(): void
     {
         $post = Post::factory()->create();

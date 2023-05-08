@@ -11,18 +11,17 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
 use JMac\Testing\Traits\AdditionalAssertions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
  * @see \App\Http\Controllers\Api\PaymentController
  */
-class PaymentControllerTest extends TestCase
+final class PaymentControllerTest extends TestCase
 {
     use AdditionalAssertions, RefreshDatabase, WithFaker;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function store_uses_form_request_validation(): void
     {
         $this->assertActionUsesFormRequest(
@@ -32,9 +31,7 @@ class PaymentControllerTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function store_saves_and_responds_with(): void
     {
         $status = $this->faker->word;

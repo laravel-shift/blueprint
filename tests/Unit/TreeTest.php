@@ -4,11 +4,12 @@ namespace Tests\Unit;
 
 use Blueprint\Tree;
 use InvalidArgumentException;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-#[CoversClass(\Blueprint\Tree::class)]
+/**
+ * @see \Blueprint\Tree
+ */
 final class TreeTest extends TestCase
 {
     #[Test]

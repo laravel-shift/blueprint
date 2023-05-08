@@ -52,6 +52,7 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree->controllers() as $controller) {
             $this->addImport($controller, \Tests\TestCase::class);
+            $this->addImport($controller, 'PHPUnit\Framework\Attributes\Test');
 
             $path = $this->getPath($controller);
 
@@ -531,9 +532,7 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
     private function buildFormRequestTestCase(string $controller, string $action, string $form_request)
     {
         return <<< END
-    /**
-     * @test
-     */
+    #[Test]
     public function ${action}_uses_form_request_validation(): void
     {
         \$this->assertActionUsesFormRequest(

@@ -12,18 +12,17 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Queue;
 use JMac\Testing\Traits\AdditionalAssertions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
  * @see \App\Http\Controllers\PostController
  */
-class PostControllerTest extends TestCase
+final class PostControllerTest extends TestCase
 {
     use AdditionalAssertions, RefreshDatabase, WithFaker;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function index_displays_view(): void
     {
         $posts = Post::factory()->count(3)->create();
@@ -36,9 +35,7 @@ class PostControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function store_uses_form_request_validation(): void
     {
         $this->assertActionUsesFormRequest(
@@ -48,9 +45,7 @@ class PostControllerTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function store_saves_and_redirects(): void
     {
         $title = $this->faker->sentence(4);
