@@ -3,16 +3,15 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Post;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
  * @see \App\Http\Controllers\PostController
  */
-class PostControllerTest extends TestCase
+final class PostControllerTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function show_displays_view(): void
     {
         $post = Post::factory()->create();

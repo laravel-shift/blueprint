@@ -3,11 +3,12 @@
 namespace Tests\Feature\Commands;
 
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-#[CoversClass(\Blueprint\Commands\InitCommand::class)]
+/**
+ * @see \Blueprint\Commands\InitCommand
+ */
 final class InitCommandTest extends TestCase
 {
     use MockeryPHPUnitIntegration;

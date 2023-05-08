@@ -8,18 +8,17 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use JMac\Testing\Traits\AdditionalAssertions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
  * @see \App\Http\Controllers\CertificateController
  */
-class CertificateControllerTest extends TestCase
+final class CertificateControllerTest extends TestCase
 {
     use AdditionalAssertions, RefreshDatabase, WithFaker;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function index_behaves_as_expected(): void
     {
         $certificates = Certificate::factory()->count(3)->create();
@@ -31,9 +30,7 @@ class CertificateControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function store_uses_form_request_validation(): void
     {
         $this->assertActionUsesFormRequest(
@@ -43,9 +40,7 @@ class CertificateControllerTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function store_saves(): void
     {
         $name = $this->faker->name;
@@ -77,9 +72,7 @@ class CertificateControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function show_behaves_as_expected(): void
     {
         $certificate = Certificate::factory()->create();
@@ -91,9 +84,7 @@ class CertificateControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function update_uses_form_request_validation(): void
     {
         $this->assertActionUsesFormRequest(
@@ -103,9 +94,7 @@ class CertificateControllerTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function update_behaves_as_expected(): void
     {
         $certificate = Certificate::factory()->create();
@@ -136,9 +125,7 @@ class CertificateControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function destroy_deletes_and_responds_with(): void
     {
         $certificate = Certificate::factory()->create();

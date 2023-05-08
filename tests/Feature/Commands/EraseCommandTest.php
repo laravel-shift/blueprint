@@ -5,11 +5,12 @@ namespace Tests\Feature\Commands;
 use Blueprint\Blueprint;
 use Blueprint\Tracer;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-#[CoversClass(\Blueprint\Commands\EraseCommand::class)]
+/**
+ * @see \Blueprint\Commands\EraseCommand
+ */
 final class EraseCommandTest extends TestCase
 {
     use MockeryPHPUnitIntegration;

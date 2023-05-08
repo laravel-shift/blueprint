@@ -10,16 +10,15 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Queue;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
  * @see \App\Http\Controllers\ReportController
  */
-class ReportControllerTest extends TestCase
+final class ReportControllerTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function __invoke_displays_view(): void
     {
         Queue::fake();

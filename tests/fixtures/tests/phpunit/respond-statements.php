@@ -6,18 +6,17 @@ use App\Models\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use JMac\Testing\Traits\AdditionalAssertions;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
  * @see \App\Http\Controllers\Api\PostController
  */
-class PostControllerTest extends TestCase
+final class PostControllerTest extends TestCase
 {
     use AdditionalAssertions, RefreshDatabase, WithFaker;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function index_responds_with(): void
     {
         $posts = Post::factory()->count(3)->create();
@@ -29,9 +28,7 @@ class PostControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function store_uses_form_request_validation(): void
     {
         $this->assertActionUsesFormRequest(
@@ -41,9 +38,7 @@ class PostControllerTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function store_responds_with(): void
     {
         $title = $this->faker->sentence(4);
@@ -56,9 +51,7 @@ class PostControllerTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function error_responds_with(): void
     {
         $response = $this->get(route('post.error'));

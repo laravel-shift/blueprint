@@ -7,7 +7,7 @@ namespace {{ namespace }};
 /**
  * @see {{ namespacedClass }}
  */
-class {{ class }} extends TestCase
+final class {{ class }} extends TestCase
 {
     {{ body }}
 }
