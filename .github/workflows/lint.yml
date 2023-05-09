@@ -9,6 +9,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Testing
+        run: echo "$GITHUB_BASE_REF"
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
