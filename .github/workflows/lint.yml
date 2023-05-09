@@ -14,6 +14,8 @@ jobs:
         with:
           php-version: '8.1'
           tools: phplint, laravel/pint
+      - name: Changes
+        run: git diff --name-status $GITHUB_BASE_REF..HEAD
       - name: Check syntax
         run: phplint .
       - name: Check code style
