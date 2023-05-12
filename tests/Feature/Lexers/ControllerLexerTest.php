@@ -46,7 +46,7 @@ final class ControllerLexerTest extends TestCase
                 'PostController' => [
                     'index' => [
                         'query' => 'all:posts',
-                        'render' => 'post.index with posts',
+                        'render' => 'post.index with:posts',
                     ],
                     'show' => [
                         'find' => 'id',
@@ -63,7 +63,7 @@ final class ControllerLexerTest extends TestCase
         $this->statementLexer->shouldReceive('analyze')
             ->with([
                 'query' => 'all:posts',
-                'render' => 'post.index with posts',
+                'render' => 'post.index with:posts',
             ])
             ->andReturn(['index-statement-1', 'index-statement-2']);
 
@@ -120,7 +120,7 @@ final class ControllerLexerTest extends TestCase
         $this->statementLexer->shouldReceive('analyze')
             ->with([
                 'query' => 'all:comments',
-                'render' => 'comment.index with comments',
+                'render' => 'comment.index with:comments',
             ])
             ->andReturn(['index-statements']);
 
@@ -265,7 +265,7 @@ final class ControllerLexerTest extends TestCase
         $this->statementLexer->expects('analyze')
             ->with([
                 'query' => 'all:users',
-                'render' => 'user.index with users',
+                'render' => 'user.index with:users',
             ])
             ->andReturn(['index-statements']);
 
