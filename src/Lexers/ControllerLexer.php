@@ -118,7 +118,7 @@ class ControllerLexer implements Lexer
         return [
             'index' => [
                 'query' => 'all:[plural]',
-                'render' => '[singular].index with [plural]',
+                'render' => '[singular].index with:[plural]',
             ],
             'create' => [
                 'render' => '[singular].create',
