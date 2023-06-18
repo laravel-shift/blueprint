@@ -1,0 +1,4 @@
+models:
+  Post:
+    title: string
+    author_id: id foreign:\My\User

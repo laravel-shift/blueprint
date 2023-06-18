@@ -97,9 +97,10 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
                 }
 
                 $class = Str::studly(Str::singular($table));
-                $reference = $this->fullyQualifyModelReference($class) ?? $model;
-
-                $this->addImport($model, $reference->fullyQualifiedNamespace() . '\\' . $class);
+                if (!Str::startsWith($class, '\\')) {
+                    $reference = $this->fullyQualifyModelReference($class) ?? $model;
+                    $this->addImport($model, $reference->fullyQualifiedNamespace() . '\\' . $class);
+                }
 
                 if ($key === 'id') {
                     $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
