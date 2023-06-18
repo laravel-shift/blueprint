@@ -181,6 +181,7 @@ final class FactoryGeneratorTest extends TestCase
             ['drafts/factory-smallint-and-tinyint.yaml', 'database/factories/ModelFactory.php', 'factories/factory-smallint-and-tinyint.php'],
             ['drafts/all-column-types.yaml', 'database/factories/AllTypeFactory.php', 'factories/all-column-types.php'],
             ['drafts/shorthands.yaml', 'database/factories/NameFactory.php', 'factories/shorthands.php'],
+            ['drafts/fqcn-foreign-key.yaml', 'database/factories/PostFactory.php', 'factories/fqcn-foreign-key.php'],
         ];
     }
 }
