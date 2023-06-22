@@ -30,7 +30,7 @@ class User extends Model
 
     public function teams(): BelongsToMany
     {
-        return $this->belongsToMany(Team::class)
+        return $this->belongsToMany(Team::class, 'another_table_name')
             ->using(Membership::class)
             ->as('membership')
             ->withPivot('id')

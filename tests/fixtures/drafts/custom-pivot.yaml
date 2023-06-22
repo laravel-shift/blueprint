@@ -12,6 +12,6 @@ models:
   Membership:
     meta:
       pivot: true
-      table: team_user
+      table: another_table_name
     user_id: id
     team_id: id

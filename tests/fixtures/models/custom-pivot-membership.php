@@ -15,7 +15,7 @@ class Membership extends Pivot
      *
      * @var string
      */
-    protected $table = 'team_user';
+    protected $table = 'another_table_name';
 
     /**
      * Indicates if the IDs are auto-incrementing.
