@@ -538,14 +538,15 @@ class PestTestGenerator extends AbstractClassGenerator implements Generator
 
     private function buildFormRequestTestCase(string $controller, string $action, string $form_request)
     {
-        return <<< END
-test('${action} uses form request validation')
+        $template =<<< END
+test('%s uses form request validation')
     ->assertActionUsesFormRequest(
-        \\${controller}::class,
-        '${action}',
-        \\${form_request}::class
+        \\%s::class,
+        '%s',
+        \\%s::class
     );
 END;
+        return sprintf($template, $action, $controller, $action, $form_request);
     }
 
     private function httpMethodForAction($action)
