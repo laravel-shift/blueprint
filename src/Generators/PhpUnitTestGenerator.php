@@ -9,7 +9,6 @@ use Blueprint\Contracts\Generator;
 use Blueprint\Contracts\Model as BlueprintModel;
 use Blueprint\Models\Column;
 use Blueprint\Models\Controller;
-use Blueprint\Models\Model;
 use Blueprint\Models\Statements\DispatchStatement;
 use Blueprint\Models\Statements\EloquentStatement;
 use Blueprint\Models\Statements\FireStatement;
@@ -531,14 +530,14 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
 
     private function buildFormRequestTestCase(string $controller, string $action, string $form_request)
     {
-        return <<< END
+        return <<<END
     #[Test]
-    public function ${action}_uses_form_request_validation(): void
+    public function {$action}_uses_form_request_validation(): void
     {
         \$this->assertActionUsesFormRequest(
-            \\${controller}::class,
-            '${action}',
-            \\${form_request}::class
+            \\{$controller}::class,
+            '{$action}',
+            \\{$form_request}::class
         );
     }
 END;
