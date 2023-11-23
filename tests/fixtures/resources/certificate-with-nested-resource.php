@@ -19,6 +19,7 @@ class CertificateResource extends JsonResource
             'document' => $this->document,
             'expiry_date' => $this->expiry_date,
             'remarks' => $this->remarks,
+            'certificate_id' => $this->certificate_id,
             'certificate' => CertificateResource::make($this->whenLoaded('certificate')),
             'certificates' => CertificateCollection::make($this->whenLoaded('certificates')),
         ];

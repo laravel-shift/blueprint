@@ -171,8 +171,16 @@ class ModelLexer implements Lexer
         if (isset($columns['relationships'])) {
             if (is_array($columns['relationships'])) {
                 foreach ($columns['relationships'] as $type => $relationships) {
-                    foreach (explode(',', $relationships) as $reference) {
-                        $model->addRelationship(self::$relationships[strtolower($type)], trim($reference));
+                    foreach (explode(',', $relationships) as $relationship) {
+                        $type = self::$relationships[strtolower($type)];
+                        $model->addRelationship($type, trim($relationship));
+
+                        if ($type === 'belongsTo') {
+                            $column = $this->columnNameFromRelationship($relationship);
+                            if (isset($columns[$column]) && !str_contains($columns[$column], ' foreign') && !str_contains($columns[$column], ' id')) {
+                                $columns[$column] .= ' id:' . Str::before($relationship, ':');
+                            }
+                        }
                     }
                 }
             }
@@ -195,32 +203,9 @@ class ModelLexer implements Lexer
         foreach ($columns as $name => $definition) {
             $column = $this->buildColumn($name, $definition);
             $model->addColumn($column);
-
-            $foreign = collect($column->modifiers())->filter(fn ($modifier) => collect($modifier)->containsStrict('foreign') || collect($modifier)->has('foreign'))->flatten()->first();
-
-            if (
-                ($column->name() !== 'id' && $column->dataType() === 'id')
-                || ($column->dataType() === 'uuid' && Str::endsWith($column->name(), '_id'))
-                || $foreign
-            ) {
-                $reference = $column->name();
-
-                if ($foreign && $foreign !== 'foreign') {
-                    $table = $foreign;
-                    $key = 'id';
-
-                    if (Str::contains($foreign, '.')) {
-                        [$table, $key] = explode('.', $foreign);
-                    }
-
-                    $reference = Str::singular($table) . ($key === 'id' ? '' : '.' . $key) . ':' . $column->name();
-                } elseif ($column->attributes()) {
-                    $reference = $column->attributes()[0] . ':' . $column->name();
-                }
-
-                $model->addRelationship('belongsTo', $reference);
-            }
         }
+
+        $this->inferMissingBelongsToRelationships($model);
 
         return $model;
     }
@@ -269,5 +254,80 @@ class ModelLexer implements Lexer
         }
 
         return new Column($name, $data_type, $modifiers, $attributes ?? []);
+    }
+
+    /**
+     * Here we infer additional `belongsTo` relationships. First by checking
+     * for those defined in `relationships`. Then by reviewing the model
+     * columns which follow the conventional naming of `model_id`.
+     */
+    private function inferMissingBelongsToRelationships(Model $model): void
+    {
+        foreach ($model->relationships()['belongsTo'] ?? [] as $relationship) {
+            $column = $this->columnNameFromRelationship($relationship);
+
+            $attributes = [];
+            if (str_contains($relationship, ':')) {
+                $attributes = [Str::before($relationship, ':')];
+            }
+
+            if (!$model->hasColumn($column)) {
+                $model->addColumn(new Column($column, 'id', attributes: $attributes));
+            }
+        }
+
+        foreach ($model->columns() as $column) {
+            $foreign = $column->isForeignKey();
+
+            if (
+                ($column->name() !== 'id' && $column->dataType() === 'id')
+                || ($column->dataType() === 'uuid' && Str::endsWith($column->name(), '_id'))
+                || $foreign
+            ) {
+                $reference = $column->name();
+
+                if ($foreign && $foreign !== 'foreign') {
+                    $table = $foreign;
+                    $key = 'id';
+
+                    if (Str::contains($foreign, '.')) {
+                        [$table, $key] = explode('.', $foreign);
+                    }
+
+                    $reference = Str::singular($table) . ($key === 'id' ? '' : '.' . $key) . ':' . $column->name();
+                } elseif ($column->attributes()) {
+                    $reference = $column->attributes()[0] . ':' . $column->name();
+                }
+
+                if (!$this->hasBelongsToRelationship($model, $reference)) {
+                    $model->addRelationship('belongsTo', $reference);
+                }
+            }
+        }
+    }
+
+    private function columnNameFromRelationship(string $relationship): string
+    {
+        $model = $relationship;
+        if (str_contains($relationship, ':')) {
+            $model = Str::after($relationship, ':');
+        }
+
+        if (str_contains($relationship, '\\')) {
+            $model = Str::afterLast($relationship, '\\');
+        }
+
+        return Str::snake($model) . '_id';
+    }
+
+    private function hasBelongsToRelationship(Model $model, string $reference): bool
+    {
+        foreach ($model->relationships()['belongsTo'] ?? [] as $relationship) {
+            if (Str::after($reference, ':') === $this->columnNameFromRelationship($relationship)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -9,10 +9,7 @@ use Tests\TestCase;
 
 final class ModelLexerTest extends TestCase
 {
-    /**
-     * @var ModelLexer
-     */
-    private $subject;
+    private ModelLexer $subject;
 
     protected function setUp(): void
     {
@@ -651,6 +648,98 @@ final class ModelLexerTest extends TestCase
         $this->assertEquals([], $columns['id']->modifiers());
 
         $this->assertCount(0, $model->relationships());
+    }
+
+    #[Test]
+    public function it_infers_belongsTo_columns(): void
+    {
+        $tokens = [
+            'models' => [
+                'Conference' => [
+                    'venue_id' => 'unsigned bigInteger',
+                    'relationships' => [
+                        'belongsTo' => 'Venue, Region, \\App\\Models\\User',
+                    ],
+                ],
+            ],
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertIsArray($actual['models']);
+        $this->assertCount(1, $actual['models']);
+
+        $model = $actual['models']['Conference'];
+        $this->assertEquals('Conference', $model->name());
+        $this->assertArrayHasKey('belongsTo', $model->relationships());
+        $this->assertTrue($model->usesTimestamps());
+
+        $columns = $model->columns();
+        $this->assertCount(4, $columns);
+        $this->assertEquals('id', $columns['id']->name());
+        $this->assertEquals('id', $columns['id']->dataType());
+        $this->assertEquals([], $columns['id']->modifiers());
+        $this->assertEquals('venue_id', $columns['venue_id']->name());
+        $this->assertEquals('id', $columns['venue_id']->dataType());
+        $this->assertEquals(['unsigned'], $columns['venue_id']->modifiers());
+        $this->assertEquals(['Venue'], $columns['venue_id']->attributes());
+        $this->assertEquals('region_id', $columns['region_id']->name());
+        $this->assertEquals('id', $columns['region_id']->dataType());
+        $this->assertEquals([], $columns['region_id']->modifiers());
+        $this->assertEquals([], $columns['region_id']->attributes());
+        $this->assertEquals('user_id', $columns['user_id']->name());
+        $this->assertEquals('id', $columns['user_id']->dataType());
+        $this->assertEquals([], $columns['user_id']->modifiers());
+
+        $relationships = $model->relationships();
+        $this->assertCount(1, $relationships);
+        $this->assertEquals(['Venue', 'Region', '\\App\\Models\\User'], $relationships['belongsTo']);
+    }
+
+    #[Test]
+    public function it_handles_relationship_aliases(): void
+    {
+        $tokens = [
+            'models' => [
+                'Salesman' => [
+                    'customer_id' => 'id',
+                    'company_id' => 'id:Organization',
+                    'relationships' => [
+                        'belongsTo' => 'User:Lead, Client:Customer',
+                    ],
+                ],
+            ],
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertIsArray($actual['models']);
+        $this->assertCount(1, $actual['models']);
+
+        $model = $actual['models']['Salesman'];
+        $this->assertEquals('Salesman', $model->name());
+        $this->assertArrayHasKey('belongsTo', $model->relationships());
+        $this->assertTrue($model->usesTimestamps());
+
+        $columns = $model->columns();
+        $this->assertCount(4, $columns);
+        $this->assertEquals('id', $columns['id']->name());
+        $this->assertEquals('id', $columns['id']->dataType());
+        $this->assertEquals([], $columns['id']->modifiers());
+        $this->assertEquals('customer_id', $columns['customer_id']->name());
+        $this->assertEquals('id', $columns['customer_id']->dataType());
+        $this->assertEquals([], $columns['customer_id']->modifiers());
+        $this->assertEquals('company_id', $columns['company_id']->name());
+        $this->assertEquals('id', $columns['company_id']->dataType());
+        $this->assertEquals([], $columns['company_id']->modifiers());
+        $this->assertEquals('lead_id', $columns['lead_id']->name());
+        $this->assertEquals('id', $columns['lead_id']->dataType());
+        $this->assertEquals([], $columns['lead_id']->modifiers());
+        $this->assertEquals(['User'], $columns['lead_id']->attributes());
+
+        $relationships = $model->relationships();
+        $this->assertCount(1, $relationships);
+        $this->assertEquals(['User:Lead', 'Client:Customer', 'Organization:company_id'], $relationships['belongsTo']);
     }
 
     public static function dataTypeAttributesDataProvider(): array
