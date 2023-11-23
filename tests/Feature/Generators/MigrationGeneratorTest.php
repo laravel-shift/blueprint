@@ -68,7 +68,6 @@ final class MigrationGeneratorTest extends TestCase
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
-
     }
 
     #[Test]
