@@ -5,10 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Salesman extends Model
+class Conference extends Model
 {
     use HasFactory;
 
@@ -19,7 +17,8 @@ class Salesman extends Model
      */
     protected $fillable = [
         'name',
-        'belongs_alias_id',
+        'venue_id',
+        'region_id',
     ];
 
     /**
@@ -29,21 +28,17 @@ class Salesman extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'belongs_alias_id' => 'integer',
+        'venue_id' => 'integer',
+        'region_id' => 'integer',
     ];
 
-    public function lead(): HasOne
+    public function venue(): BelongsTo
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(Venue::class);
     }
 
-    public function manyAliases(): HasMany
+    public function region(): BelongsTo
     {
-        return $this->hasMany(ManyModel::class);
-    }
-
-    public function belongsAlias(): BelongsTo
-    {
-        return $this->belongsTo(BelongsModel::class);
+        return $this->belongsTo(Region::class);
     }
 }

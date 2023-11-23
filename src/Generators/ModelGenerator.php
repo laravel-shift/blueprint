@@ -308,7 +308,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         );
     }
 
-    private function castableColumns(array $columns)
+    private function castableColumns(array $columns): array
     {
         return array_filter(
             array_map(
@@ -331,7 +331,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         );
     }
 
-    private function castForColumn(Column $column)
+    private function castForColumn(Column $column): ?string
     {
         if ($column->dataType() === 'date') {
             return 'date';
@@ -345,7 +345,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
             return 'timestamp';
         }
 
-        if (stripos($column->dataType(), 'integer') || $column->dataType() === 'id') {
+        if (stripos($column->dataType(), 'integer') || in_array($column->dataType(), ['id', 'foreign'])) {
             return 'integer';
         }
 
@@ -364,6 +364,8 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         if ($column->dataType() === 'json') {
             return 'array';
         }
+
+        return null;
     }
 
     private function pretty_print_array(array $data, $assoc = true)

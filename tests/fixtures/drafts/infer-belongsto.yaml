@@ -1,0 +1,6 @@
+models:
+  Conference:
+    name: string
+    venue_id: unsigned bigInteger
+    relationships:
+      belongsTo: Venue, Region

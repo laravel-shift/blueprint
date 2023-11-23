@@ -136,7 +136,8 @@ final class ResourceGeneratorTest extends TestCase
             ->with('resource.stub')
             ->andReturn(file_get_contents('stubs/resource.stub'));
 
-        $this->filesystem->shouldReceive('exists')
+        $this->filesystem->expects('exists')
+            ->twice()
             ->with('app/Http/Resources/Api')
             ->andReturns(false, true);
         $this->filesystem->expects('makeDirectory')
@@ -170,7 +171,8 @@ final class ResourceGeneratorTest extends TestCase
             ->with('resource.stub')
             ->andReturn(file_get_contents('stubs/resource.stub'));
 
-        $this->files->shouldReceive('exists')
+        $this->files->expects('exists')
+            ->twice()
             ->with('app/Http/Resources')
             ->andReturns(false, true);
         $this->files->expects('makeDirectory')

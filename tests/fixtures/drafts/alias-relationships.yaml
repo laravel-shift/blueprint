@@ -3,5 +3,5 @@ models:
     name: string
     relationships:
       hasOne: User:Lead
-      hasMany: class_name:method_name
-      belongsTo: class_name:method_name
+      hasMany: ManyModel:ManyAlias
+      belongsTo: BelongsModel:BelongsAlias

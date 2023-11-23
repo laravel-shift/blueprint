@@ -6,6 +6,7 @@ use Blueprint\Blueprint;
 use Blueprint\Generators\MigrationGenerator;
 use Blueprint\Tree;
 use Carbon\Carbon;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Finder\SplFileInfo;
 use Tests\TestCase;
@@ -43,6 +44,31 @@ final class MigrationGeneratorTest extends TestCase
         $this->filesystem->shouldNotHaveReceived('put');
 
         $this->assertEquals([], $this->subject->output(new Tree(['models' => []])));
+    }
+
+    #[Test]
+    #[DataProvider('modelTreeDataProvider')]
+    public function output_generates_migrations($definition, $path, $model): void
+    {
+        $this->filesystem->expects('stub')
+            ->with('migration.stub')
+            ->andReturn($this->stub('migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $timestamp_path = str_replace('timestamp', $now->format('Y_m_d_His'), $path);
+
+        $this->filesystem->expects('exists')->andReturn(false);
+
+        $this->filesystem->expects('put')
+            ->with($timestamp_path, $this->fixture($model));
+
+        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
+
     }
 
     #[Test]
@@ -606,7 +632,7 @@ final class MigrationGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
     }
 
-    public function modelTreeDataProvider()
+    public static function modelTreeDataProvider()
     {
         return [
             ['drafts/readme-example.yaml', 'database/migrations/timestamp_create_posts_table.php', 'migrations/readme-example.php'],
@@ -616,7 +642,7 @@ final class MigrationGeneratorTest extends TestCase
             ['drafts/soft-deletes.yaml', 'database/migrations/timestamp_create_comments_table.php', 'migrations/soft-deletes.php'],
             ['drafts/with-timezones.yaml', 'database/migrations/timestamp_create_comments_table.php', 'migrations/with-timezones.php'],
             ['drafts/relationships.yaml', 'database/migrations/timestamp_create_comments_table.php', 'migrations/relationships.php'],
-            ['drafts/indexes.yaml', 'database/migrations/timestamp_create_posts_table.php', 'migrations/indexes.php'],
+            ['drafts/models-with-custom-namespace.yaml', 'database/migrations/timestamp_create_categories_table.php', 'migrations/models-with-custom-namespace.php'],
             ['drafts/custom-indexes.yaml', 'database/migrations/timestamp_create_cooltables_table.php', 'migrations/custom-indexes.php'],
             ['drafts/unconventional.yaml', 'database/migrations/timestamp_create_teams_table.php', 'migrations/unconventional.php'],
             ['drafts/optimize.yaml', 'database/migrations/timestamp_create_optimizes_table.php', 'migrations/optimize.php'],
@@ -633,6 +659,7 @@ final class MigrationGeneratorTest extends TestCase
             ['drafts/foreign-with-class.yaml', 'database/migrations/timestamp_create_events_table.php', 'migrations/foreign-with-class.php'],
             ['drafts/full-text.yaml', 'database/migrations/timestamp_create_posts_table.php', 'migrations/full-text.php'],
             ['drafts/model-with-meta.yaml', 'database/migrations/timestamp_create_post_table.php', 'migrations/model-with-meta.php'],
+            ['drafts/infer-belongsto.yaml', 'database/migrations/timestamp_create_conferences_table.php', 'migrations/infer-belongsto.php'],
         ];
     }
 }
