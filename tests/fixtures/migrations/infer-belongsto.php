@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('conferences', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->unsignedBigInteger('venue_id');
-            $table->unsignedBigInteger('region_id');
+            $table->foreignId('venue_id');
+            $table->foreignId('region_id');
             $table->timestamps();
         });
     }

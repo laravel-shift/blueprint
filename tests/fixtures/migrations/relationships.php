@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('post_id');
-            $table->unsignedBigInteger('author_id');
+            $table->foreignId('post_id');
+            $table->foreignId('author_id');
             $table->timestamps();
         });
     }

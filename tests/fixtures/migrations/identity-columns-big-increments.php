@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('relationships', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('post_id');
-            $table->unsignedBigInteger('another');
+            $table->foreignId('post_id');
+            $table->foreignId('another');
         });
     }
 

@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->unsignedInteger('id');
             $table->string('title');
-            $table->unsignedBigInteger('parent_post_id');
-            $table->unsignedBigInteger('author_id');
+            $table->foreignId('parent_post_id');
+            $table->foreignId('author_id');
             $table->timestamp('published_at')->nullable();
             $table->unsignedInteger('word_count');
             $table->geometry('location');
