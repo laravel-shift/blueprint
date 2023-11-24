@@ -9,7 +9,7 @@ use Blueprint\Tree;
 
 class ViewGenerator extends StatementGenerator implements Generator
 {
-    protected $types = ['controllers', 'views'];
+    protected array $types = ['controllers', 'views'];
 
     public function output(Tree $tree): array
     {
@@ -40,12 +40,12 @@ class ViewGenerator extends StatementGenerator implements Generator
         return $this->output;
     }
 
-    protected function getStatementPath(string $view)
+    protected function getStatementPath(string $view): string
     {
         return 'resources/views/' . str_replace('.', '/', $view) . '.blade.php';
     }
 
-    protected function populateStub(string $stub, RenderStatement $renderStatement)
+    protected function populateStub(string $stub, RenderStatement $renderStatement): string
     {
         return str_replace('{{ view }}', $renderStatement->view(), $stub);
     }

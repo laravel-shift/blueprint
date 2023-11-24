@@ -7,7 +7,7 @@ use Illuminate\Container\Container;
 
 class ConfigLexer implements Lexer
 {
-    private $app;
+    private Container $app;
 
     public function __construct(Container $app = null)
     {

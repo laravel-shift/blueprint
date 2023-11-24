@@ -18,10 +18,8 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
 {
     /**
      * Bootstrap the application events.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         if (!defined('STUBS_PATH')) {
             define('STUBS_PATH', dirname(__DIR__) . '/stubs');
@@ -42,10 +40,8 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
 
     /**
      * Register the service provider.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->mergeConfigFrom(
             __DIR__ . '/../config/blueprint.php',
@@ -93,10 +89,8 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
 
     /**
      * Get the services provided by the provider.
-     *
-     * @return array
      */
-    public function provides()
+    public function provides(): array
     {
         return [
             'command.blueprint.build',

@@ -9,7 +9,7 @@ use Blueprint\Tree;
 
 class EventGenerator extends StatementGenerator
 {
-    protected $types = ['controllers'];
+    protected array $types = ['controllers'];
 
     public function output(Tree $tree): array
     {
@@ -43,12 +43,12 @@ class EventGenerator extends StatementGenerator
         return $this->output;
     }
 
-    protected function getStatementPath(string $name)
+    protected function getStatementPath(string $name): string
     {
         return Blueprint::appPath() . '/Events/' . $name . '.php';
     }
 
-    protected function populateStub(string $stub, FireStatement $fireStatement)
+    protected function populateStub(string $stub, FireStatement $fireStatement): string
     {
         $stub = str_replace('{{ namespace }}', config('blueprint.namespace') . '\\Events', $stub);
         $stub = str_replace('{{ class }}', $fireStatement->event(), $stub);

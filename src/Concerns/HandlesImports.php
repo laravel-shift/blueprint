@@ -6,14 +6,14 @@ use Blueprint\Contracts\Model;
 
 trait HandlesImports
 {
-    protected $imports = [];
+    protected array $imports = [];
 
-    protected function addImport(Model $model, $class)
+    protected function addImport(Model $model, $class): void
     {
         $this->imports[$model->name()][] = $class;
     }
 
-    protected function buildImports(Model $model)
+    protected function buildImports(Model $model): string
     {
         return collect($this->imports[$model->name()] ?? [])
             ->map(fn ($class) => "use {$class};")

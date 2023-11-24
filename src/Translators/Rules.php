@@ -25,7 +25,7 @@ class Rules
         'unsignedTinyInteger',
     ];
 
-    public static function fromColumn(string $context, Column $column)
+    public static function fromColumn(string $context, Column $column): array
     {
         $rules = [];
 
@@ -86,7 +86,7 @@ class Rules
         return $rules;
     }
 
-    private static function overrideStringRuleForSpecialNames($name)
+    private static function overrideStringRuleForSpecialNames($name): string
     {
         if (Str::startsWith($name, 'email')) {
             return 'email';
@@ -98,7 +98,7 @@ class Rules
         return 'string';
     }
 
-    private static function betweenRuleForColumn(Column $column)
+    private static function betweenRuleForColumn(Column $column): string
     {
         $precision = $column->attributes()[0];
         $scale = $column->attributes()[1] ?? 0;

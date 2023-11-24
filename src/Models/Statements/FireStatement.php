@@ -4,15 +4,9 @@ namespace Blueprint\Models\Statements;
 
 class FireStatement
 {
-    /**
-     * @var string
-     */
-    private $event;
+    private string $event;
 
-    /**
-     * @var array
-     */
-    private $data;
+    private array $data;
 
     public function __construct(string $event, array $data = [])
     {
@@ -20,7 +14,7 @@ class FireStatement
         $this->data = $data;
     }
 
-    public function event()
+    public function event(): string
     {
         return $this->event;
     }
@@ -35,7 +29,7 @@ class FireStatement
         return preg_match('/^[a-z0-9.]+$/', $this->event) === 1;
     }
 
-    public function output()
+    public function output(): string
     {
         $template = '%s::dispatch(%s);';
 
@@ -54,7 +48,7 @@ class FireStatement
         );
     }
 
-    private function buildParameters(array $data)
+    private function buildParameters(array $data): string
     {
         $parameters = array_map(fn ($parameter) => '$' . $parameter, $data);
 

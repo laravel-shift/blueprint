@@ -4,11 +4,11 @@ namespace Blueprint\Contracts;
 
 interface Model
 {
-    public function name();
+    public function name(): string;
 
-    public function namespace();
+    public function namespace(): string;
 
-    public function fullyQualifiedNamespace();
+    public function fullyQualifiedNamespace(): string;
 
-    public function fullyQualifiedClassName();
+    public function fullyQualifiedClassName(): string;
 }

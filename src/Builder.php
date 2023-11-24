@@ -6,7 +6,7 @@ use Illuminate\Filesystem\Filesystem;
 
 class Builder
 {
-    public function execute(Blueprint $blueprint, Filesystem $filesystem, string $draft, string $only = '', string $skip = '', $overwriteMigrations = false)
+    public function execute(Blueprint $blueprint, Filesystem $filesystem, string $draft, string $only = '', string $skip = '', $overwriteMigrations = false): array
     {
         $cache = [];
         if ($filesystem->exists('.blueprint')) {

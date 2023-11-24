@@ -17,7 +17,7 @@ class SeederLexer implements Lexer
         return $registry;
     }
 
-    private function analyzeValue($value)
+    private function analyzeValue($value): array
     {
         return preg_split('/,([ \t]+)?/', $value);
     }

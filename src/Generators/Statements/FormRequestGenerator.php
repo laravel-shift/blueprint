@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 
 class FormRequestGenerator extends AbstractClassGenerator implements Generator
 {
-    protected $types = ['controllers', 'requests'];
+    protected array $types = ['controllers', 'requests'];
 
     public const INDENT = '            ';
 
@@ -49,12 +49,12 @@ class FormRequestGenerator extends AbstractClassGenerator implements Generator
         return $this->output;
     }
 
-    protected function getStatementPath(Controller $controller, string $name)
+    protected function getStatementPath(Controller $controller, string $name): string
     {
         return Blueprint::appPath() . '/Http/Requests/' . ($controller->namespace() ? $controller->namespace() . '/' : '') . $name . '.php';
     }
 
-    protected function populateStub(string $stub, string $name, $context, ValidateStatement $validateStatement, Controller $controller)
+    protected function populateStub(string $stub, string $name, $context, ValidateStatement $validateStatement, Controller $controller): string
     {
         $stub = str_replace('{{ namespace }}', config('blueprint.namespace') . '\\Http\\Requests' . ($controller->namespace() ? '\\' . $controller->namespace() : ''), $stub);
         $stub = str_replace('{{ class }}', $name, $stub);
@@ -63,7 +63,7 @@ class FormRequestGenerator extends AbstractClassGenerator implements Generator
         return $stub;
     }
 
-    protected function buildRules(string $context, ValidateStatement $validateStatement)
+    protected function buildRules(string $context, ValidateStatement $validateStatement): string
     {
         return trim(
             array_reduce(
@@ -90,12 +90,12 @@ class FormRequestGenerator extends AbstractClassGenerator implements Generator
         );
     }
 
-    private function getName(string $context, string $method)
+    private function getName(string $context, string $method): string
     {
         return $context . Str::studly($method) . 'Request';
     }
 
-    private function splitField($field)
+    private function splitField($field): array
     {
         if (Str::contains($field, '.')) {
             return explode('.', $field, 2);
@@ -104,7 +104,7 @@ class FormRequestGenerator extends AbstractClassGenerator implements Generator
         return [null, $field];
     }
 
-    private function validationRules(string $qualifier, string $column)
+    private function validationRules(string $qualifier, string $column): array
     {
         /**
          * @var \Blueprint\Models\Model $model

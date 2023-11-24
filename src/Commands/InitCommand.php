@@ -20,7 +20,7 @@ class InitCommand extends Command
      */
     protected $description = 'An alias for "blueprint:new" command';
 
-    public function handle()
+    public function handle(): int
     {
         return $this->call(\Blueprint\Commands\NewCommand::class);
     }

@@ -11,7 +11,7 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class MigrationGenerator extends AbstractClassGenerator implements Generator
 {
-    protected $types = ['migrations'];
+    protected array $types = ['migrations'];
 
     const INDENT = '            ';
 
@@ -56,7 +56,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         'unsignedBigInteger',
     ];
 
-    private $hasForeignKeyConstraints = false;
+    private bool $hasForeignKeyConstraints = false;
 
     public function output(Tree $tree, $overwrite = false): array
     {
@@ -116,7 +116,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         return $this->output;
     }
 
-    protected function populateStub(string $stub, Model $model)
+    protected function populateStub(string $stub, Model $model): string
     {
         $stub = str_replace('{{ table }}', $model->tableName(), $stub);
         $stub = str_replace('{{ definition }}', $this->buildDefinition($model), $stub);
@@ -128,7 +128,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         return $stub;
     }
 
-    protected function populatePivotStub(string $stub, array $segments)
+    protected function populatePivotStub(string $stub, array $segments): string
     {
         $stub = str_replace('{{ table }}', $this->getPivotTableName($segments), $stub);
         $stub = str_replace('{{ definition }}', $this->buildPivotTableDefinition($segments), $stub);
@@ -140,7 +140,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         return $stub;
     }
 
-    protected function populatePolyStub(string $stub, string $parentTable)
+    protected function populatePolyStub(string $stub, string $parentTable): string
     {
         $stub = str_replace('{{ table }}', $this->getPolyTableName($parentTable), $stub);
         $stub = str_replace('{{ definition }}', $this->buildPolyTableDefinition($parentTable), $stub);
@@ -152,7 +152,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         return $stub;
     }
 
-    protected function buildDefinition(Model $model)
+    protected function buildDefinition(Model $model): string
     {
         $definition = '';
 
@@ -295,7 +295,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         return trim($definition);
     }
 
-    protected function buildPivotTableDefinition(array $segments)
+    protected function buildPivotTableDefinition(array $segments): string
     {
         $definition = '';
 
@@ -316,7 +316,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         return trim($definition);
     }
 
-    protected function buildPolyTableDefinition(string $parentTable)
+    protected function buildPolyTableDefinition(string $parentTable): string
     {
         $definition = '';
 
@@ -336,7 +336,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         return trim($definition);
     }
 
-    protected function buildForeignKey(string $column_name, ?string $on, string $type, array $attributes = [], array $modifiers = [])
+    protected function buildForeignKey(string $column_name, ?string $on, string $type, array $attributes = [], array $modifiers = []): string
     {
         if (is_null($on)) {
             $table = Str::plural(Str::beforeLast($column_name, '_'));
@@ -409,7 +409,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         return $stub;
     }
 
-    protected function getClassName(Model $model)
+    protected function getClassName(Model $model): string
     {
         return 'Create' . Str::studly($model->tableName()) . 'Table';
     }
@@ -441,7 +441,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         return $dir . $timestamp->format('Y_m_d_His') . $name;
     }
 
-    protected function getPivotTableName(array $segments)
+    protected function getPivotTableName(array $segments): string
     {
         $isCustom = collect($segments)
             ->filter(fn ($segment) => Str::contains($segment, ':'))->first();
@@ -458,12 +458,12 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         return strtolower(implode('_', $segments));
     }
 
-    protected function getPolyTableName(string $parentTable)
+    protected function getPolyTableName(string $parentTable): string
     {
         return Str::plural(Str::lower(Str::singular($parentTable) . 'able'));
     }
 
-    private function shouldAddForeignKeyConstraint(\Blueprint\Models\Column $column)
+    private function shouldAddForeignKeyConstraint(\Blueprint\Models\Column $column): bool
     {
         if ($column->name() === 'id') {
             return false;
@@ -491,7 +491,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             ->contains(fn ($value) => strtolower($value) === strtolower($type));
     }
 
-    protected function isIdOrUuid(string $dataType)
+    protected function isIdOrUuid(string $dataType): bool
     {
         return in_array($dataType, ['id', 'uuid']);
     }

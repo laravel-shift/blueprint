@@ -4,9 +4,9 @@ namespace Blueprint\Models;
 
 class Index
 {
-    private $type;
+    private string $type;
 
-    private $columns;
+    private array $columns;
 
     public function __construct(string $type, array $columns = [])
     {
@@ -14,12 +14,12 @@ class Index
         $this->columns = $columns;
     }
 
-    public function type()
+    public function type(): string
     {
         return $this->type;
     }
 
-    public function columns()
+    public function columns(): array
     {
         return $this->columns;
     }

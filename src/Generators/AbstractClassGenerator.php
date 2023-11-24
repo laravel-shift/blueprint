@@ -4,17 +4,18 @@ namespace Blueprint\Generators;
 
 use Blueprint\Blueprint;
 use Blueprint\Contracts\Model;
+use Blueprint\Tree;
 use Illuminate\Filesystem\Filesystem;
 
 class AbstractClassGenerator
 {
     public const INDENT = '        ';
 
-    protected $filesystem;
+    protected Filesystem $filesystem;
 
-    protected $tree;
+    protected Tree $tree;
 
-    protected $output = [];
+    protected array $output = [];
 
     public function __construct(Filesystem $filesystem)
     {
@@ -26,14 +27,14 @@ class AbstractClassGenerator
         return $this->types;
     }
 
-    protected function getPath(Model $model)
+    protected function getPath(Model $model): string
     {
         $path = str_replace('\\', '/', Blueprint::relativeNamespace($model->fullyQualifiedClassName()));
 
         return sprintf('%s/%s.php', $this->basePath ?? Blueprint::appPath(), $path);
     }
 
-    protected function create(string $path, $content)
+    protected function create(string $path, $content): void
     {
         if (!$this->filesystem->exists(dirname($path))) {
             $this->filesystem->makeDirectory(dirname($path), 0755, true);

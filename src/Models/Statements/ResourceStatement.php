@@ -6,20 +6,11 @@ use Illuminate\Support\Str;
 
 class ResourceStatement
 {
-    /**
-     * @var string
-     */
-    private $reference;
+    private string $reference;
 
-    /**
-     * @var bool
-     */
-    private $collection = false;
+    private bool $collection = false;
 
-    /**
-     * @var bool
-     */
-    private $paginate = false;
+    private bool $paginate = false;
 
     public function __construct(string $reference, bool $collection = false, bool $paginate = false)
     {

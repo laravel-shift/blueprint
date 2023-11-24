@@ -4,15 +4,9 @@ namespace Blueprint\Models\Statements;
 
 class DispatchStatement
 {
-    /**
-     * @var string
-     */
-    private $job;
+    private string $job;
 
-    /**
-     * @var array
-     */
-    private $data;
+    private array $data;
 
     public function __construct(string $job, array $data = [])
     {
@@ -20,7 +14,7 @@ class DispatchStatement
         $this->data = $data;
     }
 
-    public function job()
+    public function job(): string
     {
         return $this->job;
     }
@@ -30,7 +24,7 @@ class DispatchStatement
         return $this->data;
     }
 
-    public function output()
+    public function output(): string
     {
         $code = $this->job() . '::dispatch(';
 
@@ -43,7 +37,7 @@ class DispatchStatement
         return $code;
     }
 
-    private function buildParameters(array $data)
+    private function buildParameters(array $data): string
     {
         $parameters = array_map(fn ($parameter) => '$' . $parameter, $data);
 

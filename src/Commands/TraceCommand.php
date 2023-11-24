@@ -26,11 +26,9 @@ class TraceCommand extends Command
      */
     protected $description = 'Create definitions for existing models to reference in new drafts';
 
-    /** @var Filesystem */
-    protected $filesystem;
+    protected Filesystem $filesystem;
 
-    /** @var Tracer */
-    private $tracer;
+    private Tracer $tracer;
 
     public function __construct(Filesystem $filesystem, Tracer $tracer)
     {
@@ -40,7 +38,7 @@ class TraceCommand extends Command
         $this->tracer = $tracer;
     }
 
-    public function handle()
+    public function handle(): int
     {
         $blueprint = resolve(Blueprint::class);
         $path = $this->option('path');

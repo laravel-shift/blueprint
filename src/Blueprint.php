@@ -9,11 +9,11 @@ use Symfony\Component\Yaml\Yaml;
 
 class Blueprint
 {
-    private $lexers = [];
+    private array $lexers = [];
 
-    private $generators = [];
+    private array $generators = [];
 
-    public static function relativeNamespace(string $fullyQualifiedClassName)
+    public static function relativeNamespace(string $fullyQualifiedClassName): string
     {
         $namespace = config('blueprint.namespace') . '\\';
         $reference = ltrim($fullyQualifiedClassName, '\\');
@@ -73,7 +73,7 @@ class Blueprint
         return Yaml::parse($content);
     }
 
-    public function analyze(array $tokens)
+    public function analyze(array $tokens): Tree
     {
         $registry = [
             'models' => [],
@@ -100,22 +100,22 @@ class Blueprint
         return $components;
     }
 
-    public function dump(array $generated)
+    public function dump(array $generated): string
     {
         return Yaml::dump($generated);
     }
 
-    public function registerLexer(Lexer $lexer)
+    public function registerLexer(Lexer $lexer): void
     {
         $this->lexers[] = $lexer;
     }
 
-    public function registerGenerator(Generator $generator)
+    public function registerGenerator(Generator $generator): void
     {
         $this->generators[] = $generator;
     }
 
-    public function swapGenerator(string $concrete, Generator $generator)
+    public function swapGenerator(string $concrete, Generator $generator): void
     {
         foreach ($this->generators as $key => $registeredGenerator) {
             if (get_class($registeredGenerator) === $concrete) {

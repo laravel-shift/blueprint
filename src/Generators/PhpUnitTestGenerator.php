@@ -38,9 +38,9 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
 
     const TESTS_RESPONDS = 16;
 
-    protected $stubs = [];
+    protected array $stubs = [];
 
-    protected $types = ['controllers', 'tests'];
+    protected array $types = ['controllers', 'tests'];
 
     public function output(Tree $tree): array
     {
@@ -61,14 +61,14 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
         return $this->output;
     }
 
-    protected function getPath(BlueprintModel $model)
+    protected function getPath(BlueprintModel $model): string
     {
         $path = str_replace('\\', '/', Blueprint::relativeNamespace($model->fullyQualifiedClassName()));
 
         return 'tests/Feature/' . $path . 'Test.php';
     }
 
-    protected function populateStub(string $stub, Controller $controller)
+    protected function populateStub(string $stub, Controller $controller): string
     {
         $stub = str_replace('{{ namespace }}', 'Tests\\Feature\\' . Blueprint::relativeNamespace($controller->fullyQualifiedNamespace()), $stub);
         $stub = str_replace('{{ namespacedClass }}', '\\' . $controller->fullyQualifiedClassName(), $stub);
@@ -79,7 +79,7 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
         return $stub;
     }
 
-    protected function buildTestCases(Controller $controller)
+    protected function buildTestCases(Controller $controller): string
     {
         $template = $this->testCaseStub();
         $test_cases = '';
@@ -506,7 +506,7 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
         return $this->stubs['test-case'];
     }
 
-    private function determineModel(string $prefix, ?string $reference)
+    private function determineModel(string $prefix, ?string $reference): string
     {
         if (empty($reference) || $reference === 'id') {
             return Str::studly(Str::singular($prefix));
@@ -519,7 +519,7 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
         return Str::studly($reference);
     }
 
-    private function buildFormRequestName(Controller $controller, string $name)
+    private function buildFormRequestName(Controller $controller, string $name): string
     {
         if (empty($controller->namespace())) {
             return $controller->name() . Str::studly($name) . 'Request';
@@ -528,7 +528,7 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
         return $controller->namespace() . '\\' . $controller->name() . Str::studly($name) . 'Request';
     }
 
-    private function buildFormRequestTestCase(string $controller, string $action, string $form_request)
+    private function buildFormRequestTestCase(string $controller, string $action, string $form_request): string
     {
         return <<<END
     #[Test]
@@ -543,25 +543,25 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
 END;
     }
 
-    private function addFakerTrait(Controller $controller)
+    private function addFakerTrait(Controller $controller): void
     {
         $this->addImport($controller, 'Illuminate\\Foundation\\Testing\\WithFaker');
         $this->addTrait($controller, 'WithFaker');
     }
 
-    private function addTestAssertionsTrait(Controller $controller)
+    private function addTestAssertionsTrait(Controller $controller): void
     {
         $this->addImport($controller, 'JMac\\Testing\\Traits\AdditionalAssertions');
         $this->addTrait($controller, 'AdditionalAssertions');
     }
 
-    private function addRefreshDatabaseTrait(Controller $controller)
+    private function addRefreshDatabaseTrait(Controller $controller): void
     {
         $this->addImport($controller, 'Illuminate\\Foundation\\Testing\\RefreshDatabase');
         $this->addTrait($controller, 'RefreshDatabase');
     }
 
-    private function httpMethodForAction($action)
+    private function httpMethodForAction(string $action): string
     {
         return match ($action) {
             'store' => 'post',
@@ -571,7 +571,7 @@ END;
         };
     }
 
-    private function buildTestCaseName(string $name, int $tested_bits)
+    private function buildTestCaseName(string $name, int $tested_bits): string
     {
         $verifications = [];
 
@@ -608,12 +608,12 @@ END;
         return $name . '_' . implode('_', $verifications) . '_and_' . $final_verification;
     }
 
-    private function buildLines($lines)
+    private function buildLines($lines): string
     {
         return str_pad(' ', 8) . implode(PHP_EOL . str_pad(' ', 8), $lines);
     }
 
-    private function splitField($field)
+    private function splitField($field): array
     {
         if (Str::contains($field, '.')) {
             return explode('.', $field, 2);
@@ -629,7 +629,7 @@ END;
             ->toArray();
     }
 
-    private function generateReferenceFactory(Column $local_column, Controller $controller, string $modelNamespace)
+    private function generateReferenceFactory(Column $local_column, Controller $controller, string $modelNamespace): ?array
     {
         if (!in_array($local_column->dataType(), ['id', 'uuid']) && !($local_column->attributes() && Str::endsWith($local_column->name(), '_id'))) {
             return null;

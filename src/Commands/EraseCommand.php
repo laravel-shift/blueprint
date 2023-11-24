@@ -22,8 +22,7 @@ class EraseCommand extends Command
      */
     protected $description = 'Erase components created from last Blueprint build';
 
-    /** @var Filesystem */
-    protected $filesystem;
+    protected Filesystem $filesystem;
 
     public function __construct(Filesystem $filesystem)
     {
@@ -32,7 +31,7 @@ class EraseCommand extends Command
         $this->filesystem = $filesystem;
     }
 
-    public function handle()
+    public function handle(): int
     {
         $contents = $this->filesystem->get('.blueprint');
 
@@ -69,7 +68,7 @@ class EraseCommand extends Command
         return $this->call('blueprint:trace');
     }
 
-    private function outputStyle($action)
+    private function outputStyle(string $action): string
     {
         if ($action === 'created') {
             return 'error';

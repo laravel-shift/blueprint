@@ -4,15 +4,9 @@ namespace Blueprint\Models\Statements;
 
 class SessionStatement
 {
-    /**
-     * @var string
-     */
-    private $operation;
+    private string $operation;
 
-    /**
-     * @var string
-     */
-    private $reference;
+    private string $reference;
 
     public function __construct(string $operation, string $reference)
     {
@@ -30,7 +24,7 @@ class SessionStatement
         return $this->reference;
     }
 
-    public function output()
+    public function output(): string
     {
         $code = '$request->session()->' . $this->operation() . '(';
         $code .= "'" . $this->reference() . "', ";

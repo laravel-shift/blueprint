@@ -9,7 +9,7 @@ use Blueprint\Tree;
 
 class MailGenerator extends StatementGenerator
 {
-    protected $types = ['controllers'];
+    protected array $types = ['controllers'];
 
     public function output(Tree $tree): array
     {
@@ -50,22 +50,22 @@ class MailGenerator extends StatementGenerator
         return $this->output;
     }
 
-    private function populateViewStub(string $stub, SendStatement $statement)
+    private function populateViewStub(string $stub, SendStatement $statement): string
     {
         return str_replace('{{ class }}', $statement->mail(), $stub);
     }
 
-    private function getViewPath($view)
+    private function getViewPath($view): string
     {
         return 'resources/views/' . str_replace('.', '/', $view) . '.blade.php';
     }
 
-    protected function getStatementPath(string $name)
+    protected function getStatementPath(string $name): string
     {
         return Blueprint::appPath() . '/Mail/' . $name . '.php';
     }
 
-    protected function populateStub(string $stub, SendStatement $sendStatement)
+    protected function populateStub(string $stub, SendStatement $sendStatement): string
     {
         $stub = str_replace('{{ namespace }}', config('blueprint.namespace') . '\\Mail', $stub);
         $stub = str_replace('{{ class }}', $sendStatement->mail(), $stub);

@@ -9,9 +9,9 @@ class EnumType extends Type
 {
     const ENUM = 'enum';
 
-    protected $values = [];
+    protected array $values = [];
 
-    public function getSQLDeclaration(array $column, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
         $values = array_map(
             fn ($val) => "'" . $val . "'",
@@ -35,12 +35,12 @@ class EnumType extends Type
         return $value;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return self::ENUM;
     }
 
-    public static function extractOptions($definition)
+    public static function extractOptions($definition): array
     {
         $options = explode(',', preg_replace('/enum\((?P<options>(.*))\)/', '$1', $definition));
 

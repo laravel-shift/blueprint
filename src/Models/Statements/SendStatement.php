@@ -12,35 +12,17 @@ class SendStatement
 
     const TYPE_NOTIFICATION_WITH_MODEL = 'notification_with_model';
 
-    /**
-     * @var string
-     */
-    private $mail;
+    private string $mail;
 
-    /**
-     * @var string
-     */
-    private $to;
+    private ?string $to;
 
-    /**
-     * @var array
-     */
-    private $data;
+    private array $data;
 
-    /**
-     * @var string
-     */
-    private $type;
+    private string $type;
 
-    /**
-     * @var string
-     */
-    private $view;
+    private string $view;
 
-    /**
-     * @var string
-     */
-    private $subject;
+    private string $subject;
 
     public function __construct(string $mail, ?string $to, array $data, string $type, string $view = null)
     {
@@ -57,17 +39,17 @@ class SendStatement
         return $this->subject;
     }
 
-    public function mail()
+    public function mail(): string
     {
         return $this->mail;
     }
 
-    public function to()
+    public function to(): ?string
     {
         return $this->to;
     }
 
-    public function type()
+    public function type(): string
     {
         return $this->type;
     }
@@ -77,7 +59,7 @@ class SendStatement
         return $this->data;
     }
 
-    public function output()
+    public function output(): string
     {
         if ($this->type() === self::TYPE_NOTIFICATION_WITH_FACADE) {
             return $this->notificationFacadeOutput();
@@ -90,17 +72,17 @@ class SendStatement
         return $this->mailOutput();
     }
 
-    public function isNotification()
+    public function isNotification(): bool
     {
         return $this->type() === SendStatement::TYPE_NOTIFICATION_WITH_FACADE || $this->type() === SendStatement::TYPE_NOTIFICATION_WITH_MODEL;
     }
 
-    public function view()
+    public function view(): string
     {
         return $this->view;
     }
 
-    private function mailOutput()
+    private function mailOutput(): string
     {
         $code = 'Mail::';
 
@@ -119,7 +101,7 @@ class SendStatement
         return $code;
     }
 
-    private function notificationFacadeOutput()
+    private function notificationFacadeOutput(): string
     {
         $code = 'Notification::';
 
@@ -136,7 +118,7 @@ class SendStatement
         return $code;
     }
 
-    private function notificationModelOutput()
+    private function notificationModelOutput(): string
     {
         $code = '';
 
@@ -154,7 +136,7 @@ class SendStatement
         return $code;
     }
 
-    private function buildParameters(array $data)
+    private function buildParameters(array $data): string
     {
         $parameters = array_map(fn ($parameter) => '$' . $parameter, $data);
 

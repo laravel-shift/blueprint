@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 class RouteGenerator extends AbstractClassGenerator implements Generator
 {
-    protected $types = ['routes'];
+    protected array $types = ['routes'];
 
     public function output(Tree $tree): array
     {
@@ -38,7 +38,7 @@ class RouteGenerator extends AbstractClassGenerator implements Generator
         return ['updated' => $paths];
     }
 
-    protected function buildRoutes(Controller $controller)
+    protected function buildRoutes(Controller $controller): string
     {
         $routes = '';
         $methods = array_keys($controller->methods());
@@ -74,12 +74,12 @@ class RouteGenerator extends AbstractClassGenerator implements Generator
         return trim($routes);
     }
 
-    protected function getClassName(Controller $controller)
+    protected function getClassName(Controller $controller): string
     {
         return $controller->fullyQualifiedClassName() . '::class';
     }
 
-    protected function buildRouteLine($className, $slug, $method)
+    protected function buildRouteLine($className, $slug, $method): string
     {
         if ($method === '__invoke') {
             return sprintf("Route::get('%s', %s);", $slug, $className);

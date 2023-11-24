@@ -18,7 +18,7 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
 
     const INDENT = '    ';
 
-    protected $types = ['factories'];
+    protected array $types = ['factories'];
 
     public function output(Tree $tree): array
     {
@@ -39,7 +39,7 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
         return $this->output;
     }
 
-    protected function getPath(BlueprintModel $blueprintModel)
+    protected function getPath(BlueprintModel $blueprintModel): string
     {
         $path = $blueprintModel->name();
         if ($blueprintModel->namespace()) {
@@ -49,7 +49,7 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
         return 'database/factories/' . $path . 'Factory.php';
     }
 
-    protected function populateStub(string $stub, Model $model)
+    protected function populateStub(string $stub, Model $model): string
     {
         $stub = str_replace('{{ model }}', $model->name(), $stub);
         $stub = str_replace('//', $this->buildDefinition($model), $stub);
@@ -59,7 +59,7 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
         return $stub;
     }
 
-    protected function buildDefinition(Model $model)
+    protected function buildDefinition(Model $model): string
     {
         $definition = '';
 

@@ -20,7 +20,7 @@ class PublishStubsCommand extends Command
      */
     protected $description = 'Publish blueprint stubs';
 
-    public function handle()
+    public function handle(): int
     {
         return $this->call('vendor:publish', ['--tag' => 'blueprint-stubs']);
     }

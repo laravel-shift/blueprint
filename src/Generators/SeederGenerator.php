@@ -13,7 +13,7 @@ class SeederGenerator extends AbstractClassGenerator implements Generator
 {
     use HandlesImports, HandlesTraits;
 
-    protected $types = ['seeders'];
+    protected array $types = ['seeders'];
 
     public function output(Tree $tree): array
     {
@@ -30,7 +30,7 @@ class SeederGenerator extends AbstractClassGenerator implements Generator
         return $this->output;
     }
 
-    protected function getPath(BlueprintModel $blueprintModel)
+    protected function getPath(BlueprintModel $blueprintModel): string
     {
         $path = $blueprintModel->name();
         if ($blueprintModel->namespace()) {
@@ -40,7 +40,7 @@ class SeederGenerator extends AbstractClassGenerator implements Generator
         return 'database/seeders/' . $path . 'Seeder.php';
     }
 
-    protected function populateStub(string $stub, BlueprintModel $model)
+    protected function populateStub(string $stub, BlueprintModel $model): string
     {
         $stub = str_replace('{{ class }}', $model->name() . 'Seeder', $stub);
         $this->addImport($model, 'Illuminate\Database\Seeder');
@@ -50,7 +50,7 @@ class SeederGenerator extends AbstractClassGenerator implements Generator
         return $stub;
     }
 
-    protected function build(BlueprintModel $model)
+    protected function build(BlueprintModel $model): string
     {
         $this->addImport($model, $this->tree->fqcnForContext($model->name()));
 

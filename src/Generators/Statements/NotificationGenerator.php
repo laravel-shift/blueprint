@@ -9,7 +9,7 @@ use Blueprint\Tree;
 
 class NotificationGenerator extends StatementGenerator
 {
-    protected $types = ['controllers'];
+    protected array $types = ['controllers'];
 
     public function output(Tree $tree): array
     {
@@ -43,12 +43,12 @@ class NotificationGenerator extends StatementGenerator
         return $this->output;
     }
 
-    protected function getStatementPath(string $name)
+    protected function getStatementPath(string $name): string
     {
         return Blueprint::appPath() . '/Notification/' . $name . '.php';
     }
 
-    protected function populateStub(string $stub, SendStatement $sendStatement)
+    protected function populateStub(string $stub, SendStatement $sendStatement): string
     {
         $stub = str_replace('{{ namespace }}', config('blueprint.namespace') . '\\Notification', $stub);
         $stub = str_replace('{{ class }}', $sendStatement->mail(), $stub);

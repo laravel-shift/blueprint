@@ -16,7 +16,7 @@ class ResourceGenerator extends StatementGenerator implements Generator
 {
     const INDENT = '            ';
 
-    protected $types = ['controllers', 'resources'];
+    protected array $types = ['controllers', 'resources'];
 
     public function output(Tree $tree): array
     {
@@ -48,12 +48,12 @@ class ResourceGenerator extends StatementGenerator implements Generator
         return $this->output;
     }
 
-    protected function getStatementPath(string $name)
+    protected function getStatementPath(string $name): string
     {
         return Blueprint::appPath() . '/Http/Resources/' . $name . '.php';
     }
 
-    protected function populateStub(string $stub, Controller $controller, ResourceStatement $resource)
+    protected function populateStub(string $stub, Controller $controller, ResourceStatement $resource): string
     {
         $namespace = config('blueprint.namespace')
             . '\\Http\\Resources'
@@ -73,7 +73,7 @@ class ResourceGenerator extends StatementGenerator implements Generator
         return $stub;
     }
 
-    protected function buildData(ResourceStatement $resource)
+    protected function buildData(ResourceStatement $resource): string
     {
         $context = Str::singular($resource->reference());
 
@@ -120,7 +120,7 @@ class ResourceGenerator extends StatementGenerator implements Generator
         return implode(PHP_EOL, $data);
     }
 
-    private function visibleColumns(Model $model)
+    private function visibleColumns(Model $model): array
     {
         return array_diff(
             array_keys($model->columns()),

@@ -6,13 +6,13 @@ use Illuminate\Support\Str;
 
 class Column
 {
-    private $modifiers;
+    private array $modifiers;
 
-    private $name;
+    private string $name;
 
-    private $dataType;
+    private string $dataType;
 
-    private $attributes;
+    private array $attributes;
 
     public function __construct(string $name, string $dataType = 'string', array $modifiers = [], array $attributes = [])
     {
@@ -22,22 +22,22 @@ class Column
         $this->attributes = $attributes;
     }
 
-    public function name()
+    public function name(): string
     {
         return $this->name;
     }
 
-    public function dataType()
+    public function dataType(): string
     {
         return $this->dataType;
     }
 
-    public function attributes()
+    public function attributes(): array
     {
         return $this->attributes;
     }
 
-    public function modifiers()
+    public function modifiers(): array
     {
         return $this->modifiers;
     }
@@ -54,17 +54,17 @@ class Column
             ->first(fn ($value, $key) => $key === 'default');
     }
 
-    public function isNullable()
+    public function isNullable(): bool
     {
         return in_array('nullable', $this->modifiers);
     }
 
-    public function isUnsigned()
+    public function isUnsigned(): bool
     {
         return in_array('unsigned', $this->modifiers);
     }
 
-    public static function columnName($reference)
+    public static function columnName($reference): string
     {
         return Str::after($reference, '.');
     }

@@ -12,7 +12,7 @@ class PolicyGenerator extends AbstractClassGenerator implements Generator
 {
     use HandlesImports;
 
-    protected $types = ['policies'];
+    protected array $types = ['policies'];
 
     public function output(Tree $tree): array
     {
@@ -32,7 +32,7 @@ class PolicyGenerator extends AbstractClassGenerator implements Generator
         return $this->output;
     }
 
-    protected function populateStub(string $stub, Policy $policy)
+    protected function populateStub(string $stub, Policy $policy): string
     {
         $stub = str_replace('{{ namespace }}', $policy->fullyQualifiedNamespace(), $stub);
         $stub = str_replace('{{ class }}', $policy->className(), $stub);
@@ -42,7 +42,7 @@ class PolicyGenerator extends AbstractClassGenerator implements Generator
         return $stub;
     }
 
-    protected function buildMethods(Policy $policy)
+    protected function buildMethods(Policy $policy): string
     {
         $methods = '';
 

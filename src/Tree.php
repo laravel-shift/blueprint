@@ -6,9 +6,9 @@ use Illuminate\Support\Str;
 
 class Tree
 {
-    private $tree;
+    private array $tree;
 
-    private $models = [];
+    private array $models = [];
 
     public function __construct(array $tree)
     {
@@ -17,7 +17,7 @@ class Tree
         $this->registerModels();
     }
 
-    private function registerModels()
+    private function registerModels(): void
     {
         $this->models = array_merge($this->tree['cache'] ?? [], $this->tree['models'] ?? []);
     }
@@ -71,7 +71,7 @@ class Tree
         return $this->models[current($matches)];
     }
 
-    public function fqcnForContext(string $context)
+    public function fqcnForContext(string $context): string
     {
         if (isset($this->models[$context])) {
             return $this->models[$context]->fullyQualifiedClassName();
@@ -91,7 +91,7 @@ class Tree
         return $fqn . '\\' . $context;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return $this->tree;
     }

@@ -7,20 +7,11 @@ use Illuminate\Support\Str;
 
 class EloquentStatement
 {
-    /**
-     * @var string
-     */
-    private $operation;
+    private string $operation;
 
-    /**
-     * @var string
-     */
-    private $reference;
+    private ?string $reference;
 
-    /**
-     * @var array
-     */
-    private $columns;
+    private array $columns;
 
     public function __construct(string $operation, ?string $reference, array $columns = [])
     {
@@ -101,17 +92,17 @@ class EloquentStatement
         return $code;
     }
 
-    private function usesQualifiedReference()
+    private function usesQualifiedReference(): bool
     {
         return Str::contains($this->reference(), '.');
     }
 
-    private function extractModel()
+    private function extractModel(): string
     {
         return Str::studly(Str::before($this->reference(), '.'));
     }
 
-    private function determineModel(string $prefix)
+    private function determineModel(string $prefix): string
     {
         if (empty($this->reference()) || $this->reference() === 'id') {
             return Str::studly(Str::singular($prefix));

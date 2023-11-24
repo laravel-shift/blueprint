@@ -4,10 +4,7 @@ namespace Blueprint\Models\Statements;
 
 class ValidateStatement
 {
-    /**
-     * @var array
-     */
-    private $data;
+    private array $data;
 
     public function __construct(array $data)
     {

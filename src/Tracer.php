@@ -8,8 +8,7 @@ use Illuminate\Filesystem\Filesystem;
 
 class Tracer
 {
-    /** @var Filesystem */
-    private $filesystem;
+    private Filesystem $filesystem;
 
     public function execute(Blueprint $blueprint, Filesystem $filesystem, array $paths = null): array
     {
@@ -49,7 +48,7 @@ class Tracer
         return $definitions;
     }
 
-    private function appClasses($paths)
+    private function appClasses($paths): array
     {
         $classes = [];
         foreach ($paths as $path) {
@@ -91,7 +90,7 @@ class Tracer
         return app($class);
     }
 
-    private function extractColumns(Model $model)
+    private function extractColumns(Model $model): array
     {
         $table = $model->getConnection()->getTablePrefix() . $model->getTable();
         $schema = $model->getConnection()->getDoctrineSchemaManager();
@@ -114,7 +113,7 @@ class Tracer
         if ($uses_enums) {
             $definitions = $model->getConnection()->getDoctrineConnection()->fetchAllAssociative($schema->getDatabasePlatform()->getListTableColumnsSQL($table, $database));
 
-            collect($columns)->filter(fn ($column) => $column->getType() instanceof \Blueprint\EnumType)->each(function (&$column, $key) use ($definitions) {
+            collect($columns)->filter(fn ($column) => $column->getType() instanceof \Blueprint\EnumType)->each(function ($column, $key) use ($definitions) {
                 $definition = collect($definitions)->where('Field', $key)->first();
 
                 $column->options = \Blueprint\EnumType::extractOptions($definition['Type']);
@@ -127,14 +126,14 @@ class Tracer
     /**
      * @param  \Doctrine\DBAL\Schema\Column[]  $columns
      */
-    private function mapColumns($columns)
+    private function mapColumns(array $columns): array
     {
         return collect($columns)
             ->map([self::class, 'columns'])
             ->toArray();
     }
 
-    public static function columns(\Doctrine\DBAL\Schema\Column $column, string $key)
+    public static function columns(\Doctrine\DBAL\Schema\Column $column, string $key): string
     {
         $attributes = [];
 
@@ -182,7 +181,7 @@ class Tracer
         return implode(' ', $attributes);
     }
 
-    private static function translations(string $type)
+    private static function translations(string $type): string
     {
         static $mappings = [
             'array' => 'string',
@@ -215,7 +214,7 @@ class Tracer
         return $mappings[$type] ?? 'string';
     }
 
-    private function translateColumns(array $columns)
+    private function translateColumns(array $columns): array
     {
         if (isset($columns['id']) && str_contains($columns['id'], 'autoincrement') && str_contains($columns['id'], 'integer')) {
             unset($columns['id']);
@@ -241,7 +240,7 @@ class Tracer
         return $columns;
     }
 
-    private function relativeClassName($model)
+    private function relativeClassName($model): string
     {
         $name = Blueprint::relativeNamespace(get_class($model));
 

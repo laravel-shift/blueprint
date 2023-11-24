@@ -4,15 +4,9 @@ namespace Blueprint\Models\Statements;
 
 class RespondStatement
 {
-    /**
-     * @var int
-     */
-    private $status = 200;
+    private int $status = 200;
 
-    /**
-     * @var string
-     */
-    private $content;
+    private ?string $content = null;
 
     public function __construct(string $data)
     {
@@ -33,7 +27,7 @@ class RespondStatement
         return $this->content;
     }
 
-    public function output()
+    public function output(): string
     {
         if ($this->content()) {
             return 'return $' . $this->content . ';';

@@ -7,8 +7,7 @@ use Illuminate\Support\Str;
 
 class Policy implements BlueprintModel
 {
-    /** @var array */
-    public static $supportedMethods = [
+    public static array $supportedMethods = [
         'viewAny',
         'view',
         'create',
@@ -18,8 +17,7 @@ class Policy implements BlueprintModel
         'forceDelete',
     ];
 
-    /** @var array */
-    public static $resourceAbilityMap = [
+    public static array $resourceAbilityMap = [
         'index' => 'viewAny',
         'show' => 'view',
         'create' => 'create',
@@ -29,25 +27,16 @@ class Policy implements BlueprintModel
         'destroy' => 'delete',
     ];
 
-    /**
-     * @var string
-     */
-    private $name;
+    private string $name;
 
-    /**
-     * @var string
-     */
-    private $namespace;
+    private string $namespace;
 
     /**
      * @var array<int, string>
      */
-    private $methods;
+    private array $methods;
 
-    /**
-     * @var bool
-     */
-    private $authorizeResource;
+    private bool $authorizeResource;
 
     /**
      * Controller constructor.
@@ -70,7 +59,7 @@ class Policy implements BlueprintModel
         return $this->name() . (Str::endsWith($this->name(), 'Policy') ? '' : 'Policy');
     }
 
-    public function namespace()
+    public function namespace(): string
     {
         if (empty($this->namespace)) {
             return '';
@@ -79,7 +68,7 @@ class Policy implements BlueprintModel
         return $this->namespace;
     }
 
-    public function fullyQualifiedNamespace()
+    public function fullyQualifiedNamespace(): string
     {
         $fqn = config('blueprint.namespace');
 
@@ -94,7 +83,7 @@ class Policy implements BlueprintModel
         return $fqn;
     }
 
-    public function fullyQualifiedClassName()
+    public function fullyQualifiedClassName(): string
     {
         return $this->fullyQualifiedNamespace() . '\\' . $this->className();
     }
@@ -109,7 +98,7 @@ class Policy implements BlueprintModel
         return $this->authorizeResource;
     }
 
-    public function fullyQualifiedModelClassName()
+    public function fullyQualifiedModelClassName(): string
     {
         $fqn = config('blueprint.namespace');
 

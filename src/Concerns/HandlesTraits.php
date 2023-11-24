@@ -6,14 +6,14 @@ use Blueprint\Contracts\Model;
 
 trait HandlesTraits
 {
-    protected $traits = [];
+    protected array $traits = [];
 
-    protected function addTrait(Model $model, $trait)
+    protected function addTrait(Model $model, $trait): void
     {
         $this->traits[$model->name()][] = $trait;
     }
 
-    protected function buildTraits(Model $model)
+    protected function buildTraits(Model $model): string
     {
         if (empty($this->traits[$model->name()])) {
             return '';

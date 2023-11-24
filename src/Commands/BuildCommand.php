@@ -30,11 +30,9 @@ class BuildCommand extends Command
      */
     protected $description = 'Build components from a Blueprint draft';
 
-    /** @var Filesystem */
-    protected $filesystem;
+    protected Filesystem $filesystem;
 
-    /** @var Builder */
-    private $builder;
+    private Builder $builder;
 
     public function __construct(Filesystem $filesystem, Builder $builder)
     {
@@ -44,7 +42,7 @@ class BuildCommand extends Command
         $this->builder = $builder;
     }
 
-    public function handle()
+    public function handle(): int
     {
         $file = $this->argument('draft') ?? $this->defaultDraftFile();
 
@@ -79,17 +77,15 @@ class BuildCommand extends Command
 
     /**
      * Get the console command arguments.
-     *
-     * @return array
      */
-    protected function getArguments()
+    protected function getArguments(): array
     {
         return [
             ['draft', InputArgument::OPTIONAL, 'The path to the draft file, default: draft.yaml or draft.yml', []],
         ];
     }
 
-    private function outputStyle($action)
+    private function outputStyle(string $action): string
     {
         if ($action === 'deleted') {
             return 'error';
@@ -100,7 +96,7 @@ class BuildCommand extends Command
         return 'info';
     }
 
-    private function defaultDraftFile()
+    private function defaultDraftFile(): string
     {
         return file_exists('draft.yml') ? 'draft.yml' : 'draft.yaml';
     }

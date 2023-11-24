@@ -9,7 +9,7 @@ use Blueprint\Tree;
 
 class JobGenerator extends StatementGenerator
 {
-    protected $types = ['controllers'];
+    protected array $types = ['controllers'];
 
     public function output(Tree $tree): array
     {
@@ -39,12 +39,12 @@ class JobGenerator extends StatementGenerator
         return $this->output;
     }
 
-    protected function getStatementPath(string $name)
+    protected function getStatementPath(string $name): string
     {
         return Blueprint::appPath() . '/Jobs/' . $name . '.php';
     }
 
-    protected function populateStub(string $stub, DispatchStatement $dispatchStatement)
+    protected function populateStub(string $stub, DispatchStatement $dispatchStatement): string
     {
         $stub = str_replace('{{ namespace }}', config('blueprint.namespace') . '\\Jobs', $stub);
         $stub = str_replace('{{ class }}', $dispatchStatement->job(), $stub);

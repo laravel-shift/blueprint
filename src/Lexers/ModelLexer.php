@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 
 class ModelLexer implements Lexer
 {
-    private static $relationships = [
+    private static array $relationships = [
         'belongsto' => 'belongsTo',
         'hasone' => 'hasOne',
         'hasmany' => 'hasMany',
@@ -22,7 +22,7 @@ class ModelLexer implements Lexer
         'morphedbymany' => 'morphedByMany',
     ];
 
-    private static $dataTypes = [
+    private static array $dataTypes = [
         'bigincrements' => 'bigIncrements',
         'biginteger' => 'bigInteger',
         'binary' => 'binary',
@@ -85,7 +85,7 @@ class ModelLexer implements Lexer
         'year' => 'year',
     ];
 
-    private static $modifiers = [
+    private static array $modifiers = [
         'autoincrement' => 'autoIncrement',
         'charset' => 'charset',
         'collation' => 'collation',
@@ -126,7 +126,7 @@ class ModelLexer implements Lexer
         return $registry;
     }
 
-    private function buildModel(string $name, array $columns)
+    private function buildModel(string $name, array $columns): Model
     {
         $model = new Model($name);
 
@@ -210,7 +210,7 @@ class ModelLexer implements Lexer
         return $model;
     }
 
-    private function buildColumn(string $name, string $definition)
+    private function buildColumn(string $name, string $definition): Column
     {
         $data_type = null;
         $modifiers = [];

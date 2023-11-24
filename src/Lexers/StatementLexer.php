@@ -44,40 +44,40 @@ class StatementLexer implements Lexer
         return array_filter($statements);
     }
 
-    private function analyzeRender(string $statement)
+    private function analyzeRender(string $statement): RenderStatement
     {
         [$view, $data] = $this->parseWithStatement($statement);
 
         return new RenderStatement($view, $data);
     }
 
-    private function analyzeEvent(string $statement)
+    private function analyzeEvent(string $statement): FireStatement
     {
         [$event, $data] = $this->parseWithStatement($statement);
 
         return new FireStatement($event, $data);
     }
 
-    private function analyzeDispatch(string $statement)
+    private function analyzeDispatch(string $statement): DispatchStatement
     {
         [$job, $data] = $this->parseWithStatement($statement);
 
         return new DispatchStatement($job, $data);
     }
 
-    private function analyzeRedirect(string $statement)
+    private function analyzeRedirect(string $statement): RedirectStatement
     {
         [$route, $data] = $this->parseWithStatement($statement);
 
         return new RedirectStatement($route, $data);
     }
 
-    private function analyzeRespond(string $statement)
+    private function analyzeRespond(string $statement): RespondStatement
     {
         return new RespondStatement($statement);
     }
 
-    private function analyzeSend($statement)
+    private function analyzeSend($statement): SendStatement
     {
         $to = null;
         $view = null;
@@ -109,7 +109,7 @@ class StatementLexer implements Lexer
         return new SendStatement($object, $to, $data, $type, $view);
     }
 
-    private function analyzeNotify($statement)
+    private function analyzeNotify($statement): SendStatement
     {
         [$model, $notification, $with] = $this->extractTokens($statement, 3);
 
@@ -121,12 +121,12 @@ class StatementLexer implements Lexer
         return new SendStatement($notification, $model, $data, SendStatement::TYPE_NOTIFICATION_WITH_MODEL);
     }
 
-    private function analyzeValidate($statement)
+    private function analyzeValidate($statement): ValidateStatement
     {
         return new ValidateStatement(preg_split('/,([ \t]+)?/', $statement));
     }
 
-    private function parseWithStatement(string $statement)
+    private function parseWithStatement(string $statement): array
     {
         [$object, $with] = $this->extractTokens($statement, 2);
 
@@ -139,12 +139,12 @@ class StatementLexer implements Lexer
         return [$object, $data];
     }
 
-    private function extractTokens(string $statement, int $limit = -1)
+    private function extractTokens(string $statement, int $limit = -1): array
     {
         return array_pad(preg_split('/[ \t]+/', $statement, $limit), $limit, null);
     }
 
-    private function analyzeQuery($statement)
+    private function analyzeQuery($statement): QueryStatement
     {
         if ($statement === 'all') {
             return new QueryStatement('all');
@@ -167,7 +167,7 @@ class StatementLexer implements Lexer
         return new QueryStatement('get', $this->extractTokens($statement));
     }
 
-    private function analyzeResource($statement)
+    private function analyzeResource($statement): ResourceStatement
     {
         $reference = $statement;
         $collection = null;
@@ -180,7 +180,7 @@ class StatementLexer implements Lexer
         return new ResourceStatement($reference, !is_null($collection), $collection === 'paginate');
     }
 
-    private function analyzeUpdate($statement)
+    private function analyzeUpdate($statement): EloquentStatement
     {
         if (!Str::contains($statement, ',')) {
             return new EloquentStatement('update', $statement);

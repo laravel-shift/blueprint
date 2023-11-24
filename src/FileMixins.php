@@ -4,9 +4,9 @@ namespace Blueprint;
 
 class FileMixins
 {
-    private $stubs = [];
+    private array $stubs = [];
 
-    public function stub()
+    public function stub(): \Closure
     {
         return function ($path) {
             if (!isset($this->stubs[$path])) {
