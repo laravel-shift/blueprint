@@ -165,12 +165,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             if ($column->name() === 'id' && $dataType === 'id') {
                 $dataType = 'bigIncrements';
             } elseif ($dataType === 'id') {
-                if ($model->isPivot()) {
-                    // TODO: what if constraints are enabled?
-                    $dataType = 'foreignId';
-                } else {
-                    $dataType = 'unsignedBigInteger';
-                }
+                $dataType = 'foreignId';
             }
 
             if (in_array($dataType, self::UNSIGNABLE_TYPES) && in_array('unsigned', $column->modifiers())) {

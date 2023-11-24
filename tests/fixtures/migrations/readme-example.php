@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title', 400);
             $table->longText('content');
             $table->timestamp('published_at')->nullable();
-            $table->unsignedBigInteger('author_id');
+            $table->foreignId('author_id');
             $table->timestamps();
         });
     }

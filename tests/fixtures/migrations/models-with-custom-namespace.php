@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 30);
             $table->string('image');
-            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->foreignId('parent_id')->nullable();
             $table->boolean('active')->default(true);
             $table->timestamps();
             $table->softDeletes();

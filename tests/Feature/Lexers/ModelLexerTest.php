@@ -681,7 +681,7 @@ final class ModelLexerTest extends TestCase
         $this->assertEquals([], $columns['id']->modifiers());
         $this->assertEquals('venue_id', $columns['venue_id']->name());
         $this->assertEquals('id', $columns['venue_id']->dataType());
-        $this->assertEquals(['unsigned'], $columns['venue_id']->modifiers());
+        $this->assertEquals([], $columns['venue_id']->modifiers());
         $this->assertEquals(['Venue'], $columns['venue_id']->attributes());
         $this->assertEquals('region_id', $columns['region_id']->name());
         $this->assertEquals('id', $columns['region_id']->dataType());

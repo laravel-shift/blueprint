@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('journeys', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->unsignedBigInteger('user_id');
+            $table->foreignId('user_id');
             $table->timestamps();
         });
     }

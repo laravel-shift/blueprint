@@ -178,7 +178,7 @@ class ModelLexer implements Lexer
                         if ($type === 'belongsTo') {
                             $column = $this->columnNameFromRelationship($relationship);
                             if (isset($columns[$column]) && !str_contains($columns[$column], ' foreign') && !str_contains($columns[$column], ' id')) {
-                                $columns[$column] .= ' id:' . Str::before($relationship, ':');
+                                $columns[$column] = trim($this->removeDataTypes($columns[$column]) . ' id:' . Str::before($relationship, ':'));
                             }
                         }
                     }
@@ -215,7 +215,7 @@ class ModelLexer implements Lexer
         $data_type = null;
         $modifiers = [];
 
-        $tokens = preg_split('#("|\').*?\1(*SKIP)(*FAIL)|\s+#', $definition);
+        $tokens = $this->parseColumn($definition);
         foreach ($tokens as $token) {
             $parts = explode(':', $token);
             $value = $parts[0];
@@ -329,5 +329,20 @@ class ModelLexer implements Lexer
         }
 
         return false;
+    }
+
+    private function removeDataTypes(string $definition): string
+    {
+        $tokens = array_filter(
+            $this->parseColumn($definition),
+            fn ($token) => strtolower($token) !== 'unsigned' && !isset(self::$dataTypes[strtolower($token)])
+        );
+
+        return implode(' ', $tokens);
+    }
+
+    private function parseColumn(string $definition): array
+    {
+        return preg_split('#("|\').*?\1(*SKIP)(*FAIL)|\s+#', $definition);
     }
 }
