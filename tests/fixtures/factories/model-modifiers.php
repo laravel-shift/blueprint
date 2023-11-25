@@ -22,12 +22,12 @@ class ModifierFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence(4),
-            'name' => $this->faker->name,
+            'name' => $this->faker->name(),
             'content' => $this->faker->paragraphs(3, true),
             'amount' => $this->faker->randomFloat(3, 0, 999999.999),
             'total' => $this->faker->randomFloat(2, 0, 99999999.99),
             'overflow' => $this->faker->randomFloat(30, 0, 99999999999999999999999999999999999.999999999999999999999999999999),
-            'ssn' => $this->faker->ssn,
+            'ssn' => $this->faker->ssn(),
             'role' => $this->faker->randomElement(["user","admin","owner"]),
         ];
     }

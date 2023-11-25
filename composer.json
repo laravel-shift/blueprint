@@ -13,7 +13,7 @@
         "illuminate/console": "^10.0",
         "illuminate/filesystem": "^10.0",
         "illuminate/support": "^10.0",
-        "laravel-shift/faker-registry": "^0.2.0",
+        "laravel-shift/faker-registry": "^0.3.0",
         "symfony/yaml": "^6.2"
     },
     "require-dev": {

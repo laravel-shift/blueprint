@@ -28,9 +28,9 @@ test('store uses form request validation')
     );
 
 test('store saves', function (): void {
-    $name = fake()->name;
-    $image = fake()->word;
-    $active = fake()->boolean;
+    $name = fake()->name();
+    $image = fake()->word();
+    $active = fake()->boolean();
 
     $response = post(route('categories.store'), [
         'name' => $name,
@@ -70,9 +70,9 @@ test('update uses form request validation')
 
 test('update behaves as expected', function (): void {
     $category = Category::factory()->create();
-    $name = fake()->name;
-    $image = fake()->word;
-    $active = fake()->boolean;
+    $name = fake()->name();
+    $image = fake()->word();
+    $active = fake()->boolean();
 
     $response = put(route('categories.update', $category), [
         'name' => $name,

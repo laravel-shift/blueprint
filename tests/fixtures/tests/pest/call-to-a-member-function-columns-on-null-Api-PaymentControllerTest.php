@@ -20,7 +20,7 @@ test('store uses form request validation')
     );
 
 test('store saves and responds with', function (): void {
-    $status = fake()->word;
+    $status = fake()->word();
     $amount = fake()->randomFloat(/** decimal_attributes **/);
     $user = User::factory()->create();
 

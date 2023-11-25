@@ -14,8 +14,8 @@ test('store uses form request validation')
     );
 
 test('store saves and redirects', function (): void {
-    $email = fake()->safeEmail;
-    $password = fake()->password;
+    $email = fake()->safeEmail();
+    $password = fake()->password();
 
     $response = post(route('user.store'), [
         'email' => $email,

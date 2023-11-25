@@ -28,7 +28,7 @@ test('store uses form request validation')
     );
 
 test('store saves', function (): void {
-    $name = fake()->name;
+    $name = fake()->name();
 
     $response = post(route('certificate-type.store'), [
         'name' => $name,
@@ -64,7 +64,7 @@ test('update uses form request validation')
 
 test('update behaves as expected', function (): void {
     $certificateType = CertificateType::factory()->create();
-    $name = fake()->name;
+    $name = fake()->name();
 
     $response = put(route('certificate-type.update', $certificateType), [
         'name' => $name,

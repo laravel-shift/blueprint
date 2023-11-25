@@ -29,8 +29,8 @@ final class UserControllerTest extends TestCase
     #[Test]
     public function store_saves_and_redirects(): void
     {
-        $email = $this->faker->safeEmail;
-        $password = $this->faker->password;
+        $email = $this->faker->safeEmail();
+        $password = $this->faker->password();
 
         $response = $this->post(route('user.store'), [
             'email' => $email,

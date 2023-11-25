@@ -24,7 +24,7 @@ class PostFactory extends Factory
         return [
             'title' => $this->faker->sentence(4),
             'author_id' => Author::factory(),
-            'author_bio' => $this->faker->text,
+            'author_bio' => $this->faker->text(),
             'content' => $this->faker->paragraphs(3, true),
             'published_at' => $this->faker->dateTime(),
             'updated_at' => $this->faker->dateTime(),

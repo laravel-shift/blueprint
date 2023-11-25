@@ -167,10 +167,10 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
                 $faker = FakerRegistry::fakerData($column->name()) ?? (FakerRegistry::fakerDataType($type) ?? FakerRegistry::fakerDataType($column->dataType()));
 
                 if ($faker === null) {
-                    $faker = 'word';
+                    $faker = 'word()';
                 }
 
-                if (($faker === 'word') && (!empty($column->attributes()))) {
+                if ($faker === 'word()' && !empty($column->attributes())) {
                     $faker = sprintf("regexify('[A-Za-z0-9]{%s}')", current($column->attributes()));
                 }
 

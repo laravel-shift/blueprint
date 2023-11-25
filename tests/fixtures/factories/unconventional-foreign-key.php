@@ -22,7 +22,7 @@ class StateFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name,
+            'name' => $this->faker->name(),
             'countries_id' => Country::factory(),
             'country_code' => Country::factory()->create()->code,
             'ccid' => Country::factory()->create()->ccid,

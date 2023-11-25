@@ -41,7 +41,7 @@ final class CertificateTypeControllerTest extends TestCase
     #[Test]
     public function store_saves(): void
     {
-        $name = $this->faker->name;
+        $name = $this->faker->name();
 
         $response = $this->post(route('certificate-type.store'), [
             'name' => $name,
@@ -84,7 +84,7 @@ final class CertificateTypeControllerTest extends TestCase
     public function update_behaves_as_expected(): void
     {
         $certificateType = CertificateType::factory()->create();
-        $name = $this->faker->name;
+        $name = $this->faker->name();
 
         $response = $this->put(route('certificate-type.update', $certificateType), [
             'name' => $name,

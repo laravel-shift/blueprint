@@ -30,10 +30,10 @@ test('store uses form request validation')
     );
 
 test('store saves', function (): void {
-    $name = fake()->name;
+    $name = fake()->name();
     $certificate_type = CertificateType::factory()->create();
-    $reference = fake()->word;
-    $document = fake()->word;
+    $reference = fake()->word();
+    $document = fake()->word();
     $expiry_date = fake()->date();
 
     $response = post(route('certificate.store'), [
@@ -78,10 +78,10 @@ test('update uses form request validation')
 
 test('update behaves as expected', function (): void {
     $certificate = Certificate::factory()->create();
-    $name = fake()->name;
+    $name = fake()->name();
     $certificate_type = CertificateType::factory()->create();
-    $reference = fake()->word;
-    $document = fake()->word;
+    $reference = fake()->word();
+    $document = fake()->word();
     $expiry_date = fake()->date();
 
     $response = put(route('certificate.update', $certificate), [

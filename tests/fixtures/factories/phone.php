@@ -22,13 +22,13 @@ class PhoneFactory extends Factory
     public function definition(): array
     {
         return [
-            'label' => $this->faker->word,
+            'label' => $this->faker->word(),
             'user_id' => User::factory(),
-            'phone_number' => $this->faker->phoneNumber,
+            'phone_number' => $this->faker->phoneNumber(),
             'type' => $this->faker->randomElement(["home","cell"]),
             'status' => $this->faker->randomElement(["archived","deleted"]),
-            'foo_id' => $this->faker->randomDigitNotNull,
-            'foo_type' => $this->faker->word,
+            'foo_id' => $this->faker->randomDigitNotNull(),
+            'foo_type' => $this->faker->word(),
             'tag' => $this->faker->regexify('[A-Za-z0-9]{3}'),
         ];
     }
