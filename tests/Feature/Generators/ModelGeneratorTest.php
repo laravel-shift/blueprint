@@ -595,7 +595,7 @@ final class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Models/User.php', 'app/Models/Team.php', 'app/Models/Membership.php']], $this->subject->output($tree));
     }
 
-        #[Test]
+    #[Test]
     public function output_generates_models_with_hasuuids_trait_if_uuid_id_is_type_uuid(): void
     {
         $this->filesystem->expects('stub')
