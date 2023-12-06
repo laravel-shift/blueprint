@@ -271,7 +271,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
 
     protected function addTraits(Model $model, $stub): string
     {
-        $traits['HasFactory'];
+        $traits = ['HasFactory'];
         
         if ($model->usesSoftDeletes()) {
             $this->addImport($model, 'Illuminate\\Database\\Eloquent\\SoftDeletes');
