@@ -275,16 +275,16 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
             return $stub;
         }
         $traits = ['HasFactory'];
-        if($model->usesSoftDeletes()) {
+        if ($model->usesSoftDeletes()) {
             $this->addImport($model, 'Illuminate\\Database\\Eloquent\\SoftDeletes');
             $traits[] = 'SoftDeletes';
         }
-        if($model->usesUuids()) {
+        if ($model->usesUuids()) {
             $this->addImport($model, 'Illuminate\\Database\\Eloquent\\Concerns\\HasUuids');
             $traits[] = 'HasUuids';
         }
 
-        return Str::replaceFirst('use HasFactory', 'use '. implode(", ", $traits), $stub);
+        return Str::replaceFirst('use HasFactory', 'use ' . implode(', ', $traits), $stub);
     }
 
     private function fillableColumns(array $columns): array
