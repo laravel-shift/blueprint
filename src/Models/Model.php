@@ -96,6 +96,11 @@ class Model implements BlueprintModel
         return $this->primaryKey !== false;
     }
 
+    public function usesUuids(): bool
+    {
+        return $this->usesPrimaryKey() && $this->columns[$this->primaryKey]->dataType() === 'uuid';
+    }
+
     public function disablePrimaryKey(): void
     {
         $this->primaryKey = false;
