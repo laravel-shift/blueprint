@@ -1,0 +1,5 @@
+models:
+  User:
+    id: uuid primary
+    name: string
+    base_pay: decimal:10,2

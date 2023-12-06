@@ -595,6 +595,38 @@ final class ModelGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Models/User.php', 'app/Models/Team.php', 'app/Models/Membership.php']], $this->subject->output($tree));
     }
 
+        #[Test]
+    public function output_generates_models_with_hasuuids_trait_if_uuid_id_is_type_uuid(): void
+    {
+        $this->filesystem->expects('stub')
+            ->with('model.class.stub')
+            ->andReturn($this->stub('model.class.stub'));
+        $this->filesystem->expects('stub')
+            ->times(1)
+            ->with('model.casts.stub')
+            ->andReturn($this->stub('model.casts.stub'));
+        $this->filesystem->expects('stub')
+            ->times(1)
+            ->with('model.fillable.stub')
+            ->andReturn($this->stub('model.fillable.stub'));
+        $this->filesystem->expects('stub')
+            ->times(1)
+            ->with('model.method.stub')
+            ->andReturn($this->stub('model.method.stub'));
+
+        $this->filesystem->expects('exists')
+            ->times(1)
+            ->with('app/Models')
+            ->andReturnTrue();
+
+        $this->filesystem->expects('put')
+            ->with('app/Models/User.php', $this->fixture('models/model-with-uuid-trait.php'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/model-with-uuid-id.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => ['app/Models/User.php']], $this->subject->output($tree));
+    }
+
     public static function modelTreeDataProvider(): array
     {
         return [
@@ -610,6 +642,7 @@ final class ModelGeneratorTest extends TestCase
             ['drafts/uuid-shorthand-invalid-relationship.yaml', 'app/Models/AgeCohort.php', 'models/uuid-shorthand-invalid-relationship.php'],
             ['drafts/model-with-meta.yaml', 'app/Models/Post.php', 'models/model-with-meta.php'],
             ['drafts/infer-belongsto.yaml', 'app/Models/Conference.php', 'models/infer-belongsto.php'],
+            ['drafts/model-with-uuid-id.yaml', 'app/Models/User.php', 'models/model-with-uuid-trait.php'],
         ];
     }
 
