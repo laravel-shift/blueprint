@@ -55,7 +55,6 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
         $stub = str_replace('//', $this->buildDefinition($model), $stub);
         $stub = str_replace('{{ namespace }}', 'Database\Factories' . ($model->namespace() ? '\\' . $model->namespace() : ''), $stub);
         $stub = str_replace('use {{ namespacedModel }};', $this->buildImports($model), $stub);
-
         return $stub;
     }
 
@@ -110,7 +109,7 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
                     $definition .= sprintf('%s::factory()->create()->%s', $class, $key);
                     $definition .= ',' . PHP_EOL;
                 }
-            } elseif ($column->dataType() === 'id' || ($column->dataType() === 'uuid' && Str::endsWith($column->name(), '_id'))) {
+            } elseif ($column->dataType() === 'id' || (in_array($column->dataType(), ['uuid', 'ulid']) && Str::endsWith($column->name(), '_id'))) {
                 $name = Str::beforeLast($column->name(), '_id');
                 $class = Str::studly($column->attributes()[0] ?? $name);
                 $reference = $this->fullyQualifyModelReference($class) ?? $model;
@@ -155,6 +154,10 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
             } elseif ($column->dataType() === 'rememberToken') {
                 $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
                 $definition .= 'Str::random(10)';
+                $definition .= ',' . PHP_EOL;
+            } elseif ($column->dataType() === 'ulid') {
+                $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
+                $definition .= '(string) Str::ulid()';
                 $definition .= ',' . PHP_EOL;
             } else {
                 $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";

@@ -68,6 +68,7 @@ class AllTypeFactory extends Factory
             'unsignedMediumInteger' => $this->faker->randomNumber(),
             'unsignedSmallInteger' => $this->faker->randomNumber(),
             'unsignedTinyInteger' => $this->faker->randomDigitNotNull(),
+            'ulid' => (string) Str::ulid(),
             'uuid' => $this->faker->uuid(),
             'year' => $this->faker->year(),
         ];

@@ -50,5 +50,6 @@ models:
     unsignedMediumInteger: unsignedMediumInteger
     unsignedSmallInteger: unsignedSmallInteger
     unsignedTinyInteger: unsignedTinyInteger
+    ulid: ulid
     uuid: uuid
     year: year
