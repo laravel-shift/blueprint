@@ -64,6 +64,7 @@ class AllType extends Model
         'unsignedMediumInteger',
         'unsignedSmallInteger',
         'unsignedTinyInteger',
+        'ulid',
         'uuid',
         'year',
     ];
