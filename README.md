@@ -17,7 +17,7 @@ Blueprint requires a Laravel application running the latest stable release of La
 You can install Blueprint via composer using the following command:
 
 ```sh
-composer require --dev laravel-shift/blueprint
+composer require -W --dev laravel-shift/blueprint
 ```
 
 Blueprint will automatically register itself using [package discovery](https://laravel.com/docs/packages#package-discovery).
