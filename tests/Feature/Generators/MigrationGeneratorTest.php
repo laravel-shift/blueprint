@@ -529,6 +529,7 @@ final class MigrationGeneratorTest extends TestCase
             ['drafts/disable-auto-columns.yaml', 'database/migrations/timestamp_create_states_table.php', 'migrations/disable-auto-columns.php'],
             ['drafts/ulid-shorthand.yaml', 'database/migrations/timestamp_create_people_table.php', 'migrations/ulid-shorthand.php'],
             ['drafts/ulid-shorthand-invalid-relationship.yaml', 'database/migrations/timestamp_create_age_cohorts_table.php', 'migrations/ulid-shorthand-invalid-relationship.php'],
+            ['drafts/ulid-without-relationship.yaml', 'database/migrations/timestamp_create_vats_table.php', 'migrations/ulid-without-relationship.php'],
             ['drafts/uuid-shorthand.yaml', 'database/migrations/timestamp_create_people_table.php', 'migrations/uuid-shorthand.php'],
             ['drafts/uuid-shorthand-invalid-relationship.yaml', 'database/migrations/timestamp_create_age_cohorts_table.php', 'migrations/uuid-shorthand-invalid-relationship.php'],
             ['drafts/uuid-without-relationship.yaml', 'database/migrations/timestamp_create_vats_table.php', 'migrations/uuid-without-relationship.php'],
