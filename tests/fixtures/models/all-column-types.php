@@ -39,6 +39,7 @@ class AllType extends Model
         'mediumInteger',
         'mediumText',
         'morphs',
+        'ulidMorphs',
         'uuidMorphs',
         'multiLineString',
         'multiPoint',

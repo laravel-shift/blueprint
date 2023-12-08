@@ -25,6 +25,7 @@ models:
     mediumInteger: mediumInteger
     mediumText: mediumText
     morphs: morphs
+    ulidMorphs: ulidMorphs
     uuidMorphs: uuidMorphs
     multiLineString: multiLineString
     multiPoint: multiPoint
