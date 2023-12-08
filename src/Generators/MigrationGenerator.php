@@ -194,7 +194,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
                 );
             }
 
-            if (!empty($columnAttributes) && !$this->isIdOrUuid($column->dataType())) {
+            if (!empty($columnAttributes) && !$this->isIdUlidOrUuid($column->dataType())) {
                 $column_definition .= ', ';
 
                 if (in_array($column->dataType(), ['set', 'enum'])) {
@@ -221,7 +221,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
                     $column->modifiers()
                 );
 
-                if ($this->isIdOrUuid($column->dataType())) {
+                if ($this->isIdUlidOrUuid($column->dataType())) {
                     $column_definition = $foreign;
                     $foreign = '';
                 }
@@ -232,7 +232,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
                     || (is_array($modifier) && key($modifier) === 'onDelete')
                     || (is_array($modifier) && key($modifier) === 'onUpdate')
                     || $modifier === 'foreign'
-                    || ($modifier === 'nullable' && $this->isIdOrUuid($column->dataType()))
+                        || ($modifier === 'nullable' && $this->isIdUlidOrUuid($column->dataType()))
                 );
             }
 
@@ -347,7 +347,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             $column = Str::afterLast($column_name, '_');
         }
 
-        if ($this->isIdOrUuid($type) && !empty($attributes)) {
+        if ($this->isIdUlidOrUuid($type) && !empty($attributes)) {
             $table = Str::lower(Str::plural($attributes[0]));
         }
 
@@ -364,12 +364,12 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             $on_update_suffix = self::ON_UPDATE_CLAUSES[$on_update_clause];
         }
 
-        if ($this->isIdOrUuid($type)) {
-            if ($type === 'uuid') {
-                $method = 'foreignUuid';
-            } else {
-                $method = 'foreignId';
-            }
+        if ($this->isIdUlidOrUuid($type)) {
+            $method = match ($type) {
+                'ulid' => 'foreignUlid',
+                'uuid' => 'foreignUuid',
+                default => 'foreignId',
+            };
 
             $prefix = in_array('nullable', $modifiers)
                 ? '$table->' . "{$method}('{$column_name}')->nullable()"
@@ -381,7 +381,6 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             if ($on_update_clause === 'cascade') {
                 $on_update_suffix = '->cascadeOnUpdate()';
             }
-
             if ($column_name === Str::singular($table) . '_' . $column) {
                 return self::INDENT . "{$prefix}->constrained(){$on_delete_suffix}{$on_update_suffix}";
             }
@@ -469,7 +468,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         }
 
         return config('blueprint.use_constraints')
-            && ($this->isIdOrUuid($column->dataType()) && Str::endsWith($column->name(), '_id'));
+            && ($this->isIdUlidOrUuid($column->dataType()) && Str::endsWith($column->name(), '_id'));
     }
 
     protected function isNumericDefault(string $type, string $value): bool
@@ -486,8 +485,8 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             ->contains(fn ($value) => strtolower($value) === strtolower($type));
     }
 
-    protected function isIdOrUuid(string $dataType): bool
+    protected function isIdUlidOrUuid(string $dataType): bool
     {
-        return in_array($dataType, ['id', 'uuid']);
+        return in_array($dataType, ['id', 'ulid', 'uuid']);
     }
 }

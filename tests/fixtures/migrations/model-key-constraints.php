@@ -20,6 +20,8 @@ return new class extends Migration
             $table->foreignUuid('sub_id')->constrained('subscriptions');
             $table->timestamp('expires_at')->nullable()->index();
             $table->json('meta')->default('[]');
+            $table->foreignUlid('customer_id')->constrained();
+            $table->foreignUlid('tran_id')->constrained('transactions');
             $table->timestamps();
         });
 
