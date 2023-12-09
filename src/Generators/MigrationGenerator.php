@@ -71,7 +71,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             if (!empty($model->pivotTables())) {
                 foreach ($model->pivotTables() as $pivotSegments) {
                     $pivotTableName = $this->getPivotTableName($pivotSegments);
-                    $tables['pivotTableNames'][$pivotTableName] = $this->populatePivotStub($stub, $pivotSegments);
+                    $tables['pivotTableNames'][$pivotTableName] = $this->populatePivotStub($stub, $pivotSegments, $tree->models());
                 }
             }
 
@@ -128,10 +128,10 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         return $stub;
     }
 
-    protected function populatePivotStub(string $stub, array $segments): string
+    protected function populatePivotStub(string $stub, array $segments, array $models = []): string
     {
         $stub = str_replace('{{ table }}', $this->getPivotTableName($segments), $stub);
-        $stub = str_replace('{{ definition }}', $this->buildPivotTableDefinition($segments), $stub);
+        $stub = str_replace('{{ definition }}', $this->buildPivotTableDefinition($segments, $models), $stub);
 
         if ($this->hasForeignKeyConstraints) {
             $stub = $this->disableForeignKeyConstraints($stub);
@@ -290,10 +290,9 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         return trim($definition);
     }
 
-    protected function buildPivotTableDefinition(array $segments): string
+    protected function buildPivotTableDefinition(array $segments, array $models = []): string
     {
         $definition = '';
-
         foreach ($segments as $segment) {
             $column = Str::before(Str::snake($segment), ':');
             $references = 'id';
@@ -304,7 +303,19 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
                 $this->hasForeignKeyConstraints = true;
                 $definition .= $this->buildForeignKey($foreign, $on, 'id') . ';' . PHP_EOL;
             } else {
-                $definition .= self::INDENT . '$table->foreignId(\'' . $foreign . '\');' . PHP_EOL;
+                $definition .= self::INDENT;
+                if (count($models) > 0 && array_key_exists($segment, $models)) {
+                    $model = $models[$segment];
+                    if ($model->name() === $segment) {
+                        $dataType = $model->columns()[$model->primaryKey()]->dataType();
+                        $definition .= $dataType === 'ulid' ? '$table->foreignUlid(\'' . $foreign . '\');' :
+                                       ($dataType === 'uuid' ? '$table->foreignUuid(\'' . $foreign . '\');' :
+                                       '$table->foreignId(\'' . $foreign . '\');');
+                    }
+                } else {
+                    $definition .= '$table->foreignId(\'' . $foreign . '\');';
+                }
+                $definition .= PHP_EOL;
             }
         }
 
