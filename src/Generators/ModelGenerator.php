@@ -64,6 +64,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         $stub = $this->addTraits($model, $stub);
         $stub = str_replace('{{ imports }}', $this->buildImports($model), $stub);
 
+        dump($stub);
         return $stub;
     }
 
@@ -286,6 +287,11 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         if ($model->usesSoftDeletes()) {
             $this->addImport($model, 'Illuminate\\Database\\Eloquent\\SoftDeletes');
             $traits[] = 'SoftDeletes';
+        }
+
+        if ($model->usesUlids()) {
+            $this->addImport($model, 'Illuminate\\Database\\Eloquent\\Concerns\\HasUlids');
+            $traits[] = 'HasUlids';
         }
 
         if ($model->usesUuids()) {
