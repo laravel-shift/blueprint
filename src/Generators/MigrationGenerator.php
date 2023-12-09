@@ -71,7 +71,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             if (!empty($model->pivotTables())) {
                 foreach ($model->pivotTables() as $pivotSegments) {
                     $pivotTableName = $this->getPivotTableName($pivotSegments);
-                    $tables['pivotTableNames'][$pivotTableName] = $this->populatePivotStub($stub, $pivotSegments);
+                    $tables['pivotTableNames'][$pivotTableName] = $this->populatePivotStub($stub, $pivotSegments, $tree->models());
                 }
             }
 
@@ -128,10 +128,10 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         return $stub;
     }
 
-    protected function populatePivotStub(string $stub, array $segments): string
+    protected function populatePivotStub(string $stub, array $segments, array $models = []): string
     {
         $stub = str_replace('{{ table }}', $this->getPivotTableName($segments), $stub);
-        $stub = str_replace('{{ definition }}', $this->buildPivotTableDefinition($segments), $stub);
+        $stub = str_replace('{{ definition }}', $this->buildPivotTableDefinition($segments, $models), $stub);
 
         if ($this->hasForeignKeyConstraints) {
             $stub = $this->disableForeignKeyConstraints($stub);
@@ -290,10 +290,9 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         return trim($definition);
     }
 
-    protected function buildPivotTableDefinition(array $segments): string
+    protected function buildPivotTableDefinition(array $segments, array $models = []): string
     {
         $definition = '';
-
         foreach ($segments as $segment) {
             $column = Str::before(Str::snake($segment), ':');
             $references = 'id';
@@ -304,11 +303,47 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
                 $this->hasForeignKeyConstraints = true;
                 $definition .= $this->buildForeignKey($foreign, $on, 'id') . ';' . PHP_EOL;
             } else {
-                $definition .= self::INDENT . '$table->foreignId(\'' . $foreign . '\');' . PHP_EOL;
+                $definition .= $this->generateForeignKeyDefinition($segment, $foreign, $models);
             }
         }
 
         return trim($definition);
+    }
+
+    /**
+     * Generates the foreign key definition for a pivot table.
+     *
+     * This function generates the foreign key definition for a pivot table in a migration file.
+     * It checks if the model exists and its name matches the pivot table segment. If it does,
+     * it determines the data type of the primary key and appends the appropriate method call
+     * to the `$definition` string. If the model does not exist or its name does not match the
+     * pivot table segment, it defaults to appending `$table->foreignId(\'' . $foreignKeyColumnName . '\');`
+     * to the `$definition` string. The function then returns the `$definition` string.
+     *
+     * @param  string  $pivotTableSegment The segment of the pivot table. e.g 'dive_job' it would be 'Dive' or 'Job'.
+     * @param  string  $foreignKeyColumnName The name of the foreign key column. e.g 'dive_id' or 'job_id'.
+     * @param  array  $models An array of models. e.g ['Dive' => $diveModel, 'Job' => $jobModel].
+     * @return string The foreign key definition. e.g '$table->foreignUlid('dive_id');'
+     */
+    protected function generateForeignKeyDefinition(string $pivotTableSegment, string $foreignKeyColumnName, array $models = []): string
+    {
+        $definition = self::INDENT;
+        if (count($models) > 0 && array_key_exists($pivotTableSegment, $models)) {
+            $model = $models[$pivotTableSegment];
+            if ($model->name() === $pivotTableSegment) {
+                $dataType = $model->columns()[$model->primaryKey()]->dataType();
+                $definition .= match ($dataType) {
+                    'ulid' => '$table->foreignUlid(\'' . $foreignKeyColumnName . '\');',
+                    'uuid' => '$table->foreignUuid(\'' . $foreignKeyColumnName . '\');',
+                    default => '$table->foreignId(\'' . $foreignKeyColumnName . '\');',
+                };
+            }
+        } else {
+            $definition .= '$table->foreignId(\'' . $foreignKeyColumnName . '\');';
+        }
+        $definition .= PHP_EOL;
+
+        return $definition;
     }
 
     protected function buildPolyTableDefinition(string $parentTable): string
