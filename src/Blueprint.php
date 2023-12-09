@@ -65,8 +65,8 @@ class Blueprint
         );
 
         $content = preg_replace_callback(
-            '/^(\s+)uuid(: true)?$/mi',
-            fn ($matches) => $matches[1] . 'id: uuid primary',
+            '/^(\s+)(ulid|uuid)(: true)?$/mi',
+            fn ($matches) => $matches[1] . 'id: ' . $matches[2] . ' primary',
             $content
         );
 

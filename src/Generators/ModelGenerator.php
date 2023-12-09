@@ -64,6 +64,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         $stub = $this->addTraits($model, $stub);
         $stub = str_replace('{{ imports }}', $this->buildImports($model), $stub);
 
+        dump($stub);
         return $stub;
     }
 
@@ -87,6 +88,16 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
                 $phpDoc .= PHP_EOL;
             } elseif ($column->dataType() === 'nullableMorphs') {
                 $phpDoc .= ' * @property int|null $' . $column->name() . '_id';
+                $phpDoc .= PHP_EOL;
+                $phpDoc .= ' * @property string|null $' . $column->name() . '_type';
+                $phpDoc .= PHP_EOL;
+            } elseif ($column->dataType() === 'ulidMorphs') {
+                $phpDoc .= ' * @property string $' . $column->name() . '_id';
+                $phpDoc .= PHP_EOL;
+                $phpDoc .= ' * @property string $' . $column->name() . '_type';
+                $phpDoc .= PHP_EOL;
+            } elseif ($column->dataType() === 'nullableUlidMorphs') {
+                $phpDoc .= ' * @property string|null $' . $column->name() . '_id';
                 $phpDoc .= PHP_EOL;
                 $phpDoc .= ' * @property string|null $' . $column->name() . '_type';
                 $phpDoc .= PHP_EOL;
@@ -272,12 +283,17 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
     protected function addTraits(Model $model, $stub): string
     {
         $traits = ['HasFactory'];
-        
+
         if ($model->usesSoftDeletes()) {
             $this->addImport($model, 'Illuminate\\Database\\Eloquent\\SoftDeletes');
             $traits[] = 'SoftDeletes';
         }
-        
+
+        if ($model->usesUlids()) {
+            $this->addImport($model, 'Illuminate\\Database\\Eloquent\\Concerns\\HasUlids');
+            $traits[] = 'HasUlids';
+        }
+
         if ($model->usesUuids()) {
             $this->addImport($model, 'Illuminate\\Database\\Eloquent\\Concerns\\HasUuids');
             $traits[] = 'HasUuids';

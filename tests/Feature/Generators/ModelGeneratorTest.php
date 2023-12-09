@@ -642,6 +642,7 @@ final class ModelGeneratorTest extends TestCase
             ['drafts/uuid-shorthand-invalid-relationship.yaml', 'app/Models/AgeCohort.php', 'models/uuid-shorthand-invalid-relationship.php'],
             ['drafts/model-with-meta.yaml', 'app/Models/Post.php', 'models/model-with-meta.php'],
             ['drafts/infer-belongsto.yaml', 'app/Models/Conference.php', 'models/infer-belongsto.php'],
+            ['drafts/model-with-ulid-id.yaml', 'app/Models/User.php', 'models/model-with-ulid-trait.php'],
             ['drafts/model-with-uuid-id.yaml', 'app/Models/User.php', 'models/model-with-uuid-trait.php'],
         ];
     }

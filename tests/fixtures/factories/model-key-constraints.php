@@ -4,8 +4,10 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Subscription;
+use App\Models\Transaction;
 use App\Models\User;
 
 class OrderFactory extends Factory
@@ -28,6 +30,8 @@ class OrderFactory extends Factory
             'sub_id' => Subscription::factory(),
             'expires_at' => $this->faker->dateTime(),
             'meta' => '[]',
+            'customer_id' => Customer::factory(),
+            'tran_id' => Transaction::factory(),
         ];
     }
 }

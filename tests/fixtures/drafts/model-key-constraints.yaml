@@ -6,3 +6,5 @@ models:
     sub_id: uuid foreign:subscription
     expires_at: timestamp nullable index
     meta: json default:'[]'
+    customer_id: ulid foreign
+    tran_id: ulid foreign:transaction

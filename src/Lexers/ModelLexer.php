@@ -81,6 +81,7 @@ class ModelLexer implements Lexer
         'unsignedmediuminteger' => 'unsignedMediumInteger',
         'unsignedsmallinteger' => 'unsignedSmallInteger',
         'unsignedtinyinteger' => 'unsignedTinyInteger',
+        'ulid' => 'ulid',
         'uuid' => 'uuid',
         'year' => 'year',
     ];

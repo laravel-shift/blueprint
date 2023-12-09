@@ -46,6 +46,7 @@ class AllTypeFactory extends Factory
             'mediumText' => $this->faker->text(),
             'morphs_id' => $this->faker->randomDigitNotNull(),
             'morphs_type' => $this->faker->word(),
+            'ulidMorphs' => $this->faker->word(),
             'uuidMorphs' => $this->faker->word(),
             'multiLineString' => $this->faker->word(),
             'multiPoint' => $this->faker->word(),
@@ -68,6 +69,7 @@ class AllTypeFactory extends Factory
             'unsignedMediumInteger' => $this->faker->randomNumber(),
             'unsignedSmallInteger' => $this->faker->randomNumber(),
             'unsignedTinyInteger' => $this->faker->randomDigitNotNull(),
+            'ulid' => (string) Str::ulid(),
             'uuid' => $this->faker->uuid(),
             'year' => $this->faker->year(),
         ];
