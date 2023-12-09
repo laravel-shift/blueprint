@@ -31,6 +31,7 @@ models:
     multiPoint: multiPoint
     multiPolygon: multiPolygon
     nullableMorphs: nullableMorphs
+    nullableUlidMorphs: nullableUuidMorphs
     nullableUuidMorphs: nullableUuidMorphs
     nullableTimestamps: nullableTimestamps
     point: point

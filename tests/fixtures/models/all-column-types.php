@@ -45,6 +45,7 @@ class AllType extends Model
         'multiPoint',
         'multiPolygon',
         'nullableMorphs',
+        'nullableUlidMorphs',
         'nullableUuidMorphs',
         'nullableTimestamps',
         'point',

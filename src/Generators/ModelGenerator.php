@@ -90,6 +90,16 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
                 $phpDoc .= PHP_EOL;
                 $phpDoc .= ' * @property string|null $' . $column->name() . '_type';
                 $phpDoc .= PHP_EOL;
+            } elseif ($column->dataType() === 'ulidMorphs') {
+                $phpDoc .= ' * @property string $' . $column->name() . '_id';
+                $phpDoc .= PHP_EOL;
+                $phpDoc .= ' * @property string $' . $column->name() . '_type';
+                $phpDoc .= PHP_EOL;
+            } elseif ($column->dataType() === 'nullableUlidMorphs') {
+                $phpDoc .= ' * @property string|null $' . $column->name() . '_id';
+                $phpDoc .= PHP_EOL;
+                $phpDoc .= ' * @property string|null $' . $column->name() . '_type';
+                $phpDoc .= PHP_EOL;
             } elseif ($column->dataType() === 'uuidMorphs') {
                 $phpDoc .= ' * @property string $' . $column->name() . '_id';
                 $phpDoc .= PHP_EOL;
