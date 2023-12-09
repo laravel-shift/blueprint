@@ -64,6 +64,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         $stub = $this->addTraits($model, $stub);
         $stub = str_replace('{{ imports }}', $this->buildImports($model), $stub);
 
+        dump($stub);
         return $stub;
     }
 
