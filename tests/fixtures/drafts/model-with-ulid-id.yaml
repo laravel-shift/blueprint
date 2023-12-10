@@ -1,5 +1,5 @@
 models:
   User:
-    id: ulid primary
+    ulid
     name: string
     base_pay: decimal:10,2
