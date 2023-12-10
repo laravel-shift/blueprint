@@ -11,13 +11,13 @@ _Blueprint_ is an open-source tool for **rapidly generating multiple** Laravel c
 Watch a quick [demo of Blueprint](https://www.youtube.com/watch?v=A_gUCwni_6c) in action and continue reading to get started.
 
 ## Requirements
-Blueprint requires a Laravel application running the latest stable release of Laravel, currently Laravel 8.x.
+Blueprint requires a Laravel application running the latest stable release of Laravel, currently Laravel 10.x.
 
 ## Installation
 You can install Blueprint via composer using the following command:
 
 ```sh
-composer require --dev laravel-shift/blueprint
+composer require -W --dev laravel-shift/blueprint
 ```
 
 Blueprint will automatically register itself using [package discovery](https://laravel.com/docs/packages#package-discovery).
