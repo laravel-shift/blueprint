@@ -79,7 +79,7 @@ class Controller implements BlueprintModel
         $this->methods[$name] = $statements;
     }
 
-    public function policy(?Policy $policy = null): ?Policy
+    public function policy(Policy $policy = null): ?Policy
     {
         if ($policy) {
             $this->policy = $policy;

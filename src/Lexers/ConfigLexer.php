@@ -9,7 +9,7 @@ class ConfigLexer implements Lexer
 {
     private Container $app;
 
-    public function __construct(?Container $app = null)
+    public function __construct(Container $app = null)
     {
         $this->app = $app ?? Container::getInstance();
     }

@@ -297,7 +297,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
             $this->addImport($model, 'Illuminate\\Database\\Eloquent\\Concerns\\HasUuids');
             $traits[] = 'HasUuids';
         }
-      
+
         sort($traits);
 
         return Str::replaceFirst('use HasFactory', 'use ' . implode(', ', $traits), $stub);

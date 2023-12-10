@@ -10,7 +10,7 @@ class Tracer
 {
     private Filesystem $filesystem;
 
-    public function execute(Blueprint $blueprint, Filesystem $filesystem, ?array $paths = null): array
+    public function execute(Blueprint $blueprint, Filesystem $filesystem, array $paths = null): array
     {
         $this->filesystem = $filesystem;
 

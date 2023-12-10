@@ -24,7 +24,7 @@ class SendStatement
 
     private string $subject;
 
-    public function __construct(string $mail, ?string $to, array $data, string $type, ?string $view = null)
+    public function __construct(string $mail, ?string $to, array $data, string $type, string $view = null)
     {
         $this->mail = $mail;
         $this->data = $data;
