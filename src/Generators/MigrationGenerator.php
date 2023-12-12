@@ -71,7 +71,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             if (!empty($model->pivotTables())) {
                 foreach ($model->pivotTables() as $pivotSegments) {
                     $pivotTableName = $this->getPivotTableName($pivotSegments);
-                    $tables['pivotTableNames'][$pivotTableName] = $this->populatePivotStub($stub, $pivotSegments);
+                    $tables['pivotTableNames'][$pivotTableName] = $this->populatePivotStub($stub, $pivotSegments, $tree->models());
                 }
             }
 
@@ -128,10 +128,10 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         return $stub;
     }
 
-    protected function populatePivotStub(string $stub, array $segments): string
+    protected function populatePivotStub(string $stub, array $segments, array $models = []): string
     {
         $stub = str_replace('{{ table }}', $this->getPivotTableName($segments), $stub);
-        $stub = str_replace('{{ definition }}', $this->buildPivotTableDefinition($segments), $stub);
+        $stub = str_replace('{{ definition }}', $this->buildPivotTableDefinition($segments, $models), $stub);
 
         if ($this->hasForeignKeyConstraints) {
             $stub = $this->disableForeignKeyConstraints($stub);
@@ -194,7 +194,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
                 );
             }
 
-            if (!empty($columnAttributes) && !$this->isIdOrUuid($column->dataType())) {
+            if (!empty($columnAttributes) && !$this->isIdColumnType($column->dataType())) {
                 $column_definition .= ', ';
 
                 if (in_array($column->dataType(), ['set', 'enum'])) {
@@ -221,7 +221,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
                     $column->modifiers()
                 );
 
-                if ($this->isIdOrUuid($column->dataType())) {
+                if ($this->isIdColumnType($column->dataType())) {
                     $column_definition = $foreign;
                     $foreign = '';
                 }
@@ -232,7 +232,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
                     || (is_array($modifier) && key($modifier) === 'onDelete')
                     || (is_array($modifier) && key($modifier) === 'onUpdate')
                     || $modifier === 'foreign'
-                    || ($modifier === 'nullable' && $this->isIdOrUuid($column->dataType()))
+                        || ($modifier === 'nullable' && $this->isIdColumnType($column->dataType()))
                 );
             }
 
@@ -290,10 +290,9 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         return trim($definition);
     }
 
-    protected function buildPivotTableDefinition(array $segments): string
+    protected function buildPivotTableDefinition(array $segments, array $models = []): string
     {
         $definition = '';
-
         foreach ($segments as $segment) {
             $column = Str::before(Str::snake($segment), ':');
             $references = 'id';
@@ -304,11 +303,47 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
                 $this->hasForeignKeyConstraints = true;
                 $definition .= $this->buildForeignKey($foreign, $on, 'id') . ';' . PHP_EOL;
             } else {
-                $definition .= self::INDENT . '$table->foreignId(\'' . $foreign . '\');' . PHP_EOL;
+                $definition .= $this->generateForeignKeyDefinition($segment, $foreign, $models);
             }
         }
 
         return trim($definition);
+    }
+
+    /**
+     * Generates the foreign key definition for a pivot table.
+     *
+     * This function generates the foreign key definition for a pivot table in a migration file.
+     * It checks if the model exists and its name matches the pivot table segment. If it does,
+     * it determines the data type of the primary key and appends the appropriate method call
+     * to the `$definition` string. If the model does not exist or its name does not match the
+     * pivot table segment, it defaults to appending `$table->foreignId(\'' . $foreignKeyColumnName . '\');`
+     * to the `$definition` string. The function then returns the `$definition` string.
+     *
+     * @param  string  $pivotTableSegment The segment of the pivot table. e.g 'dive_job' it would be 'Dive' or 'Job'.
+     * @param  string  $foreignKeyColumnName The name of the foreign key column. e.g 'dive_id' or 'job_id'.
+     * @param  array  $models An array of models. e.g ['Dive' => $diveModel, 'Job' => $jobModel].
+     * @return string The foreign key definition. e.g '$table->foreignUlid('dive_id');'
+     */
+    protected function generateForeignKeyDefinition(string $pivotTableSegment, string $foreignKeyColumnName, array $models = []): string
+    {
+        $definition = self::INDENT;
+        if (count($models) > 0 && array_key_exists($pivotTableSegment, $models)) {
+            $model = $models[$pivotTableSegment];
+            if ($model->name() === $pivotTableSegment) {
+                $dataType = $model->columns()[$model->primaryKey()]->dataType();
+                $definition .= match ($dataType) {
+                    'ulid' => '$table->foreignUlid(\'' . $foreignKeyColumnName . '\');',
+                    'uuid' => '$table->foreignUuid(\'' . $foreignKeyColumnName . '\');',
+                    default => '$table->foreignId(\'' . $foreignKeyColumnName . '\');',
+                };
+            }
+        } else {
+            $definition .= '$table->foreignId(\'' . $foreignKeyColumnName . '\');';
+        }
+        $definition .= PHP_EOL;
+
+        return $definition;
     }
 
     protected function buildPolyTableDefinition(string $parentTable): string
@@ -347,7 +382,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             $column = Str::afterLast($column_name, '_');
         }
 
-        if ($this->isIdOrUuid($type) && !empty($attributes)) {
+        if ($this->isIdColumnType($type) && !empty($attributes)) {
             $table = Str::lower(Str::plural($attributes[0]));
         }
 
@@ -364,12 +399,12 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             $on_update_suffix = self::ON_UPDATE_CLAUSES[$on_update_clause];
         }
 
-        if ($this->isIdOrUuid($type)) {
-            if ($type === 'uuid') {
-                $method = 'foreignUuid';
-            } else {
-                $method = 'foreignId';
-            }
+        if ($this->isIdColumnType($type)) {
+            $method = match ($type) {
+                'ulid' => 'foreignUlid',
+                'uuid' => 'foreignUuid',
+                default => 'foreignId',
+            };
 
             $prefix = in_array('nullable', $modifiers)
                 ? '$table->' . "{$method}('{$column_name}')->nullable()"
@@ -381,7 +416,6 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             if ($on_update_clause === 'cascade') {
                 $on_update_suffix = '->cascadeOnUpdate()';
             }
-
             if ($column_name === Str::singular($table) . '_' . $column) {
                 return self::INDENT . "{$prefix}->constrained(){$on_delete_suffix}{$on_update_suffix}";
             }
@@ -469,7 +503,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         }
 
         return config('blueprint.use_constraints')
-            && ($this->isIdOrUuid($column->dataType()) && Str::endsWith($column->name(), '_id'));
+            && ($this->isIdColumnType($column->dataType()) && Str::endsWith($column->name(), '_id'));
     }
 
     protected function isNumericDefault(string $type, string $value): bool
@@ -486,8 +520,8 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             ->contains(fn ($value) => strtolower($value) === strtolower($type));
     }
 
-    protected function isIdOrUuid(string $dataType): bool
+    protected function isIdColumnType(string $dataType): bool
     {
-        return in_array($dataType, ['id', 'uuid']);
+        return in_array($dataType, ['id', 'ulid', 'uuid']);
     }
 }

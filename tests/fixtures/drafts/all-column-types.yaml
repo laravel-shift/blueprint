@@ -25,11 +25,13 @@ models:
     mediumInteger: mediumInteger
     mediumText: mediumText
     morphs: morphs
+    ulidMorphs: ulidMorphs
     uuidMorphs: uuidMorphs
     multiLineString: multiLineString
     multiPoint: multiPoint
     multiPolygon: multiPolygon
     nullableMorphs: nullableMorphs
+    nullableUlidMorphs: nullableUuidMorphs
     nullableUuidMorphs: nullableUuidMorphs
     nullableTimestamps: nullableTimestamps
     point: point
@@ -50,5 +52,6 @@ models:
     unsignedMediumInteger: unsignedMediumInteger
     unsignedSmallInteger: unsignedSmallInteger
     unsignedTinyInteger: unsignedTinyInteger
+    ulid: ulid
     uuid: uuid
     year: year
