@@ -301,7 +301,12 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
 
             if (config('blueprint.use_constraints')) {
                 $this->hasForeignKeyConstraints = true;
-                $definition .= $this->buildForeignKey($foreign, $on, 'id') . ';' . PHP_EOL;
+                /**
+                 * @var \Blueprint\Models\Model $model
+                 */
+                $model = $models[$segment] ?? null;
+                $idType = $model ? $model->idType() : 'id';
+                $definition .= $this->buildForeignKey($foreign, $on, $idType) . ';' . PHP_EOL;
             } else {
                 $definition .= $this->generateForeignKeyDefinition($segment, $foreign, $models);
             }
