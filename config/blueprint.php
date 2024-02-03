@@ -109,12 +109,12 @@ return [
     | Singular route names
     |--------------------------------------------------------------------------
     |
-    | By default, Blueprint will use the `kebab-case` of the controller name
+    | By default, Blueprint will `kebab-case` the plural name of the controller
     | for the route name. If you would like to ensure a singular route name
-    | is used, you may set this to `true`.
+    | is used for controllers, you may set this to `true`.
     |
     */
-    'singular_routes' => null,
+    'singular_routes' => false,
 
     /*
     |--------------------------------------------------------------------------
