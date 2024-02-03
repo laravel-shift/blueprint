@@ -68,12 +68,12 @@ final class RouteGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_routes_with_plural_slug(): void
+    public function output_generates_routes_with_singular_slug(): void
     {
-        $this->app['config']->set('blueprint.plural_routes', true);
+        $this->app['config']->set('blueprint.singular_routes', true);
 
         $this->filesystem->expects('append')
-            ->with('routes/web.php', $this->fixture('routes/readme-example-plural.php'));
+            ->with('routes/web.php', $this->fixture('routes/readme-example-singular.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);
@@ -82,12 +82,12 @@ final class RouteGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_api_routes_with_plural_slug(): void
+    public function output_generates_api_routes_with_singular_slug(): void
     {
-        $this->app['config']->set('blueprint.plural_routes', true);
+        $this->app['config']->set('blueprint.singular_routes', true);
 
         $this->filesystem->expects('append')
-            ->with('routes/api.php', $this->fixture('routes/api-routes-plural.php'));
+            ->with('routes/api.php', $this->fixture('routes/api-routes-singular.php'));
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/api-routes-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);

@@ -320,9 +320,9 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
      * pivot table segment, it defaults to appending `$table->foreignId(\'' . $foreignKeyColumnName . '\');`
      * to the `$definition` string. The function then returns the `$definition` string.
      *
-     * @param  string  $pivotTableSegment The segment of the pivot table. e.g 'dive_job' it would be 'Dive' or 'Job'.
-     * @param  string  $foreignKeyColumnName The name of the foreign key column. e.g 'dive_id' or 'job_id'.
-     * @param  array  $models An array of models. e.g ['Dive' => $diveModel, 'Job' => $jobModel].
+     * @param  string  $pivotTableSegment  The segment of the pivot table. e.g 'dive_job' it would be 'Dive' or 'Job'.
+     * @param  string  $foreignKeyColumnName  The name of the foreign key column. e.g 'dive_id' or 'job_id'.
+     * @param  array  $models  An array of models. e.g ['Dive' => $diveModel, 'Job' => $jobModel].
      * @return string The foreign key definition. e.g '$table->foreignUlid('dive_id');'
      */
     protected function generateForeignKeyDefinition(string $pivotTableSegment, string $foreignKeyColumnName, array $models = []): string
