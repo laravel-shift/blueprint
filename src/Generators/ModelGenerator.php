@@ -32,7 +32,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         return $this->output;
     }
 
-    private function pivotColumns(array $columns, array $relationships): array
+    protected function pivotColumns(array $columns, array $relationships): array
     {
         // TODO: ideally restrict to only "belongsTo" columns used for pivot relationship
         return collect($columns)
@@ -303,7 +303,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         return Str::replaceFirst('use HasFactory', 'use ' . implode(', ', $traits), $stub);
     }
 
-    private function fillableColumns(array $columns): array
+    protected function fillableColumns(array $columns): array
     {
         return array_diff(
             array_keys($columns),
@@ -319,7 +319,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         );
     }
 
-    private function hiddenColumns(array $columns): array
+    protected function hiddenColumns(array $columns): array
     {
         return array_intersect(
             array_keys($columns),
@@ -330,7 +330,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         );
     }
 
-    private function castableColumns(array $columns): array
+    protected function castableColumns(array $columns): array
     {
         return array_filter(
             array_map(
@@ -340,7 +340,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         );
     }
 
-    private function dateColumns(array $columns)
+    protected function dateColumns(array $columns)
     {
         return array_map(
             fn (Column $column) => $column->name(),
@@ -353,7 +353,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         );
     }
 
-    private function castForColumn(Column $column): ?string
+    protected function castForColumn(Column $column): ?string
     {
         if ($column->dataType() === 'date') {
             return 'date';
@@ -390,7 +390,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         return null;
     }
 
-    private function pretty_print_array(array $data, bool $assoc = true): string
+    protected function pretty_print_array(array $data, bool $assoc = true): string
     {
         $output = var_export($data, true);
         $output = preg_replace('/^\s+/m', '        ', $output);
@@ -403,7 +403,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         return trim(str_replace("\n", PHP_EOL, $output));
     }
 
-    private function phpDataType(string $dataType): string
+    protected function phpDataType(string $dataType): string
     {
         static $php_data_types = [
             'id' => 'int',
@@ -446,7 +446,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         return $php_data_types[strtolower($dataType)] ?? 'string';
     }
 
-    private function fullyQualifyModelReference(string $model_name): ?string
+    protected function fullyQualifyModelReference(string $model_name): ?string
     {
         // TODO: get model_name from tree.
         // If not found, assume parallel namespace as controller.

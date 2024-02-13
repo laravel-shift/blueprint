@@ -203,7 +203,7 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
         return trim($methods);
     }
 
-    private function determineModel(Controller $controller, ?string $reference): string
+    protected function determineModel(Controller $controller, ?string $reference): string
     {
         if (empty($reference) || $reference === 'id') {
             return $this->fullyQualifyModelReference($controller->namespace(), Str::studly(Str::singular($controller->prefix())));
@@ -216,7 +216,7 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
         return $this->fullyQualifyModelReference($controller->namespace(), Str::studly($reference));
     }
 
-    private function fullyQualifyModelReference(string $sub_namespace, string $model_name): string
+    protected function fullyQualifyModelReference(string $sub_namespace, string $model_name): string
     {
         // TODO: get model_name from tree.
         // If not found, assume parallel namespace as controller.

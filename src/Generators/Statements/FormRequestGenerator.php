@@ -90,12 +90,12 @@ class FormRequestGenerator extends AbstractClassGenerator implements Generator
         );
     }
 
-    private function getName(string $context, string $method): string
+    protected function getName(string $context, string $method): string
     {
         return $context . Str::studly($method) . 'Request';
     }
 
-    private function splitField($field): array
+    protected function splitField($field): array
     {
         if (Str::contains($field, '.')) {
             return explode('.', $field, 2);
@@ -104,7 +104,7 @@ class FormRequestGenerator extends AbstractClassGenerator implements Generator
         return [null, $field];
     }
 
-    private function validationRules(string $qualifier, string $column): array
+    protected function validationRules(string $qualifier, string $column): array
     {
         /**
          * @var \Blueprint\Models\Model $model

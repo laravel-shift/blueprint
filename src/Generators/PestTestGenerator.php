@@ -505,7 +505,7 @@ class PestTestGenerator extends AbstractClassGenerator implements Generator
         return trim($this->buildTraits($controller) . PHP_EOL . $test_cases);
     }
 
-    private function testCaseStub()
+    protected function testCaseStub()
     {
         if (empty($this->stubs['test-case'])) {
             $this->stubs['test-case'] = $this->filesystem->stub('pest.test.case.stub');
@@ -514,7 +514,7 @@ class PestTestGenerator extends AbstractClassGenerator implements Generator
         return $this->stubs['test-case'];
     }
 
-    private function determineModel(string $prefix, ?string $reference): string
+    protected function determineModel(string $prefix, ?string $reference): string
     {
         if (empty($reference) || $reference === 'id') {
             return Str::studly(Str::singular($prefix));
@@ -527,7 +527,7 @@ class PestTestGenerator extends AbstractClassGenerator implements Generator
         return Str::studly($reference);
     }
 
-    private function buildFormRequestName(Controller $controller, string $name): string
+    protected function buildFormRequestName(Controller $controller, string $name): string
     {
         if (empty($controller->namespace())) {
             return $controller->name() . Str::studly($name) . 'Request';
@@ -536,7 +536,7 @@ class PestTestGenerator extends AbstractClassGenerator implements Generator
         return $controller->namespace() . '\\' . $controller->name() . Str::studly($name) . 'Request';
     }
 
-    private function buildFormRequestTestCase(string $controller, string $action, string $form_request): string
+    protected function buildFormRequestTestCase(string $controller, string $action, string $form_request): string
     {
         return <<<END
 test('{$action} uses form request validation')
@@ -548,7 +548,7 @@ test('{$action} uses form request validation')
 END;
     }
 
-    private function httpMethodForAction(string $action): string
+    protected function httpMethodForAction(string $action): string
     {
         return match ($action) {
             'store' => 'post',
@@ -558,7 +558,7 @@ END;
         };
     }
 
-    private function buildTestCaseName(string $name, int $tested_bits): string
+    protected function buildTestCaseName(string $name, int $tested_bits): string
     {
         $verifications = [];
 
@@ -595,12 +595,12 @@ END;
         return $name . '_' . implode('_', $verifications) . '_and_' . $final_verification;
     }
 
-    private function buildLines($lines): string
+    protected function buildLines($lines): string
     {
         return str_pad(' ', 4) . implode(PHP_EOL . str_pad(' ', 4), $lines);
     }
 
-    private function splitField($field): array
+    protected function splitField($field): array
     {
         if (Str::contains($field, '.')) {
             return explode('.', $field, 2);
@@ -609,14 +609,14 @@ END;
         return [null, $field];
     }
 
-    private function uniqueSetupLines(array $setup)
+    protected function uniqueSetupLines(array $setup)
     {
         return collect($setup)->filter()
             ->map(fn ($lines) => array_unique($lines))
             ->toArray();
     }
 
-    private function generateReferenceFactory(Column $local_column, Controller $controller, string $modelNamespace): ?array
+    protected function generateReferenceFactory(Column $local_column, Controller $controller, string $modelNamespace): ?array
     {
         if (!in_array($local_column->dataType(), ['id', 'uuid']) && !($local_column->attributes() && Str::endsWith($local_column->name(), '_id'))) {
             return null;

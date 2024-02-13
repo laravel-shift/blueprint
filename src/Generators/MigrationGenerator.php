@@ -492,7 +492,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         return Str::plural(Str::lower(Str::singular($parentTable) . 'able'));
     }
 
-    private function shouldAddForeignKeyConstraint(\Blueprint\Models\Column $column): bool
+    protected function shouldAddForeignKeyConstraint(\Blueprint\Models\Column $column): bool
     {
         if ($column->name() === 'id') {
             return false;

@@ -50,12 +50,12 @@ class MailGenerator extends StatementGenerator
         return $this->output;
     }
 
-    private function populateViewStub(string $stub, SendStatement $statement): string
+    protected function populateViewStub(string $stub, SendStatement $statement): string
     {
         return str_replace('{{ class }}', $statement->mail(), $stub);
     }
 
-    private function getViewPath($view): string
+    protected function getViewPath($view): string
     {
         return 'resources/views/' . str_replace('.', '/', $view) . '.blade.php';
     }
