@@ -107,7 +107,7 @@ class Tracer
     {
         $attributes = [];
 
-        $type = self::translations($column['type_name']);
+        $type = self::translations($column);
 
         if (in_array($type, ['decimal', 'float', 'time', 'timetz', 'datetime', 'datetimetz', 'timestamp', 'timestamptz', 'geography', 'geometry'])
             && str_contains($column['type'], '(')) {
