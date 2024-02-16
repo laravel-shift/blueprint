@@ -84,7 +84,7 @@ jobs:
           command: composer install ${{ env.COMPOSER_FLAGS }}
 
       - name: Install Laravel
-        run: composer require laravel/framework:${{ matrix.laravel-version }}.* --no-update
+        run: composer require laravel/framework:${{ matrix.laravel-version }}.*
 
       - name: Run tests
         run: vendor/bin/phpunit
