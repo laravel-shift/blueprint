@@ -5,6 +5,7 @@ namespace Blueprint;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 class Tracer
 {
@@ -107,32 +108,28 @@ class Tracer
     {
         $attributes = [];
 
-        $type = self::translations($column['type']);
+        $type = self::translations($column['type_name']);
 
-        if (in_array($type, ['decimal', 'float'])) {
-            if ($column['precision']) {
-                $type .= ':' . $column['precision'];
+        if (in_array($type, ['decimal', 'float']) && str_contains($column['type'], '(')) {
+            $options = Str::between($column['type'], '(', ')');
+            if ($options) {
+                $type .= ':' . $options;
             }
-            if ($column['scale']) {
-                $type .= ',' . $column['scale'];
+        } elseif ($type === 'string' && str_contains($column['type'], '(')) {
+            $length = Str::between($column['type'], '(', ')');
+            if ($length != 255) {
+                $type .= ':' . $length;
             }
-            //        } elseif ($type === 'string' && $column['length']) {
-            //            if ($column['length'] !== 255) {
-            //                $type .= ':' . $column['length'];
-            //            }
-            //        } elseif ($type === 'text') {
-            //            if ($column['length'] > 65535) {
-            //                $type = 'longtext';
-            //            }
-        } elseif ($type === 'enum' && !empty($column->options)) {
-            $type .= ':' . implode(',', $column->options);
+        } elseif ($type === 'enum') {
+            $options = Str::between($column['type'], '(', ')');
+            $type .= ':' . $options;
         }
 
         // TODO: guid/uuid
 
         $attributes[] = $type;
 
-        if (str_contains($column['type_name'], 'unsigned')) {
+        if (str_contains($column['type'], 'unsigned')) {
             $attributes[] = 'unsigned';
         }
 
@@ -172,6 +169,7 @@ class Tracer
             'guid' => 'string',
             'integer' => 'integer',
             'json' => 'json',
+            'longtext' => 'longtext',
             'object' => 'string',
             'simple_array' => 'string',
             'smallint' => 'smallinteger',
