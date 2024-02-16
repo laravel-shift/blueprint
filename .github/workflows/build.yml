@@ -26,6 +26,8 @@ jobs:
         exclude:
           - laravel-version: 11
             php-version: 8.1
+          - laravel-version: 10
+            stability: prefer-lowest
 
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
