@@ -13,7 +13,7 @@ env:
 
 jobs:
   tests:
-    name: PHP ${{ matrix.php-version }} - L${{ matrix.laravel-version }} - ${{ matrix.os }}
+    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
     strategy:
       fail-fast: false
@@ -21,7 +21,7 @@ jobs:
         php-version: ['8.1', '8.2', '8.3']
         laravel-version: [10, 11]
         os: [ubuntu-latest, windows-latest, macos-latest]
-        dependencies: [locked]
+        stability: [prefer-lowest, prefer-stable]
         experimental: [false]
         exclude:
           - laravel-version: 11
@@ -43,7 +43,7 @@ jobs:
         with:
           path: ${{ steps.determine-composer-cache-directory.outputs.directory }}
           key: dependencies-os-${{ matrix.os }}-php-${{ matrix.php-version }}-laravel-${{ matrix.laravel-version }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: dependencies-os-${{ matrix.os }}-php-${{ matrix.php-version }}-laravel-${{ matrix.laravel-version }}-composer-
+          restore-keys: dependencies-os-${{ matrix.os }}-php-${{ matrix.php-version }}-laravel-${{ matrix.laravel-version }}-${{ matrix.stability }}-composer-
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -59,32 +59,10 @@ jobs:
       - name: Setup problem matchers for PHPUnit
         run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
-      - name: Install highest dependencies from composer.json
-        if: matrix.dependencies == 'highest'
-        uses: nick-invision/retry@v1
-        with:
-          timeout_minutes: 5
-          max_attempts: 5
-          command: composer config platform --unset && composer update ${{ env.COMPOSER_FLAGS }}
-
-      - name: Install lowest dependencies from composer.json
-        if: matrix.dependencies == 'lowest'
-        uses: nick-invision/retry@v1
-        with:
-          timeout_minutes: 5
-          max_attempts: 5
-          command: composer install ${{ env.COMPOSER_FLAGS }} --prefer-lowest
-
-      - name: Install dependencies from composer.lock
-        if: matrix.dependencies == 'locked'
-        uses: nick-invision/retry@v1
-        with:
-          timeout_minutes: 5
-          max_attempts: 5
-          command: composer install ${{ env.COMPOSER_FLAGS }}
-
-      - name: Install Laravel
-        run: composer require laravel/framework:${{ matrix.laravel-version }}.*
+      - name: Install dependencies
+        run: |
+          composer require laravel/framework:${{ matrix.laravel-version }}.* --no-interaction --no-update
+          composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Run tests
         run: vendor/bin/phpunit

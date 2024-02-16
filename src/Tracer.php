@@ -116,14 +116,14 @@ class Tracer
             if ($column['scale']) {
                 $type .= ',' . $column['scale'];
             }
-//        } elseif ($type === 'string' && $column['length']) {
-//            if ($column['length'] !== 255) {
-//                $type .= ':' . $column['length'];
-//            }
-//        } elseif ($type === 'text') {
-//            if ($column['length'] > 65535) {
-//                $type = 'longtext';
-//            }
+            //        } elseif ($type === 'string' && $column['length']) {
+            //            if ($column['length'] !== 255) {
+            //                $type .= ':' . $column['length'];
+            //            }
+            //        } elseif ($type === 'text') {
+            //            if ($column['length'] > 65535) {
+            //                $type = 'longtext';
+            //            }
         } elseif ($type === 'enum' && !empty($column->options)) {
             $type .= ':' . implode(',', $column->options);
         }
