@@ -109,8 +109,20 @@ class Tracer
 
         $type = self::translations($column['type_name']);
 
-        if (str_contains($column['type'], '(')) {
-            $type .= ':' . Str::between($column['type'], '(', ')');
+        if (in_array($type, ['decimal', 'float', 'time', 'timetz', 'datetime', 'datetimetz', 'timestamp', 'timestamptz', 'geography', 'geometry'])
+            && str_contains($column['type'], '(')) {
+            $options = Str::between($column['type'], '(', ')');
+            if ($options) {
+                $type .= ':' . $options;
+            }
+        } elseif ($type === 'string' && str_contains($column['type'], '(')) {
+            $length = Str::between($column['type'], '(', ')');
+            if ($length != 255) {
+                $type .= ':' . $length;
+            }
+        } elseif (in_array($type, ['enum', 'set'])) {
+            $options = Str::between($column['type'], '(', ')');
+            $type .= ':' . $options;
         }
 
         // TODO: guid/uuid
@@ -161,29 +173,28 @@ class Tracer
             'geometry', 'geometrycollection', 'linestring', 'multilinestring', 'multipoint', 'multipolygon', 'point', 'polygon' => 'geometry',
             // 'box', 'circle', 'line', 'lseg', 'path' => 'geometry',
             'integer', 'int', 'int4' => 'integer',
-            // 'inet', 'cidr' => 'ipaddress',
+            'inet', 'cidr' => 'ipaddress',
             // 'interval' => 'interval',
             'json' => 'json',
             'jsonb' => 'jsonb',
             'longtext' => 'longtext',
-            // 'macaddr', 'macaddr8' => 'macadress',
+            'macaddr', 'macaddr8' => 'macadress',
             'mediumint' => 'mediuminteger',
             'mediumtext' => 'mediumtext',
             // 'money', 'smallmoney' => 'money',
-            // 'set' => 'set',
+            'set' => 'set',
             'smallint', 'int2' => 'smallinteger',
             'text', 'ntext' => 'text',
-            // 'tsvector', 'tsquery' => 'text',
             'time' => 'time',
             'timestamp' => 'timestamp',
             'timestamptz' => 'timestamptz',
             'timetz' => 'timetz',
             'tinyint' => 'tinyinteger',
             'tinytext' => 'tinytext',
-            // 'uuid', 'uniqueidentifier' => 'uuid',
+            'uuid', 'uniqueidentifier' => 'uuid',
             'varchar', 'nvarchar' => 'string',
             // 'xml' => 'xml',
-            // 'year' => 'year',
+            'year' => 'year',
             default => null,
         };
 
