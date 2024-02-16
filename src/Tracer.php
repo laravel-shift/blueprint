@@ -2,9 +2,9 @@
 
 namespace Blueprint;
 
-use Doctrine\DBAL\Types\Type;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Schema;
 
 class Tracer
 {
@@ -61,7 +61,7 @@ class Tracer
 
         return array_filter(array_map(function (\SplFIleInfo $file) {
             if ($file->getExtension() !== 'php') {
-                return;
+                return [];
             }
 
             $content = $this->filesystem->get($file->getPathName());
@@ -92,40 +92,9 @@ class Tracer
 
     private function extractColumns(Model $model): array
     {
-        $table = $model->getConnection()->getTablePrefix() . $model->getTable();
-        $schema = $model->getConnection()->getDoctrineSchemaManager();
-
-        if (!Type::hasType('enum')) {
-            Type::addType('enum', EnumType::class);
-            $databasePlatform = $schema->getDatabasePlatform();
-            $databasePlatform->registerDoctrineTypeMapping('enum', 'enum');
-        }
-
-        $database = null;
-        if (strpos($table, '.')) {
-            [$database, $table] = explode('.', $table);
-        }
-
-        $columns = $schema->listTableColumns($table, $database);
-
-        $uses_enums = collect($columns)->contains(fn ($column) => $column->getType() instanceof \Blueprint\EnumType);
-
-        if ($uses_enums) {
-            $definitions = $model->getConnection()->getDoctrineConnection()->fetchAllAssociative($schema->getDatabasePlatform()->getListTableColumnsSQL($table, $database));
-
-            collect($columns)->filter(fn ($column) => $column->getType() instanceof \Blueprint\EnumType)->each(function ($column, $key) use ($definitions) {
-                $definition = collect($definitions)->where('Field', $key)->first();
-
-                $column->options = \Blueprint\EnumType::extractOptions($definition['Type']);
-            });
-        }
-
-        return $columns;
+        return Schema::getColumns($model->getTable());
     }
 
-    /**
-     * @param  \Doctrine\DBAL\Schema\Column[]  $columns
-     */
     private function mapColumns(array $columns): array
     {
         return collect($columns)
@@ -133,7 +102,7 @@ class Tracer
             ->toArray();
     }
 
-    public static function columns(\Doctrine\DBAL\Schema\Column $column, string $key): string
+    public static function columns($column, string $key): string
     {
         $attributes = [];
 

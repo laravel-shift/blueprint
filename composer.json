@@ -9,8 +9,8 @@
     ],
     "license": "MIT",
     "require": {
-        "doctrine/dbal": "^3.3",
         "illuminate/console": "^10.0|^11.0",
+        "illuminate/database": "^10.0|^11.0",
         "illuminate/filesystem": "^10.0|^11.0",
         "illuminate/support": "^10.0|^11.0",
         "laravel-shift/faker-registry": "^0.3.0",
