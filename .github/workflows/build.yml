@@ -21,13 +21,11 @@ jobs:
         php-version: ['8.1', '8.2', '8.3']
         laravel-version: [10, 11]
         os: [ubuntu-latest, windows-latest, macos-latest]
-        stability: [prefer-lowest, prefer-stable]
+        stability: [prefer-stable]
         experimental: [false]
         exclude:
           - laravel-version: 11
             php-version: 8.1
-          - laravel-version: 10
-            stability: prefer-lowest
 
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
@@ -44,7 +42,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ steps.determine-composer-cache-directory.outputs.directory }}
-          key: dependencies-os-${{ matrix.os }}-php-${{ matrix.php-version }}-laravel-${{ matrix.laravel-version }}-composer-${{ hashFiles('**/composer.lock') }}
+          key: dependencies-os-${{ matrix.os }}-php-${{ matrix.php-version }}-laravel-${{ matrix.laravel-version }}-${{ matrix.stability }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: dependencies-os-${{ matrix.os }}-php-${{ matrix.php-version }}-laravel-${{ matrix.laravel-version }}-${{ matrix.stability }}-composer-
 
       - name: Setup PHP
