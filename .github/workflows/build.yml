@@ -8,8 +8,9 @@ on:
   schedule:
     - cron: "0 0 * * *"
 
-env:
-  COMPOSER_FLAGS: "--ansi --no-interaction --no-progress --prefer-dist -o -n"
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   tests:
