@@ -98,31 +98,32 @@ class Tracer
     private function mapColumns(array $columns): array
     {
         return collect($columns)
-            ->map([self::class, 'columns'])
+            ->keyBy('name')
+            ->map([self::class, 'columnAttributes'])
             ->toArray();
     }
 
-    public static function columns($column, string $key): string
+    public static function columnAttributes($column): string
     {
         $attributes = [];
 
-        $type = self::translations($column->getType()->getName());
+        $type = self::translations($column['type']);
 
         if (in_array($type, ['decimal', 'float'])) {
-            if ($column->getPrecision()) {
-                $type .= ':' . $column->getPrecision();
+            if ($column['precision']) {
+                $type .= ':' . $column['precision'];
             }
-            if ($column->getScale()) {
-                $type .= ',' . $column->getScale();
+            if ($column['scale']) {
+                $type .= ',' . $column['scale'];
             }
-        } elseif ($type === 'string' && $column->getLength()) {
-            if ($column->getLength() !== 255) {
-                $type .= ':' . $column->getLength();
-            }
-        } elseif ($type === 'text') {
-            if ($column->getLength() > 65535) {
-                $type = 'longtext';
-            }
+//        } elseif ($type === 'string' && $column['length']) {
+//            if ($column['length'] !== 255) {
+//                $type .= ':' . $column['length'];
+//            }
+//        } elseif ($type === 'text') {
+//            if ($column['length'] > 65535) {
+//                $type = 'longtext';
+//            }
         } elseif ($type === 'enum' && !empty($column->options)) {
             $type .= ':' . implode(',', $column->options);
         }
@@ -131,20 +132,20 @@ class Tracer
 
         $attributes[] = $type;
 
-        if ($column->getUnsigned()) {
+        if (str_contains($column['type_name'], 'unsigned')) {
             $attributes[] = 'unsigned';
         }
 
-        if (!$column->getNotnull()) {
+        if ($column['nullable']) {
             $attributes[] = 'nullable';
         }
 
-        if ($column->getAutoincrement()) {
+        if ($column['auto_increment']) {
             $attributes[] = 'autoincrement';
         }
 
-        if (!is_null($column->getDefault())) {
-            $attributes[] = 'default:' . $column->getDefault();
+        if ($column['default']) {
+            $attributes[] = 'default:' . $column['default'];
         }
 
         return implode(' ', $attributes);
