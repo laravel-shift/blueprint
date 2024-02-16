@@ -115,7 +115,7 @@ class Tracer
             if ($options) {
                 $type .= ':' . $options;
             }
-        } elseif ($type === 'string' && str_contains($column['type'], '(')) {
+        } elseif (in_array($type, ['string', 'char']) && str_contains($column['type'], '(')) {
             $length = Str::between($column['type'], '(', ')');
             if ($length != 255) {
                 $type .= ':' . $length;
