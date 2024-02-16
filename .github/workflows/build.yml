@@ -13,7 +13,7 @@ env:
 
 jobs:
   tests:
-    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
+    name: P${{ matrix.php-version }} - L${{ matrix.laravel-version }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
     strategy:
       fail-fast: false
