@@ -4,7 +4,6 @@ namespace Blueprint;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class Tracer
@@ -93,7 +92,7 @@ class Tracer
 
     private function extractColumns(Model $model): array
     {
-        return Schema::getColumns($model->getTable());
+        return $model->getConnection()->getSchemaBuilder()->getColumns($model->getTable());
     }
 
     private function mapColumns(array $columns): array
@@ -104,25 +103,14 @@ class Tracer
             ->toArray();
     }
 
-    public static function columnAttributes($column): string
+    public static function columnAttributes(array $column): string
     {
         $attributes = [];
 
         $type = self::translations($column['type_name']);
 
-        if (in_array($type, ['decimal', 'float']) && str_contains($column['type'], '(')) {
-            $options = Str::between($column['type'], '(', ')');
-            if ($options) {
-                $type .= ':' . $options;
-            }
-        } elseif ($type === 'string' && str_contains($column['type'], '(')) {
-            $length = Str::between($column['type'], '(', ')');
-            if ($length != 255) {
-                $type .= ':' . $length;
-            }
-        } elseif ($type === 'enum') {
-            $options = Str::between($column['type'], '(', ')');
-            $type .= ':' . $options;
+        if (str_contains($column['type'], '(')) {
+            $type .= ':' . Str::between($column['type'], '(', ')');
         }
 
         // TODO: guid/uuid
@@ -148,38 +136,58 @@ class Tracer
         return implode(' ', $attributes);
     }
 
-    private static function translations(string $type): string
+    private static function translations(array $column): string
     {
-        static $mappings = [
-            'array' => 'string',
-            'bigint' => 'biginteger',
-            'binary' => 'binary',
-            'blob' => 'binary',
-            'boolean' => 'boolean',
-            'date' => 'date',
-            'date_immutable' => 'date',
-            'dateinterval' => 'date',
-            'datetime' => 'datetime',
-            'datetime_immutable' => 'datetime',
-            'datetimetz' => 'datetimetz',
-            'datetimetz_immutable' => 'datetimetz',
-            'decimal' => 'decimal',
-            'enum' => 'enum',
-            'float' => 'float',
-            'guid' => 'string',
-            'integer' => 'integer',
-            'json' => 'json',
-            'longtext' => 'longtext',
-            'object' => 'string',
-            'simple_array' => 'string',
-            'smallint' => 'smallinteger',
-            'string' => 'string',
-            'text' => 'text',
-            'time' => 'time',
-            'time_immutable' => 'time',
-        ];
+        $type = match ($column['type']) {
+            'tinyint(1)', 'bit' => 'boolean',
+            'nvarchar(max)' => 'text',
+            default => null,
+        };
 
-        return $mappings[$type] ?? 'string';
+        $type ??= match ($column['type_name']) {
+            'bigint', 'int8' => 'biginteger',
+            'binary', 'varbinary', 'bytea', 'image', 'blob', 'tinyblob', 'mediumblob', 'longblob' => 'binary',
+            // 'bit', 'varbit' => 'bit',
+            'boolean', 'bool' => 'boolean',
+            'char', 'bpchar', 'nchar' => 'char',
+            'date' => 'date',
+            'datetime', 'datetime2' => 'datetime',
+            'datetimeoffset' => 'datetimetz',
+            'decimal', 'numeric' => 'decimal',
+            'double', 'float8' => 'double',
+            'enum' => 'enum',
+            'float', 'real', 'float4' => 'float',
+            'geography' => 'geography',
+            'geometry', 'geometrycollection', 'linestring', 'multilinestring', 'multipoint', 'multipolygon', 'point', 'polygon' => 'geometry',
+            // 'box', 'circle', 'line', 'lseg', 'path' => 'geometry',
+            'integer', 'int', 'int4' => 'integer',
+            // 'inet', 'cidr' => 'ipaddress',
+            // 'interval' => 'interval',
+            'json' => 'json',
+            'jsonb' => 'jsonb',
+            'longtext' => 'longtext',
+            // 'macaddr', 'macaddr8' => 'macadress',
+            'mediumint' => 'mediuminteger',
+            'mediumtext' => 'mediumtext',
+            // 'money', 'smallmoney' => 'money',
+            // 'set' => 'set',
+            'smallint', 'int2' => 'smallinteger',
+            'text', 'ntext' => 'text',
+            // 'tsvector', 'tsquery' => 'text',
+            'time' => 'time',
+            'timestamp' => 'timestamp',
+            'timestamptz' => 'timestamptz',
+            'timetz' => 'timetz',
+            'tinyint' => 'tinyinteger',
+            'tinytext' => 'tinytext',
+            // 'uuid', 'uniqueidentifier' => 'uuid',
+            'varchar', 'nvarchar' => 'string',
+            // 'xml' => 'xml',
+            // 'year' => 'year',
+            default => null,
+        };
+
+        return $type ?? 'string';
     }
 
     private function translateColumns(array $columns): array
