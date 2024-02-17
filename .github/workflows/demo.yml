@@ -10,14 +10,14 @@ on:
 
 jobs:
   build:
-    name: PHP ${{ matrix.php-version }} - L${{ matrix.laravel-version }} - ${{ matrix.os }}
+    name: P${{ matrix.php-version }} - L${{ matrix.laravel-version }} - ${{ matrix.os }}
 
     services:
       mysql:
         image: mysql:8.0
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_DATABASE: laravel
+          MYSQL_DATABASE: test
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -29,7 +29,7 @@ jobs:
         laravel-version: [10, 11]
         os: [ubuntu-latest]
         exclude:
-          - laravel: 11.*
+          - laravel-version: 11
             php-version: 8.1
 
     runs-on: ${{ matrix.os }}
@@ -68,52 +68,25 @@ jobs:
         run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
       - name: Create a Laravel app
-        uses: nick-invision/retry@v1
-        with:
-          timeout_minutes: 5
-          max_attempts: 5
-          command: composer create-project --prefer-dist laravel/laravel:${{ matrix.laravel-version }}.* /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example
+        run: composer create-project --prefer-dist laravel/laravel:${{ matrix.laravel-version }}.* /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example
 
-      - name: Link local repository
-        uses: nick-invision/retry@v1
-        with:
-          timeout_minutes: 5
-          max_attempts: 5
-          command: 'composer config repositories.local "{\"type\": \"path\", \"url\": \"/home/runner/work/blueprint/blueprint\"}" --file /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example/composer.json'
+      - name: Link Blueprint repository
+        run: 'composer config repositories.local "{\"type\": \"path\", \"url\": \"/home/runner/work/blueprint/blueprint\"}" --file /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example/composer.json'
 
-      - name: Install Blueprint & laravel-test-assertions
-        uses: nick-invision/retry@v1
-        with:
-          timeout_minutes: 5
-          max_attempts: 5
-          command: cd /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example; composer require --dev laravel-shift/blueprint @dev; composer require jasonmccreary/laravel-test-assertions;
+      - name: Install dependencies
+        working-directory: /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example
+        run: composer require --dev laravel-shift/blueprint @dev jasonmccreary/laravel-test-assertions
 
-      - name: Run migrate:refresh
-        uses: nick-invision/retry@v1
-        with:
-          timeout_minutes: 5
-          max_attempts: 5
-          command: cd /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example; php artisan migrate:refresh --force
-
-      - name: Run blueprint:build
-        uses: nick-invision/retry@v1
-        with:
-          timeout_minutes: 5
-          max_attempts: 5
-          command: cd /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example; php artisan blueprint:build /home/runner/work/blueprint/blueprint/tests/fixtures/drafts/readme-example.yaml
-
-      - name: Run PHPUnit
-        uses: nick-invision/retry@v1
-        if: ${{ matrix.laravel-version == 6 }}
-        with:
-          timeout_minutes: 5
-          max_attempts: 5
-          command: cd /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example; pwd; vendor/bin/phpunit
-
-      - name: Run artisan test
-        uses: nick-invision/retry@v1
-        if: ${{ matrix.laravel-version != 6 }}
-        with:
-          timeout_minutes: 5
-          max_attempts: 5
-          command: cd /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example; php artisan test
+      - name: Run Blueprint Demo
+        working-directory: /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: ${{ job.services.mysql.ports['3306'] }}
+          DB_DATABASE: test
+          DB_USERNAME: root
+          DB_PASSWORD: 'null'
+        run: |
+          php artisan migrate:refresh --force
+          php artisan blueprint:build /home/runner/work/blueprint/blueprint/tests/fixtures/drafts/readme-example.yaml
+          php artisan test
