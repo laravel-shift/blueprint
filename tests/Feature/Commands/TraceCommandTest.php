@@ -88,7 +88,7 @@ final class TraceCommandTest extends TestCase
     }
 
     #[Test]
-    public function it_traces_models_with_differente_namespaces(): void
+    public function it_traces_models_with_different_namespaces(): void
     {
         $this->requireFixture('models/comment.php');
         $this->requireFixture('models/custom-models-namespace.php');

@@ -2,9 +2,9 @@
 
 namespace Blueprint;
 
-use Doctrine\DBAL\Types\Type;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Str;
 
 class Tracer
 {
@@ -61,7 +61,7 @@ class Tracer
 
         return array_filter(array_map(function (\SplFIleInfo $file) {
             if ($file->getExtension() !== 'php') {
-                return;
+                return [];
             }
 
             $content = $this->filesystem->get($file->getPathName());
@@ -92,126 +92,113 @@ class Tracer
 
     private function extractColumns(Model $model): array
     {
-        $table = $model->getConnection()->getTablePrefix() . $model->getTable();
-        $schema = $model->getConnection()->getDoctrineSchemaManager();
-
-        if (!Type::hasType('enum')) {
-            Type::addType('enum', EnumType::class);
-            $databasePlatform = $schema->getDatabasePlatform();
-            $databasePlatform->registerDoctrineTypeMapping('enum', 'enum');
-        }
-
-        $database = null;
-        if (strpos($table, '.')) {
-            [$database, $table] = explode('.', $table);
-        }
-
-        $columns = $schema->listTableColumns($table, $database);
-
-        $uses_enums = collect($columns)->contains(fn ($column) => $column->getType() instanceof \Blueprint\EnumType);
-
-        if ($uses_enums) {
-            $definitions = $model->getConnection()->getDoctrineConnection()->fetchAllAssociative($schema->getDatabasePlatform()->getListTableColumnsSQL($table, $database));
-
-            collect($columns)->filter(fn ($column) => $column->getType() instanceof \Blueprint\EnumType)->each(function ($column, $key) use ($definitions) {
-                $definition = collect($definitions)->where('Field', $key)->first();
-
-                $column->options = \Blueprint\EnumType::extractOptions($definition['Type']);
-            });
-        }
-
-        return $columns;
+        return $model->getConnection()->getSchemaBuilder()->getColumns($model->getTable());
     }
 
-    /**
-     * @param  \Doctrine\DBAL\Schema\Column[]  $columns
-     */
     private function mapColumns(array $columns): array
     {
         return collect($columns)
-            ->map([self::class, 'columns'])
+            ->keyBy('name')
+            ->map([self::class, 'columnAttributes'])
             ->toArray();
     }
 
-    public static function columns(\Doctrine\DBAL\Schema\Column $column, string $key): string
+    public static function columnAttributes(array $column): string
     {
         $attributes = [];
 
-        $type = self::translations($column->getType()->getName());
+        $type = self::translations($column);
 
-        if (in_array($type, ['decimal', 'float'])) {
-            if ($column->getPrecision()) {
-                $type .= ':' . $column->getPrecision();
+        if (in_array($type, ['decimal', 'float', 'time', 'timetz', 'datetime', 'datetimetz', 'timestamp', 'timestamptz', 'geography', 'geometry'])
+            && str_contains($column['type'], '(')) {
+            $options = Str::between($column['type'], '(', ')');
+            if ($options) {
+                $type .= ':' . $options;
             }
-            if ($column->getScale()) {
-                $type .= ',' . $column->getScale();
+        } elseif (in_array($type, ['string', 'char']) && str_contains($column['type'], '(')) {
+            $length = Str::between($column['type'], '(', ')');
+            if ($length != 255) {
+                $type .= ':' . $length;
             }
-        } elseif ($type === 'string' && $column->getLength()) {
-            if ($column->getLength() !== 255) {
-                $type .= ':' . $column->getLength();
-            }
-        } elseif ($type === 'text') {
-            if ($column->getLength() > 65535) {
-                $type = 'longtext';
-            }
-        } elseif ($type === 'enum' && !empty($column->options)) {
-            $type .= ':' . implode(',', $column->options);
+        } elseif (in_array($type, ['enum', 'set'])) {
+            $options = Str::between($column['type'], '(', ')');
+            $type .= ':' . $options;
         }
 
         // TODO: guid/uuid
 
         $attributes[] = $type;
 
-        if ($column->getUnsigned()) {
+        if (str_contains($column['type'], 'unsigned')) {
             $attributes[] = 'unsigned';
         }
 
-        if (!$column->getNotnull()) {
+        if ($column['nullable']) {
             $attributes[] = 'nullable';
         }
 
-        if ($column->getAutoincrement()) {
+        if ($column['auto_increment']) {
             $attributes[] = 'autoincrement';
         }
 
-        if (!is_null($column->getDefault())) {
-            $attributes[] = 'default:' . $column->getDefault();
+        if ($column['default']) {
+            $attributes[] = 'default:' . $column['default'];
         }
 
         return implode(' ', $attributes);
     }
 
-    private static function translations(string $type): string
+    private static function translations(array $column): string
     {
-        static $mappings = [
-            'array' => 'string',
-            'bigint' => 'biginteger',
-            'binary' => 'binary',
-            'blob' => 'binary',
-            'boolean' => 'boolean',
-            'date' => 'date',
-            'date_immutable' => 'date',
-            'dateinterval' => 'date',
-            'datetime' => 'datetime',
-            'datetime_immutable' => 'datetime',
-            'datetimetz' => 'datetimetz',
-            'datetimetz_immutable' => 'datetimetz',
-            'decimal' => 'decimal',
-            'enum' => 'enum',
-            'float' => 'float',
-            'guid' => 'string',
-            'integer' => 'integer',
-            'json' => 'json',
-            'object' => 'string',
-            'simple_array' => 'string',
-            'smallint' => 'smallinteger',
-            'string' => 'string',
-            'text' => 'text',
-            'time' => 'time',
-            'time_immutable' => 'time',
-        ];
+        $type = match ($column['type']) {
+            'tinyint(1)', 'bit' => 'boolean',
+            'nvarchar(max)' => 'text',
+            default => null,
+        };
 
-        return $mappings[$type] ?? 'string';
+        $type ??= match ($column['type_name']) {
+            'bigint', 'int8' => 'biginteger',
+            'binary', 'varbinary', 'bytea', 'image', 'blob', 'tinyblob', 'mediumblob', 'longblob' => 'binary',
+            // 'bit', 'varbit' => 'bit',
+            'boolean', 'bool' => 'boolean',
+            'char', 'bpchar', 'nchar' => 'char',
+            'date' => 'date',
+            'datetime', 'datetime2' => 'datetime',
+            'datetimeoffset' => 'datetimetz',
+            'decimal', 'numeric' => 'decimal',
+            'double', 'float8' => 'double',
+            'enum' => 'enum',
+            'float', 'real', 'float4' => 'float',
+            'geography' => 'geography',
+            'geometry', 'geometrycollection', 'linestring', 'multilinestring', 'multipoint', 'multipolygon', 'point', 'polygon' => 'geometry',
+            // 'box', 'circle', 'line', 'lseg', 'path' => 'geometry',
+            'integer', 'int', 'int4' => 'integer',
+            'inet', 'cidr' => 'ipaddress',
+            // 'interval' => 'interval',
+            'json' => 'json',
+            'jsonb' => 'jsonb',
+            'longtext' => 'longtext',
+            'macaddr', 'macaddr8' => 'macadress',
+            'mediumint' => 'mediuminteger',
+            'mediumtext' => 'mediumtext',
+            // 'money', 'smallmoney' => 'money',
+            'set' => 'set',
+            'smallint', 'int2' => 'smallinteger',
+            'text', 'ntext' => 'text',
+            'time' => 'time',
+            'timestamp' => 'timestamp',
+            'timestamptz' => 'timestamptz',
+            'timetz' => 'timetz',
+            'tinyint' => 'tinyinteger',
+            'tinytext' => 'tinytext',
+            'uuid', 'uniqueidentifier' => 'uuid',
+            'varchar', 'nvarchar' => 'string',
+            // 'xml' => 'xml',
+            'year' => 'year',
+            default => null,
+        };
+
+        return $type ?? 'string';
     }
 
     private function translateColumns(array $columns): array
