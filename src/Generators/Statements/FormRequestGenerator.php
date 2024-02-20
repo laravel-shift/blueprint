@@ -122,7 +122,7 @@ class FormRequestGenerator extends AbstractClassGenerator implements Generator
                 return $rules;
             } else {
                 /**
-                 * @var \Blueprint\Models\Model $column
+                 * @var \Blueprint\Models\Column $column
                  */
                 foreach ($model->columns() as $column) {
                     if ($column->name() === 'id') {
