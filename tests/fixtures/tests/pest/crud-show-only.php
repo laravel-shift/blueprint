@@ -8,7 +8,7 @@ use function Pest\Laravel\get;
 test('show displays view', function (): void {
     $post = Post::factory()->create();
 
-    $response = get(route('post.show', $post));
+    $response = get(route('posts.show', $post));
 
     $response->assertOk();
     $response->assertViewIs('posts.show');

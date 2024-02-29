@@ -12,6 +12,6 @@ class PostController extends Controller
     {
         $post = Post::create($request->all());
 
-        return redirect()->route('post.index');
+        return redirect()->route('posts.index');
     }
 }

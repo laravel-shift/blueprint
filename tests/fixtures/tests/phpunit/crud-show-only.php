@@ -16,7 +16,7 @@ final class PostControllerTest extends TestCase
     {
         $post = Post::factory()->create();
 
-        $response = $this->get(route('post.show', $post));
+        $response = $this->get(route('posts.show', $post));
 
         $response->assertOk();
         $response->assertViewIs('posts.show');

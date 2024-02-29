@@ -8,7 +8,7 @@ controllers:
       validate: name
       save: user
       flash: user.name
-      redirect: post.index
+      redirect: posts.index
 
 config:
   app_path: shift

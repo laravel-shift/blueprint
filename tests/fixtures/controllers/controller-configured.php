@@ -24,6 +24,6 @@ class UserController extends Controller
 
         $request->session()->flash('user.name', $user->name);
 
-        return redirect()->route('post.index');
+        return redirect()->route('posts.index');
     }
 }

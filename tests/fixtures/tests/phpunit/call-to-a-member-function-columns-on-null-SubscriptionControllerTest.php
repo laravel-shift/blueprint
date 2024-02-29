@@ -19,7 +19,7 @@ final class SubscriptionControllerTest extends TestCase
     {
         $subscriptions = Subscription::factory()->count(3)->create();
 
-        $response = $this->get(route('subscription.index'));
+        $response = $this->get(route('subscriptions.index'));
 
         $response->assertOk();
         $response->assertViewIs('subscription.index');
@@ -32,7 +32,7 @@ final class SubscriptionControllerTest extends TestCase
     {
         $subscription = Subscription::factory()->create();
 
-        $response = $this->get(route('subscription.show', $subscription));
+        $response = $this->get(route('subscriptions.show', $subscription));
 
         $response->assertOk();
         $response->assertViewIs('subscription.show');

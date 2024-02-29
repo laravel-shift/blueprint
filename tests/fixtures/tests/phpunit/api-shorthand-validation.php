@@ -23,7 +23,7 @@ final class CertificateControllerTest extends TestCase
     {
         $certificates = Certificate::factory()->count(3)->create();
 
-        $response = $this->get(route('certificate.index'));
+        $response = $this->get(route('certificates.index'));
 
         $response->assertOk();
         $response->assertJsonStructure([]);
@@ -49,7 +49,7 @@ final class CertificateControllerTest extends TestCase
         $document = $this->faker->word();
         $expiry_date = Carbon::parse($this->faker->date());
 
-        $response = $this->post(route('certificate.store'), [
+        $response = $this->post(route('certificates.store'), [
             'name' => $name,
             'certificate_type_id' => $certificate_type->id,
             'reference' => $reference,
@@ -77,7 +77,7 @@ final class CertificateControllerTest extends TestCase
     {
         $certificate = Certificate::factory()->create();
 
-        $response = $this->get(route('certificate.show', $certificate));
+        $response = $this->get(route('certificates.show', $certificate));
 
         $response->assertOk();
         $response->assertJsonStructure([]);
@@ -104,7 +104,7 @@ final class CertificateControllerTest extends TestCase
         $document = $this->faker->word();
         $expiry_date = Carbon::parse($this->faker->date());
 
-        $response = $this->put(route('certificate.update', $certificate), [
+        $response = $this->put(route('certificates.update', $certificate), [
             'name' => $name,
             'certificate_type_id' => $certificate_type->id,
             'reference' => $reference,
@@ -130,7 +130,7 @@ final class CertificateControllerTest extends TestCase
     {
         $certificate = Certificate::factory()->create();
 
-        $response = $this->delete(route('certificate.destroy', $certificate));
+        $response = $this->delete(route('certificates.destroy', $certificate));
 
         $response->assertNoContent();
 

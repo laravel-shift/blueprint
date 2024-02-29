@@ -26,7 +26,7 @@ final class ReportControllerTest extends TestCase
         Notification::fake();
         Mail::fake();
 
-        $response = $this->get(route('report.__invoke'));
+        $response = $this->get(route('reports.__invoke'));
 
         $response->assertOk();
         $response->assertViewIs('report');

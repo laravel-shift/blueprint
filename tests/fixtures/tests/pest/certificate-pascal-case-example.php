@@ -15,7 +15,7 @@ use function Pest\Laravel\put;
 test('index behaves as expected', function (): void {
     $certificates = Certificate::factory()->count(3)->create();
 
-    $response = get(route('certificate.index'));
+    $response = get(route('certificates.index'));
 
     $response->assertOk();
     $response->assertJsonStructure([]);
@@ -36,7 +36,7 @@ test('store saves', function (): void {
     $document = fake()->word();
     $expiry_date = Carbon::parse(fake()->date());
 
-    $response = post(route('certificate.store'), [
+    $response = post(route('certificates.store'), [
         'name' => $name,
         'certificate_type_id' => $certificate_type->id,
         'reference' => $reference,
@@ -62,7 +62,7 @@ test('store saves', function (): void {
 test('show behaves as expected', function (): void {
     $certificate = Certificate::factory()->create();
 
-    $response = get(route('certificate.show', $certificate));
+    $response = get(route('certificates.show', $certificate));
 
     $response->assertOk();
     $response->assertJsonStructure([]);
@@ -84,7 +84,7 @@ test('update behaves as expected', function (): void {
     $document = fake()->word();
     $expiry_date = Carbon::parse(fake()->date());
 
-    $response = put(route('certificate.update', $certificate), [
+    $response = put(route('certificates.update', $certificate), [
         'name' => $name,
         'certificate_type_id' => $certificate_type->id,
         'reference' => $reference,
@@ -108,7 +108,7 @@ test('update behaves as expected', function (): void {
 test('destroy deletes and responds with', function (): void {
     $certificate = Certificate::factory()->create();
 
-    $response = delete(route('certificate.destroy', $certificate));
+    $response = delete(route('certificates.destroy', $certificate));
 
     $response->assertNoContent();
 

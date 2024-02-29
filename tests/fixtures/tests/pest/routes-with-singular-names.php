@@ -13,7 +13,7 @@ use function Pest\Laravel\put;
 test('index behaves as expected', function (): void {
     $categories = Category::factory()->count(3)->create();
 
-    $response = get(route('categories.index'));
+    $response = get(route('category.index'));
 
     $response->assertOk();
     $response->assertJsonStructure([]);
@@ -32,7 +32,7 @@ test('store saves', function (): void {
     $image = fake()->word();
     $active = fake()->boolean();
 
-    $response = post(route('categories.store'), [
+    $response = post(route('category.store'), [
         'name' => $name,
         'image' => $image,
         'active' => $active,
@@ -54,7 +54,7 @@ test('store saves', function (): void {
 test('show behaves as expected', function (): void {
     $category = Category::factory()->create();
 
-    $response = get(route('categories.show', $category));
+    $response = get(route('category.show', $category));
 
     $response->assertOk();
     $response->assertJsonStructure([]);
@@ -74,7 +74,7 @@ test('update behaves as expected', function (): void {
     $image = fake()->word();
     $active = fake()->boolean();
 
-    $response = put(route('categories.update', $category), [
+    $response = put(route('category.update', $category), [
         'name' => $name,
         'image' => $image,
         'active' => $active,
@@ -94,7 +94,7 @@ test('update behaves as expected', function (): void {
 test('destroy deletes and responds with', function (): void {
     $category = Category::factory()->create();
 
-    $response = delete(route('categories.destroy', $category));
+    $response = delete(route('category.destroy', $category));
 
     $response->assertNoContent();
 

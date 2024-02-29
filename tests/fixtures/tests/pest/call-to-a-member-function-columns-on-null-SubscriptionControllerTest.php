@@ -8,7 +8,7 @@ use function Pest\Laravel\get;
 test('index displays view', function (): void {
     $subscriptions = Subscription::factory()->count(3)->create();
 
-    $response = get(route('subscription.index'));
+    $response = get(route('subscriptions.index'));
 
     $response->assertOk();
     $response->assertViewIs('subscription.index');
@@ -19,7 +19,7 @@ test('index displays view', function (): void {
 test('show displays view', function (): void {
     $subscription = Subscription::factory()->create();
 
-    $response = get(route('subscription.show', $subscription));
+    $response = get(route('subscriptions.show', $subscription));
 
     $response->assertOk();
     $response->assertViewIs('subscription.show');

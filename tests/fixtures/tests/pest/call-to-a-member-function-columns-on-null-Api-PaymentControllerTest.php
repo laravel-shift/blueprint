@@ -24,7 +24,7 @@ test('store saves and responds with', function (): void {
     $amount = fake()->randomFloat(/** decimal_attributes **/);
     $user = User::factory()->create();
 
-    $response = post(route('payment.store'), [
+    $response = post(route('payments.store'), [
         'status' => $status,
         'amount' => $amount,
         'user_id' => $user->id,

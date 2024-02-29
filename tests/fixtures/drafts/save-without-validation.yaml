@@ -9,4 +9,4 @@ controllers:
   Post:
     store:
       save: post
-      redirect: post.index
+      redirect: posts.index

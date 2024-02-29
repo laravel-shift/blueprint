@@ -21,7 +21,7 @@ final class PostControllerTest extends TestCase
     {
         $posts = Post::factory()->count(3)->create();
 
-        $response = $this->get(route('post.index'));
+        $response = $this->get(route('posts.index'));
 
         $response->assertOk();
         $response->assertJson($posts);
@@ -43,7 +43,7 @@ final class PostControllerTest extends TestCase
     {
         $title = $this->faker->sentence(4);
 
-        $response = $this->post(route('post.store'), [
+        $response = $this->post(route('posts.store'), [
             'title' => $title,
         ]);
 
@@ -54,7 +54,7 @@ final class PostControllerTest extends TestCase
     #[Test]
     public function error_responds_with(): void
     {
-        $response = $this->get(route('post.error'));
+        $response = $this->get(route('posts.error'));
 
         $response->assertNoContent(400);
     }

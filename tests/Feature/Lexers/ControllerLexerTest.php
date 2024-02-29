@@ -135,7 +135,7 @@ final class ControllerLexerTest extends TestCase
                 'validate' => 'comment',
                 'save' => 'comment',
                 'flash' => 'comment.id',
-                'redirect' => 'comment.index',
+                'redirect' => 'comments.index',
             ])
             ->andReturn(['store-statements']);
 
@@ -156,14 +156,14 @@ final class ControllerLexerTest extends TestCase
                 'validate' => 'comment',
                 'update' => 'comment',
                 'flash' => 'comment.id',
-                'redirect' => 'comment.index',
+                'redirect' => 'comments.index',
             ])
             ->andReturn(['update-statements']);
 
         $this->statementLexer->shouldReceive('analyze')
             ->with([
                 'delete' => 'comment',
-                'redirect' => 'comment.index',
+                'redirect' => 'comments.index',
             ])
             ->andReturn(['destroy-statements']);
 
@@ -280,14 +280,14 @@ final class ControllerLexerTest extends TestCase
                 'validate' => 'user',
                 'update' => 'user',
                 'flash' => 'user.id',
-                'redirect' => 'user.index',
+                'redirect' => 'users.index',
             ])
             ->andReturn(['update-statements']);
 
         $this->statementLexer->shouldReceive('analyze')
             ->with([
                 'delete' => 'user',
-                'redirect' => 'user.index',
+                'redirect' => 'users.index',
             ])
             ->andReturn(['destroy-statements']);
 

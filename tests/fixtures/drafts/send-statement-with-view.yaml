@@ -2,4 +2,4 @@ controllers:
   User:
     store:
       send: AddedAdmin to:user.email with:user view:emails.admin.added
-      redirect: user.show with:user.id
+      redirect: users.show with:user.id
