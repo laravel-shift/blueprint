@@ -26,10 +26,10 @@ jobs:
       fail-fast: false
       matrix:
         php-version: ['8.1', '8.2', '8.3']
-        laravel-version: [10, 11]
+        laravel-version: ['10', 'dev-master']
         os: [ubuntu-latest]
         exclude:
-          - laravel-version: 11
+          - laravel-version: dev-master
             php-version: 8.1
 
     runs-on: ${{ matrix.os }}
@@ -68,7 +68,7 @@ jobs:
         run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
       - name: Create a Laravel app
-        run: composer create-project --prefer-dist laravel/laravel:${{ matrix.laravel-version }}.* /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example
+        run: composer create-project --prefer-dist laravel/laravel:${{ matrix.laravel-version == '10' && '10.*' || matrix.laravel-version }} /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example
 
       - name: Link Blueprint repository
         run: 'composer config repositories.local "{\"type\": \"path\", \"url\": \"/home/runner/work/blueprint/blueprint\"}" --file /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example/composer.json'
