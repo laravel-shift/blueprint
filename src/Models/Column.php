@@ -42,6 +42,15 @@ class Column
         return $this->modifiers;
     }
 
+    public function isDate()
+    {
+        return in_array(strtolower($this->dataType()), [
+            'date',
+            'datetime',
+            'timestamp',
+        ]);
+    }
+
     public function isForeignKey()
     {
         return collect($this->modifiers())->filter(fn ($modifier) => (is_array($modifier) && key($modifier) === 'foreign') || $modifier === 'foreign')->flatten()->first();

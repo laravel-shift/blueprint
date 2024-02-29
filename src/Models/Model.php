@@ -176,7 +176,7 @@ class Model implements BlueprintModel
         return isset($this->columns[$name]);
     }
 
-    public function column(string $name)
+    public function column(string $name): Column
     {
         return $this->columns[$name];
     }

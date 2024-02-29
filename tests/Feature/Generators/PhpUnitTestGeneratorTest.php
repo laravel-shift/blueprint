@@ -224,6 +224,7 @@ final class PhpUnitTestGeneratorTest extends TestCase
             ['drafts/crud-show-only.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/phpunit/crud-show-only.php'],
             ['drafts/model-reference-validate.yaml', 'tests/Feature/Http/Controllers/CertificateControllerTest.php', 'tests/phpunit/api-shorthand-validation.php'],
             ['drafts/controllers-only-no-context.yaml', 'tests/Feature/Http/Controllers/ReportControllerTest.php', 'tests/phpunit/controllers-only-no-context.php'],
+            ['drafts/date-formats.yaml', 'tests/Feature/Http/Controllers/DateControllerTest.php', 'tests/phpunit/date-formats.php'],
             ['drafts/call-to-a-member-function-columns-on-null.yaml', [
                 'tests/Feature/Http/Controllers/SubscriptionControllerTest.php',
                 'tests/Feature/Http/Controllers/TelegramControllerTest.php',

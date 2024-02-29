@@ -1,0 +1,9 @@
+models:
+  Date:
+    born_at: date
+    expires_at: datetime
+    published_at: timestamp
+
+controllers:
+  Date:
+    resource: web
