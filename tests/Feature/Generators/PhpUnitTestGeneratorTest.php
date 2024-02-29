@@ -46,7 +46,7 @@ final class PhpUnitTestGeneratorTest extends TestCase
 
     #[Test]
     #[DataProvider('controllerTreeDataProvider')]
-    public function output_generates_test_for_controller_tree_l8($definition, $path, $test): void
+    public function output_generates_test_for_controller_tree($definition, $path, $test): void
     {
         $this->filesystem->expects('stub')
             ->with('phpunit.test.class.stub')
@@ -78,7 +78,7 @@ final class PhpUnitTestGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_works_for_pascal_case_definition_l8(): void
+    public function output_works_for_pascal_case_definition(): void
     {
         $this->filesystem->expects('stub')
             ->with('phpunit.test.class.stub')
@@ -112,7 +112,7 @@ final class PhpUnitTestGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_test_for_controller_tree_using_cached_model_l8(): void
+    public function output_generates_test_for_controller_tree_using_cached_model(): void
     {
         $this->filesystem->expects('stub')
             ->with('phpunit.test.class.stub')
@@ -145,7 +145,7 @@ final class PhpUnitTestGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_tests_with_models_with_custom_namespace_correctly_l8(): void
+    public function output_generates_tests_with_models_with_custom_namespace_correctly(): void
     {
         $definition = 'drafts/models-with-custom-namespace.yaml';
         $path = 'tests/Feature/Http/Controllers/CategoryControllerTest.php';
