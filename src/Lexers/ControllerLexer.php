@@ -124,7 +124,7 @@ class ControllerLexer implements Lexer
                 'validate' => '[singular]',
                 'save' => '[singular]',
                 'flash' => '[singular].id',
-                'redirect' => '[singular].index',
+                'redirect' => '[plural].index',
             ],
             'show' => [
                 'render' => '[singular].show with:[singular]',
@@ -136,11 +136,11 @@ class ControllerLexer implements Lexer
                 'validate' => '[singular]',
                 'update' => '[singular]',
                 'flash' => '[singular].id',
-                'redirect' => '[singular].index',
+                'redirect' => '[plural].index',
             ],
             'destroy' => [
                 'delete' => '[singular]',
-                'redirect' => '[singular].index',
+                'redirect' => '[plural].index',
             ],
             'api.index' => [
                 'query' => 'all:[plural]',

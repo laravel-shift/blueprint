@@ -10,7 +10,7 @@ use function Pest\Laravel\post;
 test('index responds with', function (): void {
     $posts = Post::factory()->count(3)->create();
 
-    $response = get(route('post.index'));
+    $response = get(route('posts.index'));
 
     $response->assertOk();
     $response->assertJson($posts);
@@ -27,7 +27,7 @@ test('store uses form request validation')
 test('store responds with', function (): void {
     $title = fake()->sentence(4);
 
-    $response = post(route('post.store'), [
+    $response = post(route('posts.store'), [
         'title' => $title,
     ]);
 
@@ -36,7 +36,7 @@ test('store responds with', function (): void {
 
 
 test('error responds with', function (): void {
-    $response = get(route('post.error'));
+    $response = get(route('posts.error'));
 
     $response->assertNoContent(400);
 });

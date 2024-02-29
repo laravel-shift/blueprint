@@ -17,7 +17,7 @@ use function Pest\Laravel\post;
 test('index displays view', function (): void {
     $posts = Post::factory()->count(3)->create();
 
-    $response = get(route('post.index'));
+    $response = get(route('posts.index'));
 
     $response->assertOk();
     $response->assertViewIs('post.index');
@@ -41,7 +41,7 @@ test('store saves and redirects', function (): void {
     Queue::fake();
     Event::fake();
 
-    $response = post(route('post.store'), [
+    $response = post(route('posts.store'), [
         'title' => $title,
         'content' => $content,
         'author_id' => $author->id,
@@ -55,7 +55,7 @@ test('store saves and redirects', function (): void {
     expect($posts)->toHaveCount(1);
     $post = $posts->first();
 
-    $response->assertRedirect(route('post.index'));
+    $response->assertRedirect(route('posts.index'));
     $response->assertSessionHas('post.title', $post->title);
 
     Mail::assertSent(ReviewPost::class, function ($mail) use ($post) {

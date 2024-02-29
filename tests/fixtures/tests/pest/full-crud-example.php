@@ -13,7 +13,7 @@ use function Pest\Laravel\put;
 test('index displays view', function (): void {
     $posts = Post::factory()->count(3)->create();
 
-    $response = get(route('post.index'));
+    $response = get(route('posts.index'));
 
     $response->assertOk();
     $response->assertViewIs('posts.index');
@@ -22,7 +22,7 @@ test('index displays view', function (): void {
 
 
 test('create displays view', function (): void {
-    $response = get(route('post.create'));
+    $response = get(route('posts.create'));
 
     $response->assertOk();
     $response->assertViewIs('posts.create');
@@ -41,7 +41,7 @@ test('store saves and redirects', function (): void {
     $title = fake()->sentence(4);
     $content = fake()->paragraphs(3, true);
 
-    $response = post(route('post.store'), [
+    $response = post(route('posts.store'), [
         'title' => $title,
         'content' => $content,
     ]);
@@ -60,7 +60,7 @@ test('store saves and redirects', function (): void {
 test('show displays view', function (): void {
     $post = Post::factory()->create();
 
-    $response = get(route('post.show', $post));
+    $response = get(route('posts.show', $post));
 
     $response->assertOk();
     $response->assertViewIs('posts.show');
@@ -71,7 +71,7 @@ test('show displays view', function (): void {
 test('edit displays view', function (): void {
     $post = Post::factory()->create();
 
-    $response = get(route('post.edit', $post));
+    $response = get(route('posts.edit', $post));
 
     $response->assertOk();
     $response->assertViewIs('posts.edit');
@@ -91,7 +91,7 @@ test('update saves and redirects', function (): void {
     $title = fake()->sentence(4);
     $content = fake()->paragraphs(3, true);
 
-    $response = put(route('post.update', $post), [
+    $response = put(route('posts.update', $post), [
         'title' => $title,
         'content' => $content,
     ]);
@@ -110,7 +110,7 @@ test('update saves and redirects', function (): void {
 test('destroy deletes', function (): void {
     $post = Post::factory()->create();
 
-    $response = delete(route('post.destroy', $post));
+    $response = delete(route('posts.destroy', $post));
 
     assertModelMissing($post);
 });

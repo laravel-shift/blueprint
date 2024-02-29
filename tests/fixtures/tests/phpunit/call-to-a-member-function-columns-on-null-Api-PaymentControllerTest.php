@@ -38,7 +38,7 @@ final class PaymentControllerTest extends TestCase
         $amount = $this->faker->randomFloat(/** decimal_attributes **/);
         $user = User::factory()->create();
 
-        $response = $this->post(route('payment.store'), [
+        $response = $this->post(route('payments.store'), [
             'status' => $status,
             'amount' => $amount,
             'user_id' => $user->id,

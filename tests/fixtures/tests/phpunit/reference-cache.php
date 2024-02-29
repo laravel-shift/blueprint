@@ -32,7 +32,7 @@ final class UserControllerTest extends TestCase
         $email = $this->faker->safeEmail();
         $password = $this->faker->password();
 
-        $response = $this->post(route('user.store'), [
+        $response = $this->post(route('users.store'), [
             'email' => $email,
             'password' => $password,
         ]);

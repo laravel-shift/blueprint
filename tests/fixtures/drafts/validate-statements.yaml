@@ -14,9 +14,9 @@ controllers:
 
     store:
       validate: title, content, rating, count
-      redirect: post.index
+      redirect: posts.index
 
   Other:
     store:
       validate: other.field, other.text
-      redirect: post.index
+      redirect: posts.index

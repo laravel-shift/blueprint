@@ -36,7 +36,7 @@ class PostController extends Controller
 
         $request->session()->flash('post.id', $post->id);
 
-        return redirect()->route('post.index');
+        return redirect()->route('posts.index');
     }
 
     public function show(Request $request, Post $post): View
@@ -62,7 +62,7 @@ class PostController extends Controller
 
         $request->session()->flash('post.id', $post->id);
 
-        return redirect()->route('post.index');
+        return redirect()->route('posts.index');
     }
 
     public function destroy(Request $request, Post $post): RedirectResponse
@@ -71,6 +71,6 @@ class PostController extends Controller
 
         $post->delete();
 
-        return redirect()->route('post.index');
+        return redirect()->route('posts.index');
     }
 }

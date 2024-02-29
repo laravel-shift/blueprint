@@ -28,7 +28,7 @@ final class PostControllerTest extends TestCase
     {
         $posts = Post::factory()->count(3)->create();
 
-        $response = $this->get(route('post.index'));
+        $response = $this->get(route('posts.index'));
 
         $response->assertOk();
         $response->assertViewIs('post.index');
@@ -57,7 +57,7 @@ final class PostControllerTest extends TestCase
         Queue::fake();
         Event::fake();
 
-        $response = $this->post(route('post.store'), [
+        $response = $this->post(route('posts.store'), [
             'title' => $title,
             'content' => $content,
             'author_id' => $author->id,
@@ -71,7 +71,7 @@ final class PostControllerTest extends TestCase
         $this->assertCount(1, $posts);
         $post = $posts->first();
 
-        $response->assertRedirect(route('post.index'));
+        $response->assertRedirect(route('posts.index'));
         $response->assertSessionHas('post.title', $post->title);
 
         Mail::assertSent(ReviewPost::class, function ($mail) use ($post) {

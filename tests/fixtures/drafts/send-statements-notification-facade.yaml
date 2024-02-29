@@ -2,9 +2,9 @@ controllers:
   User:
     store:
       send: ReviewPostNotification to:user.email with:post
-      redirect: user.show with:user.id
+      redirect: users.show with:user.id
 
   Post:
     store:
       send: PublishedPostNotification
-      redirect: post.index
+      redirect: posts.index

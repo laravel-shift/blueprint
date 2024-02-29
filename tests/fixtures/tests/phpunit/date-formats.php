@@ -22,7 +22,7 @@ final class DateControllerTest extends TestCase
     {
         $dates = Date::factory()->count(3)->create();
 
-        $response = $this->get(route('date.index'));
+        $response = $this->get(route('dates.index'));
 
         $response->assertOk();
         $response->assertViewIs('date.index');
@@ -33,7 +33,7 @@ final class DateControllerTest extends TestCase
     #[Test]
     public function create_displays_view(): void
     {
-        $response = $this->get(route('date.create'));
+        $response = $this->get(route('dates.create'));
 
         $response->assertOk();
         $response->assertViewIs('date.create');
@@ -57,7 +57,7 @@ final class DateControllerTest extends TestCase
         $expires_at = Carbon::parse($this->faker->dateTime());
         $published_at = Carbon::parse($this->faker->dateTime());
 
-        $response = $this->post(route('date.store'), [
+        $response = $this->post(route('dates.store'), [
             'born_at' => $born_at->toDateString(),
             'expires_at' => $expires_at->toDateTimeString(),
             'published_at' => $published_at->toDateTimeString(),
@@ -71,7 +71,7 @@ final class DateControllerTest extends TestCase
         $this->assertCount(1, $dates);
         $date = $dates->first();
 
-        $response->assertRedirect(route('date.index'));
+        $response->assertRedirect(route('dates.index'));
         $response->assertSessionHas('date.id', $date->id);
     }
 
@@ -81,7 +81,7 @@ final class DateControllerTest extends TestCase
     {
         $date = Date::factory()->create();
 
-        $response = $this->get(route('date.show', $date));
+        $response = $this->get(route('dates.show', $date));
 
         $response->assertOk();
         $response->assertViewIs('date.show');
@@ -94,7 +94,7 @@ final class DateControllerTest extends TestCase
     {
         $date = Date::factory()->create();
 
-        $response = $this->get(route('date.edit', $date));
+        $response = $this->get(route('dates.edit', $date));
 
         $response->assertOk();
         $response->assertViewIs('date.edit');
@@ -120,7 +120,7 @@ final class DateControllerTest extends TestCase
         $expires_at = Carbon::parse($this->faker->dateTime());
         $published_at = Carbon::parse($this->faker->dateTime());
 
-        $response = $this->put(route('date.update', $date), [
+        $response = $this->put(route('dates.update', $date), [
             'born_at' => $born_at->toDateString(),
             'expires_at' => $expires_at->toDateTimeString(),
             'published_at' => $published_at->toDateTimeString(),
@@ -128,7 +128,7 @@ final class DateControllerTest extends TestCase
 
         $date->refresh();
 
-        $response->assertRedirect(route('date.index'));
+        $response->assertRedirect(route('dates.index'));
         $response->assertSessionHas('date.id', $date->id);
 
         $this->assertEquals($born_at, $date->born_at);
@@ -142,9 +142,9 @@ final class DateControllerTest extends TestCase
     {
         $date = Date::factory()->create();
 
-        $response = $this->delete(route('date.destroy', $date));
+        $response = $this->delete(route('dates.destroy', $date));
 
-        $response->assertRedirect(route('date.index'));
+        $response->assertRedirect(route('dates.index'));
 
         $this->assertModelMissing($date);
     }

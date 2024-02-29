@@ -13,7 +13,7 @@ use function Pest\Laravel\put;
 test('index behaves as expected', function (): void {
     $certificateTypes = CertificateType::factory()->count(3)->create();
 
-    $response = get(route('certificate-type.index'));
+    $response = get(route('certificate-types.index'));
 
     $response->assertOk();
     $response->assertJsonStructure([]);
@@ -30,7 +30,7 @@ test('store uses form request validation')
 test('store saves', function (): void {
     $name = fake()->name();
 
-    $response = post(route('certificate-type.store'), [
+    $response = post(route('certificate-types.store'), [
         'name' => $name,
     ]);
 
@@ -48,7 +48,7 @@ test('store saves', function (): void {
 test('show behaves as expected', function (): void {
     $certificateType = CertificateType::factory()->create();
 
-    $response = get(route('certificate-type.show', $certificateType));
+    $response = get(route('certificate-types.show', $certificateType));
 
     $response->assertOk();
     $response->assertJsonStructure([]);
@@ -66,7 +66,7 @@ test('update behaves as expected', function (): void {
     $certificateType = CertificateType::factory()->create();
     $name = fake()->name();
 
-    $response = put(route('certificate-type.update', $certificateType), [
+    $response = put(route('certificate-types.update', $certificateType), [
         'name' => $name,
     ]);
 
@@ -82,7 +82,7 @@ test('update behaves as expected', function (): void {
 test('destroy deletes and responds with', function (): void {
     $certificateType = CertificateType::factory()->create();
 
-    $response = delete(route('certificate-type.destroy', $certificateType));
+    $response = delete(route('certificate-types.destroy', $certificateType));
 
     $response->assertNoContent();
 

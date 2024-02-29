@@ -31,7 +31,7 @@ controllers:
       fire: NewPayment with:payment
       send: PaymentCreated to:payment.user with:payment
       flash: message
-      redirect: payment.create
+      redirect: payments.create
 
   Api\Payment:
     store:

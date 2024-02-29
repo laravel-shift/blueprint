@@ -18,7 +18,7 @@ test('invoke displays view', function (): void {
     Notification::fake();
     Mail::fake();
 
-    $response = get(route('report.__invoke'));
+    $response = get(route('reports.__invoke'));
 
     $response->assertOk();
     $response->assertViewIs('report');

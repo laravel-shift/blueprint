@@ -17,7 +17,7 @@ test('store saves and redirects', function (): void {
     $email = fake()->safeEmail();
     $password = fake()->password();
 
-    $response = post(route('user.store'), [
+    $response = post(route('users.store'), [
         'email' => $email,
         'password' => $password,
     ]);

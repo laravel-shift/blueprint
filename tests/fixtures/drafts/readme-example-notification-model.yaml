@@ -17,4 +17,4 @@ controllers:
       dispatch: SyncMedia with:post
       fire: NewPost with:post
       flash: post.title
-      redirect: post.index
+      redirect: posts.index

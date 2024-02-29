@@ -18,4 +18,4 @@ controllers:
       find: post.id
       query: where:post.title take:3 pluck:post.id
       save: post
-      redirect: post.edit
+      redirect: posts.edit

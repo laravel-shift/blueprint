@@ -31,6 +31,6 @@ class PostController extends Controller
 
         $post->save();
 
-        return redirect()->route('post.edit', ['post' => $post]);
+        return redirect()->route('posts.edit', ['post' => $post]);
     }
 }

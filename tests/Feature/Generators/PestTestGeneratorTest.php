@@ -179,14 +179,14 @@ final class PestTestGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_tests_with_pluralized_route_names(): void
+    public function output_generates_tests_with_singular_route_names(): void
     {
         $definition = 'drafts/models-with-custom-namespace.yaml';
         $path = 'tests/Feature/Http/Controllers/CategoryControllerTest.php';
-        $test = 'tests/pest/routes-with-pluralized-names.php';
+        $test = 'tests/pest/routes-with-singular-names.php';
 
         $this->app['config']->set('blueprint.models_namespace', 'Models');
-        $this->app['config']->set('blueprint.plural_routes', true);
+        $this->app['config']->set('blueprint.singular_routes', true);
 
         $this->filesystem->expects('stub')
             ->with('pest.test.class.stub')

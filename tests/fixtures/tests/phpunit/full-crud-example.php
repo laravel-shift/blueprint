@@ -21,7 +21,7 @@ final class PostControllerTest extends TestCase
     {
         $posts = Post::factory()->count(3)->create();
 
-        $response = $this->get(route('post.index'));
+        $response = $this->get(route('posts.index'));
 
         $response->assertOk();
         $response->assertViewIs('posts.index');
@@ -32,7 +32,7 @@ final class PostControllerTest extends TestCase
     #[Test]
     public function create_displays_view(): void
     {
-        $response = $this->get(route('post.create'));
+        $response = $this->get(route('posts.create'));
 
         $response->assertOk();
         $response->assertViewIs('posts.create');
@@ -56,7 +56,7 @@ final class PostControllerTest extends TestCase
         $title = $this->faker->sentence(4);
         $content = $this->faker->paragraphs(3, true);
 
-        $response = $this->post(route('post.store'), [
+        $response = $this->post(route('posts.store'), [
             'title' => $title,
             'content' => $content,
         ]);
@@ -77,7 +77,7 @@ final class PostControllerTest extends TestCase
     {
         $post = Post::factory()->create();
 
-        $response = $this->get(route('post.show', $post));
+        $response = $this->get(route('posts.show', $post));
 
         $response->assertOk();
         $response->assertViewIs('posts.show');
@@ -90,7 +90,7 @@ final class PostControllerTest extends TestCase
     {
         $post = Post::factory()->create();
 
-        $response = $this->get(route('post.edit', $post));
+        $response = $this->get(route('posts.edit', $post));
 
         $response->assertOk();
         $response->assertViewIs('posts.edit');
@@ -115,7 +115,7 @@ final class PostControllerTest extends TestCase
         $title = $this->faker->sentence(4);
         $content = $this->faker->paragraphs(3, true);
 
-        $response = $this->put(route('post.update', $post), [
+        $response = $this->put(route('posts.update', $post), [
             'title' => $title,
             'content' => $content,
         ]);
@@ -136,7 +136,7 @@ final class PostControllerTest extends TestCase
     {
         $post = Post::factory()->create();
 
-        $response = $this->delete(route('post.destroy', $post));
+        $response = $this->delete(route('posts.destroy', $post));
 
         $this->assertModelMissing($post);
     }

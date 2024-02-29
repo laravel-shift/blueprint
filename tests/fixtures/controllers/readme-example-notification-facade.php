@@ -33,6 +33,6 @@ class PostController extends Controller
 
         $request->session()->flash('post.title', $post->title);
 
-        return redirect()->route('post.index');
+        return redirect()->route('posts.index');
     }
 }

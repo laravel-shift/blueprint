@@ -14,7 +14,7 @@ use function Pest\Laravel\put;
 test('index displays view', function (): void {
     $dates = Date::factory()->count(3)->create();
 
-    $response = get(route('date.index'));
+    $response = get(route('dates.index'));
 
     $response->assertOk();
     $response->assertViewIs('date.index');
@@ -23,7 +23,7 @@ test('index displays view', function (): void {
 
 
 test('create displays view', function (): void {
-    $response = get(route('date.create'));
+    $response = get(route('dates.create'));
 
     $response->assertOk();
     $response->assertViewIs('date.create');
@@ -42,7 +42,7 @@ test('store saves and redirects', function (): void {
     $expires_at = Carbon::parse(fake()->dateTime());
     $published_at = Carbon::parse(fake()->dateTime());
 
-    $response = post(route('date.store'), [
+    $response = post(route('dates.store'), [
         'born_at' => $born_at->toDateString(),
         'expires_at' => $expires_at->toDateTimeString(),
         'published_at' => $published_at->toDateTimeString(),
@@ -56,7 +56,7 @@ test('store saves and redirects', function (): void {
     expect($dates)->toHaveCount(1);
     $date = $dates->first();
 
-    $response->assertRedirect(route('date.index'));
+    $response->assertRedirect(route('dates.index'));
     $response->assertSessionHas('date.id', $date->id);
 });
 
@@ -64,7 +64,7 @@ test('store saves and redirects', function (): void {
 test('show displays view', function (): void {
     $date = Date::factory()->create();
 
-    $response = get(route('date.show', $date));
+    $response = get(route('dates.show', $date));
 
     $response->assertOk();
     $response->assertViewIs('date.show');
@@ -75,7 +75,7 @@ test('show displays view', function (): void {
 test('edit displays view', function (): void {
     $date = Date::factory()->create();
 
-    $response = get(route('date.edit', $date));
+    $response = get(route('dates.edit', $date));
 
     $response->assertOk();
     $response->assertViewIs('date.edit');
@@ -96,7 +96,7 @@ test('update redirects', function (): void {
     $expires_at = Carbon::parse(fake()->dateTime());
     $published_at = Carbon::parse(fake()->dateTime());
 
-    $response = put(route('date.update', $date), [
+    $response = put(route('dates.update', $date), [
         'born_at' => $born_at->toDateString(),
         'expires_at' => $expires_at->toDateTimeString(),
         'published_at' => $published_at->toDateTimeString(),
@@ -104,7 +104,7 @@ test('update redirects', function (): void {
 
     $date->refresh();
 
-    $response->assertRedirect(route('date.index'));
+    $response->assertRedirect(route('dates.index'));
     $response->assertSessionHas('date.id', $date->id);
 
     expect($born_at)->toEqual($date->born_at);
@@ -116,9 +116,9 @@ test('update redirects', function (): void {
 test('destroy deletes and redirects', function (): void {
     $date = Date::factory()->create();
 
-    $response = delete(route('date.destroy', $date));
+    $response = delete(route('dates.destroy', $date));
 
-    $response->assertRedirect(route('date.index'));
+    $response->assertRedirect(route('dates.index'));
 
     assertModelMissing($date);
 });

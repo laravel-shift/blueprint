@@ -13,7 +13,7 @@ use function Pest\Laravel\get;
 use function Pest\Laravel\post;
 
 test('create displays view', function (): void {
-    $response = get(route('payment.create'));
+    $response = get(route('payments.create'));
 
     $response->assertOk();
     $response->assertViewIs('payment.create');
@@ -35,7 +35,7 @@ test('store saves and redirects', function (): void {
     Event::fake();
     Mail::fake();
 
-    $response = post(route('payment.store'), [
+    $response = post(route('payments.store'), [
         'status' => $status,
         'amount' => $amount,
         'user_id' => $user->id,
@@ -49,7 +49,7 @@ test('store saves and redirects', function (): void {
     expect($payments)->toHaveCount(1);
     $payment = $payments->first();
 
-    $response->assertRedirect(route('payment.create'));
+    $response->assertRedirect(route('payments.create'));
     $response->assertSessionHas('message', $message);
 
     Event::assertDispatched(NewPayment::class, function ($event) use ($payment) {
