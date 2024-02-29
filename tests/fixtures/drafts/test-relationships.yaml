@@ -1,0 +1,12 @@
+models:
+  Conference:
+    name: string
+    starts_at: datetime
+    ends_at: datetime
+    venue_id: id
+    relationships:
+      HasMany: Attendee
+
+controllers:
+  ConferenceController:
+    resource
