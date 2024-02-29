@@ -93,4 +93,5 @@ jobs:
           php artisan blueprint:trace
 
       - name: Output the trace
+        working-directory: /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example
         run: cat .blueprint
