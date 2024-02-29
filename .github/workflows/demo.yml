@@ -90,3 +90,7 @@ jobs:
           php artisan migrate:refresh --force
           php artisan blueprint:build /home/runner/work/blueprint/blueprint/tests/fixtures/drafts/readme-example.yaml
           php artisan test
+          php artisan blueprint:trace
+
+      - name: Output the trace
+        run: cat .blueprint
