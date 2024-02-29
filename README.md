@@ -76,7 +76,7 @@ From these 20 lines of YAML, Blueprint will generate all of the following Larave
 - A _job_ class for `SyncMedia` complete with a `post` property set through the _constructor_.
 - An _event_ class for `NewPost` complete with a `post` property set through the _constructor_.
 - A _Blade template_ of `post/index.blade.php` rendered by `PostController@index`.
-- An HTTP Test for the `PostController`.
+- An [HTTP Test](https://laravel.com/docs/http-tests) for the `PostController`.
 - A unit test for the `StorePostRequest` form request.
 
 _**Note:** This example assumes features within a default Laravel application such as the `User` model and `app.blade.php` layout. Otherwise, the generated tests may have failures._
