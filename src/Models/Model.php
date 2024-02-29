@@ -76,6 +76,9 @@ class Model implements BlueprintModel
         $this->columns[$column->name()] = $column;
     }
 
+    /**
+     * @return Column[]
+     */
     public function columns(): array
     {
         return $this->columns;

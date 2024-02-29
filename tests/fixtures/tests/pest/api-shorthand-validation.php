@@ -4,7 +4,7 @@ namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Certificate;
 use App\Models\CertificateType;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use function Pest\Faker\fake;
 use function Pest\Laravel\assertModelMissing;
 use function Pest\Laravel\delete;
@@ -34,14 +34,14 @@ test('store saves', function (): void {
     $certificate_type = CertificateType::factory()->create();
     $reference = fake()->word();
     $document = fake()->word();
-    $expiry_date = fake()->date();
+    $expiry_date = Carbon::parse(fake()->date());
 
     $response = post(route('certificate.store'), [
         'name' => $name,
         'certificate_type_id' => $certificate_type->id,
         'reference' => $reference,
         'document' => $document,
-        'expiry_date' => $expiry_date,
+        'expiry_date' => $expiry_date->toDateString(),
     ]);
 
     $certificates = Certificate::query()
@@ -82,14 +82,14 @@ test('update behaves as expected', function (): void {
     $certificate_type = CertificateType::factory()->create();
     $reference = fake()->word();
     $document = fake()->word();
-    $expiry_date = fake()->date();
+    $expiry_date = Carbon::parse(fake()->date());
 
     $response = put(route('certificate.update', $certificate), [
         'name' => $name,
         'certificate_type_id' => $certificate_type->id,
         'reference' => $reference,
         'document' => $document,
-        'expiry_date' => $expiry_date,
+        'expiry_date' => $expiry_date->toDateString(),
     ]);
 
     $certificate->refresh();
@@ -101,7 +101,7 @@ test('update behaves as expected', function (): void {
     expect($certificate_type->id)->toEqual($certificate->certificate_type_id);
     expect($reference)->toEqual($certificate->reference);
     expect($document)->toEqual($certificate->document);
-    expect(Carbon::parse($expiry_date))->toEqual($certificate->expiry_date);
+    expect($expiry_date)->toEqual($certificate->expiry_date);
 });
 
 
