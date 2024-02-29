@@ -76,6 +76,9 @@ class Model implements BlueprintModel
         $this->columns[$column->name()] = $column;
     }
 
+    /**
+     * @return Column[]
+     */
     public function columns(): array
     {
         return $this->columns;
@@ -176,7 +179,7 @@ class Model implements BlueprintModel
         return isset($this->columns[$name]);
     }
 
-    public function column(string $name)
+    public function column(string $name): Column
     {
         return $this->columns[$name];
     }

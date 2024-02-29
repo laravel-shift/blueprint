@@ -97,6 +97,7 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
                 'mock' => [],
             ];
             $request_data = [];
+            $model_columns = [];
             $tested_bits = 0;
 
             $model = $controller->prefix();
@@ -227,11 +228,17 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
                                 if ($factory) {
                                     [$faker, $variable_name] = $factory;
                                 } else {
-                                    $faker = sprintf('$%s = $this->faker->%s;', $data, FakerRegistry::fakerData($local_column->name()) ?? FakerRegistry::fakerDataType($local_model->column($column)->dataType()));
+                                    if ($local_column->isDate()) {
+                                        $this->addImport($controller, 'Illuminate\\Support\\Carbon');
+                                        $faker = sprintf('$%s = Carbon::parse($this->faker->%s);', $data, FakerRegistry::fakerData($local_column->name()) ?? FakerRegistry::fakerDataType($local_model->column($column)->dataType()));
+                                    } else {
+                                        $faker = sprintf('$%s = $this->faker->%s;', $data, FakerRegistry::fakerData($local_column->name()) ?? FakerRegistry::fakerDataType($local_model->column($column)->dataType()));
+                                    }
                                 }
 
                                 $setup['data'][] = $faker;
                                 $request_data[$data] = '$' . $variable_name;
+                                $model_columns[$data] = '$' . $variable_name;
                             } elseif (!is_null($local_model)) {
                                 foreach ($local_model->columns() as $local_column) {
                                     if (in_array($local_column->name(), ['id', 'softdeletes', 'softdeletestz'])) {
@@ -246,12 +253,27 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
                                     if ($factory) {
                                         [$faker, $variable_name] = $factory;
                                     } else {
-                                        $faker = sprintf('$%s = $this->faker->%s;', $local_column->name(), FakerRegistry::fakerData($local_column->name()) ?? FakerRegistry::fakerDataType($local_column->dataType()));
+                                        if ($local_column->isDate()) {
+                                            $this->addImport($controller, 'Illuminate\\Support\\Carbon');
+                                            $faker = sprintf('$%s = Carbon::parse($this->faker->%s);', $local_column->name(), FakerRegistry::fakerData($local_column->name()) ?? FakerRegistry::fakerDataType($local_column->dataType()));
+                                        } else {
+                                            $faker = sprintf('$%s = $this->faker->%s;', $local_column->name(), FakerRegistry::fakerData($local_column->name()) ?? FakerRegistry::fakerDataType($local_column->dataType()));
+                                        }
                                         $variable_name = $local_column->name();
                                     }
 
                                     $setup['data'][] = $faker;
-                                    $request_data[$local_column->name()] = '$' . $variable_name;
+                                    if ($local_column->isDate()) {
+                                        if ($local_column->dataType() === 'date') {
+                                            $request_data[$local_column->name()] = '$' . $variable_name . '->toDateString()';
+                                        } else {
+                                            $request_data[$local_column->name()] = '$' . $variable_name . '->toDateTimeString()';
+                                        }
+                                    } else {
+                                        $request_data[$local_column->name()] = '$' . $variable_name;
+                                    }
+
+                                    $model_columns[$local_column->name()] = '$' . $variable_name;
                                 }
                             }
                         }
@@ -404,11 +426,11 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
                     if ($statement->operation() === 'save') {
                         $tested_bits |= self::TESTS_SAVE;
 
-                        if ($request_data) {
+                        if ($model_columns) {
                             $indent = str_pad(' ', 12);
                             $plural = Str::plural($variable);
                             $assertion = sprintf('$%s = %s::query()', $plural, $model);
-                            foreach ($request_data as $key => $datum) {
+                            foreach ($model_columns as $key => $datum) {
                                 $assertion .= PHP_EOL . sprintf('%s->where(\'%s\', %s)', $indent, $key, $datum);
                             }
                             $assertion .= PHP_EOL . $indent . '->get();';
@@ -435,13 +457,12 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
                     } elseif ($statement->operation() === 'update') {
                         $assertions['sanity'][] = sprintf('$%s->refresh();', $variable);
 
-                        if ($request_data) {
+                        if ($model_columns) {
                             /** @var \Blueprint\Models\Model $local_model */
                             $local_model = $this->tree->modelForContext($model);
-                            foreach ($request_data as $key => $datum) {
-                                if (!is_null($local_model) && $local_model->hasColumn($key) && $local_model->column($key)->dataType() === 'date') {
-                                    $this->addImport($controller, 'Carbon\\Carbon');
-                                    $assertions['generic'][] = sprintf('$this->assertEquals(Carbon::parse(%s), $%s->%s);', $datum, $variable, $key);
+                            foreach ($model_columns as $key => $datum) {
+                                if (!is_null($local_model) && $local_model->hasColumn($key) && $local_model->column($key)->dataType() === 'timestamp') {
+                                    $assertions['generic'][] = sprintf('$this->assertEquals(%s->timestamp, $%s->%s);', $datum, $variable, $key);
                                 } else {
                                     $assertions['generic'][] = sprintf('$this->assertEquals(%s, $%s->%s);', $datum, $variable, $key);
                                 }
