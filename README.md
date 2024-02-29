@@ -61,7 +61,7 @@ controllers:
       dispatch: SyncMedia with:post
       fire: NewPost with:post
       flash: post.title
-      redirect: post.index
+      redirect: posts.index
 ```
 
 From these 20 lines of YAML, Blueprint will generate all of the following Laravel components:
