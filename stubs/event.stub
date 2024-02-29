@@ -2,11 +2,12 @@
 
 namespace {{ namespace }};
 
+use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
 class {{ class }}
 {
-    use SerializesModels;
+    use Dispatchable, SerializesModels;
 
     {{ properties }}
 }

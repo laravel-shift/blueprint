@@ -2,11 +2,12 @@
 
 namespace Some\App\Events;
 
+use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
 class NewPost
 {
-    use SerializesModels;
+    use Dispatchable, SerializesModels;
 
     public $post;
 

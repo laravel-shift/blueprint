@@ -2,11 +2,12 @@
 
 namespace App\Events;
 
+use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
 class UserCreated
 {
-    use SerializesModels;
+    use Dispatchable, SerializesModels;
 
     public $user;
 
