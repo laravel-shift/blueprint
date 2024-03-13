@@ -1,0 +1,10 @@
+models:
+  Journey:
+    uuid
+    name: string
+    relationships:
+      belongsToMany: Diary
+  Diary:
+    uuid
+    relationships:
+      belongsToMany: Journey
