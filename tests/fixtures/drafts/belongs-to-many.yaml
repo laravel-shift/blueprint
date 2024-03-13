@@ -3,4 +3,4 @@ models:
     name: string
     user_id: id
     relationships:
-      belongstoMany: Diary
+      belongsToMany: Diary
