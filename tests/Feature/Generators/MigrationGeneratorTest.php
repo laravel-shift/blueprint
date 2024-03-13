@@ -240,6 +240,70 @@ final class MigrationGeneratorTest extends TestCase
     }
 
     #[Test]
+    public function output_also_creates_constraints_for_pivot_table_migration_for_ulids(): void
+    {
+        $this->app->config->set('blueprint.use_constraints', true);
+
+        $this->filesystem->expects('stub')
+            ->with('migration.stub')
+            ->andReturn($this->stub('migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $journey_model_migration = str_replace('timestamp', $now->copy()->subSeconds(2)->format('Y_m_d_His'), 'database/migrations/timestamp_create_journeys_table.php');
+        $diary_model_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_diaries_table.php');
+        $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_diary_journey_table.php');
+
+        $this->filesystem->expects('exists')->times(3)->andReturn(false);
+
+        $this->filesystem->expects('put')
+            ->with($journey_model_migration, $this->fixture('migrations/belongs-to-many-key-constraints-using-ulid-columns-journey-model.php'));
+        $this->filesystem->expects('put')
+            ->with($diary_model_migration, $this->fixture('migrations/belongs-to-many-key-constraints-using-ulid-columns-diary-model.php'));
+
+        $this->filesystem->expects('put')
+            ->with($pivot_migration, $this->fixture('migrations/belongs-to-many-pivot-key-constraints-using-ulid-columns.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/belongs-to-many-using-ulids.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$journey_model_migration, $diary_model_migration, $pivot_migration]], $this->subject->output($tree));
+    }
+
+    #[Test]
+    public function output_also_creates_constraints_for_pivot_table_migration_for_uuids(): void
+    {
+        $this->app->config->set('blueprint.use_constraints', true);
+
+        $this->filesystem->expects('stub')
+            ->with('migration.stub')
+            ->andReturn($this->stub('migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $journey_model_migration = str_replace('timestamp', $now->copy()->subSeconds(2)->format('Y_m_d_His'), 'database/migrations/timestamp_create_journeys_table.php');
+        $diary_model_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_diaries_table.php');
+        $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_diary_journey_table.php');
+
+        $this->filesystem->expects('exists')->times(3)->andReturn(false);
+
+        $this->filesystem->expects('put')
+            ->with($journey_model_migration, $this->fixture('migrations/belongs-to-many-key-constraints-using-uuid-columns-journey-model.php'));
+        $this->filesystem->expects('put')
+            ->with($diary_model_migration, $this->fixture('migrations/belongs-to-many-key-constraints-using-uuid-columns-diary-model.php'));
+
+        $this->filesystem->expects('put')
+            ->with($pivot_migration, $this->fixture('migrations/belongs-to-many-pivot-key-constraints-using-uuid-columns.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/belongs-to-many-using-uuids.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$journey_model_migration, $diary_model_migration, $pivot_migration]], $this->subject->output($tree));
+    }
+
+    #[Test]
     public function output_also_creates_constraints_for_pivot_table_migration(): void
     {
         $this->app->config->set('blueprint.use_constraints', true);

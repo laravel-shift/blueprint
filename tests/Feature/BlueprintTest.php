@@ -134,6 +134,22 @@ final class BlueprintTest extends TestCase
     }
 
     #[Test]
+    public function it_parses_ulid_shorthand(): void
+    {
+        $blueprint = $this->fixture('drafts/ulid-shorthand.yaml');
+
+        $this->assertEquals([
+            'models' => [
+                'Person' => [
+                    'id' => 'ulid primary',
+                    'timestamps' => 'timestamps',
+                    'company_id' => 'ulid',
+                ],
+            ],
+        ], $this->subject->parse($blueprint));
+    }
+
+    #[Test]
     public function it_parses_uuid_shorthand(): void
     {
         $blueprint = $this->fixture('drafts/uuid-shorthand.yaml');
