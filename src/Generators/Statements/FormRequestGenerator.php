@@ -13,9 +13,9 @@ use Illuminate\Support\Str;
 
 class FormRequestGenerator extends AbstractClassGenerator implements Generator
 {
-    protected array $types = ['controllers', 'requests'];
-
     public const INDENT = '            ';
+
+    protected array $types = ['controllers', 'requests'];
 
     public function output(Tree $tree): array
     {
@@ -47,6 +47,11 @@ class FormRequestGenerator extends AbstractClassGenerator implements Generator
         }
 
         return $this->output;
+    }
+
+    protected function getName(string $context, string $method): string
+    {
+        return $context . Str::studly($method) . 'Request';
     }
 
     protected function getStatementPath(Controller $controller, string $name): string
@@ -90,11 +95,6 @@ class FormRequestGenerator extends AbstractClassGenerator implements Generator
         );
     }
 
-    private function getName(string $context, string $method): string
-    {
-        return $context . Str::studly($method) . 'Request';
-    }
-
     private function splitField($field): array
     {
         if (Str::contains($field, '.')) {
@@ -104,7 +104,7 @@ class FormRequestGenerator extends AbstractClassGenerator implements Generator
         return [null, $field];
     }
 
-    private function validationRules(string $qualifier, string $column): array
+    protected function validationRules(string $qualifier, string $column): array
     {
         /**
          * @var \Blueprint\Models\Model $model

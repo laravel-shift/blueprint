@@ -190,7 +190,7 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
         return trim($definition);
     }
 
-    private function fillableColumns(array $columns): array
+    protected function fillableColumns(array $columns): array
     {
         if (config('blueprint.fake_nullables')) {
             return $columns;

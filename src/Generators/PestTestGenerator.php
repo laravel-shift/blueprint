@@ -523,13 +523,63 @@ class PestTestGenerator extends AbstractClassGenerator implements Generator
         return trim($this->buildTraits($controller) . PHP_EOL . $test_cases);
     }
 
-    private function testCaseStub()
+    protected function testCaseStub()
     {
         if (empty($this->stubs['test-case'])) {
             $this->stubs['test-case'] = $this->filesystem->stub('pest.test.case.stub');
         }
 
         return $this->stubs['test-case'];
+    }
+
+    protected function buildFormRequestName(Controller $controller, string $name): string
+    {
+        if (empty($controller->namespace())) {
+            return $controller->name() . Str::studly($name) . 'Request';
+        }
+
+        return $controller->namespace() . '\\' . $controller->name() . Str::studly($name) . 'Request';
+    }
+
+    protected function buildFormRequestTestCase(string $controller, string $action, string $form_request): string
+    {
+        return <<<END
+test('{$action} uses form request validation')
+    ->assertActionUsesFormRequest(
+        \\{$controller}::class,
+        '{$action}',
+        \\{$form_request}::class
+    );
+END;
+    }
+
+    private function splitField($field): array
+    {
+        if (Str::contains($field, '.')) {
+            return explode('.', $field, 2);
+        }
+
+        return [null, $field];
+    }
+
+    protected function generateReferenceFactory(Column $local_column, Controller $controller, string $modelNamespace): ?array
+    {
+        if (!in_array($local_column->dataType(), ['id', 'uuid']) && !($local_column->attributes() && Str::endsWith($local_column->name(), '_id'))) {
+            return null;
+        }
+
+        $reference = Str::beforeLast($local_column->name(), '_id');
+        $variable_name = $reference . '->id';
+
+        if ($local_column->attributes()) {
+            $reference = $local_column->attributes()[0];
+        }
+
+        $faker = sprintf('$%s = %s::factory()->create();', Str::beforeLast($local_column->name(), '_id'), Str::studly($reference));
+
+        $this->addImport($controller, $modelNamespace . '\\' . Str::studly($reference));
+
+        return [$faker, $variable_name];
     }
 
     private function determineModel(string $prefix, ?string $reference): string
@@ -545,27 +595,6 @@ class PestTestGenerator extends AbstractClassGenerator implements Generator
         return Str::studly($reference);
     }
 
-    private function buildFormRequestName(Controller $controller, string $name): string
-    {
-        if (empty($controller->namespace())) {
-            return $controller->name() . Str::studly($name) . 'Request';
-        }
-
-        return $controller->namespace() . '\\' . $controller->name() . Str::studly($name) . 'Request';
-    }
-
-    private function buildFormRequestTestCase(string $controller, string $action, string $form_request): string
-    {
-        return <<<END
-test('{$action} uses form request validation')
-    ->assertActionUsesFormRequest(
-        \\{$controller}::class,
-        '{$action}',
-        \\{$form_request}::class
-    );
-END;
-    }
-
     private function httpMethodForAction(string $action): string
     {
         return match ($action) {
@@ -576,7 +605,14 @@ END;
         };
     }
 
-    private function buildTestCaseName(string $name, int $tested_bits): string
+    private function uniqueSetupLines(array $setup)
+    {
+        return collect($setup)->filter()
+            ->map(fn ($lines) => array_unique($lines))
+            ->toArray();
+    }
+
+    protected function buildTestCaseName(string $name, int $tested_bits): string
     {
         $verifications = [];
 
@@ -616,41 +652,5 @@ END;
     private function buildLines($lines): string
     {
         return str_pad(' ', 4) . implode(PHP_EOL . str_pad(' ', 4), $lines);
-    }
-
-    private function splitField($field): array
-    {
-        if (Str::contains($field, '.')) {
-            return explode('.', $field, 2);
-        }
-
-        return [null, $field];
-    }
-
-    private function uniqueSetupLines(array $setup)
-    {
-        return collect($setup)->filter()
-            ->map(fn ($lines) => array_unique($lines))
-            ->toArray();
-    }
-
-    private function generateReferenceFactory(Column $local_column, Controller $controller, string $modelNamespace): ?array
-    {
-        if (!in_array($local_column->dataType(), ['id', 'uuid']) && !($local_column->attributes() && Str::endsWith($local_column->name(), '_id'))) {
-            return null;
-        }
-
-        $reference = Str::beforeLast($local_column->name(), '_id');
-        $variable_name = $reference . '->id';
-
-        if ($local_column->attributes()) {
-            $reference = $local_column->attributes()[0];
-        }
-
-        $faker = sprintf('$%s = %s::factory()->create();', Str::beforeLast($local_column->name(), '_id'), Str::studly($reference));
-
-        $this->addImport($controller, $modelNamespace . '\\' . Str::studly($reference));
-
-        return [$faker, $variable_name];
     }
 }

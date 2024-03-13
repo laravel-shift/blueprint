@@ -40,6 +40,23 @@ abstract class StatementGenerator extends AbstractClassGenerator implements Gene
         );
     }
 
+    protected function buildParameters(array $data): string
+    {
+        if (config('blueprint.property_promotion')) {
+            $parameters = array_map(
+                fn ($parameter) => 'public $' . $parameter,
+                $data
+            );
+        } else {
+            $parameters = array_map(
+                fn ($parameter) => '$' . $parameter,
+                $data
+            );
+        }
+
+        return implode(', ', $parameters);
+    }
+
     protected function buildAssignments(array $data): string
     {
         if (config('blueprint.property_promotion')) {
@@ -57,22 +74,5 @@ abstract class StatementGenerator extends AbstractClassGenerator implements Gene
                 ''
             )
         );
-    }
-
-    protected function buildParameters(array $data): string
-    {
-        if (config('blueprint.property_promotion')) {
-            $parameters = array_map(
-                fn ($parameter) => 'public $' . $parameter,
-                $data
-            );
-        } else {
-            $parameters = array_map(
-                fn ($parameter) => '$' . $parameter,
-                $data
-            );
-        }
-
-        return implode(', ', $parameters);
     }
 }

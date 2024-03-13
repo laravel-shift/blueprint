@@ -11,8 +11,6 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class MigrationGenerator extends AbstractClassGenerator implements Generator
 {
-    protected array $types = ['migrations'];
-
     const INDENT = '            ';
 
     const NULLABLE_TYPES = [
@@ -56,6 +54,8 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         'unsignedBigInteger',
     ];
 
+    protected array $types = ['migrations'];
+
     private bool $hasForeignKeyConstraints = false;
 
     public function output(Tree $tree, $overwrite = false): array
@@ -85,65 +85,10 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         return $this->createMigrations($tables, $overwrite);
     }
 
-    protected function createMigrations(array $tables, $overwrite = false): array
-    {
-        $sequential_timestamp = \Carbon\Carbon::now()->copy()->subSeconds(
-            collect($tables['tableNames'])->merge($tables['pivotTableNames'])->merge($tables['polymorphicManyToManyTables'])->count()
-        );
-
-        foreach ($tables['tableNames'] as $tableName => $data) {
-            $path = $this->getTablePath($tableName, $sequential_timestamp->addSecond(), $overwrite);
-            $action = $this->filesystem->exists($path) ? 'updated' : 'created';
-            $this->filesystem->put($path, $data);
-            $this->output[$action][] = $path;
-        }
-
-        foreach ($tables['pivotTableNames'] as $tableName => $data) {
-            $path = $this->getTablePath($tableName, $sequential_timestamp->addSecond(), $overwrite);
-            $action = $this->filesystem->exists($path) ? 'updated' : 'created';
-            $this->filesystem->put($path, $data);
-
-            $this->output[$action][] = $path;
-        }
-
-        foreach ($tables['polymorphicManyToManyTables'] as $tableName => $data) {
-            $path = $this->getTablePath($tableName, $sequential_timestamp->addSecond(), $overwrite);
-            $action = $this->filesystem->exists($path) ? 'updated' : 'created';
-            $this->filesystem->put($path, $data);
-            $this->output[$action][] = $path;
-        }
-
-        return $this->output;
-    }
-
     protected function populateStub(string $stub, Model $model): string
     {
         $stub = str_replace('{{ table }}', $model->tableName(), $stub);
         $stub = str_replace('{{ definition }}', $this->buildDefinition($model), $stub);
-
-        if ($this->hasForeignKeyConstraints) {
-            $stub = $this->disableForeignKeyConstraints($stub);
-        }
-
-        return $stub;
-    }
-
-    protected function populatePivotStub(string $stub, array $segments, array $models = []): string
-    {
-        $stub = str_replace('{{ table }}', $this->getPivotTableName($segments), $stub);
-        $stub = str_replace('{{ definition }}', $this->buildPivotTableDefinition($segments, $models), $stub);
-
-        if ($this->hasForeignKeyConstraints) {
-            $stub = $this->disableForeignKeyConstraints($stub);
-        }
-
-        return $stub;
-    }
-
-    protected function populatePolyStub(string $stub, string $parentTable): string
-    {
-        $stub = str_replace('{{ table }}', $this->getPolyTableName($parentTable), $stub);
-        $stub = str_replace('{{ definition }}', $this->buildPolyTableDefinition($parentTable), $stub);
 
         if ($this->hasForeignKeyConstraints) {
             $stub = $this->disableForeignKeyConstraints($stub);
@@ -229,9 +174,9 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
                 // TODO: unset the proper modifier
                 $modifiers = collect($modifiers)->reject(
                     fn ($modifier) => (is_array($modifier) && key($modifier) === 'foreign')
-                    || (is_array($modifier) && key($modifier) === 'onDelete')
-                    || (is_array($modifier) && key($modifier) === 'onUpdate')
-                    || $modifier === 'foreign'
+                        || (is_array($modifier) && key($modifier) === 'onDelete')
+                        || (is_array($modifier) && key($modifier) === 'onUpdate')
+                        || $modifier === 'foreign'
                         || ($modifier === 'nullable' && $this->isIdColumnType($column->dataType()))
                 );
             }
@@ -290,80 +235,23 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         return trim($definition);
     }
 
-    protected function buildPivotTableDefinition(array $segments, array $models = []): string
+    protected function isIdColumnType(string $dataType): bool
     {
-        $definition = '';
-        foreach ($segments as $segment) {
-            $column = Str::before(Str::snake($segment), ':');
-            $references = 'id';
-            $on = Str::plural($column);
-            $foreign = Str::singular($column) . '_' . $references;
-
-            if (config('blueprint.use_constraints')) {
-                $this->hasForeignKeyConstraints = true;
-                $definition .= $this->buildForeignKey($foreign, $on, 'id') . ';' . PHP_EOL;
-            } else {
-                $definition .= $this->generateForeignKeyDefinition($segment, $foreign, $models);
-            }
-        }
-
-        return trim($definition);
+        return in_array($dataType, ['id', 'ulid', 'uuid']);
     }
 
-    /**
-     * Generates the foreign key definition for a pivot table.
-     *
-     * This function generates the foreign key definition for a pivot table in a migration file.
-     * It checks if the model exists and its name matches the pivot table segment. If it does,
-     * it determines the data type of the primary key and appends the appropriate method call
-     * to the `$definition` string. If the model does not exist or its name does not match the
-     * pivot table segment, it defaults to appending `$table->foreignId(\'' . $foreignKeyColumnName . '\');`
-     * to the `$definition` string. The function then returns the `$definition` string.
-     *
-     * @param  string  $pivotTableSegment  The segment of the pivot table. e.g 'dive_job' it would be 'Dive' or 'Job'.
-     * @param  string  $foreignKeyColumnName  The name of the foreign key column. e.g 'dive_id' or 'job_id'.
-     * @param  array  $models  An array of models. e.g ['Dive' => $diveModel, 'Job' => $jobModel].
-     * @return string The foreign key definition. e.g '$table->foreignUlid('dive_id');'
-     */
-    protected function generateForeignKeyDefinition(string $pivotTableSegment, string $foreignKeyColumnName, array $models = []): string
+    private function shouldAddForeignKeyConstraint(\Blueprint\Models\Column $column): bool
     {
-        $definition = self::INDENT;
-        if (count($models) > 0 && array_key_exists($pivotTableSegment, $models)) {
-            $model = $models[$pivotTableSegment];
-            if ($model->name() === $pivotTableSegment) {
-                $dataType = $model->columns()[$model->primaryKey()]->dataType();
-                $definition .= match ($dataType) {
-                    'ulid' => '$table->foreignUlid(\'' . $foreignKeyColumnName . '\');',
-                    'uuid' => '$table->foreignUuid(\'' . $foreignKeyColumnName . '\');',
-                    default => '$table->foreignId(\'' . $foreignKeyColumnName . '\');',
-                };
-            }
-        } else {
-            $definition .= '$table->foreignId(\'' . $foreignKeyColumnName . '\');';
-        }
-        $definition .= PHP_EOL;
-
-        return $definition;
-    }
-
-    protected function buildPolyTableDefinition(string $parentTable): string
-    {
-        $definition = '';
-
-        $references = 'id';
-        $on = Str::lower(Str::plural($parentTable));
-        $foreign = Str::lower(Str::singular($parentTable)) . '_' . $references;
-
-        if (config('blueprint.use_constraints')) {
-            $this->hasForeignKeyConstraints = true;
-            $definition .= $this->buildForeignKey($foreign, $on, 'id') . ';' . PHP_EOL;
-        } else {
-            $definition .= self::INDENT . '$table->foreignId(\'' . $foreign . '\');' . PHP_EOL;
+        if ($column->name() === 'id') {
+            return false;
         }
 
-        $definition .= self::INDENT . sprintf('$table->morphs(\'%s\');', Str::lower(Str::singular($parentTable) . 'able')) . PHP_EOL;
+        if ($column->isForeignKey()) {
+            return true;
+        }
 
-        return trim($definition);
+        return config('blueprint.use_constraints')
+            && ($this->isIdColumnType($column->dataType()) && Str::endsWith($column->name(), '_id'));
     }
 
     protected function buildForeignKey(string $column_name, ?string $on, string $type, array $attributes = [], array $modifiers = []): string
@@ -429,6 +317,20 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         return self::INDENT . '$table->foreign' . "('{$column_name}')->references('{$column}')->on('{$table}'){$on_delete_suffix}{$on_update_suffix}";
     }
 
+    protected function isNumericDefault(string $type, string $value): bool
+    {
+        if (!is_numeric($value)) {
+            return false;
+        }
+
+        if (Str::startsWith($type, 'unsigned')) {
+            $type = Str::after($type, 'unsigned');
+        }
+
+        return collect(self::UNSIGNABLE_TYPES)
+            ->contains(fn ($value) => strtolower($value) === strtolower($type));
+    }
+
     protected function disableForeignKeyConstraints($stub): string
     {
         $stub = str_replace('Schema::create(', 'Schema::disableForeignKeyConstraints();' . PHP_EOL . PHP_EOL . str_pad(' ', 8) . 'Schema::create(', $stub);
@@ -438,9 +340,157 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         return $stub;
     }
 
-    protected function getClassName(Model $model): string
+    protected function getPivotTableName(array $segments): string
     {
-        return 'Create' . Str::studly($model->tableName()) . 'Table';
+        $isCustom = collect($segments)
+            ->filter(fn ($segment) => Str::contains($segment, ':'))->first();
+
+        if ($isCustom) {
+            $table = Str::after($isCustom, ':');
+
+            return $table;
+        }
+
+        $segments = array_map(fn ($name) => Str::snake($name), $segments);
+        sort($segments);
+
+        return strtolower(implode('_', $segments));
+    }
+
+    protected function populatePivotStub(string $stub, array $segments, array $models = []): string
+    {
+        $stub = str_replace('{{ table }}', $this->getPivotTableName($segments), $stub);
+        $stub = str_replace('{{ definition }}', $this->buildPivotTableDefinition($segments, $models), $stub);
+
+        if ($this->hasForeignKeyConstraints) {
+            $stub = $this->disableForeignKeyConstraints($stub);
+        }
+
+        return $stub;
+    }
+
+    protected function buildPivotTableDefinition(array $segments, array $models = []): string
+    {
+        $definition = '';
+        foreach ($segments as $segment) {
+            $column = Str::before(Str::snake($segment), ':');
+            $references = 'id';
+            $on = Str::plural($column);
+            $foreign = Str::singular($column) . '_' . $references;
+
+            if (config('blueprint.use_constraints')) {
+                $this->hasForeignKeyConstraints = true;
+                $definition .= $this->buildForeignKey($foreign, $on, 'id') . ';' . PHP_EOL;
+            } else {
+                $definition .= $this->generateForeignKeyDefinition($segment, $foreign, $models);
+            }
+        }
+
+        return trim($definition);
+    }
+
+    /**
+     * Generates the foreign key definition for a pivot table.
+     *
+     * This function generates the foreign key definition for a pivot table in a migration file.
+     * It checks if the model exists and its name matches the pivot table segment. If it does,
+     * it determines the data type of the primary key and appends the appropriate method call
+     * to the `$definition` string. If the model does not exist or its name does not match the
+     * pivot table segment, it defaults to appending `$table->foreignId(\'' . $foreignKeyColumnName . '\');`
+     * to the `$definition` string. The function then returns the `$definition` string.
+     *
+     * @param  string  $pivotTableSegment  The segment of the pivot table. e.g 'dive_job' it would be 'Dive' or 'Job'.
+     * @param  string  $foreignKeyColumnName  The name of the foreign key column. e.g 'dive_id' or 'job_id'.
+     * @param  array  $models  An array of models. e.g ['Dive' => $diveModel, 'Job' => $jobModel].
+     * @return string The foreign key definition. e.g '$table->foreignUlid('dive_id');'
+     */
+    protected function generateForeignKeyDefinition(string $pivotTableSegment, string $foreignKeyColumnName, array $models = []): string
+    {
+        $definition = self::INDENT;
+        if (count($models) > 0 && array_key_exists($pivotTableSegment, $models)) {
+            $model = $models[$pivotTableSegment];
+            if ($model->name() === $pivotTableSegment) {
+                $dataType = $model->columns()[$model->primaryKey()]->dataType();
+                $definition .= match ($dataType) {
+                    'ulid' => '$table->foreignUlid(\'' . $foreignKeyColumnName . '\');',
+                    'uuid' => '$table->foreignUuid(\'' . $foreignKeyColumnName . '\');',
+                    default => '$table->foreignId(\'' . $foreignKeyColumnName . '\');',
+                };
+            }
+        } else {
+            $definition .= '$table->foreignId(\'' . $foreignKeyColumnName . '\');';
+        }
+        $definition .= PHP_EOL;
+
+        return $definition;
+    }
+
+    protected function populatePolyStub(string $stub, string $parentTable): string
+    {
+        $stub = str_replace('{{ table }}', $this->getPolyTableName($parentTable), $stub);
+        $stub = str_replace('{{ definition }}', $this->buildPolyTableDefinition($parentTable), $stub);
+
+        if ($this->hasForeignKeyConstraints) {
+            $stub = $this->disableForeignKeyConstraints($stub);
+        }
+
+        return $stub;
+    }
+
+    protected function getPolyTableName(string $parentTable): string
+    {
+        return Str::plural(Str::lower(Str::singular($parentTable) . 'able'));
+    }
+
+    protected function buildPolyTableDefinition(string $parentTable): string
+    {
+        $definition = '';
+
+        $references = 'id';
+        $on = Str::lower(Str::plural($parentTable));
+        $foreign = Str::lower(Str::singular($parentTable)) . '_' . $references;
+
+        if (config('blueprint.use_constraints')) {
+            $this->hasForeignKeyConstraints = true;
+            $definition .= $this->buildForeignKey($foreign, $on, 'id') . ';' . PHP_EOL;
+        } else {
+            $definition .= self::INDENT . '$table->foreignId(\'' . $foreign . '\');' . PHP_EOL;
+        }
+
+        $definition .= self::INDENT . sprintf('$table->morphs(\'%s\');', Str::lower(Str::singular($parentTable) . 'able')) . PHP_EOL;
+
+        return trim($definition);
+    }
+
+    protected function createMigrations(array $tables, $overwrite = false): array
+    {
+        $sequential_timestamp = \Carbon\Carbon::now()->copy()->subSeconds(
+            collect($tables['tableNames'])->merge($tables['pivotTableNames'])->merge($tables['polymorphicManyToManyTables'])->count()
+        );
+
+        foreach ($tables['tableNames'] as $tableName => $data) {
+            $path = $this->getTablePath($tableName, $sequential_timestamp->addSecond(), $overwrite);
+            $action = $this->filesystem->exists($path) ? 'updated' : 'created';
+            $this->filesystem->put($path, $data);
+            $this->output[$action][] = $path;
+        }
+
+        foreach ($tables['pivotTableNames'] as $tableName => $data) {
+            $path = $this->getTablePath($tableName, $sequential_timestamp->addSecond(), $overwrite);
+            $action = $this->filesystem->exists($path) ? 'updated' : 'created';
+            $this->filesystem->put($path, $data);
+
+            $this->output[$action][] = $path;
+        }
+
+        foreach ($tables['polymorphicManyToManyTables'] as $tableName => $data) {
+            $path = $this->getTablePath($tableName, $sequential_timestamp->addSecond(), $overwrite);
+            $action = $this->filesystem->exists($path) ? 'updated' : 'created';
+            $this->filesystem->put($path, $data);
+            $this->output[$action][] = $path;
+        }
+
+        return $this->output;
     }
 
     protected function getTablePath($tableName, Carbon $timestamp, $overwrite = false)
@@ -470,58 +520,8 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         return $dir . $timestamp->format('Y_m_d_His') . $name;
     }
 
-    protected function getPivotTableName(array $segments): string
+    protected function getClassName(Model $model): string
     {
-        $isCustom = collect($segments)
-            ->filter(fn ($segment) => Str::contains($segment, ':'))->first();
-
-        if ($isCustom) {
-            $table = Str::after($isCustom, ':');
-
-            return $table;
-        }
-
-        $segments = array_map(fn ($name) => Str::snake($name), $segments);
-        sort($segments);
-
-        return strtolower(implode('_', $segments));
-    }
-
-    protected function getPolyTableName(string $parentTable): string
-    {
-        return Str::plural(Str::lower(Str::singular($parentTable) . 'able'));
-    }
-
-    private function shouldAddForeignKeyConstraint(\Blueprint\Models\Column $column): bool
-    {
-        if ($column->name() === 'id') {
-            return false;
-        }
-
-        if ($column->isForeignKey()) {
-            return true;
-        }
-
-        return config('blueprint.use_constraints')
-            && ($this->isIdColumnType($column->dataType()) && Str::endsWith($column->name(), '_id'));
-    }
-
-    protected function isNumericDefault(string $type, string $value): bool
-    {
-        if (!is_numeric($value)) {
-            return false;
-        }
-
-        if (Str::startsWith($type, 'unsigned')) {
-            $type = Str::after($type, 'unsigned');
-        }
-
-        return collect(self::UNSIGNABLE_TYPES)
-            ->contains(fn ($value) => strtolower($value) === strtolower($type));
-    }
-
-    protected function isIdColumnType(string $dataType): bool
-    {
-        return in_array($dataType, ['id', 'ulid', 'uuid']);
+        return 'Create' . Str::studly($model->tableName()) . 'Table';
     }
 }

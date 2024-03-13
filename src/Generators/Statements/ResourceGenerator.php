@@ -120,7 +120,7 @@ class ResourceGenerator extends StatementGenerator implements Generator
         return implode(PHP_EOL, $data);
     }
 
-    private function visibleColumns(Model $model): array
+    protected function visibleColumns(Model $model): array
     {
         return array_diff(
             array_keys($model->columns()),

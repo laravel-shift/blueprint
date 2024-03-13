@@ -50,16 +50,6 @@ class MailGenerator extends StatementGenerator
         return $this->output;
     }
 
-    private function populateViewStub(string $stub, SendStatement $statement): string
-    {
-        return str_replace('{{ class }}', $statement->mail(), $stub);
-    }
-
-    private function getViewPath($view): string
-    {
-        return 'resources/views/' . str_replace('.', '/', $view) . '.blade.php';
-    }
-
     protected function getStatementPath(string $name): string
     {
         return Blueprint::appPath() . '/Mail/' . $name . '.php';
@@ -74,5 +64,15 @@ class MailGenerator extends StatementGenerator
         $stub = str_replace('{{ properties }}', $this->populateConstructor('message', $sendStatement), $stub);
 
         return $stub;
+    }
+
+    protected function getViewPath($view): string
+    {
+        return 'resources/views/' . str_replace('.', '/', $view) . '.blade.php';
+    }
+
+    protected function populateViewStub(string $stub, SendStatement $statement): string
+    {
+        return str_replace('{{ class }}', $statement->mail(), $stub);
     }
 }
