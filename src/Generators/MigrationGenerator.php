@@ -94,6 +94,16 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             $stub = $this->disableForeignKeyConstraints($stub);
         }
 
+        if ($model->usesCustomDatabaseConnection()) {
+            $property = str_replace(
+                ['{{ name }}', 'by the model.'],
+                [$model->databaseConnection(), 'by the migration.'],
+                $this->filesystem->stub('model.connection.stub')
+            );
+
+            $stub = Str::replaceFirst('{', '{' . PHP_EOL . $property, $stub);
+        }
+
         return $stub;
     }
 
