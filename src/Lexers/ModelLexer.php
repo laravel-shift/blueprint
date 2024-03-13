@@ -132,6 +132,10 @@ class ModelLexer implements Lexer
         $model = new Model($name);
 
         if (isset($columns['meta']) && is_array($columns['meta'])) {
+            if (isset($columns['meta']['connection'])) {
+                $model->setDatabaseConnection($columns['meta']['connection']);
+            }
+
             if (isset($columns['meta']['table'])) {
                 $model->setTableName($columns['meta']['table']);
             }

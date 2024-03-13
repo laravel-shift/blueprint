@@ -10,6 +10,13 @@ class Post extends Pivot
     use HasFactory;
 
     /**
+     * The database connection that should be used by the model.
+     *
+     * @var string
+     */
+    protected $connection = 'read-only';
+
+    /**
      * The table associated with the model.
      *
      * @var string

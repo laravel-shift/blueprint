@@ -19,6 +19,8 @@ class Model implements BlueprintModel
 
     private string|bool $softDeletes = false;
 
+    private ?string $connection;
+
     private string $table;
 
     private array $columns = [];
@@ -122,6 +124,21 @@ class Model implements BlueprintModel
     public function setPivot(): void
     {
         $this->pivot = true;
+    }
+
+    public function usesCustomDatabaseConnection(): bool
+    {
+        return isset($this->connection);
+    }
+
+    public function databaseConnection(): ?string
+    {
+        return $this->connection;
+    }
+
+    public function setDatabaseConnection(string $connection)
+    {
+        $this->connection = $connection;
     }
 
     public function usesCustomTableName(): bool

@@ -54,6 +54,12 @@ final class MigrationGeneratorTest extends TestCase
             ->with('migration.stub')
             ->andReturn($this->stub('migration.stub'));
 
+        if ($definition === 'drafts/model-with-meta.yaml') {
+            $this->filesystem->expects('stub')
+                ->with('model.connection.stub')
+                ->andReturn($this->stub('model.connection.stub'));
+        }
+
         $now = Carbon::now();
         Carbon::setTestNow($now);
 

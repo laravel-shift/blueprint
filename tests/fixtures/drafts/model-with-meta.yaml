@@ -1,6 +1,7 @@
 models:
   Post:
     meta:
+      connection: read-only
       pivot: true
       table: post
     title: string:400

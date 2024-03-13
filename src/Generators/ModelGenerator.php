@@ -171,6 +171,10 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
     {
         $properties = [];
 
+        if ($model->usesCustomDatabaseConnection()) {
+            $properties[] = str_replace('{{ name }}', $model->databaseConnection(), $this->filesystem->stub('model.connection.stub'));
+        }
+
         if ($model->usesCustomTableName() || $model->isPivot()) {
             $properties[] = str_replace('{{ name }}', $model->tableName(), $this->filesystem->stub('model.table.stub'));
         }

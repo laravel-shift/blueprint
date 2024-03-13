@@ -61,6 +61,10 @@ final class ModelGeneratorTest extends TestCase
 
         if ($definition === 'drafts/model-with-meta.yaml') {
             $this->filesystem->expects('stub')
+                ->with('model.connection.stub')
+                ->andReturn($this->stub('model.connection.stub'));
+
+            $this->filesystem->expects('stub')
                 ->with('model.table.stub')
                 ->andReturn($this->stub('model.table.stub'));
         }
