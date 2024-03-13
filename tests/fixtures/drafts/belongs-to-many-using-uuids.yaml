@@ -1,6 +1,10 @@
 models:
   Journey:
+    uuid
     name: string
-    user_id: id
     relationships:
       belongsToMany: Diary
+  Diary:
+    uuid
+    relationships:
+      belongsToMany: Journey
