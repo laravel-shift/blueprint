@@ -32,7 +32,7 @@ composer require --dev jasonmccreary/laravel-test-assertions
 
 
 ## Basic Usage
-Blueprint comes with a set of artisan commands. The one you'll to generate the Laravel components is the `blueprint:build` command:
+Blueprint comes with a set of artisan commands. The one you'll use to generate the Laravel components is the `blueprint:build` command:
 
 ```sh
 php artisan blueprint:build [draft]
