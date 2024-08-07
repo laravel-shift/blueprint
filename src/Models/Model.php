@@ -210,7 +210,7 @@ class Model implements BlueprintModel
         return $this->columns[$name];
     }
 
-    public function addRelationship(string $type, string $reference): void
+    public function addRelationship(string $type, $reference): void
     {
         if (!isset($this->relationships[$type])) {
             $this->relationships[$type] = [];
@@ -231,13 +231,15 @@ class Model implements BlueprintModel
         $this->polymorphicManyToManyTables[] = class_basename($reference);
     }
 
-    public function addPivotTable(string $reference): void
+    public function addPivotTable($reference): void
     {
-        if (str_contains($reference, ':&')) {
+        $referenceString = is_array($reference) ? $reference['table'] : $reference;
+
+        if (str_contains($referenceString, ':&')) {
             return;
         }
 
-        $segments = [$this->name(), class_basename($reference)];
+        $segments = [$this->name(), class_basename($referenceString)];
         sort($segments);
         $this->pivotTables[] = $segments;
     }
