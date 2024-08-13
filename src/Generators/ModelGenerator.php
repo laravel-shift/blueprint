@@ -295,7 +295,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
 
         if (in_array($column->dataType(), ['decimal', 'unsignedDecimal'])) {
             if ($column->attributes()) {
-                return 'decimal:' . $column->attributes()[1];
+                return 'decimal:' . $column->attributes()[0];
             }
 
             return 'decimal';
