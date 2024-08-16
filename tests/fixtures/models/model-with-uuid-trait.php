@@ -26,6 +26,6 @@ class User extends Model
      * @var array
      */
     protected $casts = [
-        'base_pay' => 'decimal:2',
+        'base_pay' => 'decimal:10',
     ];
 }
