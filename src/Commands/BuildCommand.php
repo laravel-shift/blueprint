@@ -8,6 +8,7 @@ use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Yaml\Yaml;
 
 class BuildCommand extends Command
 {
@@ -20,6 +21,7 @@ class BuildCommand extends Command
                             {draft? : The path to the draft file, default: draft.yaml or draft.yml }
                             {--only= : Comma separated list of file classes to generate, skipping the rest }
                             {--skip= : Comma separated list of file classes to skip, generating the rest }
+                            {--auto-skip : Automatically skip files that already exist }
                             {--m|overwrite-migrations : Update existing migration files, if found }
                             ';
 
@@ -51,10 +53,23 @@ class BuildCommand extends Command
 
             return 1;
         }
-
         $only = $this->option('only') ?: '';
         $skip = $this->option('skip') ?: '';
         $overwriteMigrations = $this->option('overwrite-migrations') ?: false;
+        $autoSkip = $this->option('auto-skip') ?: false;
+
+        if ($autoSkip) {
+            $overwriteMigrations = true;
+            $blueprintFile = $this->filesystem->path('.blueprint');
+            if ($this->filesystem->exists($blueprintFile)) {
+                $blueprintContent = $this->filesystem->get($blueprintFile);
+                $blueprintContent = Yaml::parse($blueprintContent);
+                $blueprintClasses = $blueprintContent['created'] ?? [];
+                $skip = implode(',', array_map(function($class) {
+                    return pathinfo($class, PATHINFO_FILENAME);
+                }, explode(',', $blueprintClasses)));
+            }
+        }
 
         $blueprint = resolve(Blueprint::class);
         $generated = $this->builder->execute($blueprint, $this->filesystem, $file, $only, $skip, $overwriteMigrations);
