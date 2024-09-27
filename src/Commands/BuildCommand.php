@@ -65,7 +65,7 @@ class BuildCommand extends Command
                 $blueprintContent = $this->filesystem->get($blueprintFile);
                 $blueprintContent = Yaml::parse($blueprintContent);
                 $blueprintClasses = $blueprintContent['created'] ?? [];
-                $skip = implode(',', array_map(function($class) {
+                $skip = implode(',', array_map(function ($class) {
                     return pathinfo($class, PATHINFO_FILENAME);
                 }, explode(',', $blueprintClasses)));
             }
