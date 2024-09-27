@@ -21,7 +21,7 @@ class BuildCommand extends Command
                             {draft? : The path to the draft file, default: draft.yaml or draft.yml }
                             {--only= : Comma separated list of file classes to generate, skipping the rest }
                             {--skip= : Comma separated list of file classes to skip, generating the rest }
-                            {--auto-skip : Automatically skip files that already exist }
+                            {--auto-skip : Automatically skip files that already exist. Will overwrite migrations! }
                             {--m|overwrite-migrations : Update existing migration files, if found }
                             ';
 
