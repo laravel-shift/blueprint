@@ -207,12 +207,46 @@ class ModelLexer implements Lexer
 
         foreach ($columns as $name => $definition) {
             $column = $this->buildColumn($name, $definition);
+
+            if ($column->isForeignKey()) {
+                $foreign_info = $this->extractForeignKeyInfo($column->modifiers(), $name);
+                if ($foreign_info) {
+                    $model->addRelationship('belongsTo', $foreign_info);
+                }
+            }
+
             $model->addColumn($column);
         }
 
         $this->inferMissingBelongsToRelationships($model);
 
         return $model;
+    }
+
+    private function extractForeignKeyInfo(array $modifiers, string $name): array
+    {
+        foreach ($modifiers as $modifier) {
+            if (is_array($modifier) && isset($modifier['foreign'])) {
+                $foreign = $modifier['foreign'];
+
+                if (is_string($foreign) && Str::contains($foreign, '.')) {
+                    [$table, $reference] = explode('.', $foreign);
+                    return [
+                        'table' => $table,
+                        'reference' => $reference,
+                        'foreignKey' => $name,
+                    ];
+                }
+
+                return [
+                    'table' => $foreign,
+                    'reference' => 'id',
+                    'foreignKey' => $name,
+                ];
+            }
+        }
+
+        return [];
     }
 
     private function buildColumn(string $name, string $definition): Column
@@ -269,11 +303,15 @@ class ModelLexer implements Lexer
     private function inferMissingBelongsToRelationships(Model $model): void
     {
         foreach ($model->relationships()['belongsTo'] ?? [] as $relationship) {
-            $column = $this->columnNameFromRelationship($relationship);
-
-            $attributes = [];
-            if (str_contains($relationship, ':')) {
-                $attributes = [Str::before($relationship, ':')];
+            if (is_array($relationship)) {
+                $column = $relationship['foreignKey'];
+                $attributes = [$relationship['table']];
+            } else {
+                $column = $this->columnNameFromRelationship($relationship);
+                $attributes = [];
+                if (str_contains($relationship, ':')) {
+                    $attributes = [Str::before($relationship, ':')];
+                }
             }
 
             if (!$model->hasColumn($column)) {
@@ -311,8 +349,12 @@ class ModelLexer implements Lexer
         }
     }
 
-    private function columnNameFromRelationship(string $relationship): string
+    private function columnNameFromRelationship($relationship): string
     {
+        if (is_array($relationship)) {
+            return $relationship['foreignKey'];
+        }
+
         $model = $relationship;
         if (str_contains($relationship, ':')) {
             $model = Str::after($relationship, ':');

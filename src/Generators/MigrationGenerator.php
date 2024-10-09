@@ -267,17 +267,17 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
     protected function buildForeignKey(string $column_name, ?string $on, string $type, array $attributes = [], array $modifiers = []): string
     {
         if (is_null($on)) {
-            $table = Str::plural(Str::beforeLast($column_name, '_'));
+            $table = Str::beforeLast($column_name, '_');
             $column = Str::afterLast($column_name, '_');
         } elseif (Str::contains($on, '.')) {
             [$table, $column] = explode('.', $on);
             $table = Str::snake($table);
         } elseif (Str::contains($on, '\\')) {
-            $table = Str::lower(Str::plural(Str::afterLast($on, '\\')));
+            $table = Str::lower(Str::afterLast($on, '\\'));
             $column = Str::afterLast($column_name, '_');
         } else {
-            $table = Str::plural($on);
-            $column = Str::afterLast($column_name, '_');
+            $table = $on;
+            $column = 'id';
         }
 
         if ($this->isIdColumnType($type) && !empty($attributes)) {
@@ -314,7 +314,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             if ($on_update_clause === 'cascade') {
                 $on_update_suffix = '->cascadeOnUpdate()';
             }
-            if ($column_name === Str::singular($table) . '_' . $column) {
+            if ($column_name === $table . '_' . $column) {
                 return self::INDENT . "{$prefix}->constrained(){$on_delete_suffix}{$on_update_suffix}";
             }
             if ($column === 'id') {

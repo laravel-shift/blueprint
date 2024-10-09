@@ -315,59 +315,58 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
 
         foreach ($model->relationships() as $type => $references) {
             foreach ($references as $reference) {
-                $is_model_fqn = Str::startsWith($reference, '\\');
+                $is_model_fqn = false;
                 $is_pivot = false;
-
                 $custom_template = $template;
                 $key = null;
                 $class = null;
+                $method_name = '';
+                $column_name = is_array($reference) ? $reference['foreignKey'] : $reference;
 
-                $column_name = $reference;
-                $method_name = $is_model_fqn ? Str::afterLast($reference, '\\') : Str::beforeLast($reference, '_id');
-
-                if (Str::contains($reference, ':')) {
-                    [$foreign_reference, $column_name] = explode(':', $reference);
-
-                    if (Str::startsWith($column_name, '&')) {
-                        $is_pivot = true;
-                        $column_name = Str::after($column_name, '&');
-                        $method_name = $column_name;
-                    } else {
-                        $method_name = Str::beforeLast($column_name, '_id');
-                    }
-
-                    if (Str::contains($foreign_reference, '.')) {
-                        [$class, $key] = explode('.', $foreign_reference);
-
-                        if ($key === 'id') {
-                            $key = null;
-                        }
-                        $method_name = $is_model_fqn ? Str::lower(Str::afterLast($class, '\\')) : Str::lower($class);
-                    } else {
-                        $class = $foreign_reference;
-                    }
+                if (is_array($reference)) {
+                    $foreign_info = $reference;
+                    $reference = $foreign_info['foreignKey'];
+                    $class = $foreign_info['table'];
+                    $key = $foreign_info['reference'];
                 }
 
-                if ($is_model_fqn) {
-                    $fqcn = $class ?? $column_name;
+                if (is_string($reference) && Str::startsWith($reference, '\\')) {
+                    $is_model_fqn = true;
+                    $fqcn = $reference;
                     $class_name = Str::afterLast($fqcn, '\\');
+                    $method_name = Str::camel(Str::beforeLast($class_name, '_id'));
                 } else {
-                    $class_name = Str::studly($class ?? $method_name);
-                    $fqcn = $this->fullyQualifyModelReference($class_name) ?? $model->fullyQualifiedNamespace() . '\\' . $class_name;
-                }
+                    if (Str::contains($column_name, ':')) {
+                        [$model_reference, $method_name] = explode(':', $column_name);
+                        $column_name = $model_reference;
+                    } else {
+                        $method_name = $type === 'belongsTo' && is_string($column_name) && Str::endsWith($column_name, '_id') ? Str::camel(Str::beforeLast($column_name, '_id')) : Str::camel($column_name);
+                        if ($type === 'belongsTo') {
+                            $method_name = $method_name === 'user' ? $method_name . Str::studly(Str::after($column_name, 'user_id_')) : $method_name;
+                        }
+                        if ($type === 'hasMany') {
+                            $method_name = Str::plural($method_name);
+                        }
+                    }
 
-                $fqcn = Str::startsWith($fqcn, '\\') ? $fqcn : '\\' . $fqcn;
-                $fqcn = Str::is($fqcn, "\\{$model->fullyQualifiedNamespace()}\\{$class_name}") ? $class_name : $fqcn;
+                    if (!$is_model_fqn) {
+                        $class_name = Str::studly(Str::singular($class ?? Str::beforeLast($column_name, '_id')));
+                        $fqcn = $this->fullyQualifyModelReference($class_name) ?? $model->fullyQualifiedNamespace() . '\\' . $class_name;
+                    }
+
+                    $fqcn = Str::startsWith($fqcn, '\\') ? $fqcn : '\\' . $fqcn;
+                    $fqcn = Str::is($fqcn, "\\{$model->fullyQualifiedNamespace()}\\{$class_name}") ? $class_name : $fqcn;
+                }
 
                 if ($type === 'morphTo') {
                     $relationship = sprintf('$this->%s()', $type);
                 } elseif (in_array($type, ['morphMany', 'morphOne', 'morphToMany'])) {
-                    $relation = Str::lower($is_model_fqn ? Str::singular(Str::afterLast($column_name, '\\')) : Str::singular($column_name)) . 'able';
+                    $relation = Str::lower(Str::singular($column_name)) . 'able';
                     $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, $fqcn, $relation);
                 } elseif ($type === 'morphedByMany') {
                     $relationship = sprintf('$this->%s(%s::class, \'%sable\')', $type, $fqcn, strtolower($model->name()));
                 } elseif (!is_null($key)) {
-                    $relationship = sprintf('$this->%s(%s::class, \'%s\', \'%s\')', $type, $fqcn, $column_name, $key);
+                    $relationship = sprintf('$this->%s(%s::class, \'%s\', \'%s\')', $type, $fqcn, $reference, $key);
                 } elseif (!is_null($class) && $type === 'belongsToMany') {
                     if ($is_pivot) {
                         $relationship = sprintf('$this->%s(%s::class)', $type, $fqcn);
@@ -383,17 +382,11 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
                             $relationship .= sprintf('%s->withTimestamps()', PHP_EOL . str_pad(' ', 12));
                         }
                     } else {
-                        $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, $fqcn, $column_name);
+                        $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, $fqcn, $reference);
                     }
                     $column_name = $class;
                 } else {
                     $relationship = sprintf('$this->%s(%s::class)', $type, $fqcn);
-                }
-
-                if ($type === 'morphTo') {
-                    $method_name = Str::lower($class_name);
-                } elseif (in_array($type, ['hasMany', 'belongsToMany', 'morphMany', 'morphToMany', 'morphedByMany'])) {
-                    $method_name = Str::plural($is_model_fqn ? Str::afterLast($column_name, '\\') : $column_name);
                 }
 
                 $relationship_type = 'Illuminate\\Database\\Eloquent\\Relations\\' . Str::studly($type === 'morphedByMany' ? 'morphToMany' : $type);
