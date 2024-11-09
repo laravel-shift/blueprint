@@ -184,7 +184,7 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
             }
 
             if ($statement instanceof RespondStatement && $statement->content()) {
-                $method = str_replace('): Response' . PHP_EOL, ')' . PHP_EOL, $method);
+                $method = str_replace('): Response', ')', $method);
             } else {
                 $returnType = match (true) {
                     $statement instanceof RenderStatement => 'Illuminate\View\View',
@@ -193,7 +193,7 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
                     default => 'Illuminate\Http\Response'
                 };
 
-                $method = str_replace('): Response' . PHP_EOL, '): ' . Str::afterLast($returnType, '\\') . PHP_EOL, $method);
+                $method = str_replace('): Response', '): ' . Str::afterLast($returnType, '\\'), $method);
                 $this->addImport($controller, $returnType);
             }
 
