@@ -126,7 +126,7 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
                     }
                 } elseif ($statement instanceof ValidateStatement) {
                     $using_validation = true;
-                    $class_name = $controller->name() . Str::studly($name) . 'Request';
+                    $class_name = $controller->prefix() . Str::studly($name) . 'Request';
 
                     $fqcn = config('blueprint.namespace') . '\\Http\\Requests\\' . ($controller->namespace() ? $controller->namespace() . '\\' : '') . $class_name;
 
