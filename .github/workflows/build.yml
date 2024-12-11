@@ -35,16 +35,16 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Determine composer cache directory
-        id: determine-composer-cache-directory
-        run: 'echo "::set-output name=directory::$(composer config cache-dir)"'
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Cache dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
-          path: ${{ steps.determine-composer-cache-directory.outputs.directory }}
+          path: ${{ steps.composer-cache.outputs.dir }}
           key: dependencies-os-${{ matrix.os }}-php-${{ matrix.php-version }}-laravel-${{ matrix.laravel-version }}-${{ matrix.stability }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: dependencies-os-${{ matrix.os }}-php-${{ matrix.php-version }}-laravel-${{ matrix.laravel-version }}-${{ matrix.stability }}-composer-
 
