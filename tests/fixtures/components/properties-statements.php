@@ -38,7 +38,7 @@ class UpdateProfile extends Component
 
         return redirect()->route('user.show', [$this->user]);
 
-        return view('user.show', compact($this->user, $extra));
+        return view('user.show', compact('user', 'extra'));
 
         return new UserResource($this->user);
 

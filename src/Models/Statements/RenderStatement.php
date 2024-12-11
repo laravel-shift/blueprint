@@ -33,4 +33,11 @@ class RenderStatement
 
         return $code;
     }
+
+    private function buildParameters(): string
+    {
+        $parameters = array_map(fn ($parameter) => "'" . $parameter . "'", $this->data());
+
+        return implode(', ', $parameters);
+    }
 }
