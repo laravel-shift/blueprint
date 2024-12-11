@@ -2,4 +2,6 @@
 
 namespace Blueprint\Models\Statements;
 
-trait HasParameters {}
+trait HasParameters
+{
+}
