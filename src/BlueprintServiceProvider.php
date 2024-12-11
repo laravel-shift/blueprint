@@ -48,21 +48,21 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
             'blueprint'
         );
 
-        File::mixin(new FileMixins());
+        File::mixin(new FileMixins);
 
         $this->app->bind('command.blueprint.build', fn ($app) => new BuildCommand($app['files'], app(Builder::class)));
         $this->app->bind('command.blueprint.erase', fn ($app) => new EraseCommand($app['files']));
         $this->app->bind('command.blueprint.trace', fn ($app) => new TraceCommand($app['files'], app(Tracer::class)));
         $this->app->bind('command.blueprint.new', fn ($app) => new NewCommand($app['files']));
-        $this->app->bind('command.blueprint.init', fn ($app) => new InitCommand());
-        $this->app->bind('command.blueprint.stubs', fn ($app) => new PublishStubsCommand());
+        $this->app->bind('command.blueprint.init', fn ($app) => new InitCommand);
+        $this->app->bind('command.blueprint.stubs', fn ($app) => new PublishStubsCommand);
 
         $this->app->singleton(Blueprint::class, function ($app) {
-            $blueprint = new Blueprint();
+            $blueprint = new Blueprint;
             $blueprint->registerLexer(new \Blueprint\Lexers\ConfigLexer($app));
-            $blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
-            $blueprint->registerLexer(new \Blueprint\Lexers\SeederLexer());
-            $blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new \Blueprint\Lexers\StatementLexer()));
+            $blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer);
+            $blueprint->registerLexer(new \Blueprint\Lexers\SeederLexer);
+            $blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new \Blueprint\Lexers\StatementLexer));
 
             foreach (config('blueprint.generators') as $generator) {
                 $blueprint->registerGenerator(new $generator($app['files']));

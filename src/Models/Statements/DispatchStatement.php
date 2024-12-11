@@ -2,11 +2,13 @@
 
 namespace Blueprint\Models\Statements;
 
+use Blueprint\Concerns\HasParameters;
+
 class DispatchStatement
 {
-    private string $job;
+    use HasParameters;
 
-    private array $data;
+    private string $job;
 
     public function __construct(string $job, array $data = [])
     {
@@ -19,28 +21,16 @@ class DispatchStatement
         return $this->job;
     }
 
-    public function data(): array
-    {
-        return $this->data;
-    }
-
     public function output(): string
     {
         $code = $this->job() . '::dispatch(';
 
         if ($this->data()) {
-            $code .= $this->buildParameters($this->data());
+            $code .= $this->buildParameters();
         }
 
         $code .= ');';
 
         return $code;
-    }
-
-    private function buildParameters(array $data): string
-    {
-        $parameters = array_map(fn ($parameter) => '$' . $parameter, $data);
-
-        return implode(', ', $parameters);
     }
 }

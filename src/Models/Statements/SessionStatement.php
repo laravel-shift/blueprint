@@ -2,6 +2,8 @@
 
 namespace Blueprint\Models\Statements;
 
+use Illuminate\Support\Str;
+
 class SessionStatement
 {
     private string $operation;
@@ -24,13 +26,27 @@ class SessionStatement
         return $this->reference;
     }
 
-    public function output(): string
+    public function output(array $properties = [], bool $livewire = false): string
     {
-        $code = '$request->session()->' . $this->operation() . '(';
-        $code .= "'" . $this->reference() . "', ";
-        $code .= '$' . str_replace('.', '->', $this->reference());
-        $code .= ');';
+        $template = "%ssession()->%s('%s', %s);";
 
-        return $code;
+        return sprintf(
+            $template,
+            $livewire ? '' : '$request->',
+            $this->operation(),
+            $this->reference(),
+            $this->buildValue($properties)
+        );
+    }
+
+    private function buildValue(array $properties): string
+    {
+        $variable = str_replace('.', '->', $this->reference());
+
+        if (in_array(Str::before($this->reference(), '.'), $properties)) {
+            $variable = 'this->' . $variable;
+        }
+
+        return '$' . $variable;
     }
 }

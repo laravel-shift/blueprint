@@ -1,0 +1,10 @@
+<?php
+
+namespace {{ namespace }};
+
+{{ imports }}
+
+class {{ class }} extends Component
+{
+    {{ body }}
+}

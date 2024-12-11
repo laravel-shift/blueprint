@@ -1,0 +1,20 @@
+components:
+  UpdateProfile:
+    mount: user
+    update:
+#      validate: user
+      dispatch: UpdateProfile with:user
+#      find: user
+      fire: ProfileUpdated with:user
+      flash: user.name
+      notify: user ReviewProfile with:user
+      redirect: user.show with:user
+      render: user.show with:user,extra
+      resource: user
+      respond: user
+#      save: user
+#      delete: user
+      send: ReviewProfile to:user.email with:user
+      store: user.id
+#      update: user
+#      query: where:title where:content order:published_at limit:5

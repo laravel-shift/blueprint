@@ -15,7 +15,7 @@ final class ModelLexerTest extends TestCase
     {
         parent::setUp();
 
-        $this->subject = new ModelLexer();
+        $this->subject = new ModelLexer;
     }
 
     #[Test]

@@ -1,0 +1,4 @@
+components:
+  SimpleComponent:
+    action:
+      redirect: simple.page

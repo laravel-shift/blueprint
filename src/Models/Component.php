@@ -3,23 +3,16 @@
 namespace Blueprint\Models;
 
 use Blueprint\Contracts\Model as BlueprintModel;
-use Illuminate\Support\Str;
 
-class Controller implements BlueprintModel
+class Component implements BlueprintModel
 {
-    public static array $resourceMethods = ['index', 'create', 'store', 'edit', 'update', 'show', 'destroy'];
-
-    public static array $apiResourceMethods = ['index', 'store', 'update', 'show', 'destroy'];
-
     private string $name;
 
     private string $namespace;
 
+    private array $properties = [];
+
     private array $methods = [];
-
-    private ?Policy $policy = null;
-
-    private bool $apiResource = false;
 
     public function __construct(string $name)
     {
@@ -34,7 +27,7 @@ class Controller implements BlueprintModel
 
     public function className(): string
     {
-        return $this->name() . (Str::endsWith($this->name(), 'Controller') ? '' : 'Controller');
+        return $this->name();
     }
 
     public function namespace(): string
@@ -50,8 +43,8 @@ class Controller implements BlueprintModel
     {
         $fqn = config('blueprint.namespace');
 
-        if (config('blueprint.controllers_namespace')) {
-            $fqn .= '\\' . config('blueprint.controllers_namespace');
+        if (config('blueprint.components_namespace')) {
+            $fqn .= '\\' . config('blueprint.components_namespace');
         }
 
         if ($this->namespace) {
@@ -76,31 +69,13 @@ class Controller implements BlueprintModel
         $this->methods[$name] = $statements;
     }
 
-    public function policy(?Policy $policy = null): ?Policy
+    public function properties(): array
     {
-        if ($policy) {
-            $this->policy = $policy;
-        }
-
-        return $this->policy;
+        return $this->properties;
     }
 
-    public function prefix(): string
+    public function addProperty(string $name): void
     {
-        if (Str::endsWith($this->name(), 'Controller')) {
-            return Str::substr($this->name(), 0, -10);
-        }
-
-        return $this->name();
-    }
-
-    public function setApiResource(bool $apiResource): void
-    {
-        $this->apiResource = $apiResource;
-    }
-
-    public function isApiResource(): bool
-    {
-        return $this->apiResource;
+        $this->properties[$name] = $name;
     }
 }

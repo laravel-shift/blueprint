@@ -29,8 +29,8 @@ final class MigrationGeneratorTest extends TestCase
 
         $this->subject = new MigrationGenerator($this->files);
 
-        $this->blueprint = new Blueprint();
-        $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
+        $this->blueprint = new Blueprint;
+        $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer);
         $this->blueprint->registerGenerator($this->subject);
     }
 

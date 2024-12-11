@@ -2,11 +2,13 @@
 
 namespace Blueprint\Models\Statements;
 
+use Blueprint\Concerns\HasParameters;
+
 class RenderStatement
 {
-    private string $view;
+    use HasParameters;
 
-    private array $data;
+    private string $view;
 
     public function __construct(string $view, array $data = [])
     {
@@ -19,17 +21,12 @@ class RenderStatement
         return $this->view;
     }
 
-    public function data(): array
-    {
-        return $this->data;
-    }
-
     public function output(): string
     {
         $code = "return view('" . $this->view() . "'";
 
         if ($this->data()) {
-            $code .= ', compact(' . $this->buildParameters($this->data()) . ')';
+            $code .= ', compact(' . $this->buildParameters() . ')';
         }
 
         $code .= ');';
@@ -37,9 +34,9 @@ class RenderStatement
         return $code;
     }
 
-    private function buildParameters(array $data): string
+    private function buildParameters(): string
     {
-        $parameters = array_map(fn ($parameter) => "'" . $parameter . "'", $data);
+        $parameters = array_map(fn ($parameter) => "'" . $parameter . "'", $this->data());
 
         return implode(', ', $parameters);
     }

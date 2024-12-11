@@ -27,9 +27,9 @@ final class FormRequestGeneratorTest extends TestCase
 
         $this->subject = new FormRequestGenerator($this->files);
 
-        $this->blueprint = new Blueprint();
-        $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
-        $this->blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new StatementLexer()));
+        $this->blueprint = new Blueprint;
+        $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer);
+        $this->blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new StatementLexer));
         $this->blueprint->registerGenerator($this->subject);
     }
 

@@ -2,17 +2,14 @@
 
 namespace Blueprint\Models\Statements;
 
+use Blueprint\Concerns\HasParameters;
+
 class ValidateStatement
 {
-    private array $data;
+    use HasParameters;
 
     public function __construct(array $data)
     {
         $this->data = $data;
-    }
-
-    public function data(): array
-    {
-        return $this->data;
     }
 }

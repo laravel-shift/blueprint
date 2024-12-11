@@ -20,7 +20,7 @@ final class SeederLexerTest extends TestCase
     {
         parent::setUp();
 
-        $this->subject = new SeederLexer();
+        $this->subject = new SeederLexer;
     }
 
     #[Test]

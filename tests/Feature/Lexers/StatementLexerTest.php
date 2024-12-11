@@ -32,7 +32,7 @@ final class StatementLexerTest extends TestCase
     {
         parent::setUp();
 
-        $this->subject = new StatementLexer();
+        $this->subject = new StatementLexer;
     }
 
     #[Test]

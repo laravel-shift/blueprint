@@ -2,10 +2,13 @@
 
 namespace Blueprint\Models\Statements;
 
+use Blueprint\Concerns\HasParameters;
 use Illuminate\Support\Str;
 
 class SendStatement
 {
+    use HasParameters;
+
     const TYPE_MAIL = 'mail';
 
     const TYPE_NOTIFICATION_WITH_FACADE = 'notification_with_facade';
@@ -15,8 +18,6 @@ class SendStatement
     private string $mail;
 
     private ?string $to;
-
-    private array $data;
 
     private string $type;
 
@@ -54,11 +55,6 @@ class SendStatement
         return $this->type;
     }
 
-    public function data(): array
-    {
-        return $this->data;
-    }
-
     public function output(): string
     {
         if ($this->type() === self::TYPE_NOTIFICATION_WITH_FACADE) {
@@ -87,13 +83,13 @@ class SendStatement
         $code = 'Mail::';
 
         if ($this->to()) {
-            $code .= 'to($' . str_replace('.', '->', $this->to()) . ')->';
+            $code .= sprintf('to(%s)->', $this->buildTo());
         }
 
         $code .= 'send(new ' . $this->mail() . '(';
 
         if ($this->data()) {
-            $code .= $this->buildParameters($this->data());
+            $code .= $this->buildParameters();
         }
 
         $code .= '));';
@@ -106,11 +102,11 @@ class SendStatement
         $code = 'Notification::';
 
         if ($this->to()) {
-            $code .= 'send($' . str_replace('.', '->', $this->to()) . ', new ' . $this->mail() . '(';
+            $code .= sprintf('send(%s, new %s(', $this->buildTo(), $this->mail());
         }
 
         if ($this->data()) {
-            $code .= $this->buildParameters($this->data());
+            $code .= $this->buildParameters();
         }
 
         $code .= '));';
@@ -123,12 +119,11 @@ class SendStatement
         $code = '';
 
         if ($this->to()) {
-            $code .= sprintf('$%s->', str_replace('.', '->', $this->to()));
-            $code .= 'notify(new ' . $this->mail() . '(';
+            $code .= sprintf('%s->notify(new %s(', $this->buildTo(), $this->mail());
         }
 
         if ($this->data()) {
-            $code .= $this->buildParameters($this->data());
+            $code .= $this->buildParameters();
         }
 
         $code .= '));';
@@ -136,10 +131,14 @@ class SendStatement
         return $code;
     }
 
-    private function buildParameters(array $data): string
+    private function buildTo(): string
     {
-        $parameters = array_map(fn ($parameter) => '$' . $parameter, $data);
+        $variable = str_replace('.', '->', $this->to());
 
-        return implode(', ', $parameters);
+        if (in_array(Str::before($this->to(), '.'), $this->properties())) {
+            $variable = 'this->' . $variable;
+        }
+
+        return '$' . $variable;
     }
 }
