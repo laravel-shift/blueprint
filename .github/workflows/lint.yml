@@ -11,8 +11,8 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
-          tools: phplint, laravel/pint
+          php-version: '8.3'
+          tools: phplint, laravel/pint:1.18.x
       - name: Check syntax
         run: phplint .
       - name: Check code style

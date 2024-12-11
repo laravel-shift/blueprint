@@ -236,7 +236,7 @@ final class FormRequestGeneratorTest extends TestCase
         $this->assertEquals(['created' => ['app/Http/Requests/UserStoreRequest.php']], $this->subject->output($tree));
     }
 
-    public function testOutputGeneratesFormRequestWithoutSoftdeletes(): void
+    public function test_output_generates_form_request_without_softdeletes(): void
     {
         $this->filesystem->expects('stub')
             ->with('request.stub')
@@ -268,7 +268,7 @@ final class FormRequestGeneratorTest extends TestCase
         ], $this->subject->output($tree));
     }
 
-    public function testOutputGeneratesFormRequestWithoutSoftdeletestz(): void
+    public function test_output_generates_form_request_without_softdeletestz(): void
     {
         $this->filesystem->expects('stub')
             ->with('request.stub')
