@@ -2,6 +2,7 @@ components:
   UpdateProfile:
     mount: user
     update:
+#      validate: user
       dispatch: UpdateProfile with:user
 #      find: user
       fire: ProfileUpdated with:user

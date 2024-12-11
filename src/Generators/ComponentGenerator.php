@@ -122,7 +122,7 @@ class ComponentGenerator extends AbstractClassGenerator implements Generator
                 } elseif ($statement instanceof RespondStatement) {
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
                 } elseif ($statement instanceof SessionStatement) {
-                    $body .= self::INDENT . $statement->output() . PHP_EOL;
+                    $body .= self::INDENT . $statement->output($component->properties(), true) . PHP_EOL;
                 } elseif ($statement instanceof EloquentStatement) {
                     dump($statement->operation());
                     $body .= self::INDENT . $statement->output($component->prefix(), $name, $using_validation) . PHP_EOL;

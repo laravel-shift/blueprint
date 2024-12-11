@@ -32,9 +32,9 @@ class UpdateProfile extends Component
 
         ProfileUpdated::dispatch($this->user);
 
-        $request->session()->flash('user.name', $user->name);
+        session()->flash('user.name', $this->user->name);
 
-        $user->notify(new ReviewProfile($this->user));
+        $this->user->notify(new ReviewProfile($this->user));
 
         return redirect()->route('user.show', [$this->user]);
 
@@ -44,8 +44,8 @@ class UpdateProfile extends Component
 
         return $user;
 
-        Mail::to($user->email)->send(new ReviewProfile($this->user));
+        Mail::to($this->user->email)->send(new ReviewProfile($this->user));
 
-        $request->session()->store('user.id', $user->id);
+        session()->store('user.id', $this->user->id);
     }
 }

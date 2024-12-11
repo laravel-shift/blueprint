@@ -43,7 +43,7 @@ class ResourceStatement
         return $this->paginate;
     }
 
-    public function output(): string
+    public function output(array $properties = []): string
     {
         return sprintf('return new %s($%s);', $this->name(), $this->reference());
     }

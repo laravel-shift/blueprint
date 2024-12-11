@@ -83,7 +83,7 @@ class SendStatement
         $code = 'Mail::';
 
         if ($this->to()) {
-            $code .= 'to($' . str_replace('.', '->', $this->to()) . ')->';
+            $code .= sprintf('to(%s)->', $this->buildTo());
         }
 
         $code .= 'send(new ' . $this->mail() . '(';
@@ -102,7 +102,7 @@ class SendStatement
         $code = 'Notification::';
 
         if ($this->to()) {
-            $code .= 'send($' . str_replace('.', '->', $this->to()) . ', new ' . $this->mail() . '(';
+            $code .= sprintf('send(%s, new %s(', $this->buildTo(), $this->mail());
         }
 
         if ($this->data()) {
@@ -119,8 +119,7 @@ class SendStatement
         $code = '';
 
         if ($this->to()) {
-            $code .= sprintf('$%s->', str_replace('.', '->', $this->to()));
-            $code .= 'notify(new ' . $this->mail() . '(';
+            $code .= sprintf('%s->notify(new %s(', $this->buildTo(), $this->mail());
         }
 
         if ($this->data()) {
@@ -130,5 +129,16 @@ class SendStatement
         $code .= '));';
 
         return $code;
+    }
+
+    private function buildTo(): string
+    {
+        $variable = str_replace('.', '->', $this->to());
+
+        if (in_array(Str::before($this->to(), '.'), $this->properties())) {
+            $variable = 'this->' . $variable;
+        }
+
+        return '$' . $variable;
     }
 }
