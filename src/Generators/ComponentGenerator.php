@@ -102,7 +102,7 @@ class ComponentGenerator extends AbstractClassGenerator implements Generator
                 } elseif ($statement instanceof ResourceStatement) {
                     $fqcn = config('blueprint.namespace') . '\\Http\\Resources\\' . ($component->namespace() ? $component->namespace() . '\\' : '') . $statement->name();
                     $this->addImport($component, $fqcn);
-                    $body .= self::INDENT . $statement->output() . PHP_EOL;
+                    $body .= self::INDENT . $statement->output($component->properties()) . PHP_EOL;
 
                     if ($statement->paginate()) {
                         if (!Str::contains($body, '::all();')) {
@@ -120,7 +120,7 @@ class ComponentGenerator extends AbstractClassGenerator implements Generator
                 } elseif ($statement instanceof RedirectStatement) {
                     $body .= self::INDENT . $statement->withProperties($component->properties())->output() . PHP_EOL;
                 } elseif ($statement instanceof RespondStatement) {
-                    $body .= self::INDENT . $statement->output() . PHP_EOL;
+                    $body .= self::INDENT . $statement->output($component->properties()) . PHP_EOL;
                 } elseif ($statement instanceof SessionStatement) {
                     $body .= self::INDENT . $statement->output($component->properties(), true) . PHP_EOL;
                 } elseif ($statement instanceof EloquentStatement) {

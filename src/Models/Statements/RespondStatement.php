@@ -2,6 +2,8 @@
 
 namespace Blueprint\Models\Statements;
 
+use Illuminate\Support\Str;
+
 class RespondStatement
 {
     private int $status = 200;
@@ -27,12 +29,16 @@ class RespondStatement
         return $this->content;
     }
 
-    public function output(): string
+    public function output(array $properties = []): string
     {
-        if ($this->content()) {
-            return 'return $' . $this->content . ';';
+        if (is_null($this->content())) {
+            return sprintf('return response()->noContent(%s);', $this->status() === 204 ? '' : $this->status());
         }
 
-        return sprintf('return response()->noContent(%s);', $this->status() === 204 ? '' : $this->status());
+        if (in_array(Str::before($this->content(), '.'), $properties)) {
+            return 'return $this->' . $this->content . ';';
+        }
+
+        return 'return $' . $this->content . ';';
     }
 }

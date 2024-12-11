@@ -40,9 +40,9 @@ class UpdateProfile extends Component
 
         return view('user.show', compact($this->user, $extra));
 
-        return new UserResource($user);
+        return new UserResource($this->user);
 
-        return $user;
+        return $this->user;
 
         Mail::to($this->user->email)->send(new ReviewProfile($this->user));
 

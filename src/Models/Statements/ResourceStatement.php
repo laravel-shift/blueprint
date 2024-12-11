@@ -45,6 +45,15 @@ class ResourceStatement
 
     public function output(array $properties = []): string
     {
-        return sprintf('return new %s($%s);', $this->name(), $this->reference());
+        return sprintf('return new %s(%s);', $this->name(), $this->buildArgument($properties));
+    }
+
+    private function buildArgument(array $properties): string
+    {
+        if (in_array($this->reference(), $properties)) {
+            return '$this->' . $this->reference();
+        }
+
+        return '$' . $this->reference();
     }
 }
