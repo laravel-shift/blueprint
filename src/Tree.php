@@ -2,6 +2,7 @@
 
 namespace Blueprint;
 
+use Blueprint\Models\Component;
 use Illuminate\Support\Str;
 
 class Tree
@@ -17,12 +18,20 @@ class Tree
         $this->registerModels();
     }
 
+    /**
+     * @return Component[]
+     */
+    public function components(): array
+    {
+        return $this->tree['components'];
+    }
+
     private function registerModels(): void
     {
         $this->models = array_merge($this->tree['cache'] ?? [], $this->tree['models'] ?? []);
     }
 
-    public function controllers()
+    public function controllers(): array
     {
         return $this->tree['controllers'];
     }

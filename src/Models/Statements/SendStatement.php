@@ -2,10 +2,13 @@
 
 namespace Blueprint\Models\Statements;
 
+use Blueprint\Concerns\HasParameters;
 use Illuminate\Support\Str;
 
 class SendStatement
 {
+    use HasParameters;
+
     const TYPE_MAIL = 'mail';
 
     const TYPE_NOTIFICATION_WITH_FACADE = 'notification_with_facade';
@@ -15,8 +18,6 @@ class SendStatement
     private string $mail;
 
     private ?string $to;
-
-    private array $data;
 
     private string $type;
 
@@ -54,11 +55,6 @@ class SendStatement
         return $this->type;
     }
 
-    public function data(): array
-    {
-        return $this->data;
-    }
-
     public function output(): string
     {
         if ($this->type() === self::TYPE_NOTIFICATION_WITH_FACADE) {
@@ -93,7 +89,7 @@ class SendStatement
         $code .= 'send(new ' . $this->mail() . '(';
 
         if ($this->data()) {
-            $code .= $this->buildParameters($this->data());
+            $code .= $this->buildParameters();
         }
 
         $code .= '));';
@@ -110,7 +106,7 @@ class SendStatement
         }
 
         if ($this->data()) {
-            $code .= $this->buildParameters($this->data());
+            $code .= $this->buildParameters();
         }
 
         $code .= '));';
@@ -128,18 +124,11 @@ class SendStatement
         }
 
         if ($this->data()) {
-            $code .= $this->buildParameters($this->data());
+            $code .= $this->buildParameters();
         }
 
         $code .= '));';
 
         return $code;
-    }
-
-    private function buildParameters(array $data): string
-    {
-        $parameters = array_map(fn ($parameter) => '$' . $parameter, $data);
-
-        return implode(', ', $parameters);
     }
 }

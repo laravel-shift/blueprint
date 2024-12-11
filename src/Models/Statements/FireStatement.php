@@ -2,11 +2,13 @@
 
 namespace Blueprint\Models\Statements;
 
+use Blueprint\Concerns\HasParameters;
+
 class FireStatement
 {
-    private string $event;
+    use HasParameters;
 
-    private array $data;
+    private string $event;
 
     public function __construct(string $event, array $data = [])
     {
@@ -17,11 +19,6 @@ class FireStatement
     public function event(): string
     {
         return $this->event;
-    }
-
-    public function data(): array
-    {
-        return $this->data;
     }
 
     public function isNamedEvent(): bool
@@ -44,14 +41,7 @@ class FireStatement
         return sprintf(
             $template,
             $this->event(),
-            $this->data() ? $this->buildParameters($this->data()) : ''
+            $this->data() ? $this->buildParameters() : ''
         );
-    }
-
-    private function buildParameters(array $data): string
-    {
-        $parameters = array_map(fn ($parameter) => '$' . $parameter, $data);
-
-        return implode(', ', $parameters);
     }
 }

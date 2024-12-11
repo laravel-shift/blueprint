@@ -61,14 +61,14 @@ final class TraceCommandTest extends TestCase
         // App namespace
         config(['blueprint.models_namespace' => '']);
 
-        $this->assertEquals($method->invoke(new Tracer(), app('App\Comment')), 'Comment');
-        $this->assertEquals($method->invoke(new Tracer(), app('App\Something\Tag')), 'Something\Tag');
+        $this->assertEquals($method->invoke(new Tracer, app('App\Comment')), 'Comment');
+        $this->assertEquals($method->invoke(new Tracer, app('App\Something\Tag')), 'Something\Tag');
 
         // Models namespace
         config(['blueprint.models_namespace' => 'Models']);
 
-        $this->assertEquals($method->invoke(new Tracer(), app('App\Models\Comment')), 'Comment');
-        $this->assertEquals($method->invoke(new Tracer(), app('App\Something\Tag')), 'Something\Tag');
+        $this->assertEquals($method->invoke(new Tracer, app('App\Models\Comment')), 'Comment');
+        $this->assertEquals($method->invoke(new Tracer, app('App\Something\Tag')), 'Something\Tag');
     }
 
     public function it_passes_the_command_path_to_tracer()

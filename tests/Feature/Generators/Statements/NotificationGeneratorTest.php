@@ -28,8 +28,8 @@ final class NotificationGeneratorTest extends TestCase
 
         $this->subject = new NotificationGenerator($this->files);
 
-        $this->blueprint = new Blueprint();
-        $this->blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new StatementLexer()));
+        $this->blueprint = new Blueprint;
+        $this->blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new StatementLexer));
         $this->blueprint->registerGenerator($this->subject);
     }
 

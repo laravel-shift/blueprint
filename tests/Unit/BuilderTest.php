@@ -43,7 +43,7 @@ final class BuilderTest extends TestCase
         $this->filesystem->expects('put')
             ->with('.blueprint', 'cacheable blueprint content');
 
-        $actual = (new Builder())->execute($blueprint, $this->filesystem, 'draft.yaml');
+        $actual = (new Builder)->execute($blueprint, $this->filesystem, 'draft.yaml');
 
         $this->assertSame($generated, $actual);
     }
@@ -98,7 +98,7 @@ final class BuilderTest extends TestCase
         $this->filesystem->expects('put')
             ->with('.blueprint', 'cacheable blueprint content');
 
-        $actual = (new Builder())->execute($blueprint, $this->filesystem, 'draft.yaml');
+        $actual = (new Builder)->execute($blueprint, $this->filesystem, 'draft.yaml');
 
         $this->assertSame($generated, $actual);
     }
@@ -147,7 +147,7 @@ final class BuilderTest extends TestCase
         $this->filesystem->expects('put')
             ->with('.blueprint', 'cacheable blueprint content');
 
-        $actual = (new Builder())->execute($blueprint, $this->filesystem, 'draft.yaml');
+        $actual = (new Builder)->execute($blueprint, $this->filesystem, 'draft.yaml');
 
         $this->assertSame($generated, $actual);
     }

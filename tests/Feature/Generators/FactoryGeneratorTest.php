@@ -28,8 +28,8 @@ final class FactoryGeneratorTest extends TestCase
         $this->factoryStub = 'factory.stub';
         $this->subject = new FactoryGenerator($this->files);
 
-        $this->blueprint = new Blueprint();
-        $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
+        $this->blueprint = new Blueprint;
+        $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer);
         $this->blueprint->registerGenerator($this->subject);
     }
 

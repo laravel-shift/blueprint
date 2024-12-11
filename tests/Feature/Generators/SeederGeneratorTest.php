@@ -30,9 +30,9 @@ final class SeederGeneratorTest extends TestCase
         $this->seederStub = 'seeder.stub';
         $this->subject = new SeederGenerator($this->files);
 
-        $this->blueprint = new Blueprint();
-        $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
-        $this->blueprint->registerLexer(new \Blueprint\Lexers\SeederLexer());
+        $this->blueprint = new Blueprint;
+        $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer);
+        $this->blueprint->registerLexer(new \Blueprint\Lexers\SeederLexer);
         $this->blueprint->registerGenerator($this->subject);
     }
 

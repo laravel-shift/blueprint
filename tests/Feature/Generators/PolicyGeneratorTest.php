@@ -25,9 +25,9 @@ final class PolicyGeneratorTest extends TestCase
 
         $this->subject = new PolicyGenerator($this->filesystem);
 
-        $this->blueprint = new Blueprint();
-        $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
-        $this->blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new StatementLexer()));
+        $this->blueprint = new Blueprint;
+        $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer);
+        $this->blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new StatementLexer));
         $this->blueprint->registerGenerator($this->subject);
     }
 

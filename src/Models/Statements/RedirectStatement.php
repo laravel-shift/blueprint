@@ -2,13 +2,14 @@
 
 namespace Blueprint\Models\Statements;
 
+use Blueprint\Concerns\HasParameters;
 use Illuminate\Support\Str;
 
 class RedirectStatement
 {
-    private string $route;
+    use HasParameters;
 
-    private array $data;
+    private string $route;
 
     public function __construct(string $route, array $data = [])
     {
@@ -21,17 +22,12 @@ class RedirectStatement
         return $this->route;
     }
 
-    public function data(): array
-    {
-        return $this->data;
-    }
-
     public function output(): string
     {
         $code = "return redirect()->route('" . $this->route() . "'";
 
         if ($this->data()) {
-            $code .= ', [' . $this->buildParameters($this->data()) . ']';
+            $code .= ', [' . $this->buildParameters() . ']';
         } elseif (Str::contains($this->route(), '.')) {
             [$model, $method] = explode('.', $this->route());
             if (in_array($method, ['edit', 'update', 'show', 'destroy'])) {
@@ -43,12 +39,5 @@ class RedirectStatement
         $code .= ');';
 
         return $code;
-    }
-
-    private function buildParameters(array $data): string
-    {
-        $parameters = array_map(fn ($parameter) => '$' . $parameter, $data);
-
-        return implode(', ', $parameters);
     }
 }

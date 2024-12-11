@@ -1,0 +1,5 @@
+components:
+  UpdateProfile:
+    mount: user
+    update:
+      fire: ProfileUpdated with:user

@@ -1,0 +1,11 @@
+components:
+  UpdateProfile:
+    mount: user, dashboard_url
+    update:
+      action: detail
+      another_action: so much detail
+    another_method:
+      some: action
+  AnotherComponent:
+    main:
+      action: reaction

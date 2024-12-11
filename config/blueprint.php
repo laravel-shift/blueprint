@@ -30,6 +30,8 @@ return [
 
     'controllers_namespace' => 'Http\\Controllers',
 
+    'components_namespace' => 'Livewire',
+
     'policy_namespace' => 'Policies',
 
     /*

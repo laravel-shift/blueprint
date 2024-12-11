@@ -28,15 +28,15 @@ final class ConfigLexerTest extends TestCase
     {
         parent::setUp();
 
-        $this->subject = new ConfigLexer();
+        $this->subject = new ConfigLexer;
 
         $this->modelGenerator = new ModelGenerator($this->filesystem);
         $this->controllerGenerator = new ControllerGenerator($this->filesystem);
 
-        $this->blueprint = new Blueprint();
-        $this->blueprint->registerLexer(new ModelLexer());
-        $this->blueprint->registerLexer(new ConfigLexer());
-        $this->blueprint->registerLexer(new ControllerLexer(new StatementLexer()));
+        $this->blueprint = new Blueprint;
+        $this->blueprint->registerLexer(new ModelLexer);
+        $this->blueprint->registerLexer(new ConfigLexer);
+        $this->blueprint->registerLexer(new ControllerLexer(new StatementLexer));
         $this->blueprint->registerGenerator($this->modelGenerator);
     }
 

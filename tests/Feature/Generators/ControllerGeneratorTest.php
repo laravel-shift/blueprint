@@ -26,9 +26,9 @@ final class ControllerGeneratorTest extends TestCase
 
         $this->subject = new ControllerGenerator($this->filesystem);
 
-        $this->blueprint = new Blueprint();
-        $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer());
-        $this->blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new StatementLexer()));
+        $this->blueprint = new Blueprint;
+        $this->blueprint->registerLexer(new \Blueprint\Lexers\ModelLexer);
+        $this->blueprint->registerLexer(new \Blueprint\Lexers\ControllerLexer(new StatementLexer));
         $this->blueprint->registerGenerator($this->subject);
     }
 
