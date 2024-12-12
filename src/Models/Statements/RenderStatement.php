@@ -45,7 +45,8 @@ class RenderStatement
                 $parameter,
                 PHP_EOL
             ),
-            $this->data());
+            $this->data()
+        );
 
         return sprintf(
             '[%s%s%s]',
