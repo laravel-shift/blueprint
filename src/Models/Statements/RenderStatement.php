@@ -16,17 +16,12 @@ class RenderStatement
         $this->data = $data;
     }
 
-    public function view(): string
-    {
-        return $this->view;
-    }
-
     public function output(): string
     {
         $code = "return view('" . $this->view() . "'";
 
         if ($this->data()) {
-            $code .= ', compact(' . $this->buildParameters() . ')';
+            $code .= ', ' . $this->buildParameters();
         }
 
         $code .= ');';
@@ -34,10 +29,30 @@ class RenderStatement
         return $code;
     }
 
+    public function view(): string
+    {
+        return $this->view;
+    }
+
     private function buildParameters(): string
     {
-        $parameters = array_map(fn ($parameter) => "'" . $parameter . "'", $this->data());
+        $parameters = array_map(
+            fn ($parameter) => sprintf(
+                "%s'%s' => \$%s%s,%s",
+                str_pad(' ', 12),
+                $parameter,
+                in_array($parameter, $this->properties()) ? 'this->' : '',
+                $parameter,
+                PHP_EOL
+            ),
+            $this->data()
+        );
 
-        return implode(', ', $parameters);
+        return sprintf(
+            '[%s%s%s]',
+            PHP_EOL,
+            implode($parameters),
+            str_pad(' ', 8)
+        );
     }
 }
