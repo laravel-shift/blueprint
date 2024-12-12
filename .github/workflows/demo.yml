@@ -66,6 +66,7 @@ jobs:
 
       - name: Determine composer cache directory
         id: composer-cache
+        shell: bash
         run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Cache dependencies
