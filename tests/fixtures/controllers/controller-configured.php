@@ -15,7 +15,9 @@ class UserController extends Controller
     {
         $users = User::all();
 
-        return view('user.index', compact('users'));
+        return view('user.index', [
+            'users' => $users,
+        ]);
     }
 
     public function store(UserStoreRequest $request): RedirectResponse

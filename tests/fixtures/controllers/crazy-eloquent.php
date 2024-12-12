@@ -13,14 +13,18 @@ class PostController extends Controller
     {
         $posts = Post::where('title', $title)->where('content', $content)->orderBy('published_at')->limit(5)->get();
 
-        return view('post.index', compact('posts'));
+        return view('post.index', [
+            'posts' => $posts,
+        ]);
     }
 
     public function edit(Request $request, Post $post): View
     {
         $post = Post::find($id);
 
-        return view('post.edit', compact('post'));
+        return view('post.edit', [
+            'post' => $post,
+        ]);
     }
 
     public function update(Request $request, Post $post): RedirectResponse
