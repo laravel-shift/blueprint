@@ -78,7 +78,7 @@ final class StatementLexerTest extends TestCase
     public function it_returns_an_inertia_statement_with_data(): void
     {
         $tokens = [
-            'inertia' => 'post.index with:foo,bar,baz',
+            'inertia' => 'Post/Index with:foo,bar,baz',
         ];
 
         $actual = $this->subject->analyze($tokens);
@@ -86,7 +86,7 @@ final class StatementLexerTest extends TestCase
         $this->assertCount(1, $actual);
         $this->assertInstanceOf(InertiaStatement::class, $actual[0]);
 
-        $this->assertEquals('post.index', $actual[0]->view());
+        $this->assertEquals('Post/Index', $actual[0]->view());
         $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
     }
 
