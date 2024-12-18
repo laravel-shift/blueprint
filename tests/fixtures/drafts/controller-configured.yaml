@@ -13,4 +13,5 @@ controllers:
 config:
   app_path: shift
   namespace: Some\App
+  models_namespace: null
   controllers_namespace: Other\Http

@@ -222,7 +222,13 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
             return $model->fullyQualifiedClassName();
         }
 
-        return config('blueprint.namespace') . '\\' . ($sub_namespace ? $sub_namespace . '\\' : '') . $model_name;
+        return sprintf(
+            '%s\\%s%s%s',
+            config('blueprint.namespace'),
+            config('blueprint.models_namespace') ? config('blueprint.models_namespace') . '\\' : '',
+            $sub_namespace ? $sub_namespace . '\\' : '',
+            $model_name
+        );
     }
 
     private function determineModel(Controller $controller, ?string $reference): string
