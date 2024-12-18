@@ -1,0 +1,11 @@
+controllers:
+  UserController:
+    store:
+      validate: user
+      save: user
+      redirect: backend.users.show
+    update:
+      validate: user
+      update: user
+      flash: user.id
+      redirect: user.index
