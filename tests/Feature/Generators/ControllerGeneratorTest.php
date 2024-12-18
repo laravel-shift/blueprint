@@ -239,6 +239,7 @@ final class ControllerGeneratorTest extends TestCase
             ['drafts/readme-example-notification-facade.yaml', 'app/Http/Controllers/PostController.php', 'controllers/readme-example-notification-facade.php'],
             ['drafts/readme-example-notification-model.yaml', 'app/Http/Controllers/PostController.php', 'controllers/readme-example-notification-model.php'],
             ['drafts/crazy-eloquent.yaml', 'app/Http/Controllers/PostController.php', 'controllers/crazy-eloquent.php'],
+            ['drafts/longhand-controller-name.yaml', 'app/Http/Controllers/UserController.php', 'controllers/longhand-controller-name.php'],
             ['drafts/nested-components.yaml', 'app/Http/Controllers/Admin/UserController.php', 'controllers/nested-components.php'],
             ['drafts/respond-statements.yaml', 'app/Http/Controllers/Api/PostController.php', 'controllers/respond-statements.php'],
             ['drafts/resource-statements.yaml', 'app/Http/Controllers/UserController.php', 'controllers/resource-statements.php'],
