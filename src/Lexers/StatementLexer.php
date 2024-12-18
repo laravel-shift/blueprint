@@ -6,6 +6,7 @@ use Blueprint\Contracts\Lexer;
 use Blueprint\Models\Statements\DispatchStatement;
 use Blueprint\Models\Statements\EloquentStatement;
 use Blueprint\Models\Statements\FireStatement;
+use Blueprint\Models\Statements\InertiaStatement;
 use Blueprint\Models\Statements\QueryStatement;
 use Blueprint\Models\Statements\RedirectStatement;
 use Blueprint\Models\Statements\RenderStatement;
@@ -24,24 +25,32 @@ class StatementLexer implements Lexer
 
         foreach ($tokens as $command => $statement) {
             $statements[] = match ($command) {
-                'query' => $this->analyzeQuery($statement),
-                'render' => $this->analyzeRender($statement),
-                'fire' => $this->analyzeEvent($statement),
                 'dispatch' => $this->analyzeDispatch($statement),
-                'send' => $this->analyzeSend($statement),
-                'notify' => $this->analyzeNotify($statement),
-                'validate' => $this->analyzeValidate($statement),
-                'redirect' => $this->analyzeRedirect($statement),
-                'respond' => $this->analyzeRespond($statement),
-                'resource' => $this->analyzeResource($statement),
-                'save', 'delete', 'find' => new EloquentStatement($command, $statement),
-                'update' => $this->analyzeUpdate($statement),
+                'fire' => $this->analyzeEvent($statement),
                 'flash', 'store' => new SessionStatement($command, $statement),
+                'inertia' => $this->analyzeInertia($statement),
+                'notify' => $this->analyzeNotify($statement),
+                'query' => $this->analyzeQuery($statement),
+                'redirect' => $this->analyzeRedirect($statement),
+                'render' => $this->analyzeRender($statement),
+                'resource' => $this->analyzeResource($statement),
+                'respond' => $this->analyzeRespond($statement),
+                'save', 'delete', 'find' => new EloquentStatement($command, $statement),
+                'send' => $this->analyzeSend($statement),
+                'update' => $this->analyzeUpdate($statement),
+                'validate' => $this->analyzeValidate($statement),
                 default => $this->analyzeDefault($command, $statement),
             };
         }
 
         return array_filter($statements);
+    }
+
+    private function analyzeInertia(string $statement): InertiaStatement
+    {
+        [$view, $data] = $this->parseWithStatement($statement);
+
+        return new InertiaStatement($view, $data);
     }
 
     private function analyzeRender(string $statement): RenderStatement

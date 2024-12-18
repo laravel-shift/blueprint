@@ -241,6 +241,7 @@ final class ControllerGeneratorTest extends TestCase
             ['drafts/nested-components.yaml', 'app/Http/Controllers/Admin/UserController.php', 'controllers/nested-components.php'],
             ['drafts/respond-statements.yaml', 'app/Http/Controllers/Api/PostController.php', 'controllers/respond-statements.php'],
             ['drafts/resource-statements.yaml', 'app/Http/Controllers/UserController.php', 'controllers/resource-statements.php'],
+            ['drafts/inertia-render.yaml', 'app/Http/Controllers/CustomerController.php', 'controllers/inertia-render.php'],
             ['drafts/save-without-validation.yaml', 'app/Http/Controllers/PostController.php', 'controllers/save-without-validation.php'],
             ['drafts/api-resource-pagination.yaml', 'app/Http/Controllers/PostController.php', 'controllers/api-resource-pagination.php'],
             ['drafts/api-routes-example.yaml', 'app/Http/Controllers/Api/CertificateController.php', 'controllers/api-routes-example.php'],

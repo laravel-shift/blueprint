@@ -10,6 +10,7 @@ use Blueprint\Models\Policy;
 use Blueprint\Models\Statements\DispatchStatement;
 use Blueprint\Models\Statements\EloquentStatement;
 use Blueprint\Models\Statements\FireStatement;
+use Blueprint\Models\Statements\InertiaStatement;
 use Blueprint\Models\Statements\QueryStatement;
 use Blueprint\Models\Statements\RedirectStatement;
 use Blueprint\Models\Statements\RenderStatement;
@@ -174,6 +175,9 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
                 } elseif ($statement instanceof QueryStatement) {
                     $body .= self::INDENT . $statement->output($controller->prefix()) . PHP_EOL;
                     $this->addImport($controller, $this->determineModel($controller, $statement->model()));
+                } elseif ($statement instanceof InertiaStatement) {
+                    $body .= self::INDENT . $statement->output() . PHP_EOL;
+                    $this->addImport($controller, 'Inertia\Inertia');
                 }
 
                 $body .= PHP_EOL;
@@ -187,6 +191,7 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
                 $method = str_replace('): Response' . PHP_EOL, ')' . PHP_EOL, $method);
             } else {
                 $returnType = match (true) {
+                    $statement instanceof InertiaStatement => 'Inertia\Response',
                     $statement instanceof RenderStatement => 'Illuminate\View\View',
                     $statement instanceof RedirectStatement => 'Illuminate\Http\RedirectResponse',
                     $statement instanceof ResourceStatement => config('blueprint.namespace') . '\\Http\\Resources\\' . ($controller->namespace() ? $controller->namespace() . '\\' : '') . $statement->name(),
