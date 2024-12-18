@@ -646,6 +646,7 @@ final class MigrationGeneratorTest extends TestCase
             ['drafts/foreign-key-on-delete.yaml', 'database/migrations/timestamp_create_comments_table.php', 'migrations/foreign-key-on-delete.php'],
             ['drafts/nullable-columns-with-foreign.yaml', 'database/migrations/timestamp_create_comments_table.php', 'migrations/nullable-columns-with-foreign.php'],
             ['drafts/omits-length-for-integers.yaml', 'database/migrations/timestamp_create_omits_table.php', 'migrations/omits-length-for-integers.php'],
+            ['drafts/geometry-columns.yaml', 'database/migrations/timestamp_create_locations_table.php', 'migrations/geometry-columns.php'],
         ];
     }
 }

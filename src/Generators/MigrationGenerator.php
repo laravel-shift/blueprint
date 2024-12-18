@@ -152,6 +152,10 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             if (!empty($columnAttributes) && !$this->isIdColumnType($column->dataType())) {
                 $column_definition .= ', ';
 
+                if (in_array($column->dataType(), ['geography', 'geometry'])) {
+                    $columnAttributes[0] = Str::wrap($columnAttributes[0], "'");
+                }
+
                 if (in_array($column->dataType(), ['set', 'enum'])) {
                     $column_definition .= json_encode($columnAttributes);
                 } else {
