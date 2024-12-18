@@ -1,0 +1,7 @@
+models:
+  Location:
+    name:  string:100
+    description: text nullable
+    coordinates: geography:point,4326
+    positions: geometry:point,0
+
