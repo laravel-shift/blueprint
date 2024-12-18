@@ -6,6 +6,7 @@ use Blueprint\Lexers\StatementLexer;
 use Blueprint\Models\Statements\DispatchStatement;
 use Blueprint\Models\Statements\EloquentStatement;
 use Blueprint\Models\Statements\FireStatement;
+use Blueprint\Models\Statements\InertiaStatement;
 use Blueprint\Models\Statements\QueryStatement;
 use Blueprint\Models\Statements\RedirectStatement;
 use Blueprint\Models\Statements\RenderStatement;
@@ -68,6 +69,22 @@ final class StatementLexerTest extends TestCase
 
         $this->assertCount(1, $actual);
         $this->assertInstanceOf(RenderStatement::class, $actual[0]);
+
+        $this->assertEquals('post.index', $actual[0]->view());
+        $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
+    }
+
+    #[Test]
+    public function it_returns_an_inertia_statement_with_data(): void
+    {
+        $tokens = [
+            'inertia' => 'post.index with:foo,bar,baz',
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(InertiaStatement::class, $actual[0]);
 
         $this->assertEquals('post.index', $actual[0]->view());
         $this->assertEquals(['foo', 'bar', 'baz'], $actual[0]->data());
