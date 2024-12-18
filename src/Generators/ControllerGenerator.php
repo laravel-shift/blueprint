@@ -109,9 +109,10 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
                             '$' . Str::camel($controllerModelName),
                         ],
                         in_array($name, ['index', 'create', 'store'])
-                            ? "\$this->authorize('{{ method }}', {{ modelClass }}::class);"
-                            : "\$this->authorize('{{ method }}', {{ modelVariable }});"
+                            ? "Gate::authorize('{{ method }}', {{ modelClass }}::class);"
+                            : "Gate::authorize('{{ method }}', {{ modelVariable }});"
                     ) . PHP_EOL . PHP_EOL;
+                    $this->addImport($controller, 'Illuminate\Support\Facades\Gate');
                 }
             }
 

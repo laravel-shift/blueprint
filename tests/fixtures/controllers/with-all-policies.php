@@ -7,13 +7,14 @@ use App\Http\Requests\PostUpdateRequest;
 use App\Post;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class PostController extends Controller
 {
     public function index(Request $request): View
     {
-        $this->authorize('index', Post::class);
+        Gate::authorize('index', Post::class);
 
         $posts = Post::all();
 
@@ -24,14 +25,14 @@ class PostController extends Controller
 
     public function create(Request $request): View
     {
-        $this->authorize('create', Post::class);
+        Gate::authorize('create', Post::class);
 
         return view('post.create');
     }
 
     public function store(PostStoreRequest $request): RedirectResponse
     {
-        $this->authorize('store', Post::class);
+        Gate::authorize('store', Post::class);
 
 
         $post = Post::create($request->validated());
@@ -43,7 +44,7 @@ class PostController extends Controller
 
     public function show(Request $request, Post $post): View
     {
-        $this->authorize('show', $post);
+        Gate::authorize('show', $post);
 
         return view('post.show', [
             'post' => $post,
@@ -52,7 +53,7 @@ class PostController extends Controller
 
     public function edit(Request $request, Post $post): View
     {
-        $this->authorize('edit', $post);
+        Gate::authorize('edit', $post);
 
         return view('post.edit', [
             'post' => $post,
@@ -61,7 +62,7 @@ class PostController extends Controller
 
     public function update(PostUpdateRequest $request, Post $post): RedirectResponse
     {
-        $this->authorize('update', $post);
+        Gate::authorize('update', $post);
 
 
         $post->update($request->validated());
@@ -73,7 +74,7 @@ class PostController extends Controller
 
     public function destroy(Request $request, Post $post): RedirectResponse
     {
-        $this->authorize('destroy', $post);
+        Gate::authorize('destroy', $post);
 
         $post->delete();
 

@@ -7,13 +7,14 @@ use App\Http\Requests\PostUpdateRequest;
 use App\Post;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class PostController extends Controller
 {
     public function index(Request $request): View
     {
-        $this->authorize('index', Post::class);
+        Gate::authorize('index', Post::class);
 
         $posts = Post::all();
 
@@ -38,7 +39,7 @@ class PostController extends Controller
 
     public function show(Request $request, Post $post): View
     {
-        $this->authorize('show', $post);
+        Gate::authorize('show', $post);
 
         return view('post.show', [
             'post' => $post,
