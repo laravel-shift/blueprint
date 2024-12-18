@@ -130,6 +130,7 @@ final class ControllerGeneratorTest extends TestCase
     {
         $this->app['config']->set('blueprint.app_path', 'src/path');
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
+        $this->app['config']->set('blueprint.models_namespace', '');
         $this->app['config']->set('blueprint.controllers_namespace', 'Other\\Http');
 
         $this->filesystem->expects('stub')
