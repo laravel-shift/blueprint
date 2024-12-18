@@ -2,4 +2,4 @@ controllers:
   Customer:
     show:
       query: all
-      inertia: customer.show with:customer,customers
+      inertia: Customer/Show with:customer,customers

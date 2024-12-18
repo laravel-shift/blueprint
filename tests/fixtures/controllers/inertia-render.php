@@ -13,7 +13,7 @@ class CustomerController extends Controller
     {
         $customers = Customer::all();
 
-        return Inertia::render('customer.show', [
+        return Inertia::render('Customer/Show', [
             'customer' => $customer,
             'customers' => $customers,
         ]);
