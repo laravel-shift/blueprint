@@ -129,6 +129,17 @@ final class RulesTest extends TestCase
     }
 
     #[Test]
+    public function forColumn_returns_exists_rule_for_foreign_keys_with_foreign_table_name(): void
+    {
+        $column = new Column('author_id', 'id', [['foreign' => 'users']]);
+
+        $actual = Rules::fromColumn('context', $column);
+
+        $this->assertContains('integer', $actual);
+        $this->assertContains('exists:users,id', $actual);
+    }
+
+    #[Test]
     public function forColumn_returns_gt0_rule_for_unsigned_numeric_types(): void
     {
         $column = new Column('test', 'integer');

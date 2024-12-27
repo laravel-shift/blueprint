@@ -37,8 +37,8 @@ class Rules
         }
 
         if ($column->dataType() === 'id' && ($column->attributes() || Str::endsWith($column->name(), '_id'))) {
-            $reference = $column->attributes()[0] ?? Str::beforeLast($column->name(), '_id');
-            $rules = array_merge($rules, ['integer', 'exists:' . Str::plural($reference) . ',id']);
+            $table = $column->modifiers()[0]['foreign'] ?? Str::plural($column->attributes()[0] ?? Str::beforeLast($column->name(), '_id'));
+            $rules = array_merge($rules, ['integer', 'exists:' . $table . ',id']);
         }
 
         if (in_array($column->dataType(), self::INTEGER_TYPES)) {
