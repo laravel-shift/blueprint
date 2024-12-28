@@ -232,6 +232,33 @@ final class ControllerGeneratorTest extends TestCase
         $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
     }
 
+    #[Test]
+    public function output_generates_controller_without_generating_resource_collection_classes(): void
+    {
+        config(['blueprint.generate_resource_collection_classes' => false]);
+
+        $definition = 'drafts/api-resource-pagination.yaml';
+        $path = 'app/Http/Controllers/PostController.php';
+        $controller = 'controllers/without-generating-resource-collection-classes.php';
+
+        $this->filesystem->expects('stub')
+            ->with('controller.class.stub')
+            ->andReturn($this->stub('controller.class.stub'));
+        $this->filesystem->expects('stub')
+            ->with('controller.method.stub')
+            ->andReturn($this->stub('controller.method.stub'));
+
+        $this->filesystem->expects('exists')
+            ->with(dirname($path))
+            ->andReturnTrue();
+        $this->filesystem->expects('put')
+            ->with($path, $this->fixture($controller));
+
+        $tokens = $this->blueprint->parse($this->fixture($definition));
+        $tree = $this->blueprint->analyze($tokens);
+        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+    }
+
     public static function controllerTreeDataProvider(): array
     {
         return [

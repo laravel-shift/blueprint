@@ -21,7 +21,7 @@ class ResourceStatement
 
     public function name(): string
     {
-        if ($this->collection()) {
+        if ($this->collection() && $this->generateCollectionClass()) {
             return Str::studly(Str::singular($this->reference)) . 'Collection';
         }
 
@@ -43,8 +43,17 @@ class ResourceStatement
         return $this->paginate;
     }
 
+    public function generateCollectionClass(): bool
+    {
+        return config('blueprint.generate_resource_collection_classes');
+    }
+
     public function output(array $properties = []): string
     {
+        if ($this->collection() && !$this->generateCollectionClass()) {
+            return sprintf('return %s::collection(%s);', $this->name(), $this->buildArgument($properties));
+        }
+
         return sprintf('return new %s(%s);', $this->name(), $this->buildArgument($properties));
     }
 

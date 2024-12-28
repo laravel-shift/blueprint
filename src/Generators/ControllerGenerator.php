@@ -195,7 +195,7 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
                     $statement instanceof InertiaStatement => 'Inertia\Response',
                     $statement instanceof RenderStatement => 'Illuminate\View\View',
                     $statement instanceof RedirectStatement => 'Illuminate\Http\RedirectResponse',
-                    $statement instanceof ResourceStatement => config('blueprint.namespace') . '\\Http\\Resources\\' . ($controller->namespace() ? $controller->namespace() . '\\' : '') . $statement->name(),
+                    $statement instanceof ResourceStatement => $statement->collection() && !$statement->generateCollectionClass() ? 'Illuminate\Http\Resources\Json\ResourceCollection' : config('blueprint.namespace') . '\\Http\\Resources\\' . ($controller->namespace() ? $controller->namespace() . '\\' : '') . $statement->name(),
                     default => 'Illuminate\Http\Response'
                 };
 

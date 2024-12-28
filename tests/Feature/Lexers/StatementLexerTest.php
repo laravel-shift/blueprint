@@ -17,7 +17,7 @@ use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 /**
  * @see StatementLexer
@@ -677,6 +677,26 @@ final class StatementLexerTest extends TestCase
         $this->assertEquals('users', $actual[0]->reference());
         $this->assertTrue($actual[0]->collection());
         $this->assertTrue($actual[0]->paginate());
+    }
+
+    #[Test]
+    public function it_returns_a_resource_collection_statement_without_generating_a_resource_collection_class(): void
+    {
+        config(['blueprint.generate_resource_collection_classes' => false]);
+
+        $tokens = [
+            'resource' => 'collection:users',
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual);
+        $this->assertInstanceOf(ResourceStatement::class, $actual[0]);
+
+        $this->assertEquals('UserResource', $actual[0]->name());
+        $this->assertEquals('users', $actual[0]->reference());
+        $this->assertTrue($actual[0]->collection());
+        $this->assertFalse($actual[0]->paginate());
     }
 
     public static function sessionTokensProvider(): array
