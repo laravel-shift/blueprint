@@ -45,7 +45,7 @@ class ResourceStatement
 
     public function generateCollectionClass(): bool
     {
-        return config('blueprint.generate_resource_collection_classes');
+        return config('blueprint.generate_resource_collection_classes', true);
     }
 
     public function output(array $properties = []): string
