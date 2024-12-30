@@ -1,0 +1,3 @@
+models:
+  Post:
+    name: enum:one,two,three
