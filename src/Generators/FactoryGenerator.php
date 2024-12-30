@@ -120,7 +120,7 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
                 $definition .= sprintf('%s::factory()', $class);
                 $definition .= ',' . PHP_EOL;
             } elseif (in_array($column->dataType(), ['enum', 'set']) && !empty($column->attributes())) {
-                $faker = FakerRegistry::fakerData($column->name()) ?? FakerRegistry::fakerDataType($column->dataType());
+                $faker = FakerRegistry::fakerDataType($column->dataType()) ?? FakerRegistry::fakerData($column->name());
                 $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
                 $definition .= '$this->faker->' . $faker;
                 $definition .= ',' . PHP_EOL;
