@@ -132,6 +132,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Generate Resource Collection Classes
+    |--------------------------------------------------------------------------
+    |
+    | By default, Blueprint generates resource collection classes to manage resource
+    | collections (e.g. `PostResourceCollection`). You may disable this option to
+    | generate only resource classes and use their `collection` method instead.
+    |
+    */
+    'generate_resource_collection_classes' => true,
+
+    /*
+    |--------------------------------------------------------------------------
     | Generators
     |--------------------------------------------------------------------------
     |

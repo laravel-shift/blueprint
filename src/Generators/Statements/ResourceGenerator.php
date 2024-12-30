@@ -60,14 +60,14 @@ class ResourceGenerator extends StatementGenerator implements Generator
             . ($controller->namespace() ? '\\' . $controller->namespace() : '');
 
         $imports = ['use Illuminate\\Http\\Request;'];
-        $imports[] = $resource->collection() ? 'use Illuminate\\Http\\Resources\\Json\\ResourceCollection;' : 'use Illuminate\\Http\\Resources\\Json\\JsonResource;';
+        $imports[] = $resource->collection() && $resource->generateCollectionClass() ? 'use Illuminate\\Http\\Resources\\Json\\ResourceCollection;' : 'use Illuminate\\Http\\Resources\\Json\\JsonResource;';
 
         $stub = str_replace('{{ namespace }}', $namespace, $stub);
         $stub = str_replace('{{ imports }}', implode(PHP_EOL, $imports), $stub);
-        $stub = str_replace('{{ parentClass }}', $resource->collection() ? 'ResourceCollection' : 'JsonResource', $stub);
+        $stub = str_replace('{{ parentClass }}', $resource->collection() && $resource->generateCollectionClass() ? 'ResourceCollection' : 'JsonResource', $stub);
         $stub = str_replace('{{ class }}', $resource->name(), $stub);
-        $stub = str_replace('{{ parentClass }}', $resource->collection() ? 'ResourceCollection' : 'JsonResource', $stub);
-        $stub = str_replace('{{ resource }}', $resource->collection() ? 'resource collection' : 'resource', $stub);
+        $stub = str_replace('{{ parentClass }}', $resource->collection() && $resource->generateCollectionClass() ? 'ResourceCollection' : 'JsonResource', $stub);
+        $stub = str_replace('{{ resource }}', $resource->collection() && $resource->generateCollectionClass() ? 'resource collection' : 'resource', $stub);
         $stub = str_replace('{{ body }}', $this->buildData($resource), $stub);
 
         return $stub;
@@ -83,7 +83,7 @@ class ResourceGenerator extends StatementGenerator implements Generator
         $model = $this->tree->modelForContext($context, true);
 
         $data = [];
-        if ($resource->collection()) {
+        if ($resource->collection() && $resource->generateCollectionClass()) {
             $data[] = 'return [';
             $data[] = self::INDENT . '\'data\' => $this->collection,';
             $data[] = '        ];';
