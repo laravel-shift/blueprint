@@ -82,14 +82,19 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
 
         foreach ($controller->methods() as $name => $statements) {
             $method = str_replace('{{ method }}', $name, $template);
+            $search = '(Request $request';
 
             if (in_array($name, ['edit', 'update', 'show', 'destroy'])) {
                 $reference = $this->fullyQualifyModelReference($controller->namespace(), $controllerModelName);
                 $variable = '$' . Str::camel($controllerModelName);
 
-                $search = '(Request $request';
                 $method = str_replace($search, $search . ', ' . $controllerModelName . ' ' . $variable, $method);
                 $this->addImport($controller, $reference);
+            }
+
+            if ($parent = $controller->parent()) {
+                $method = str_replace($search, $search . ', ' . $parent . ' $' . Str::camel($parent), $method);
+                $this->addImport($controller, $this->fullyQualifyModelReference($controller->namespace(), $parent));
             }
 
             $body = '';
@@ -179,6 +184,17 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
                 } elseif ($statement instanceof InertiaStatement) {
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
                     $this->addImport($controller, 'Inertia\Inertia');
+                }
+
+                if (
+                    $controller->parent() &&
+                    ($statement instanceof QueryStatement || $statement instanceof EloquentStatement || $statement instanceof ResourceStatement)
+                ) {
+                    $body = str_replace(
+                        ['::all', Str::singular($controller->prefix()) . '::'],
+                        ['::get', '$' . Str::lower($controller->parent()) . '->' . Str::plural(Str::lower($controller->prefix())) . '()->'],
+                        $body
+                    );
                 }
 
                 $body .= PHP_EOL;

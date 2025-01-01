@@ -74,6 +74,10 @@ class ControllerLexer implements Lexer
                     $registry['policies'][] = $policy;
                 }
 
+                if (isset($definition['meta']['parent'])) {
+                    $controller->setParent($definition['meta']['parent']);
+                }
+
                 unset($definition['meta']);
             }
 

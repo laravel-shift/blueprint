@@ -119,6 +119,7 @@ final class RouteGeneratorTest extends TestCase
             ['drafts/respond-statements.yaml', 'routes/respond-statements.php'],
             ['drafts/invokable-controller.yaml', 'routes/invokable-controller.php'],
             ['drafts/invokable-controller-shorthand.yaml', 'routes/invokable-controller.php'],
+            ['drafts/controller-nested.yaml', 'routes/nested-controller.php'],
         ];
     }
 }

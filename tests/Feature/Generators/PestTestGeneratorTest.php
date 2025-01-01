@@ -225,6 +225,7 @@ final class PestTestGeneratorTest extends TestCase
             ['drafts/model-reference-validate.yaml', 'tests/Feature/Http/Controllers/CertificateControllerTest.php', 'tests/pest/api-shorthand-validation.php'],
             ['drafts/controllers-only-no-context.yaml', 'tests/Feature/Http/Controllers/ReportControllerTest.php', 'tests/pest/controllers-only-no-context.php'],
             ['drafts/date-formats.yaml', 'tests/Feature/Http/Controllers/DateControllerTest.php', 'tests/pest/date-formats.php'],
+            ['drafts/api-resource-nested.yaml', 'tests/Feature/Http/Controllers/CommentControllerTest.php', 'tests/pest/api-resource-nested.php'],
             ['drafts/call-to-a-member-function-columns-on-null.yaml', [
                 'tests/Feature/Http/Controllers/SubscriptionControllerTest.php',
                 'tests/Feature/Http/Controllers/TelegramControllerTest.php',

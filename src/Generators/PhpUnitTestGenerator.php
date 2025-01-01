@@ -114,6 +114,11 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
                 $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
             }
 
+            if ($parent = $controller->parent()) {
+                $this->addImport($controller, $modelNamespace . '\\' . $parent);
+                $setup['data'][] = sprintf('$%s = %s::factory()->create();', Str::camel($parent), $parent);
+            }
+
             foreach ($statements as $statement) {
                 if ($statement instanceof SendStatement) {
                     if ($statement->isNotification()) {
@@ -485,6 +490,22 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
                 $call .= ', $' . Str::camel($context);
             }
             $call .= ')';
+
+            if ($controller->parent()) {
+                $parent = Str::camel($controller->parent());
+                $variable = Str::camel($context);
+                $binding = sprintf(', $%s)', $variable);
+                $params = sprintf("'%s' => $%s", $parent, $parent);
+
+                if (Str::contains($call, $binding)) {
+                    $params .= sprintf(", '%s' => $%s", $variable, $variable);
+                    $search = $binding;
+                } else {
+                    $search = ')';
+                }
+
+                $call = str_replace($search, sprintf(', [%s])', $params), $call);
+            }
 
             if ($request_data) {
                 $call .= ', [';

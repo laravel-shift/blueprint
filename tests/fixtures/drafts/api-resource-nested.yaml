@@ -1,0 +1,16 @@
+models:
+  Post:
+    title: string
+    body: text
+    relationships:
+      hasMany: comment
+      belongsTo: user
+  Comment:
+    body: text
+    relationships:
+      belongsTo: post, user
+controllers:
+  Comment:
+    resource: api
+    meta:
+      parent: post

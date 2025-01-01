@@ -486,4 +486,30 @@ final class ControllerLexerTest extends TestCase
         $this->assertInstanceOf(Policy::class, $controller->policy());
         $this->assertEquals(['viewAny', 'view'], $controller->policy()->methods());
     }
+
+    #[Test]
+    public function it_returns_a_nested_controller(): void
+    {
+        $tokens = [
+            'controllers' => [
+                'Comment' => [
+                    'resource' => 'api',
+                    'meta' => [
+                        'parent' => 'post',
+                    ],
+                ],
+            ],
+        ];
+
+        $this->statementLexer->shouldReceive('analyze');
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertCount(1, $actual['controllers']);
+
+        $controller = $actual['controllers']['Comment'];
+        $this->assertEquals('CommentController', $controller->className());
+        $this->assertCount(5, $controller->methods());
+        $this->assertEquals($controller->parent(), 'Post');
+    }
 }
