@@ -8,9 +8,12 @@ use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
+use JMac\Testing\Traits\AdditionalAssertions;
 use function Pest\Faker\fake;
 use function Pest\Laravel\get;
 use function Pest\Laravel\post;
+
+pest()->use(AdditionalAssertions::class);
 
 test('store uses form request validation')
     ->assertActionUsesFormRequest(

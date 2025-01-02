@@ -9,9 +9,12 @@ use App\Notification\ReviewNotification;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Queue;
+use JMac\Testing\Traits\AdditionalAssertions;
 use function Pest\Faker\fake;
 use function Pest\Laravel\get;
 use function Pest\Laravel\post;
+
+pest()->use(AdditionalAssertions::class);
 
 test('index displays view', function (): void {
     $posts = Post::factory()->count(3)->create();

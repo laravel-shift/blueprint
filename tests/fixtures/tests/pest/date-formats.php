@@ -4,12 +4,15 @@ namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Date;
 use Illuminate\Support\Carbon;
+use JMac\Testing\Traits\AdditionalAssertions;
 use function Pest\Faker\fake;
 use function Pest\Laravel\assertModelMissing;
 use function Pest\Laravel\delete;
 use function Pest\Laravel\get;
 use function Pest\Laravel\post;
 use function Pest\Laravel\put;
+
+pest()->use(AdditionalAssertions::class);
 
 test('index displays view', function (): void {
     $dates = Date::factory()->count(3)->create();
