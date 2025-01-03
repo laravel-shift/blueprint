@@ -4,6 +4,7 @@ namespace Blueprint\Generators;
 
 use Blueprint\Blueprint;
 use Blueprint\Concerns\HandlesImports;
+use Blueprint\Concerns\HandlesTraits;
 use Blueprint\Contracts\Generator;
 use Blueprint\Contracts\Model as BlueprintModel;
 use Blueprint\Models\Column;
@@ -25,7 +26,7 @@ use Shift\Faker\Registry as FakerRegistry;
 
 class PestTestGenerator extends AbstractClassGenerator implements Generator
 {
-    use HandlesImports;
+    use HandlesImports, HandlesTraits;
 
     const TESTS_VIEW = 1;
 
@@ -40,8 +41,6 @@ class PestTestGenerator extends AbstractClassGenerator implements Generator
     protected array $stubs = [];
 
     protected array $types = ['controllers', 'tests'];
-
-    protected array $traits = [];
 
     public function output(Tree $tree): array
     {
@@ -656,11 +655,6 @@ END;
     private function buildLines($lines): string
     {
         return str_pad(' ', 4) . implode(PHP_EOL . str_pad(' ', 4), $lines);
-    }
-
-    protected function addTrait(BlueprintModel $model, $trait): void
-    {
-        $this->traits[$model->name()][] = $trait;
     }
 
     protected function buildTraits(BlueprintModel $model): string
