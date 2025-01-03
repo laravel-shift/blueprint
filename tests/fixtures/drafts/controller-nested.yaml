@@ -1,0 +1,5 @@
+controllers:
+  Comment:
+    resource: web
+    meta:
+      parent: post
