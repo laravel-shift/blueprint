@@ -29,6 +29,10 @@ class RouteGenerator extends AbstractClassGenerator implements Generator
 
         $paths = [];
 
+        if (isset($routes['api'])) {
+            $this->setupApiRouter();
+        }
+
         foreach (array_filter($routes) as $type => $definitions) {
             $path = 'routes/' . $type . '.php';
             $this->filesystem->append($path, $definitions . PHP_EOL);
@@ -92,5 +96,39 @@ class RouteGenerator extends AbstractClassGenerator implements Generator
         }
 
         return sprintf("Route::get('%s/%s', [%s, '%s']);", $slug, Str::kebab($method), $className, $method);
+    }
+
+    protected function setupApiRouter(): void
+    {
+        $this->createApiRoutesFileIfMissing();
+        $this->configureApiRoutesInAppBootstrap();
+    }
+
+    protected function createApiRoutesFileIfMissing(): void
+    {
+        $apiPath = 'routes/api.php';
+        if (!$this->filesystem->exists($apiPath)) {
+            $this->filesystem->put($apiPath, $this->filesystem->stub('routes.api.stub'));
+        }
+    }
+
+    protected function configureApiRoutesInAppBootstrap(): void
+    {
+        $appBootstrapPath = 'bootstrap/app.php';
+        $content = $this->filesystem->get($appBootstrapPath);
+
+        if (str_contains($content, '// api: ')) {
+            $this->filesystem->replaceInFile(
+                '// api: ',
+                'api: ',
+                $appBootstrapPath,
+            );
+        } elseif (str_contains($content, 'web: __DIR__.\'/../routes/web.php\',')) {
+            $this->filesystem->replaceInFile(
+                'web: __DIR__.\'/../routes/web.php\',',
+                'web: __DIR__.\'/../routes/web.php\',' . PHP_EOL . '        api: __DIR__.\'/../routes/api.php\',',
+                $appBootstrapPath,
+            );
+        }
     }
 }
