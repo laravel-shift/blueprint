@@ -109,6 +109,84 @@ final class RouteGeneratorTest extends TestCase
         $this->assertEquals(['updated' => ['routes/api.php', 'routes/web.php']], $this->subject->output($tree));
     }
 
+    #[Test]
+    public function output_creates_api_routes_file_when_missing(): void
+    {
+        $this->filesystem->expects('exists')
+            ->with('routes/api.php')
+            ->andReturn(false);
+
+        $this->filesystem->expects('stub')
+            ->with('routes.api.stub')
+            ->andReturn($this->stub('routes.api.stub'));
+
+        $this->filesystem->expects('put')
+            ->with('routes/api.php', $this->stub('routes.api.stub'));
+
+        $this->filesystem->expects('append')
+            ->with('routes/api.php', $this->fixture('routes/api-routes.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/api-routes-example.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['updated' => ['routes/api.php']], $this->subject->output($tree));
+    }
+
+    #[Test]
+    public function output_does_not_create_api_routes_file_when_it_exists(): void
+    {
+        $this->filesystem->shouldReceive('exists')
+            ->with('routes/api.php')
+            ->andReturn(true);
+
+        $this->filesystem->expects('put')
+            ->with('routes/api.php', $this->anything())
+            ->never();
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/api-routes-example.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['updated' => ['routes/api.php']], $this->subject->output($tree));
+    }
+
+    #[Test]
+    public function output_adds_api_route_line_to_bootstrap_if_missing(): void
+    {
+        $this->filesystem->expects('get')
+            ->with('bootstrap/app.php')
+            ->andReturn("web: __DIR__.'/../routes/web.php',");
+
+        $this->filesystem->shouldReceive('replaceInFile')
+            ->with(
+                'web: __DIR__.\'/../routes/web.php\',',
+                'web: __DIR__.\'/../routes/web.php\',' . PHP_EOL . '        api: __DIR__.\'/../routes/api.php\',',
+                'bootstrap/app.php'
+            )
+            ->once();
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/api-routes-example.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['updated' => ['routes/api.php']], $this->subject->output($tree));
+    }
+
+    #[Test]
+    public function output_uncomments_api_route_line_in_bootstrap_if_commented(): void
+    {
+        $this->filesystem->expects('get')
+            ->with('bootstrap/app.php')
+            ->andReturn("// api: \nweb: __DIR__.'/../routes/web.php',");
+
+        $this->filesystem->shouldReceive('replaceInFile')
+            ->with('// api: ', 'api: ', 'bootstrap/app.php')
+            ->once();
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/api-routes-example.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['updated' => ['routes/api.php']], $this->subject->output($tree));
+    }
+
     public static function controllerTreeDataProvider(): array
     {
         return [
