@@ -143,6 +143,9 @@ final class RouteGeneratorTest extends TestCase
             ->with('routes/api.php', $this->anything())
             ->never();
 
+        $this->filesystem->expects('replaceInFile')
+            ->never();
+
         $tokens = $this->blueprint->parse($this->fixture('drafts/api-routes-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
