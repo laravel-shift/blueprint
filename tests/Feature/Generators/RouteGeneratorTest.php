@@ -175,7 +175,7 @@ final class RouteGeneratorTest extends TestCase
     {
         $this->filesystem->expects('get')
             ->with('bootstrap/app.php')
-            ->andReturn("// api: \nweb: __DIR__.'/../routes/web.php',");
+            ->andReturn('// api: ');
 
         $this->filesystem->shouldReceive('replaceInFile')
             ->with('// api: ', 'api: ', 'bootstrap/app.php')
