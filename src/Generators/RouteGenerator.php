@@ -101,7 +101,6 @@ class RouteGenerator extends AbstractClassGenerator implements Generator
     protected function setupApiRouter(): void
     {
         $this->createApiRoutesFileIfMissing();
-        $this->configureApiRoutesInAppBootstrap();
     }
 
     protected function createApiRoutesFileIfMissing(): void
@@ -109,6 +108,7 @@ class RouteGenerator extends AbstractClassGenerator implements Generator
         $apiPath = 'routes/api.php';
         if (!$this->filesystem->exists($apiPath)) {
             $this->filesystem->put($apiPath, $this->filesystem->stub('routes.api.stub'));
+            $this->configureApiRoutesInAppBootstrap();
         }
     }
 
