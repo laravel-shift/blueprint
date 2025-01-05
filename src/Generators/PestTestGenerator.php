@@ -209,8 +209,7 @@ class PestTestGenerator extends AbstractClassGenerator implements Generator
                     $class = $this->buildFormRequestName($controller, $name);
                     $test_case = $this->buildFormRequestTestCase($controller->fullyQualifiedClassName(), $name, config('blueprint.namespace') . '\\Http\\Requests\\' . $class) . PHP_EOL . PHP_EOL . $test_case;
 
-                    $this->addImport($controller, 'JMac\\Testing\\Traits\AdditionalAssertions');
-                    $this->addTrait($controller, 'AdditionalAssertions');
+                    $this->importAdditionalAssertionsToBaseTest();
 
                     if ($statement->data()) {
                         foreach ($statement->data() as $data) {
@@ -678,17 +677,32 @@ END;
         return str_pad(' ', 4) . implode(PHP_EOL . str_pad(' ', 4), $lines);
     }
 
-    protected function buildTraits(BlueprintModel $model): string
+    private function importAdditionalAssertionsToBaseTest(): void
     {
-        if (empty($this->traits[$model->name()])) {
-            return '';
+        $path = base_path('tests/TestCase.php');
+
+        if (!$this->filesystem->exists($path)) {
+            return;
         }
 
-        $traits = collect($this->traits[$model->name()])
-            ->unique()
-            ->sort()
-            ->implode('::class)->use(');
+        $content = $this->filesystem->get($path);
 
-        return "pest()->use({$traits}::class);";
+        if (Str::contains($content, 'use JMac\\Testing\\Traits\\AdditionalAssertions;')) {
+            return;
+        }
+
+        $updatedContent = preg_replace(
+            [
+                '/as BaseTestCase;/',
+                '/abstract class TestCase extends BaseTestCase\s*{/',
+            ],
+            [
+                'as BaseTestCase;' . PHP_EOL . 'use JMac\\Testing\\Traits\\AdditionalAssertions;',
+                'abstract class TestCase extends BaseTestCase' . PHP_EOL . '{' . PHP_EOL . '    use AdditionalAssertions;',
+            ],
+            $content
+        );
+
+        $this->filesystem->put($path, $updatedContent);
     }
 }

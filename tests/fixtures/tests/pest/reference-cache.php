@@ -3,11 +3,8 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Models\User;
-use JMac\Testing\Traits\AdditionalAssertions;
 use function Pest\Faker\fake;
 use function Pest\Laravel\post;
-
-pest()->use(AdditionalAssertions::class);
 
 test('store uses form request validation')
     ->assertActionUsesFormRequest(

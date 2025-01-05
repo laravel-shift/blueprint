@@ -3,12 +3,9 @@
 namespace Tests\Feature\Http\Controllers\Api;
 
 use App\Models\Post;
-use JMac\Testing\Traits\AdditionalAssertions;
 use function Pest\Faker\fake;
 use function Pest\Laravel\get;
 use function Pest\Laravel\post;
-
-pest()->use(AdditionalAssertions::class);
 
 test('index responds with', function (): void {
     $posts = Post::factory()->count(3)->create();
