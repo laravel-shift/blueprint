@@ -299,4 +299,27 @@ final class FormRequestGeneratorTest extends TestCase
             ],
         ], $this->subject->output($tree));
     }
+
+    public function test_output_generates_form_request_without_parent_id_column_validation(): void
+    {
+        $this->filesystem->expects('stub')
+            ->with('request.stub')
+            ->andReturn($this->stub('request.stub'));
+        $this->filesystem->expects('exists')
+            ->twice()
+            ->with('app/Http/Requests')
+            ->andReturnFalse();
+        $this->filesystem->expects('put')
+            ->with('app/Http/Requests/CommentStoreRequest.php', $this->fixture('form-requests/form-requests-controller-has-parent.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/form-requests-controller-has-parent.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        self::assertSame([
+            'created' => [
+                'app/Http/Requests/CommentStoreRequest.php',
+                'app/Http/Requests/CommentUpdateRequest.php',
+            ],
+        ], $this->subject->output($tree));
+    }
 }

@@ -63,24 +63,24 @@ class FormRequestGenerator extends AbstractClassGenerator implements Generator
     {
         $stub = str_replace('{{ namespace }}', config('blueprint.namespace') . '\\Http\\Requests' . ($controller->namespace() ? '\\' . $controller->namespace() : ''), $stub);
         $stub = str_replace('{{ class }}', $name, $stub);
-        $stub = str_replace('{{ rules }}', $this->buildRules($context, $validateStatement), $stub);
+        $stub = str_replace('{{ rules }}', $this->buildRules($context, $validateStatement, $controller), $stub);
 
         return $stub;
     }
 
-    protected function buildRules(string $context, ValidateStatement $validateStatement): string
+    protected function buildRules(string $context, ValidateStatement $validateStatement, Controller $controller): string
     {
         return trim(
             array_reduce(
                 $validateStatement->data(),
-                function ($output, $field) use ($context) {
+                function ($output, $field) use ($context, $controller) {
                     [$qualifier, $column] = $this->splitField($field);
 
                     if (is_null($qualifier)) {
                         $qualifier = $context;
                     }
 
-                    $validationRules = $this->validationRules($qualifier, $column);
+                    $validationRules = $this->validationRules($qualifier, $column, $controller);
 
                     foreach ($validationRules as $name => $rule) {
                         $formattedRule = implode("', '", $rule);
@@ -104,7 +104,7 @@ class FormRequestGenerator extends AbstractClassGenerator implements Generator
         return [null, $field];
     }
 
-    protected function validationRules(string $qualifier, string $column): array
+    protected function validationRules(string $qualifier, string $column, Controller $controller): array
     {
         /**
          * @var \Blueprint\Models\Model $model
@@ -126,6 +126,10 @@ class FormRequestGenerator extends AbstractClassGenerator implements Generator
                  */
                 foreach ($model->columns() as $column) {
                     if ($column->name() === 'id') {
+                        continue;
+                    }
+
+                    if ($column->name() === Str::snake($controller->parent()) . '_id') {
                         continue;
                     }
 

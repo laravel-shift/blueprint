@@ -1,0 +1,15 @@
+models:
+  Post:
+    title: string
+    body: text
+    relationships:
+      hasMany: comment
+  Comment:
+    body: text
+    relationships:
+      belongsTo: post
+controllers:
+  Comment:
+    resource: api
+    meta:
+      parent: post
