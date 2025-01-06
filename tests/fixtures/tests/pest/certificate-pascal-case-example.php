@@ -5,15 +5,12 @@ namespace Tests\Feature\Http\Controllers;
 use App\Models\Certificate;
 use App\Models\CertificateType;
 use Illuminate\Support\Carbon;
-use JMac\Testing\Traits\AdditionalAssertions;
 use function Pest\Faker\fake;
 use function Pest\Laravel\assertModelMissing;
 use function Pest\Laravel\delete;
 use function Pest\Laravel\get;
 use function Pest\Laravel\post;
 use function Pest\Laravel\put;
-
-pest()->use(AdditionalAssertions::class);
 
 test('index behaves as expected', function (): void {
     $certificates = Certificate::factory()->count(3)->create();
