@@ -679,13 +679,14 @@ END;
 
     private function importAdditionalAssertionsToBaseTest(): void
     {
-        $path = base_path('tests/TestCase.php');
+        $path = 'tests/TestCase.php';
+        $fullPath = base_path($path);
 
-        if (!$this->filesystem->exists($path)) {
+        if (!$this->filesystem->exists($fullPath)) {
             return;
         }
 
-        $content = $this->filesystem->get($path);
+        $content = $this->filesystem->get($fullPath);
 
         if (Str::contains($content, 'use JMac\\Testing\\Traits\\AdditionalAssertions;')) {
             return;
@@ -703,6 +704,8 @@ END;
             $content
         );
 
-        $this->filesystem->put($path, $updatedContent);
+        $this->output['updated'][] = $path;
+
+        $this->filesystem->put($fullPath, $updatedContent);
     }
 }
