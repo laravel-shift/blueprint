@@ -170,6 +170,7 @@ return [
         'notification' => \Blueprint\Generators\Statements\NotificationGenerator::class,
         'resource' => \Blueprint\Generators\Statements\ResourceGenerator::class,
         'view' => \Blueprint\Generators\Statements\ViewGenerator::class,
+        'inertia_page' => \Blueprint\Generators\Statements\InertiaPageGenerator::class,
         'policy' => \Blueprint\Generators\PolicyGenerator::class,
     ],
 
