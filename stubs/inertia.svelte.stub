@@ -1,0 +1,11 @@
+<script>
+let {{ props }} = $props()
+</script>
+
+<svelte:head>
+  <title>{{ view }}</title>
+</svelte:head>
+
+<div>
+  <h1>{{ view }}</h1>
+</div>

@@ -1,0 +1,10 @@
+import { Head } from '@inertiajs/react'
+
+export default function {{ componentName }}({{ props }}) {
+  return (
+    <div>
+      <Head title="{{ view }}" />
+      <h1>{{ view }}</h1>
+    </div>
+  )
+}

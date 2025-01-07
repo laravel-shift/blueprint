@@ -2,19 +2,33 @@
 
 namespace Blueprint\Generators\Statements;
 
-use Blueprint\Models\Controller;
 use Blueprint\Contracts\Generator;
 use Blueprint\Generators\StatementGenerator;
 use Blueprint\Models\Statements\InertiaStatement;
 use Blueprint\Tree;
+use Illuminate\Support\Str;
 
 class InertiaPageGenerator extends StatementGenerator implements Generator
 {
-    protected array $types = ['controllers', 'views'];
+    protected array $types = [];
+
+    protected array $adapters = [
+        'vue3' => ['framework' => 'vue', 'extension' => '.vue'],
+        'react' => ['framework' => 'react', 'extension' => '.jsx'],
+        'svelte' => ['framework' => 'svelte', 'extension' => '.svelte'],
+    ];
+
+    protected ?array $adapter = null;
 
     public function output(Tree $tree): array
     {
-        $stub = $this->filesystem->stub('inertia.vue.stub');
+        $this->adapter = $this->getAdapter();
+
+        if (!$this->adapter) {
+            return $this->output;
+        }
+
+        $stub = $this->filesystem->stub('inertia.' . $this->adapter['framework'] . '.stub');
 
         /**
          * @var \Blueprint\Models\Controller $controller
@@ -33,7 +47,7 @@ class InertiaPageGenerator extends StatementGenerator implements Generator
                         continue;
                     }
 
-                    $this->create($path, $this->populateStub($stub, $statement, $controller));
+                    $this->create($path, $this->populateStub($stub, $statement));
                 }
             }
         }
@@ -41,13 +55,44 @@ class InertiaPageGenerator extends StatementGenerator implements Generator
         return $this->output;
     }
 
-    protected function getStatementPath(string $view): string
+    protected function getAdapter(): ?array
     {
-        return 'resources/js/Pages/' . str_replace('.', '/', $view) . '.vue';
+        $packagePath = base_path('package.json');
+
+        if (!$this->filesystem->exists($packagePath)) {
+            return null;
+        }
+
+        $contents = $this->filesystem->get($packagePath);
+
+        if (preg_match('/@inertiajs\/(vue3|react|svelte)/i', $contents, $matches)) {
+            $adapterKey = strtolower($matches[1]);
+
+            return $this->adapters[$adapterKey] ?? null;
+        }
+
+        return null;
     }
 
-    protected function populateStub(string $stub, InertiaStatement $inertiaStatement, Controller $controller): string
+    protected function getStatementPath(string $view): string
     {
-        return str_replace(['{{ props }}', '{{ view }}'], [json_encode($inertiaStatement->data()), $controller->name()], $stub);
+        return 'resources/js/Pages/' . str_replace('.', '/', $view) . $this->adapter['extension'];
+    }
+
+    protected function populateStub(string $stub, InertiaStatement $inertiaStatement): string
+    {
+        $data = $inertiaStatement->data();
+        $props = $this->adapter['framework'] === 'vue' ? json_encode($data) : '{ ' . implode(', ', $data) . ' }';
+        $componentName = $this->adapter['framework'] === 'react' ? Str::afterLast($inertiaStatement->view(), '/') : null;
+
+        return str_replace([
+            '{{ componentName }}',
+            '{{ props }}',
+            '{{ view }}',
+        ], [
+            $componentName,
+            $props,
+            str_replace('/', ' ', $inertiaStatement->view()),
+        ], $stub);
     }
 }
