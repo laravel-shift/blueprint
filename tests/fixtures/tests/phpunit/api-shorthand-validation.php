@@ -43,11 +43,11 @@ final class CertificateControllerTest extends TestCase
     #[Test]
     public function store_saves(): void
     {
-        $name = $this->faker->name();
+        $name = fake()->name();
         $certificate_type = CertificateType::factory()->create();
-        $reference = $this->faker->word();
-        $document = $this->faker->word();
-        $expiry_date = Carbon::parse($this->faker->date());
+        $reference = fake()->word();
+        $document = fake()->word();
+        $expiry_date = Carbon::parse(fake()->date());
 
         $response = $this->post(route('certificates.store'), [
             'name' => $name,
@@ -98,11 +98,11 @@ final class CertificateControllerTest extends TestCase
     public function update_behaves_as_expected(): void
     {
         $certificate = Certificate::factory()->create();
-        $name = $this->faker->name();
+        $name = fake()->name();
         $certificate_type = CertificateType::factory()->create();
-        $reference = $this->faker->word();
-        $document = $this->faker->word();
-        $expiry_date = Carbon::parse($this->faker->date());
+        $reference = fake()->word();
+        $document = fake()->word();
+        $expiry_date = Carbon::parse(fake()->date());
 
         $response = $this->put(route('certificates.update', $certificate), [
             'name' => $name,

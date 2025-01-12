@@ -21,8 +21,8 @@ class ModelFactory extends Factory
     public function definition(): array
     {
         return [
-            'market_type' => $this->faker->numberBetween(-8, 8),
-            'deposit' => $this->faker->randomNumber(),
+            'market_type' => fake()->numberBetween(-8, 8),
+            'deposit' => fake()->randomNumber(),
         ];
     }
 }

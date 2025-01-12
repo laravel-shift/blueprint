@@ -49,8 +49,8 @@ final class PostControllerTest extends TestCase
     #[Test]
     public function store_saves_and_redirects(): void
     {
-        $title = $this->faker->sentence(4);
-        $content = $this->faker->paragraphs(3, true);
+        $title = fake()->sentence(4);
+        $content = fake()->paragraphs(3, true);
         $author = User::factory()->create();
 
         Mail::fake();

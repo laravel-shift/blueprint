@@ -122,7 +122,7 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
             } elseif (in_array($column->dataType(), ['enum', 'set']) && !empty($column->attributes())) {
                 $faker = FakerRegistry::fakerDataType($column->dataType()) ?? FakerRegistry::fakerData($column->name());
                 $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
-                $definition .= '$this->faker->' . $faker;
+                $definition .= 'fake()->' . $faker;
                 $definition .= ',' . PHP_EOL;
                 $definition = str_replace(
                     "/** {$column->dataType()}_attributes **/",
@@ -132,7 +132,7 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
             } elseif (in_array($column->dataType(), ['decimal', 'double', 'float'])) {
                 $faker = FakerRegistry::fakerData($column->name()) ?? FakerRegistry::fakerDataType($column->dataType());
                 $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
-                $definition .= '$this->faker->' . $faker;
+                $definition .= 'fake()->' . $faker;
                 $definition .= ',' . PHP_EOL;
 
                 $precision = min([65, intval($column->attributes()[0] ?? 10)]);
@@ -150,8 +150,8 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
                 if ($column->isNullable()) {
                     continue;
                 }
-                $definition .= sprintf('%s%s => $this->faker->%s,%s', str_repeat(self::INDENT, 3), "'{$column->name()}_id'", FakerRegistry::fakerDataType('id'), PHP_EOL);
-                $definition .= sprintf('%s%s => $this->faker->%s,%s', str_repeat(self::INDENT, 3), "'{$column->name()}_type'", FakerRegistry::fakerDataType('string'), PHP_EOL);
+                $definition .= sprintf('%s%s => fake()->%s,%s', str_repeat(self::INDENT, 3), "'{$column->name()}_id'", FakerRegistry::fakerDataType('id'), PHP_EOL);
+                $definition .= sprintf('%s%s => fake()->%s,%s', str_repeat(self::INDENT, 3), "'{$column->name()}_type'", FakerRegistry::fakerDataType('string'), PHP_EOL);
             } elseif ($column->dataType() === 'rememberToken') {
                 $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
                 $definition .= 'Str::random(10)';
@@ -178,7 +178,7 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
                     $faker = sprintf("regexify('[A-Za-z0-9]{%s}')", current($column->attributes()));
                 }
 
-                $definition .= '$this->faker->' . $faker;
+                $definition .= 'fake()->' . $faker;
                 $definition .= ',' . PHP_EOL;
             }
         }

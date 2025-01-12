@@ -54,9 +54,9 @@ final class ConferenceControllerTest extends TestCase
     #[Test]
     public function store_saves_and_redirects(): void
     {
-        $name = $this->faker->name();
-        $starts_at = Carbon::parse($this->faker->dateTime());
-        $ends_at = Carbon::parse($this->faker->dateTime());
+        $name = fake()->name();
+        $starts_at = Carbon::parse(fake()->dateTime());
+        $ends_at = Carbon::parse(fake()->dateTime());
         $venue = Venue::factory()->create();
 
         $response = $this->post(route('conferences.store'), [
@@ -120,9 +120,9 @@ final class ConferenceControllerTest extends TestCase
     public function update_redirects(): void
     {
         $conference = Conference::factory()->create();
-        $name = $this->faker->name();
-        $starts_at = Carbon::parse($this->faker->dateTime());
-        $ends_at = Carbon::parse($this->faker->dateTime());
+        $name = fake()->name();
+        $starts_at = Carbon::parse(fake()->dateTime());
+        $ends_at = Carbon::parse(fake()->dateTime());
         $venue = Venue::factory()->create();
 
         $response = $this->put(route('conferences.update', $conference), [

@@ -41,9 +41,9 @@ final class CategoryControllerTest extends TestCase
     #[Test]
     public function store_saves(): void
     {
-        $name = $this->faker->name();
-        $image = $this->faker->word();
-        $active = $this->faker->boolean();
+        $name = fake()->name();
+        $image = fake()->word();
+        $active = fake()->boolean();
 
         $response = $this->post(route('category.store'), [
             'name' => $name,
@@ -90,9 +90,9 @@ final class CategoryControllerTest extends TestCase
     public function update_behaves_as_expected(): void
     {
         $category = Category::factory()->create();
-        $name = $this->faker->name();
-        $image = $this->faker->word();
-        $active = $this->faker->boolean();
+        $name = fake()->name();
+        $image = fake()->word();
+        $active = fake()->boolean();
 
         $response = $this->put(route('category.update', $category), [
             'name' => $name,

@@ -45,7 +45,7 @@ final class CommentControllerTest extends TestCase
     public function store_saves(): void
     {
         $post = Post::factory()->create();
-        $body = $this->faker->text();
+        $body = fake()->text();
         $user = User::factory()->create();
 
         $response = $this->post(route('comments.store', ['post' => $post]), [
@@ -95,7 +95,7 @@ final class CommentControllerTest extends TestCase
     {
         $comment = Comment::factory()->create();
         $post = Post::factory()->create();
-        $body = $this->faker->text();
+        $body = fake()->text();
         $user = User::factory()->create();
 
         $response = $this->put(route('comments.update', ['post' => $post, 'comment' => $comment]), [

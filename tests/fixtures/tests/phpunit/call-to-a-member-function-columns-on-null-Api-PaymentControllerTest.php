@@ -34,8 +34,8 @@ final class PaymentControllerTest extends TestCase
     #[Test]
     public function store_saves_and_responds_with(): void
     {
-        $status = $this->faker->word();
-        $amount = $this->faker->randomFloat(/** decimal_attributes **/);
+        $status = fake()->word();
+        $amount = fake()->randomFloat(/** decimal_attributes **/);
         $user = User::factory()->create();
 
         $response = $this->post(route('payments.store'), [

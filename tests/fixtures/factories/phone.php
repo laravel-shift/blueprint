@@ -22,14 +22,14 @@ class PhoneFactory extends Factory
     public function definition(): array
     {
         return [
-            'label' => $this->faker->word(),
+            'label' => fake()->word(),
             'user_id' => User::factory(),
-            'phone_number' => $this->faker->phoneNumber(),
-            'type' => $this->faker->randomElement(["home","cell"]),
-            'status' => $this->faker->randomElement(["archived","deleted"]),
-            'foo_id' => $this->faker->randomDigitNotNull(),
-            'foo_type' => $this->faker->word(),
-            'tag' => $this->faker->regexify('[A-Za-z0-9]{3}'),
+            'phone_number' => fake()->phoneNumber(),
+            'type' => fake()->randomElement(["home","cell"]),
+            'status' => fake()->randomElement(["archived","deleted"]),
+            'foo_id' => fake()->randomDigitNotNull(),
+            'foo_type' => fake()->word(),
+            'tag' => fake()->regexify('[A-Za-z0-9]{3}'),
         ];
     }
 }
