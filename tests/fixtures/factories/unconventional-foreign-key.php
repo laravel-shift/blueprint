@@ -25,7 +25,7 @@ class StateFactory extends Factory
             'name' => fake()->name(),
             'countries_id' => Country::factory(),
             'country_code' => Country::factory()->create()->code,
-            'ccid' => Country::factory()->create()->ccid,
+            'ccid' => Country::factory(),
             'c_code' => Country::factory()->create()->code,
         ];
     }

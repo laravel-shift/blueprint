@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('country_code');
             $table->foreign('country_code')->references('code')->on('countries');
             $table->string('ccid');
-            $table->foreign('ccid')->references('ccid')->on('countries');
+            $table->foreign('ccid')->references('id')->on('country');
             $table->string('c_code');
             $table->foreign('c_code')->references('code')->on('countries');
             $table->timestamps();

@@ -275,12 +275,11 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             $column = Str::afterLast($column_name, '_');
         } elseif (Str::contains($on, '.')) {
             [$table, $column] = explode('.', $on);
-            $table = Str::snake($table);
         } elseif (Str::contains($on, '\\')) {
-            $table = Str::lower(Str::plural(Str::afterLast($on, '\\')));
+            $table = Str::snake(Str::plural(Str::afterLast($on, '\\')));
             $column = Str::afterLast($column_name, '_');
         } else {
-            $table = Str::plural($on);
+            $table = Str::snake(Str::plural($on));
             $column = Str::afterLast($column_name, '_');
         }
 
@@ -315,12 +314,15 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             if ($on_delete_clause === 'cascade') {
                 $on_delete_suffix = '->cascadeOnDelete()';
             }
+
             if ($on_update_clause === 'cascade') {
                 $on_update_suffix = '->cascadeOnUpdate()';
             }
+
             if ($column_name === Str::singular($table) . '_' . $column) {
                 return self::INDENT . "{$prefix}->constrained(){$on_delete_suffix}{$on_update_suffix}";
             }
+
             if ($column === 'id') {
                 return self::INDENT . "{$prefix}->constrained('{$table}'){$on_delete_suffix}{$on_update_suffix}";
             }
