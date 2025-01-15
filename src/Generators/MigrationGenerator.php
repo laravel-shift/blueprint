@@ -276,7 +276,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
         } elseif (Str::contains($on, '.')) {
             [$table, $column] = explode('.', $on);
         } elseif (Str::contains($on, '\\')) {
-            $table = Str::lower(Str::plural(Str::afterLast($on, '\\')));
+            $table = Str::snake(Str::plural(Str::afterLast($on, '\\')));
             $column = Str::afterLast($column_name, '_');
         } else {
             $table = Str::snake(Str::plural($on));
