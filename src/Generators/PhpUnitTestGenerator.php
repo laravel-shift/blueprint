@@ -235,9 +235,9 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
                                 } else {
                                     if ($local_column->isDate()) {
                                         $this->addImport($controller, 'Illuminate\\Support\\Carbon');
-                                        $faker = sprintf('$%s = Carbon::parse($this->faker->%s);', $data, FakerRegistry::fakerData($local_column->name()) ?? FakerRegistry::fakerDataType($local_model->column($column)->dataType()));
+                                        $faker = sprintf('$%s = Carbon::parse(fake()->%s);', $data, FakerRegistry::fakerData($local_column->name()) ?? FakerRegistry::fakerDataType($local_model->column($column)->dataType()));
                                     } else {
-                                        $faker = sprintf('$%s = $this->faker->%s;', $data, FakerRegistry::fakerData($local_column->name()) ?? FakerRegistry::fakerDataType($local_model->column($column)->dataType()));
+                                        $faker = sprintf('$%s = fake()->%s;', $data, FakerRegistry::fakerData($local_column->name()) ?? FakerRegistry::fakerDataType($local_model->column($column)->dataType()));
                                     }
                                 }
 
@@ -260,9 +260,9 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
                                     } else {
                                         if ($local_column->isDate()) {
                                             $this->addImport($controller, 'Illuminate\\Support\\Carbon');
-                                            $faker = sprintf('$%s = Carbon::parse($this->faker->%s);', $local_column->name(), FakerRegistry::fakerData($local_column->name()) ?? FakerRegistry::fakerDataType($local_column->dataType()));
+                                            $faker = sprintf('$%s = Carbon::parse(fake()->%s);', $local_column->name(), FakerRegistry::fakerData($local_column->name()) ?? FakerRegistry::fakerDataType($local_column->dataType()));
                                         } else {
-                                            $faker = sprintf('$%s = $this->faker->%s;', $local_column->name(), FakerRegistry::fakerData($local_column->name()) ?? FakerRegistry::fakerDataType($local_column->dataType()));
+                                            $faker = sprintf('$%s = fake()->%s;', $local_column->name(), FakerRegistry::fakerData($local_column->name()) ?? FakerRegistry::fakerDataType($local_column->dataType()));
                                         }
                                         $variable_name = $local_column->name();
                                     }

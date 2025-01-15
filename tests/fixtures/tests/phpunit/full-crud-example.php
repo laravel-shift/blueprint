@@ -53,8 +53,8 @@ final class PostControllerTest extends TestCase
     #[Test]
     public function store_saves_and_redirects(): void
     {
-        $title = $this->faker->sentence(4);
-        $content = $this->faker->paragraphs(3, true);
+        $title = fake()->sentence(4);
+        $content = fake()->paragraphs(3, true);
 
         $response = $this->post(route('posts.store'), [
             'title' => $title,
@@ -112,8 +112,8 @@ final class PostControllerTest extends TestCase
     public function update_saves_and_redirects(): void
     {
         $post = Post::factory()->create();
-        $title = $this->faker->sentence(4);
-        $content = $this->faker->paragraphs(3, true);
+        $title = fake()->sentence(4);
+        $content = fake()->paragraphs(3, true);
 
         $response = $this->put(route('posts.update', $post), [
             'title' => $title,

@@ -26,9 +26,9 @@ class OrderFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'external_id' => $this->faker->word(),
+            'external_id' => fake()->word(),
             'sub_id' => Subscription::factory(),
-            'expires_at' => $this->faker->dateTime(),
+            'expires_at' => fake()->dateTime(),
             'meta' => '[]',
             'customer_id' => Customer::factory(),
             'tran_id' => Transaction::factory(),

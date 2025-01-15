@@ -53,9 +53,9 @@ final class DateControllerTest extends TestCase
     #[Test]
     public function store_saves_and_redirects(): void
     {
-        $born_at = Carbon::parse($this->faker->date());
-        $expires_at = Carbon::parse($this->faker->dateTime());
-        $published_at = Carbon::parse($this->faker->dateTime());
+        $born_at = Carbon::parse(fake()->date());
+        $expires_at = Carbon::parse(fake()->dateTime());
+        $published_at = Carbon::parse(fake()->dateTime());
 
         $response = $this->post(route('dates.store'), [
             'born_at' => $born_at->toDateString(),
@@ -116,9 +116,9 @@ final class DateControllerTest extends TestCase
     public function update_redirects(): void
     {
         $date = Date::factory()->create();
-        $born_at = Carbon::parse($this->faker->date());
-        $expires_at = Carbon::parse($this->faker->dateTime());
-        $published_at = Carbon::parse($this->faker->dateTime());
+        $born_at = Carbon::parse(fake()->date());
+        $expires_at = Carbon::parse(fake()->dateTime());
+        $published_at = Carbon::parse(fake()->dateTime());
 
         $response = $this->put(route('dates.update', $date), [
             'born_at' => $born_at->toDateString(),

@@ -41,7 +41,7 @@ final class PostControllerTest extends TestCase
     #[Test]
     public function store_responds_with(): void
     {
-        $title = $this->faker->sentence(4);
+        $title = fake()->sentence(4);
 
         $response = $this->post(route('posts.store'), [
             'title' => $title,
