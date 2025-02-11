@@ -9,18 +9,18 @@
     ],
     "license": "MIT",
     "require": {
-        "illuminate/console": "^10.38|^11.0",
-        "illuminate/database": "^10.38|^11.0",
-        "illuminate/filesystem": "^10.38|^11.0",
-        "illuminate/support": "^10.38|^11.0",
+        "illuminate/console": "^10.38|^11.0|^12.0",
+        "illuminate/database": "^10.38|^11.0|^12.0",
+        "illuminate/filesystem": "^10.38|^11.0|^12.0",
+        "illuminate/support": "^10.38|^11.0|^12.0",
         "laravel-shift/faker-registry": "^0.3.0",
         "symfony/yaml": ">=6.2"
     },
     "require-dev": {
         "laravel/pint": "~1.18.0",
         "mockery/mockery": "^1.4.4",
-        "orchestra/testbench": "^8.0|^9.0",
-        "phpunit/phpunit": "^10.0"
+        "orchestra/testbench": "^8.0|^9.0|^10.0",
+        "phpunit/phpunit": "^10.0|^11.5.3"
     },
     "suggest": {
         "jasonmccreary/laravel-test-assertions": "Required to use additional assertions in generated tests (^1.0)."
