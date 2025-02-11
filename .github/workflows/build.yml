@@ -20,7 +20,7 @@ jobs:
       fail-fast: false
       matrix:
         php-version: ['8.1', '8.2', '8.3', '8.4']
-        laravel-version: [10, 11, '12']
+        laravel-version: [10, 11, 12]
         os: [ubuntu-latest, windows-latest, macos-latest]
         stability: [prefer-lowest, prefer-stable]
         experimental: [false]
@@ -29,12 +29,8 @@ jobs:
             php-version: 8.1
           - laravel-version: 11
             stability: prefer-lowest
-          - laravel-version: '12'
-            php-version: '8.1'
-          - laravel-version: '12'
-            php-version: '8.2'
-          - laravel-version: '12'
-            php-version: '8.3'
+          - laravel-version: 12
+            php-version: 8.1
 
     runs-on: ${{ matrix.os }}
 
