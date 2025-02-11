@@ -6,7 +6,7 @@ on:
       - master
   pull_request:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: '0 0 * * *'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -19,8 +19,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['8.1', '8.2', '8.3']
-        laravel-version: [10, 11]
+        php-version: ['8.1', '8.2', '8.3', '8.4']
+        laravel-version: [10, 11, 12]
         os: [ubuntu-latest, windows-latest, macos-latest]
         stability: [prefer-lowest, prefer-stable]
         experimental: [false]
@@ -29,8 +29,11 @@ jobs:
             php-version: 8.1
           - laravel-version: 11
             stability: prefer-lowest
+          - laravel-version: 12
+            php-version: 8.1
 
     runs-on: ${{ matrix.os }}
+
     continue-on-error: ${{ matrix.experimental }}
 
     steps:
@@ -43,7 +46,7 @@ jobs:
           php-version: ${{ matrix.php-version }}
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, gd, fileinfo
           coverage: none
-          ini-values: "memory_limit=-1"
+          ini-values: memory_limit=-1
 
       - name: Setup problem matchers for PHP
         run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
