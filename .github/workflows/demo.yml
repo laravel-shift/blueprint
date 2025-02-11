@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       ref:
-        description: "The branch, tag or SHA to checkout."
+        description: The branch, tag or SHA to checkout.
         required: false
         default: ''
 
@@ -27,16 +27,23 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['8.1', '8.2', '8.3']
-        laravel-version: ['10', '11']
+        php-version: ['8.1', '8.2', '8.3', '8.4']
+        laravel-version: ['10', '11', '12']
         os: [ubuntu-latest]
         exclude:
           - laravel-version: 11
             php-version: 8.1
+          - laravel-version: '12'
+            php-version: '8.1'
+          - laravel-version: '12'
+            php-version: '8.2'
+          - laravel-version: '12'
+            php-version: '8.3'
 
     runs-on: ${{ matrix.os }}
 
     continue-on-error: true
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -50,7 +57,7 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, gd
           coverage: none
           tools: composer:v2
-          ini-values: "memory_limit=-1"
+          ini-values: memory_limit=-1
 
       - name: Setup problem matchers for PHP
         run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
@@ -62,7 +69,7 @@ jobs:
         run: composer create-project --prefer-dist laravel/laravel:${{ matrix.laravel-version == '10' && '10.*' || matrix.laravel-version }} /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example
 
       - name: Link Blueprint repository
-        run: 'composer config repositories.local "{\"type\": \"path\", \"url\": \"/home/runner/work/blueprint/blueprint\"}" --file /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example/composer.json'
+        run: composer config repositories.local "{\"type\": \"path\", \"url\": \"/home/runner/work/blueprint/blueprint\"}" --file /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example/composer.json
 
       - name: Determine composer cache directory
         id: composer-cache
@@ -88,7 +95,7 @@ jobs:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
           DB_DATABASE: test
           DB_USERNAME: root
-          DB_PASSWORD: 'null'
+          DB_PASSWORD: null
         run: |
           cp /home/runner/work/blueprint/blueprint/tests/fixtures/integration/TraceTest.php tests/Feature/TraceTest.php
           php artisan migrate:refresh --force
