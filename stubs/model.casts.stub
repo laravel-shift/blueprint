@@ -3,4 +3,8 @@
      *
      * @var array
      */
-    protected $casts = [];
+    protected function casts(): array
+    {
+        return [];
+    }
+
