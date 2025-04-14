@@ -194,6 +194,14 @@ class ModelLexer implements Lexer
             unset($columns['relationships']);
         }
 
+        if (isset($columns['traits'])) {
+            foreach (explode(' ', $columns['traits']) as $trait) {
+                $model->addCustomTrait(trim($trait));
+            }
+
+            unset($columns['traits']);
+        }
+
         if (isset($columns['indexes'])) {
             foreach ($columns['indexes'] as $index) {
                 $model->addIndex(new Index(key($index), array_map('trim', explode(',', current($index)))));

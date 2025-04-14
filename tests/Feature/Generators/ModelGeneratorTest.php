@@ -80,6 +80,7 @@ final class ModelGeneratorTest extends TestCase
         $this->filesystem->expects('exists')
             ->with(dirname($path))
             ->andReturnTrue();
+
         $this->filesystem->expects('put')
             ->with($path, $this->fixture($model));
 
@@ -648,6 +649,7 @@ final class ModelGeneratorTest extends TestCase
             ['drafts/infer-belongsto.yaml', 'app/Models/Conference.php', 'models/infer-belongsto.php'],
             ['drafts/model-with-ulid-id.yaml', 'app/Models/User.php', 'models/model-with-ulid-trait.php'],
             ['drafts/model-with-uuid-id.yaml', 'app/Models/User.php', 'models/model-with-uuid-trait.php'],
+            ['drafts/model-with-traits.yaml', 'app/Models/User.php', 'models/model-with-traits.php'],
         ];
     }
 

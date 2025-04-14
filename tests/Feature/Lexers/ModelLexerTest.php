@@ -42,6 +42,7 @@ final class ModelLexerTest extends TestCase
                 ],
                 'ModelThree' => [
                     'id' => 'increments',
+                    'traits' => 'Spatie\Permission\Traits\HasRoles',
                 ],
             ],
         ];
@@ -55,6 +56,7 @@ final class ModelLexerTest extends TestCase
         $this->assertEquals('ModelOne', $model->name());
         $this->assertTrue($model->usesTimestamps());
         $this->assertFalse($model->usesSoftDeletes());
+        $this->assertFalse($model->usesCustomTraits());
 
         $columns = $model->columns();
         $this->assertCount(2, $columns);
@@ -69,6 +71,8 @@ final class ModelLexerTest extends TestCase
         $this->assertEquals('ModelTwo', $model->name());
         $this->assertTrue($model->usesTimestamps());
         $this->assertFalse($model->usesSoftDeletes());
+        $this->assertFalse($model->usesCustomTraits());
+
 
         $columns = $model->columns();
         $this->assertCount(2, $columns);
@@ -83,6 +87,7 @@ final class ModelLexerTest extends TestCase
         $this->assertEquals('ModelThree', $model->name());
         $this->assertTrue($model->usesTimestamps());
         $this->assertFalse($model->usesSoftDeletes());
+        $this->assertTrue($model->usesCustomTraits());
 
         $columns = $model->columns();
         $this->assertCount(1, $columns);
