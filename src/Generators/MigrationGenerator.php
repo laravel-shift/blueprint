@@ -68,7 +68,12 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
          */
         foreach ($tree->models() as $model) {
             $tables['tableNames'][$model->tableName()] = $this->populateStub($stub, $model);
+
             if (!empty($model->pivotTables())) {
+                dump($model->pivotTables());
+                // see if a pivot table for the same models exist...
+                // if so, overwrite if contains aliases
+                // TODO: deduplicatePivotTables, prioritizing aliases...
                 foreach ($model->pivotTables() as $pivotSegments) {
                     $pivotTableName = $this->getPivotTableName($pivotSegments);
                     $tables['pivotTableNames'][$pivotTableName] = $this->populatePivotStub($stub, $pivotSegments, $tree->models());

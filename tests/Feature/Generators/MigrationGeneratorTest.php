@@ -186,6 +186,35 @@ final class MigrationGeneratorTest extends TestCase
     }
 
     #[Test]
+    public function using_alias_output_also_aliases_pivot_table_migration(): void
+    {
+        $this->filesystem->expects('stub')
+            ->with('migration.stub')
+            ->andReturn($this->stub('migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $journey_model_migration = str_replace('timestamp', $now->copy()->subSeconds(2)->format('Y_m_d_His'), 'database/migrations/timestamp_create_customers_table.php');
+        $diary_model_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_pets_table.php');
+        $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_owner_pet_table.php');
+
+        $this->filesystem->expects('exists')->times(3)->andReturn(false);
+
+        $this->filesystem->expects('put')
+            ->with($journey_model_migration, $this->fixture('migrations/belongs-to-many-alias-customers.php'));
+        $this->filesystem->expects('put')
+            ->with($diary_model_migration, $this->fixture('migrations/belongs-to-many-alias-pets.php'));
+        $this->filesystem->expects('put')
+            ->with($pivot_migration, $this->fixture('migrations/belongs-to-many-alias-owner-pet.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/belongs-to-many-using-alias.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals(['created' => [$journey_model_migration, $diary_model_migration, $pivot_migration]], $this->subject->output($tree));
+    }
+
+    #[Test]
     public function output_also_creates_pivot_table_migration(): void
     {
         $this->filesystem->expects('stub')
