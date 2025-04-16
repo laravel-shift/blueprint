@@ -35,15 +35,18 @@ class Membership extends Pivot
     ];
 
     /**
-     * The attributes that should be cast to native types.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'id' => 'integer',
-        'user_id' => 'integer',
-        'team_id' => 'integer',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'user_id' => 'integer',
+            'team_id' => 'integer',
+        ];
+    }
 
     public function user(): BelongsTo
     {

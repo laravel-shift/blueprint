@@ -22,12 +22,15 @@ class Tag extends Model
     ];
 
     /**
-     * The attributes that should be cast to native types.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'id' => 'integer',
-        'active' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'active' => 'boolean',
+        ];
+    }
 }

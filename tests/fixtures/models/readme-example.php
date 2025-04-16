@@ -23,15 +23,18 @@ class Post extends Model
     ];
 
     /**
-     * The attributes that should be cast to native types.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'id' => 'integer',
-        'published_at' => 'timestamp',
-        'author_id' => 'integer',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'published_at' => 'timestamp',
+            'author_id' => 'integer',
+        ];
+    }
 
     public function author(): BelongsTo
     {

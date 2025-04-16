@@ -21,11 +21,14 @@ class User extends Model
     ];
 
     /**
-     * The attributes that should be cast to native types.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'base_pay' => 'decimal:2',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'base_pay' => 'decimal:2',
+        ];
+    }
 }

@@ -72,31 +72,34 @@ class AllType extends Model
     ];
 
     /**
-     * The attributes that should be cast to native types.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'bigInteger' => 'integer',
-        'boolean' => 'boolean',
-        'date' => 'date',
-        'dateTime' => 'datetime',
-        'dateTimeTz' => 'datetime',
-        'decimal' => 'decimal',
-        'double' => 'double',
-        'float' => 'float',
-        'json' => 'array',
-        'mediumInteger' => 'integer',
-        'nullableTimestamps' => 'timestamp',
-        'smallInteger' => 'integer',
-        'timestamp' => 'timestamp',
-        'timestampTz' => 'timestamp',
-        'tinyInteger' => 'integer',
-        'unsignedBigInteger' => 'integer',
-        'unsignedDecimal' => 'decimal',
-        'unsignedInteger' => 'integer',
-        'unsignedMediumInteger' => 'integer',
-        'unsignedSmallInteger' => 'integer',
-        'unsignedTinyInteger' => 'integer',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'bigInteger' => 'integer',
+            'boolean' => 'boolean',
+            'date' => 'date',
+            'dateTime' => 'datetime',
+            'dateTimeTz' => 'datetime',
+            'decimal' => 'decimal',
+            'double' => 'double',
+            'float' => 'float',
+            'json' => 'array',
+            'mediumInteger' => 'integer',
+            'nullableTimestamps' => 'timestamp',
+            'smallInteger' => 'integer',
+            'timestamp' => 'timestamp',
+            'timestampTz' => 'timestamp',
+            'tinyInteger' => 'integer',
+            'unsignedBigInteger' => 'integer',
+            'unsignedDecimal' => 'decimal',
+            'unsignedInteger' => 'integer',
+            'unsignedMediumInteger' => 'integer',
+            'unsignedSmallInteger' => 'integer',
+            'unsignedTinyInteger' => 'integer',
+        ];
+    }
 }

@@ -22,15 +22,18 @@ class Conference extends Model
     ];
 
     /**
-     * The attributes that should be cast to native types.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'id' => 'integer',
-        'venue_id' => 'integer',
-        'region_id' => 'integer',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'venue_id' => 'integer',
+            'region_id' => 'integer',
+        ];
+    }
 
     public function venue(): BelongsTo
     {

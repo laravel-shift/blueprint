@@ -22,16 +22,19 @@ class ScreeningQuestion extends Model
     ];
 
     /**
-     * The attributes that should be cast to native types.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'id' => 'integer',
-        'report_id' => 'integer',
-        'appointment_type_id' => 'integer',
-        'question_type_id' => 'integer',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'report_id' => 'integer',
+            'appointment_type_id' => 'integer',
+            'question_type_id' => 'integer',
+        ];
+    }
 
     public function report(): BelongsTo
     {

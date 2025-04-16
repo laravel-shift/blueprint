@@ -25,15 +25,18 @@ class Certificate extends Model
     ];
 
     /**
-     * The attributes that should be cast to native types.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'id' => 'integer',
-        'certificate_type_id' => 'integer',
-        'expiry_date' => 'date',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'certificate_type_id' => 'integer',
+            'expiry_date' => 'date',
+        ];
+    }
 
     public function certificateType(): BelongsTo
     {

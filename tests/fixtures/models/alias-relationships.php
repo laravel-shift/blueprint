@@ -23,14 +23,17 @@ class Salesman extends Model
     ];
 
     /**
-     * The attributes that should be cast to native types.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'id' => 'integer',
-        'belongs_alias_id' => 'integer',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'belongs_alias_id' => 'integer',
+        ];
+    }
 
     public function lead(): HasOne
     {
