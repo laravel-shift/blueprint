@@ -383,7 +383,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
                             $relationship .= sprintf('%s->withTimestamps()', PHP_EOL . str_pad(' ', 12));
                         }
                     } else {
-                        $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, $fqcn, $column_name);
+                        $relationship = sprintf('$this->%s(%s::class)', $type, $fqcn);
                     }
                     $column_name = $class;
                 } else {
@@ -393,7 +393,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
                 if ($type === 'morphTo') {
                     $method_name = Str::lower($class_name);
                 } elseif (in_array($type, ['hasMany', 'belongsToMany', 'morphMany', 'morphToMany', 'morphedByMany'])) {
-                    $method_name = Str::plural($is_model_fqn ? Str::afterLast($column_name, '\\') : $column_name);
+                    $method_name = Str::plural($is_pivot ? $column_name : $method_name);
                 }
 
                 $relationship_type = 'Illuminate\\Database\\Eloquent\\Relations\\' . Str::studly($type === 'morphedByMany' ? 'morphToMany' : $type);

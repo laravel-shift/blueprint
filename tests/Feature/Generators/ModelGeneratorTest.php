@@ -526,34 +526,37 @@ final class ModelGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_models_with_custom_pivot_table_name(): void
+    public function output_generates_models_with_alias_belongs_to_many(): void
     {
         $this->filesystem->expects('stub')
             ->with('model.class.stub')
             ->andReturn($this->stub('model.class.stub'));
         $this->filesystem->expects('stub')
+            ->twice()
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'));
         $this->filesystem->expects('stub')
+            ->twice()
             ->with('model.casts.stub')
             ->andReturn($this->stub('model.casts.stub'));
         $this->filesystem->expects('stub')
+            ->twice()
             ->with('model.method.stub')
             ->andReturn($this->stub('model.method.stub'));
-        $this->filesystem->expects('stub')
-            ->with('model.hidden.stub')
-            ->andReturn($this->stub('model.hidden.stub'));
 
         $this->filesystem->expects('exists')
+            ->twice()
             ->with('app/Models')
             ->andReturnTrue();
         $this->filesystem->expects('put')
-            ->with('app/Models/User.php', $this->fixture('models/custom-pivot-table-name.php'));
+            ->with('app/Models/Pet.php', $this->fixture('models/belongs-to-many-alias-pet.php'));
+        $this->filesystem->expects('put')
+            ->with('app/Models/Customer.php', $this->fixture('models/belongs-to-many-alias-customer.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('drafts/custom-pivot-table-name.yaml'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/belongs-to-many-using-alias.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['app/Models/User.php']], $this->subject->output($tree));
+        $this->assertEquals(['created' => ['app/Models/Customer.php', 'app/Models/Pet.php']], $this->subject->output($tree));
     }
 
     #[Test]

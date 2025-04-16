@@ -68,6 +68,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
          */
         foreach ($tree->models() as $model) {
             $tables['tableNames'][$model->tableName()] = $this->populateStub($stub, $model);
+
             if (!empty($model->pivotTables())) {
                 foreach ($model->pivotTables() as $pivotSegments) {
                     $pivotTableName = $this->getPivotTableName($pivotSegments);
@@ -358,16 +359,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
 
     protected function getPivotTableName(array $segments): string
     {
-        $isCustom = collect($segments)
-            ->filter(fn ($segment) => Str::contains($segment, ':'))->first();
-
-        if ($isCustom) {
-            $table = Str::after($isCustom, ':');
-
-            return $table;
-        }
-
-        $segments = array_map(fn ($name) => Str::snake($name), $segments);
+        $segments = array_map(fn ($name) => Str::of($name)->before(':')->snake()->value(), $segments);
         sort($segments);
 
         return strtolower(implode('_', $segments));

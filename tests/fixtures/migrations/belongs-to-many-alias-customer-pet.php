@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->rememberToken();
-            $table->timestamps();
+        Schema::create('customer_pet', function (Blueprint $table) {
+            $table->foreignId('customer_id');
+            $table->foreignId('pet_id');
         });
     }
 
@@ -24,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('customer_pet');
     }
 };
