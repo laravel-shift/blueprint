@@ -70,10 +70,6 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             $tables['tableNames'][$model->tableName()] = $this->populateStub($stub, $model);
 
             if (!empty($model->pivotTables())) {
-                dump($model->pivotTables());
-                // see if a pivot table for the same models exist...
-                // if so, overwrite if contains aliases
-                // TODO: deduplicatePivotTables, prioritizing aliases...
                 foreach ($model->pivotTables() as $pivotSegments) {
                     $pivotTableName = $this->getPivotTableName($pivotSegments);
                     $tables['pivotTableNames'][$pivotTableName] = $this->populatePivotStub($stub, $pivotSegments, $tree->models());
@@ -363,16 +359,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
 
     protected function getPivotTableName(array $segments): string
     {
-        $isCustom = collect($segments)
-            ->filter(fn ($segment) => Str::contains($segment, ':'))->first();
-
-        if ($isCustom) {
-            $table = Str::after($isCustom, ':');
-
-            return $table;
-        }
-
-        $segments = array_map(fn ($name) => Str::snake($name), $segments);
+        $segments = array_map(fn ($name) => Str::of($name)->before(':')->snake()->value(), $segments);
         sort($segments);
 
         return strtolower(implode('_', $segments));
