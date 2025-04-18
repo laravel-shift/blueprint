@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Team extends Model
 {
+    /** @use HasFactory<\Database\Factories\TeamFactory> */
     use HasFactory;
 
     /**

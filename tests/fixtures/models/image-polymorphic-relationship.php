@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Image extends Model
 {
+    /** @use HasFactory<\Database\Factories\ImageFactory> */
     use HasFactory;
 
     /**

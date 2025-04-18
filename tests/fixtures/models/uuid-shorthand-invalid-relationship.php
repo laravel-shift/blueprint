@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AgeCohort extends Model
 {
+    /** @use HasFactory<\Database\Factories\AgeCohortFactory> */
     use HasFactory;
 
     /**

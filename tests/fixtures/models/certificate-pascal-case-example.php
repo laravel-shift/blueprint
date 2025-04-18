@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Certificate extends Model
 {
+    /** @use HasFactory<\Database\Factories\CertificateFactory> */
     use HasFactory;
 
     /**

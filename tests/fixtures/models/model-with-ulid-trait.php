@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
 {
+    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, HasUlids;
 
     /**

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Subscription extends Model
 {
+    /** @use HasFactory<\Database\Factories\SubscriptionFactory> */
     use HasFactory;
 
     /**

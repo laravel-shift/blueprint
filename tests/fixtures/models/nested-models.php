@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ScreeningQuestion extends Model
 {
+    /** @use HasFactory<\Database\Factories\ScreeningQuestionFactory> */
     use HasFactory;
 
     /**

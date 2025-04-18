@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Pet extends Model
 {
+    /** @use HasFactory<\Database\Factories\PetFactory> */
     use HasFactory;
 
     /**

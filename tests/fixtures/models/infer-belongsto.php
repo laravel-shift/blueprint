@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Conference extends Model
 {
+    /** @use HasFactory<\Database\Factories\ConferenceFactory> */
     use HasFactory;
 
     /**
