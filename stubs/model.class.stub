@@ -6,5 +6,6 @@ namespace {{ namespace }};
 
 class {{ class }} extends Model
 {
+    /** @use HasFactory<\Database\Factories\{{ class }}Factory> */
     use HasFactory;
 }

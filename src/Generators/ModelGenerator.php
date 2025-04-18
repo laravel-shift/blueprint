@@ -462,7 +462,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
 
         sort($traits);
 
-        return Str::replaceFirst('use HasFactory', 'use ' . implode(', ', $traits), $stub);
+        return Str::replaceFirst('use HasFactory;', 'use ' . implode(', ', $traits) . ';', $stub);
     }
 
     protected function dateColumns(array $columns)
