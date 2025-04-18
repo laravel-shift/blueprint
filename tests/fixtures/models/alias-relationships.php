@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Salesman extends Model
 {
+    /** @use HasFactory<\Database\Factories\SalesmanFactory> */
     use HasFactory;
 
     /**

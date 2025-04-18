@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Recurrency extends Model
 {
+    /** @use HasFactory<\Database\Factories\RecurrencyFactory> */
     use HasFactory;
 
     /**
