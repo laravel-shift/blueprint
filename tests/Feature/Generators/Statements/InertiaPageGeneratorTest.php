@@ -147,6 +147,7 @@ final class InertiaPageGeneratorTest extends TestCase
         return [
             ['vue', '"@inertiajs/vue3": "^2.0.0"', 'resources/js/Pages/Customer/Show.vue', '.vue'],
             ['react', '"@inertiajs/react": "^2.0.0"', 'resources/js/Pages/Customer/Show.jsx', '.jsx'],
+            ['react', '"@inertiajs/react": "^2.0.0", "typescript": "^5.0.0"', 'resources/js/Pages/Customer/Show.tsx', '.tsx'],
             ['svelte', '"@inertiajs/svelte": "^2.0.0"', 'resources/js/Pages/Customer/Show.svelte', '.svelte'],
         ];
     }
