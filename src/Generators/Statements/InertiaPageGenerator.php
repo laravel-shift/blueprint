@@ -15,6 +15,7 @@ class InertiaPageGenerator extends StatementGenerator implements Generator
     protected array $adapters = [
         'vue3' => ['framework' => 'vue', 'extension' => '.vue'],
         'react' => ['framework' => 'react', 'extension' => '.jsx'],
+        'reactts' => ['framework' => 'react', 'extension' => '.tsx'],
         'svelte' => ['framework' => 'svelte', 'extension' => '.svelte'],
     ];
 
@@ -67,6 +68,14 @@ class InertiaPageGenerator extends StatementGenerator implements Generator
 
         if (preg_match('/@inertiajs\/(vue3|react|svelte)/i', $contents, $matches)) {
             $adapterKey = strtolower($matches[1]);
+
+            if ($adapterKey === 'react') {
+                $tsConfigPath = base_path('tsconfig.json');
+    
+                if ($this->filesystem->exists($tsConfigPath) || preg_match('/"typescript"/i', $contents)) {
+                    $adapterKey .= 'ts';
+                }
+            }
 
             return $this->adapters[$adapterKey] ?? null;
         }
