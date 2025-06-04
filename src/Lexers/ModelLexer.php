@@ -40,6 +40,7 @@ class ModelLexer implements Lexer
         'geometry' => 'geometry',
         'geometrycollection' => 'geometryCollection',
         'increments' => 'increments',
+        'int' => 'integer',
         'integer' => 'integer',
         'ipaddress' => 'ipAddress',
         'json' => 'json',
