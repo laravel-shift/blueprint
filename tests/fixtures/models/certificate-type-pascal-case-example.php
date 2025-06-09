@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CertificateType extends Model
 {
+    /** @use HasFactory<\Database\Factories\CertificateTypeFactory> */
     use HasFactory;
 
     /**

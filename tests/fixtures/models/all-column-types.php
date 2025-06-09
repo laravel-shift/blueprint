@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AllType extends Model
 {
+    /** @use HasFactory<\Database\Factories\AllTypeFactory> */
     use HasFactory;
 
     /**

@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Flag extends Model
 {
+    /** @use HasFactory<\Database\Factories\FlagFactory> */
     use HasFactory;
 
     /**

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Video extends Model
 {
+    /** @use HasFactory<\Database\Factories\VideoFactory> */
     use HasFactory;
 
     /**

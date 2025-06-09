@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class Membership extends Pivot
 {
+    /** @use HasFactory<\Database\Factories\MembershipFactory> */
     use HasFactory;
 
     /**
