@@ -1,0 +1,4 @@
+models:
+  User:
+    traits:
+      - Spatie\Permission\Traits\HasRoles

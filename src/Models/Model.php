@@ -33,6 +33,8 @@ class Model implements BlueprintModel
 
     private array $indexes = [];
 
+    private array $customTraits = [];
+
     public function __construct($name)
     {
         $this->name = class_basename($name);
@@ -109,6 +111,11 @@ class Model implements BlueprintModel
     public function usesUuids(): bool
     {
         return $this->usesPrimaryKey() && $this->columns[$this->primaryKey]->dataType() === 'uuid';
+    }
+
+    public function usesCustomTraits(): bool
+    {
+        return count($this->customTraits) > 0;
     }
 
     public function idType(): ?string
@@ -250,6 +257,16 @@ class Model implements BlueprintModel
     public function addIndex(Index $index): void
     {
         $this->indexes[] = $index;
+    }
+
+    public function customTraits(): array
+    {
+        return $this->customTraits;
+    }
+
+    public function addCustomTrait(string $trait): void
+    {
+        $this->customTraits[] = $trait;
     }
 
     public function pivotTables(): array
