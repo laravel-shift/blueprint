@@ -29,8 +29,7 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
          * @var \Blueprint\Models\Model $model
          */
         foreach ($tree->models() as $model) {
-            $this->addImport($model, $model->fullyQualifiedClassName());
-
+            $this->addImport($model, 'Illuminate\\Database\\Eloquent\\Factories\\Factory');
             $path = $this->getPath($model);
 
             $this->create($path, $this->populateStub($stub, $model));
@@ -54,7 +53,7 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
         $stub = str_replace('{{ model }}', $model->name(), $stub);
         $stub = str_replace('//', $this->buildDefinition($model), $stub);
         $stub = str_replace('{{ namespace }}', 'Database\Factories' . ($model->namespace() ? '\\' . $model->namespace() : ''), $stub);
-        $stub = str_replace('use {{ namespacedModel }};', $this->buildImports($model), $stub);
+        $stub = str_replace('{{ imports }}', $this->buildImports($model), $stub);
 
         return $stub;
     }
@@ -153,10 +152,14 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
                 $definition .= sprintf('%s%s => fake()->%s,%s', str_repeat(self::INDENT, 3), "'{$column->name()}_id'", FakerRegistry::fakerDataType('id'), PHP_EOL);
                 $definition .= sprintf('%s%s => fake()->%s,%s', str_repeat(self::INDENT, 3), "'{$column->name()}_type'", FakerRegistry::fakerDataType('string'), PHP_EOL);
             } elseif ($column->dataType() === 'rememberToken') {
+                $this->addImport($model, 'Illuminate\\Support\\Str');
+
                 $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
                 $definition .= 'Str::random(10)';
                 $definition .= ',' . PHP_EOL;
             } elseif ($column->dataType() === 'ulid') {
+                $this->addImport($model, 'Illuminate\\Support\\Str');
+
                 $definition .= str_repeat(self::INDENT, 3) . "'{$column->name()}' => ";
                 $definition .= '(string) Str::ulid()';
                 $definition .= ',' . PHP_EOL;

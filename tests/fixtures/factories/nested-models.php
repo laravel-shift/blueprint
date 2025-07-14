@@ -2,22 +2,13 @@
 
 namespace Database\Factories\Screening;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 use App\Models\Appointment\AppointmentType;
 use App\Models\QuestionType;
 use App\Models\Screening\Report;
-use App\Models\Screening\ScreeningQuestion;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ScreeningQuestionFactory extends Factory
 {
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
-    protected $model = ScreeningQuestion::class;
-
     /**
      * Define the model's default state.
      */
