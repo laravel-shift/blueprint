@@ -27,7 +27,7 @@ final class ConferenceControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertViewIs('conference.index');
-        $response->assertViewHas('conferences');
+        $response->assertViewHas('conferences', $conferences);
     }
 
 
@@ -89,7 +89,7 @@ final class ConferenceControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertViewIs('conference.show');
-        $response->assertViewHas('conference');
+        $response->assertViewHas('conference', $conference);
     }
 
 
@@ -102,7 +102,7 @@ final class ConferenceControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertViewIs('conference.edit');
-        $response->assertViewHas('conference');
+        $response->assertViewHas('conference', $conference);
     }
 
 

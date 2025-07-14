@@ -20,6 +20,6 @@ final class PostControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertViewIs('posts.show');
-        $response->assertViewHas('post');
+        $response->assertViewHas('post', $post);
     }
 }

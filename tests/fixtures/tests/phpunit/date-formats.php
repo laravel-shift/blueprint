@@ -26,7 +26,7 @@ final class DateControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertViewIs('date.index');
-        $response->assertViewHas('dates');
+        $response->assertViewHas('dates', $dates);
     }
 
 
@@ -85,7 +85,7 @@ final class DateControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertViewIs('date.show');
-        $response->assertViewHas('date');
+        $response->assertViewHas('date', $date);
     }
 
 
@@ -98,7 +98,7 @@ final class DateControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertViewIs('date.edit');
-        $response->assertViewHas('date');
+        $response->assertViewHas('date', $date);
     }
 
 

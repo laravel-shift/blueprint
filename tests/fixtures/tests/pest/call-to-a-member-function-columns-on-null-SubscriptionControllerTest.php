@@ -12,7 +12,7 @@ test('index displays view', function (): void {
 
     $response->assertOk();
     $response->assertViewIs('subscription.index');
-    $response->assertViewHas('subscriptions');
+    $response->assertViewHas('subscriptions', $subscriptions);
 });
 
 
@@ -23,5 +23,5 @@ test('show displays view', function (): void {
 
     $response->assertOk();
     $response->assertViewIs('subscription.show');
-    $response->assertViewHas('subscription');
+    $response->assertViewHas('subscription', $subscription);
 });

@@ -20,7 +20,7 @@ test('index displays view', function (): void {
 
     $response->assertOk();
     $response->assertViewIs('post.index');
-    $response->assertViewHas('posts');
+    $response->assertViewHas('posts', $posts);
 });
 
 

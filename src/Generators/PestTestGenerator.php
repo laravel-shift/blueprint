@@ -375,8 +375,13 @@ class PestTestGenerator extends AbstractClassGenerator implements Generator
                     $view_assertions[] = sprintf('$response->assertViewIs(\'%s\');', $statement->view());
 
                     foreach ($statement->data() as $data) {
-                        // TODO: if data references locally scoped var, strengthen assertion...
-                        $view_assertions[] = sprintf('$response->assertViewHas(\'%s\');', $data);
+                        $assertion = sprintf('$response->assertViewHas(\'%s\'', $data);
+                        if ($this->hasLocalVariable($setup['data'], $data)) {
+                            $assertion .= sprintf(', $%s', $data);
+                        }
+
+                        $assertion .= ');';
+                        $view_assertions[] = $assertion;
                     }
 
                     array_unshift($assertions['response'], ...$view_assertions);
@@ -707,5 +712,10 @@ END;
         $this->output['updated'][] = $path;
 
         $this->filesystem->put($fullPath, $updatedContent);
+    }
+
+    private function hasLocalVariable(array $locals, string $name): bool
+    {
+        return collect($locals)->contains(fn ($local) => str_starts_with($local, '$' . $name . ' = '));
     }
 }

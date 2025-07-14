@@ -12,5 +12,5 @@ test('show displays view', function (): void {
 
     $response->assertOk();
     $response->assertViewIs('posts.show');
-    $response->assertViewHas('post');
+    $response->assertViewHas('post', $post);
 });

@@ -18,7 +18,7 @@ test('index displays view', function (): void {
 
     $response->assertOk();
     $response->assertViewIs('date.index');
-    $response->assertViewHas('dates');
+    $response->assertViewHas('dates', $dates);
 });
 
 
@@ -68,7 +68,7 @@ test('show displays view', function (): void {
 
     $response->assertOk();
     $response->assertViewIs('date.show');
-    $response->assertViewHas('date');
+    $response->assertViewHas('date', $date);
 });
 
 
@@ -79,7 +79,7 @@ test('edit displays view', function (): void {
 
     $response->assertOk();
     $response->assertViewIs('date.edit');
-    $response->assertViewHas('date');
+    $response->assertViewHas('date', $date);
 });
 
 

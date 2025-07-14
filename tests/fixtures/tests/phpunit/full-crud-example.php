@@ -25,7 +25,7 @@ final class PostControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertViewIs('posts.index');
-        $response->assertViewHas('posts');
+        $response->assertViewHas('posts', $posts);
     }
 
 
@@ -81,7 +81,7 @@ final class PostControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertViewIs('posts.show');
-        $response->assertViewHas('post');
+        $response->assertViewHas('post', $post);
     }
 
 
@@ -94,7 +94,7 @@ final class PostControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertViewIs('posts.edit');
-        $response->assertViewHas('post');
+        $response->assertViewHas('post', $post);
     }
 
 

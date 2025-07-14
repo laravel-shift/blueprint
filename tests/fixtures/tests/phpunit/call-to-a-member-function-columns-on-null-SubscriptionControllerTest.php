@@ -23,7 +23,7 @@ final class SubscriptionControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertViewIs('subscription.index');
-        $response->assertViewHas('subscriptions');
+        $response->assertViewHas('subscriptions', $subscriptions);
     }
 
 
@@ -36,6 +36,6 @@ final class SubscriptionControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertViewIs('subscription.show');
-        $response->assertViewHas('subscription');
+        $response->assertViewHas('subscription', $subscription);
     }
 }

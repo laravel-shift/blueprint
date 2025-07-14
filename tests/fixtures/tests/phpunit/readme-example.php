@@ -32,7 +32,7 @@ final class PostControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertViewIs('post.index');
-        $response->assertViewHas('posts');
+        $response->assertViewHas('posts', $posts);
     }
 
 
