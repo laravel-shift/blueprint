@@ -12,7 +12,7 @@
         "illuminate/console": ">=11.0",
         "illuminate/database": ">=11.0",
         "illuminate/filesystem": ">=11.0",
-        "illuminate/support": ">=11.0,
+        "illuminate/support": ">=11.0",
         "laravel-shift/faker-registry": "^0.3.0",
         "symfony/yaml": ">=7.0"
     },
