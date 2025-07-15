@@ -12,11 +12,11 @@ Watch a quick [demo of Blueprint](https://www.youtube.com/watch?v=A_gUCwni_6c) i
 
 
 ## Requirements
-Blueprint requires a Laravel application running a supported version of Laravel. Currently that is Laravel 10.38 or higher.
+Blueprint requires a Laravel application running a supported version of Laravel. Currently that is Laravel 11 or higher.
 
 
 ## Installation
-You can install Blueprint via Composer using the following command:
+You may install Blueprint via Composer using the following command:
 
 ```sh
 composer require -W --dev laravel-shift/blueprint
@@ -87,6 +87,6 @@ Browse the [Blueprint Docs](https://blueprint.laravelshift.com/) for full detail
 
 
 ## Support Policy
-Starting with version 2, Blueprint only generates code for supported versions of Laravel (currently Laravel 10.38 or higher). If you need to support older versions of Laravel, you may use version 1 or upgrade your application ([try using Shift](https://laravelshift.com)).
+Starting with version 2, Blueprint only generates code for supported versions of Laravel (currently Laravel 11 or higher). If you need to support older versions of Laravel, you may constrain Blueprint to an older version or upgrade your application ([try using Shift](https://laravelshift.com)).
 
 Blueprint still follows [semantic versioning](https://semver.org/). However, it does so with respect to its grammar. Any changes to the grammar will increase its major version number. Otherwise, minor version number increases will contain new features. This includes generating code for future versions of Laravel.
