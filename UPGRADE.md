@@ -1,5 +1,10 @@
 # Upgrade Guide
 
+## Upgrading from 2.x to 2.13
+Version 2.13 was a minor release to raise support to Laravel 11. This allows Blueprint to adopt the latest conventions from Laravel, such as the modern structure, PHP attributes, and model methods.
+
+Inline with Blueprint's [Support Policy](https://github.com/laravel-shift/blueprint#support-policy), this release also drops support for Laravel 10. If you are still running Laravel 10, you may constrain your Blueprint version to `2.12.0`.
+
 ## Upgrading from 2.x to 2.6
 Version 2.6 was a minor release to add support for Laravel 10. This adopts the latest conventions from Laravel, most notably the addition of type-hints in code.
 
