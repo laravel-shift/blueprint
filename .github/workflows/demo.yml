@@ -27,14 +27,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['8.1', '8.2', '8.3', '8.4']
-        laravel-version: [10, 11, 12]
+        php-version: ['8.2', '8.3', '8.4']
+        laravel-version: [11, 12]
         os: [ubuntu-latest]
-        exclude:
-          - laravel-version: 11
-            php-version: 8.1
-          - laravel-version: 12
-            php-version: 8.1
 
     runs-on: ${{ matrix.os }}
 
