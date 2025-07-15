@@ -15,7 +15,6 @@ class InertiaPageGenerator extends StatementGenerator implements Generator
     protected array $adapters = [
         'vue3' => ['framework' => 'vue', 'extension' => '.vue'],
         'react' => ['framework' => 'react', 'extension' => '.jsx'],
-        'reactts' => ['framework' => 'react', 'extension' => '.tsx'],
         'svelte' => ['framework' => 'svelte', 'extension' => '.svelte'],
     ];
 
@@ -59,28 +58,25 @@ class InertiaPageGenerator extends StatementGenerator implements Generator
     protected function getAdapter(): ?array
     {
         $packagePath = base_path('package.json');
-
         if (!$this->filesystem->exists($packagePath)) {
             return null;
         }
 
         $contents = $this->filesystem->get($packagePath);
-
-        if (preg_match('/@inertiajs\/(vue3|react|svelte)/i', $contents, $matches)) {
-            $adapterKey = strtolower($matches[1]);
-
-            if ($adapterKey === 'react') {
-                $tsConfigPath = base_path('tsconfig.json');
-    
-                if ($this->filesystem->exists($tsConfigPath) || preg_match('/"typescript"/i', $contents)) {
-                    $adapterKey .= 'ts';
-                }
-            }
-
-            return $this->adapters[$adapterKey] ?? null;
+        if (!preg_match('/@inertiajs\/(vue3|react|svelte)/i', $contents, $matches)) {
+            return null;
         }
 
-        return null;
+        $adapterKey = strtolower($matches[1]);
+        if (!isset($this->adapters[$adapterKey])) {
+            return null;
+        }
+
+        if ($adapterKey === 'react' && ($this->filesystem->exists(base_path('tsconfig.json')) || preg_match('/"typescript"/i', $contents))) {
+            return array_replace($this->adapters[$adapterKey], ['extension' => '.tsx']);
+        }
+
+        return $this->adapters[$adapterKey];
     }
 
     protected function getStatementPath(string $view): string
