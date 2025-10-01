@@ -320,7 +320,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
                 $on_update_suffix = '->cascadeOnUpdate()';
             }
 
-            if ($column_name === Str::singular($table) . '_' . $column) {
+            if ($column_name === Str::singular($table) . '_' . $column && !Str::contains($column, '_') {
                 return self::INDENT . "{$prefix}->constrained(){$on_delete_suffix}{$on_update_suffix}";
             }
 
