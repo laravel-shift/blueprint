@@ -1,0 +1,10 @@
+models:
+
+  Agent:
+    id: false
+    party_id: id
+
+  Employment:
+    id: false
+    # Referencing agents.party_id (custom column, has underscore)
+    agent_party_id: id foreign:agents.party_id
