@@ -651,7 +651,7 @@ final class ModelLexerTest extends TestCase
     }
 
     #[Test]
-    public function it_infers_belongsTo_columns(): void
+    public function it_infers_belongs_to_columns(): void
     {
         $tokens = [
             'models' => [
