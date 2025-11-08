@@ -18,7 +18,7 @@
         "symfony/yaml": ">=7.0"
     },
     "require-dev": {
-        "laravel/pint": "~1.18.0",
+        "laravel/pint": "~1.25.0",
         "mockery/mockery": "^1.4.4",
         "orchestra/testbench": ">=9.0",
         "phpunit/phpunit": "^11.5.3"
