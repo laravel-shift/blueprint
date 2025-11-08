@@ -41,6 +41,7 @@ class ResourceGenerator extends StatementGenerator implements Generator
                     }
 
                     $this->create($path, $this->populateStub($stub, $controller, $statement));
+                    $this->output['created'][] = ['Resource', $path];
                 }
             }
         }

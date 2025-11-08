@@ -33,6 +33,7 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
             $path = $this->getPath($model);
 
             $this->create($path, $this->populateStub($stub, $model));
+            $this->output['created'][] = ['Factory', $path];
         }
 
         return $this->output;

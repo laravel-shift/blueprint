@@ -43,6 +43,7 @@ class MailGenerator extends StatementGenerator
                     }
 
                     $this->create($path, $this->populateViewStub($view_stub, $statement));
+                    $this->output['created'][] = ['Mail', $path];
                 }
             }
         }

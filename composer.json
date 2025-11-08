@@ -14,6 +14,7 @@
         "illuminate/filesystem": ">=11.0",
         "illuminate/support": ">=11.0",
         "laravel-shift/faker-registry": "^0.3.0",
+        "nunomaduro/termwind": "^2.3",
         "symfony/yaml": ">=7.0"
     },
     "require-dev": {

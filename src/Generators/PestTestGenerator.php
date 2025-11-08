@@ -53,6 +53,7 @@ class PestTestGenerator extends AbstractClassGenerator implements Generator
             $path = $this->getPath($controller);
 
             $this->create($path, $this->populateStub($stub, $controller));
+            $this->output['created'][] = ['Test', $path];
         }
 
         return $this->output;
@@ -709,7 +710,7 @@ END;
             $content
         );
 
-        $this->output['updated'][] = $path;
+        $this->output['updated'][] = ['Test', $path];
 
         $this->filesystem->put($fullPath, $updatedContent);
     }

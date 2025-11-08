@@ -36,7 +36,7 @@ class RouteGenerator extends AbstractClassGenerator implements Generator
         foreach (array_filter($routes) as $type => $definitions) {
             $path = 'routes/' . $type . '.php';
             $this->filesystem->append($path, $definitions . PHP_EOL);
-            $paths[] = $path;
+            $paths[] = ['Route', $path];
         }
 
         return ['updated' => $paths];

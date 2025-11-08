@@ -56,6 +56,7 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
             $path = $this->getPath($controller);
 
             $this->create($path, $this->populateStub($stub, $controller));
+            $this->output['created'][] = ['Test', $path];
         }
 
         return $this->output;

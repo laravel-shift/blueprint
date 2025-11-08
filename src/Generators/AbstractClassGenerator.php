@@ -41,7 +41,5 @@ class AbstractClassGenerator
         }
 
         $this->filesystem->put($path, $content);
-
-        $this->output['created'][] = $path;
     }
 }

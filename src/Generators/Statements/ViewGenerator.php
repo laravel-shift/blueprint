@@ -28,11 +28,12 @@ class ViewGenerator extends StatementGenerator implements Generator
                     $path = $this->getStatementPath($statement->view());
 
                     if ($this->filesystem->exists($path)) {
-                        $this->output['skipped'][] = $path;
+                        $this->output['skipped'][] = ['View', $path];
                         continue;
                     }
 
                     $this->create($path, $this->populateStub($stub, $statement));
+                    $this->output['created'][] = ['View', $path];
                 }
             }
         }

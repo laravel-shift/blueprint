@@ -37,7 +37,10 @@ class ComponentGenerator extends AbstractClassGenerator implements Generator
             $path = $this->getPath($component);
 
             $this->create($path, $this->populateStub($stub, $component));
+            $this->output['created'][] = ['Component', $path];
+
             $this->create($this->viewPath($component), $this->filesystem->stub('livewire.view.stub'));
+            $this->output['created'][] = ['View', $path];
         }
 
         return $this->output;
