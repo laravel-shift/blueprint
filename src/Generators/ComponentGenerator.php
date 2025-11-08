@@ -34,13 +34,14 @@ class ComponentGenerator extends AbstractClassGenerator implements Generator
 
         foreach ($tree->components() as $component) {
             $this->addImport($component, 'Livewire\\Component');
-            $path = $this->getPath($component);
 
+            $path = $this->getPath($component);
             $this->create($path, $this->populateStub($stub, $component));
             $this->output['created'][] = ['Component', $path];
 
-            $this->create($this->viewPath($component), $this->filesystem->stub('livewire.view.stub'));
-            $this->output['created'][] = ['View', $path];
+            $view = $this->viewPath($component);
+            $this->create($view, $this->filesystem->stub('livewire.view.stub'));
+            $this->output['created'][] = ['View', $view];
         }
 
         return $this->output;

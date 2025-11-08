@@ -73,7 +73,7 @@ final class MigrationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Migration', $timestamp_path]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -99,7 +99,7 @@ final class MigrationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/multiple-models.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$post_path, $comment_path]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Migration', $post_path], ['Migration', $comment_path]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -128,7 +128,7 @@ final class MigrationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/pascal-case-model-names.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$broker_path, $broker_type_path, $broker_broker_type_path]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Migration', $broker_path], ['Migration', $broker_type_path], ['Migration', $broker_broker_type_path]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -153,7 +153,7 @@ final class MigrationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/relationships.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$model_migration]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Migration', $model_migration]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -182,7 +182,7 @@ final class MigrationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/belongs-to-many-using-ulids.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$journey_model_migration, $diary_model_migration, $pivot_migration]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Migration', $journey_model_migration], ['Migration', $diary_model_migration], ['Migration', $pivot_migration]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -211,7 +211,7 @@ final class MigrationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/belongs-to-many-using-alias.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$journey_model_migration, $diary_model_migration, $pivot_migration]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Migration', $journey_model_migration], ['Migration', $diary_model_migration], ['Migration', $pivot_migration]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -237,7 +237,7 @@ final class MigrationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/belongs-to-many.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Migration', $model_migration], ['Migration', $pivot_migration]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -271,7 +271,7 @@ final class MigrationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/belongs-to-many.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['updated' => [$model_migration, $pivot_migration]], $this->subject->output($tree, true));
+        $this->assertSame(['updated' => [['Migration', $model_migration], ['Migration', $pivot_migration]]], $this->subject->output($tree, true));
     }
 
     #[Test]
@@ -303,7 +303,7 @@ final class MigrationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/belongs-to-many-using-ulids.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$journey_model_migration, $diary_model_migration, $pivot_migration]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Migration', $journey_model_migration], ['Migration', $diary_model_migration], ['Migration', $pivot_migration]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -335,7 +335,7 @@ final class MigrationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/belongs-to-many-using-uuids.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$journey_model_migration, $diary_model_migration, $pivot_migration]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Migration', $journey_model_migration], ['Migration', $diary_model_migration], ['Migration', $pivot_migration]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -364,7 +364,7 @@ final class MigrationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/belongs-to-many.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Migration', $model_migration], ['Migration', $pivot_migration]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -393,7 +393,7 @@ final class MigrationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/belongs-to-many-duplicated-pivot.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$company_migration, $people_migration, $pivot_migration]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Migration', $company_migration], ['Migration', $people_migration], ['Migration', $pivot_migration]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -419,7 +419,7 @@ final class MigrationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/with-path-prefix.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$model_migration, $pivot_migration]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Migration', $model_migration], ['Migration', $pivot_migration]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -445,7 +445,7 @@ final class MigrationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/morphed-by-many.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$model_migration, $poly_migration]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Migration', $model_migration], ['Migration', $poly_migration]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -472,7 +472,7 @@ final class MigrationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/nullable-chaining.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$model_migration]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Migration', $model_migration]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -501,7 +501,7 @@ final class MigrationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/polymorphic-relationships.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$post_migration, $user_migration, $image_migration]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Migration', $post_migration], ['Migration', $user_migration], ['Migration', $image_migration]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -528,7 +528,7 @@ final class MigrationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/uuid-without-relationship.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Migration', $timestamp_path]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -555,7 +555,7 @@ final class MigrationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/uuid-shorthand.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Migration', $timestamp_path]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -581,7 +581,7 @@ final class MigrationGeneratorTest extends TestCase
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/soft-deletes-respect-order.yaml'));
         $tree = $this->blueprint->analyze($tokens);
-        $this->assertEquals(['created' => [$timestamp_path]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Migration', $timestamp_path]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -610,7 +610,7 @@ final class MigrationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/custom-pivot.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$user_migration, $team_migration, $pivot_migration]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Migration', $user_migration], ['Migration', $team_migration], ['Migration', $pivot_migration]]], $this->subject->output($tree));
     }
 
     public static function modelTreeDataProvider()

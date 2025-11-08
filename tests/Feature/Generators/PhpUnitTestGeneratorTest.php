@@ -56,6 +56,7 @@ final class PhpUnitTestGeneratorTest extends TestCase
             ->with('phpunit.test.case.stub')
             ->andReturn($this->stub('phpunit.test.case.stub'));
 
+        $created = [];
         $paths = collect($path)->combine($test)->toArray();
         foreach ($paths as $path => $test) {
             $dirname = dirname($path);
@@ -69,12 +70,14 @@ final class PhpUnitTestGeneratorTest extends TestCase
 
             $this->filesystem->expects('put')
                 ->with($path, $this->fixture($test));
+
+            $created[] = ['Test', $path];
         }
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => array_keys($paths)], $this->subject->output($tree));
+        $this->assertSame(['created' => $created], $this->subject->output($tree));
     }
 
     #[Test]
@@ -108,7 +111,7 @@ final class PhpUnitTestGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/pascal-case.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$certificateControllerTest, $certificateTypeControllerTest]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Test', $certificateControllerTest], ['Test', $certificateTypeControllerTest]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -141,7 +144,7 @@ final class PhpUnitTestGeneratorTest extends TestCase
         ];
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['tests/Feature/Http/Controllers/UserControllerTest.php']], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Test', 'tests/Feature/Http/Controllers/UserControllerTest.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -175,7 +178,7 @@ final class PhpUnitTestGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Test', $path]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -210,7 +213,7 @@ final class PhpUnitTestGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Test', $path]]], $this->subject->output($tree));
     }
 
     public static function controllerTreeDataProvider(): array

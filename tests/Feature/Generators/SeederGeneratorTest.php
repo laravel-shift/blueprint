@@ -59,7 +59,7 @@ final class SeederGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/seeders.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['database/seeders/PostSeeder.php', 'database/seeders/CommentSeeder.php']], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Seeder', 'database/seeders/PostSeeder.php'], ['Seeder', 'database/seeders/CommentSeeder.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -80,6 +80,6 @@ final class SeederGeneratorTest extends TestCase
         unset($tree['models']);
         $tree = new Tree($tree);
 
-        $this->assertEquals(['created' => ['database/seeders/PostSeeder.php', 'database/seeders/CommentSeeder.php']], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Seeder', 'database/seeders/PostSeeder.php'], ['Seeder', 'database/seeders/CommentSeeder.php']]], $this->subject->output($tree));
     }
 }

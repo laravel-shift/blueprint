@@ -42,7 +42,7 @@ final class ResourceGeneratorTest extends TestCase
 
         $this->filesystem->shouldNotHaveReceived('put');
 
-        $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
+        $this->assertSame([], $this->subject->output(new Tree(['controllers' => []])));
     }
 
     #[Test]
@@ -57,7 +57,7 @@ final class ResourceGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/controllers-only.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals([], $this->subject->output($tree));
+        $this->assertSame([], $this->subject->output($tree));
     }
 
     #[Test]
@@ -92,7 +92,7 @@ final class ResourceGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/resource-statements.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['app/Http/Resources/UserCollection.php', 'app/Http/Resources/UserResource.php']], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Resource', 'app/Http/Resources/UserCollection.php'], ['Resource', 'app/Http/Resources/UserResource.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -124,7 +124,7 @@ final class ResourceGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/resource-statements.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['app/Http/Resources/UserResource.php']], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Resource', 'app/Http/Resources/UserResource.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -156,8 +156,8 @@ final class ResourceGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/api-routes-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals([
-            'created' => ['app/Http/Resources/Api/CertificateCollection.php', 'app/Http/Resources/Api/CertificateResource.php'],
+        $this->assertSame([
+            'created' => [['Resource', 'app/Http/Resources/Api/CertificateCollection.php'], ['Resource', 'app/Http/Resources/Api/CertificateResource.php']],
         ], $this->subject->output($tree));
     }
 
@@ -191,8 +191,8 @@ final class ResourceGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/resource-nested.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals([
-            'created' => ['app/Http/Resources/Api/CertificateCollection.php', 'app/Http/Resources/Api/CertificateResource.php'],
+        $this->assertSame([
+            'created' => [['Resource', 'app/Http/Resources/Api/CertificateCollection.php'], ['Resource', 'app/Http/Resources/Api/CertificateResource.php']],
         ], $this->subject->output($tree));
     }
 
@@ -225,8 +225,8 @@ final class ResourceGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/resource-nested.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals([
-            'created' => ['app/Http/Resources/Api/CertificateResource.php'],
+        $this->assertSame([
+            'created' => [['Resource', 'app/Http/Resources/Api/CertificateResource.php']],
         ], $this->subject->output($tree));
     }
 
@@ -260,8 +260,8 @@ final class ResourceGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/api-resource-pagination.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals([
-            'created' => ['app/Http/Resources/PostCollection.php', 'app/Http/Resources/PostResource.php'],
+        $this->assertSame([
+            'created' => [['Resource', 'app/Http/Resources/PostCollection.php'], ['Resource', 'app/Http/Resources/PostResource.php']],
         ], $this->subject->output($tree));
     }
 
@@ -296,8 +296,8 @@ final class ResourceGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/api-resource-pagination.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals([
-            'created' => ['app/Http/Resources/PostResource.php'],
+        $this->assertSame([
+            'created' => [['Resource', 'app/Http/Resources/PostResource.php']],
         ], $this->subject->output($tree));
     }
 }
