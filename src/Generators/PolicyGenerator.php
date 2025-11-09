@@ -27,6 +27,7 @@ class PolicyGenerator extends AbstractClassGenerator implements Generator
             $path = $this->getPath($policy);
 
             $this->create($path, $this->populateStub($stub, $policy));
+            $this->output['created'][] = ['Policy', $path];
         }
 
         return $this->output;

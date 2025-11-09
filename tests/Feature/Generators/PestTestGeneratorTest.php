@@ -108,7 +108,7 @@ final class PestTestGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/pascal-case.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$certificateControllerTest, $certificateTypeControllerTest]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Test', $certificateControllerTest], ['Test', $certificateTypeControllerTest]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -141,7 +141,7 @@ final class PestTestGeneratorTest extends TestCase
         ];
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['tests/Feature/Http/Controllers/UserControllerTest.php']], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Test', 'tests/Feature/Http/Controllers/UserControllerTest.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -175,7 +175,7 @@ final class PestTestGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Test', $path]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -210,7 +210,7 @@ final class PestTestGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Test', $path]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -259,7 +259,7 @@ final class PestTestGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$path], 'updated' => ['tests/TestCase.php']], $this->subject->output($tree));
+        $this->assertEquals(['created' => [['Test', $path]], 'updated' => [['Test', 'tests/TestCase.php']]], $this->subject->output($tree));
     }
 
     public static function controllerTreeDataProvider(): array

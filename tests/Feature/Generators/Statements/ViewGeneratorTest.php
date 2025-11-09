@@ -96,7 +96,7 @@ final class ViewGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/render-statements.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['resources/views/user/index.blade.php', 'resources/views/user/create.blade.php', 'resources/views/post/show.blade.php']], $this->subject->output($tree));
+        $this->assertSame(['created' => [['View', 'resources/views/user/index.blade.php'], ['View', 'resources/views/user/create.blade.php'], ['View', 'resources/views/post/show.blade.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -121,9 +121,9 @@ final class ViewGeneratorTest extends TestCase
 
         $this->assertEquals([
             'skipped' => [
-                'resources/views/user/index.blade.php',
-                'resources/views/user/create.blade.php',
-                'resources/views/post/show.blade.php',
+                ['View', 'resources/views/user/index.blade.php'],
+                ['View', 'resources/views/user/create.blade.php'],
+                ['View', 'resources/views/post/show.blade.php'],
             ],
         ], $this->subject->output($tree));
     }

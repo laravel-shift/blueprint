@@ -482,7 +482,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             $path = $this->getTablePath($tableName, $sequential_timestamp->addSecond(), $overwrite);
             $action = $this->filesystem->exists($path) ? 'updated' : 'created';
             $this->filesystem->put($path, $data);
-            $this->output[$action][] = $path;
+            $this->output[$action][] = ['Migration', $path];
         }
 
         foreach ($tables['pivotTableNames'] as $tableName => $data) {
@@ -490,14 +490,14 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             $action = $this->filesystem->exists($path) ? 'updated' : 'created';
             $this->filesystem->put($path, $data);
 
-            $this->output[$action][] = $path;
+            $this->output[$action][] = ['Migration', $path];
         }
 
         foreach ($tables['polymorphicManyToManyTables'] as $tableName => $data) {
             $path = $this->getTablePath($tableName, $sequential_timestamp->addSecond(), $overwrite);
             $action = $this->filesystem->exists($path) ? 'updated' : 'created';
             $this->filesystem->put($path, $data);
-            $this->output[$action][] = $path;
+            $this->output[$action][] = ['Migration', $path];
         }
 
         return $this->output;
@@ -520,7 +520,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
                     ->each(function (SplFileInfo $file) {
                         $path = $file->getPathname();
                         $this->filesystem->delete($path);
-                        $this->output['deleted'][] = $path;
+                        $this->output['deleted'][] = ['Migration', $path];
                     });
 
                 return $migration;

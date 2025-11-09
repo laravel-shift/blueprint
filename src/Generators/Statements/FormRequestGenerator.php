@@ -42,6 +42,7 @@ class FormRequestGenerator extends AbstractClassGenerator implements Generator
                     }
 
                     $this->create($path, $this->populateStub($stub, $name, $context, $statement, $controller));
+                    $this->output['created'][] = ['Form Request', $path];
                 }
             }
         }

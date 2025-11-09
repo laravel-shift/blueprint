@@ -86,7 +86,7 @@ final class ModelGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Model', $path]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -126,7 +126,7 @@ final class ModelGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/pascal-case.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$certificateModel, $certificateTypeModel]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Model', $certificateModel], ['Model', $certificateTypeModel]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -154,7 +154,7 @@ final class ModelGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/model-relationships.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['app/Models/Subscription.php']], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Model', 'app/Models/Subscription.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -183,7 +183,7 @@ final class ModelGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/model-relationships-with-full-model-namespaces.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['app/Models/Recurrency.php']], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Model', 'app/Models/Recurrency.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -212,7 +212,7 @@ final class ModelGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/model-relationships-morphone-morphmany-with-fqn.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['app/Models/Flag.php']], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Model', 'app/Models/Flag.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -255,7 +255,7 @@ final class ModelGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/polymorphic-relationships.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['app/Models/Post.php', 'app/Models/User.php', 'app/Models/Image.php']], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Model', 'app/Models/Post.php'], ['Model', 'app/Models/User.php'], ['Model', 'app/Models/Image.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -299,7 +299,7 @@ final class ModelGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/many-to-many-polymorphic-relationships.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['app/Models/Post.php', 'app/Models/Video.php', 'app/Models/Tag.php']], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Model', 'app/Models/Post.php'], ['Model', 'app/Models/Video.php'], ['Model', 'app/Models/Tag.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -330,7 +330,7 @@ final class ModelGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/disable-auto-columns.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['app/Models/State.php']], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Model', 'app/Models/State.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -367,7 +367,7 @@ final class ModelGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/relationships.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['src/path/Models/Comment.php']], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Model', 'src/path/Models/Comment.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -408,7 +408,7 @@ final class ModelGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Model', $path]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -442,7 +442,7 @@ final class ModelGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/model-guarded.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['app/Models/Comment.php']], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Model', 'app/Models/Comment.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -483,10 +483,10 @@ final class ModelGeneratorTest extends TestCase
 
         $this->assertEquals([
             'created' => [
-                'app/Models/QuestionType.php',
-                'app/Models/Appointment/AppointmentType.php',
-                'app/Models/Screening/Report.php',
-                'app/Models/Screening/ScreeningQuestion.php',
+                ['Model', 'app/Models/QuestionType.php'],
+                ['Model', 'app/Models/Appointment/AppointmentType.php'],
+                ['Model', 'app/Models/Screening/Report.php'],
+                ['Model', 'app/Models/Screening/ScreeningQuestion.php'],
             ],
         ], $this->subject->output($tree));
     }
@@ -522,7 +522,7 @@ final class ModelGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Model', $path]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -556,7 +556,7 @@ final class ModelGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/belongs-to-many-using-alias.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['app/Models/Customer.php', 'app/Models/Pet.php']], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Model', 'app/Models/Customer.php'], ['Model', 'app/Models/Pet.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -599,7 +599,7 @@ final class ModelGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/custom-pivot.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['app/Models/User.php', 'app/Models/Team.php', 'app/Models/Membership.php']], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Model', 'app/Models/User.php'], ['Model', 'app/Models/Team.php'], ['Model', 'app/Models/Membership.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -631,7 +631,7 @@ final class ModelGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/model-with-uuid-id.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['app/Models/User.php']], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Model', 'app/Models/User.php']]], $this->subject->output($tree));
     }
 
     public static function modelTreeDataProvider(): array

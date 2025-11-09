@@ -25,6 +25,7 @@ class SeederGenerator extends AbstractClassGenerator implements Generator
             $model = new Model($model);
             $path = $this->getPath($model);
             $this->create($path, $this->populateStub($stub, $model));
+            $this->output['created'][] = ['Seeder', $path];
         }
 
         return $this->output;

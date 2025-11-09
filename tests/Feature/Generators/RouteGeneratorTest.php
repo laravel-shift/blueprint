@@ -52,7 +52,7 @@ final class RouteGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['updated' => [$path]], $this->subject->output($tree));
+        $this->assertSame(['updated' => [['Route', $path]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -64,7 +64,7 @@ final class RouteGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/api-routes-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['updated' => ['routes/api.php']], $this->subject->output($tree));
+        $this->assertSame(['updated' => [['Route', 'routes/api.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -78,7 +78,7 @@ final class RouteGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['updated' => ['routes/web.php']], $this->subject->output($tree));
+        $this->assertSame(['updated' => [['Route', 'routes/web.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -92,7 +92,7 @@ final class RouteGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/api-routes-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['updated' => ['routes/api.php']], $this->subject->output($tree));
+        $this->assertSame(['updated' => [['Route', 'routes/api.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -106,7 +106,7 @@ final class RouteGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/multiple-resource-controllers.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['updated' => ['routes/api.php', 'routes/web.php']], $this->subject->output($tree));
+        $this->assertSame(['updated' => [['Route', 'routes/api.php'], ['Route', 'routes/web.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -129,7 +129,7 @@ final class RouteGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/api-routes-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['updated' => ['routes/api.php']], $this->subject->output($tree));
+        $this->assertSame(['updated' => [['Route', 'routes/api.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -149,7 +149,7 @@ final class RouteGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/api-routes-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['updated' => ['routes/api.php']], $this->subject->output($tree));
+        $this->assertSame(['updated' => [['Route', 'routes/api.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -170,7 +170,7 @@ final class RouteGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/api-routes-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['updated' => ['routes/api.php']], $this->subject->output($tree));
+        $this->assertSame(['updated' => [['Route', 'routes/api.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -187,7 +187,7 @@ final class RouteGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/api-routes-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['updated' => ['routes/api.php']], $this->subject->output($tree));
+        $this->assertSame(['updated' => [['Route', 'routes/api.php']]], $this->subject->output($tree));
     }
 
     public static function controllerTreeDataProvider(): array

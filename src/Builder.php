@@ -27,9 +27,10 @@ class Builder
 
         $models = array_merge($tokens['cache'], $tokens['models'] ?? []);
 
+        $paths = collect($generated)->map(fn ($classes) => array_column($classes, 1))->toArray();
         $filesystem->put(
             '.blueprint',
-            $blueprint->dump($generated + ($models ? ['models' => $models] : []))
+            $blueprint->dump($paths + ($models ? ['models' => $models] : []))
         );
 
         return $generated;

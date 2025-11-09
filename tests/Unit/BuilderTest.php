@@ -18,7 +18,8 @@ final class BuilderTest extends TestCase
         $registry = new Tree(['controllers' => [1, 2, 3]]);
         $only = [];
         $skip = [];
-        $generated = ['created' => [1, 2], 'updated' => [3]];
+        $generated = ['created' => [['Controller', 1], ['Controller', 2]], 'updated' => [['Controller', 3]]];
+        $cache = ['created' => [1, 2], 'updated' => [3]];
 
         $blueprint = \Mockery::mock(Blueprint::class);
         $blueprint->expects('parse')
@@ -31,7 +32,7 @@ final class BuilderTest extends TestCase
             ->with($registry, $only, $skip, false)
             ->andReturn($generated);
         $blueprint->expects('dump')
-            ->with($generated)
+            ->with($cache)
             ->andReturn('cacheable blueprint content');
 
         $this->filesystem->expects('get')
@@ -63,7 +64,7 @@ final class BuilderTest extends TestCase
         $registry = new Tree(['registry']);
         $only = [];
         $skip = [];
-        $generated = ['created' => [1, 2], 'updated' => [3]];
+        $generated = ['created' => [['Model', 1], ['Model', 2]], 'updated' => [['Model', 3]]];
 
         $blueprint = \Mockery::mock(Blueprint::class);
         $blueprint->expects('parse')
@@ -118,7 +119,7 @@ final class BuilderTest extends TestCase
         $registry = new Tree(['registry']);
         $only = [];
         $skip = [];
-        $generated = ['created' => [1, 2], 'updated' => [3]];
+        $generated = ['created' => [['Model', 1], ['Model', 2]], 'updated' => [['Model', 3]]];
 
         $blueprint = \Mockery::mock(Blueprint::class);
         $blueprint->expects('parse')
