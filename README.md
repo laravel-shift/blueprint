@@ -35,7 +35,7 @@ composer require --dev jasonmccreary/laravel-test-assertions
 Blueprint comes with a set of artisan commands. The one you'll use to generate the Laravel components is the `blueprint:build` command:
 
 ```sh
-php artisan blueprint:build [draft]
+php artisan blueprint:build
 ```
 
 The _draft_ file contains a [definition of the components](https://blueprint.laravelshift.com/docs/generating-components/) to generate. Let's review the following example draft file which generates some _blog_ components:
