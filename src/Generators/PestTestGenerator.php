@@ -712,7 +712,6 @@ END;
 
         $this->filesystem->put($fullPath, $updatedContent);
         $this->output['updated'][] = ['Test', $path];
-
     }
 
     private function hasLocalVariable(array $locals, string $name): bool
