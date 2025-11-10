@@ -168,7 +168,7 @@ class ModelLexer implements Lexer
         } elseif (config('blueprint.types.timestamps') === false) {
             $model->disableTimestamps();
         } else {
-            $model->enableTimestamps(strtolower(config('blueprint.types.timestamps')) === 'timestamptz');
+            $model->enableTimestamps(strtolower(config('blueprint.types.timestamps', 'timestamp')) === 'timestamptz');
         }
 
         if (isset($columns['softdeletes'])) {
@@ -208,7 +208,7 @@ class ModelLexer implements Lexer
 
         if (!isset($columns['id']) && $model->usesPrimaryKey()) {
             if (config('blueprint.types.primary')) {
-                $column = $this->buildColumn('id', config('blueprint.types.primary'));
+                $column = $this->buildColumn('id', config('blueprint.types.primary', 'id'));
                 $model->addColumn($column);
             } else {
                 $model->disablePrimaryKey();
