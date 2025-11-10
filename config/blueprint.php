@@ -108,6 +108,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Default Data Types
+    |--------------------------------------------------------------------------
+    |
+    | By default, Blueprint will set the primary key data type to `id` and the
+    | timestamps data type to `timestamp`. While you may customize these in
+    | your draft file, you may also configure your own defaults below.
+    |
+    */
+    'types' => [
+        'primary' => 'id',
+        'timestamps' => 'timestamp',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Singular route names
     |--------------------------------------------------------------------------
     |

@@ -3,6 +3,7 @@
 namespace Tests\Feature\Lexers;
 
 use Blueprint\Lexers\ModelLexer;
+use Illuminate\Support\Arr;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -125,6 +126,42 @@ final class ModelLexerTest extends TestCase
     }
 
     #[Test]
+    public function it_defaults_the_id_column_based_on_configuration(): void
+    {
+        $type = Arr::random(['id', 'uuid', 'ulid']);
+        config(['blueprint.types.primary' => $type]);
+
+        $tokens = [
+            'models' => [
+                'Model' => [
+                    'title' => 'string nullable',
+                ],
+            ],
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertIsArray($actual['models']);
+        $this->assertCount(1, $actual['models']);
+
+        $model = $actual['models']['Model'];
+        $this->assertEquals('Model', $model->name());
+        $this->assertTrue($model->usesTimestamps());
+        $this->assertFalse($model->usesSoftDeletes());
+
+        $columns = $model->columns();
+        $this->assertCount(2, $columns);
+        $this->assertEquals('id', $columns['id']->name());
+        $this->assertEquals($type, $columns['id']->dataType());
+        $this->assertEquals([], $columns['id']->attributes());
+        $this->assertEquals([], $columns['id']->modifiers());
+        $this->assertEquals('title', $columns['title']->name());
+        $this->assertEquals('string', $columns['title']->dataType());
+        $this->assertEquals([], $columns['title']->attributes());
+        $this->assertEquals(['nullable'], $columns['title']->modifiers());
+    }
+
+    #[Test]
     public function it_disables_the_id_column(): void
     {
         $tokens = [
@@ -148,6 +185,73 @@ final class ModelLexerTest extends TestCase
     }
 
     #[Test]
+    public function it_disables_the_id_column_based_on_configuration(): void
+    {
+        config(['blueprint.types.primary' => false]);
+
+        $tokens = [
+            'models' => [
+                'Model' => [
+                    'name' => 'string',
+                ],
+            ],
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertIsArray($actual['models']);
+        $this->assertCount(1, $actual['models']);
+
+        $model = $actual['models']['Model'];
+        $this->assertEquals('Model', $model->name());
+        $this->assertFalse($model->usesPrimaryKey());
+        $this->assertCount(1, $model->columns());
+
+        $columns = $model->columns();
+        $this->assertEquals('name', $columns['name']->name());
+        $this->assertEquals('string', $columns['name']->dataType());
+        $this->assertEquals([], $columns['name']->attributes());
+        $this->assertEquals([], $columns['name']->modifiers());
+    }
+
+    #[Test]
+    public function it_sets_timestamps_data_type_based_on_configuration(): void
+    {
+        $type = Arr::random(['timestampTz', 'timestamptz']);
+        config(['blueprint.types.timestamps' => $type]);
+
+        $tokens = [
+            'models' => [
+                'Model' => [
+                    'name' => 'string',
+                ],
+            ],
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertIsArray($actual['models']);
+        $this->assertCount(1, $actual['models']);
+
+        $model = $actual['models']['Model'];
+        $this->assertEquals('Model', $model->name());
+        $this->assertTrue($model->usesTimestamps());
+        $this->assertSame('timestampsTz', $model->timestampsDataType());
+        $this->assertFalse($model->usesSoftDeletes());
+        $this->assertCount(2, $model->columns());
+
+        $columns = $model->columns();
+        $this->assertEquals('id', $columns['id']->name());
+        $this->assertEquals('id', $columns['id']->dataType());
+        $this->assertEquals([], $columns['id']->attributes());
+        $this->assertEquals([], $columns['id']->modifiers());
+        $this->assertEquals('name', $columns['name']->name());
+        $this->assertEquals('string', $columns['name']->dataType());
+        $this->assertEquals([], $columns['name']->attributes());
+        $this->assertEquals([], $columns['name']->modifiers());
+    }
+
+    #[Test]
     public function it_disables_timestamps(): void
     {
         $tokens = [
@@ -167,6 +271,40 @@ final class ModelLexerTest extends TestCase
         $this->assertEquals('Model', $model->name());
         $this->assertFalse($model->usesTimestamps());
         $this->assertFalse($model->usesSoftDeletes());
+    }
+
+    #[Test]
+    public function it_disables_timestamps_based_on_configuration(): void
+    {
+        config(['blueprint.types.timestamps' => false]);
+
+        $tokens = [
+            'models' => [
+                'Model' => [
+                    'name' => 'string',
+                ],
+            ],
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $this->assertIsArray($actual['models']);
+        $this->assertCount(1, $actual['models']);
+
+        $model = $actual['models']['Model'];
+        $this->assertEquals('Model', $model->name());
+        $this->assertFalse($model->usesSoftDeletes());
+        $this->assertCount(2, $model->columns());
+
+        $columns = $model->columns();
+        $this->assertEquals('id', $columns['id']->name());
+        $this->assertEquals('id', $columns['id']->dataType());
+        $this->assertEquals([], $columns['id']->attributes());
+        $this->assertEquals([], $columns['id']->modifiers());
+        $this->assertEquals('name', $columns['name']->name());
+        $this->assertEquals('string', $columns['name']->dataType());
+        $this->assertEquals([], $columns['name']->attributes());
+        $this->assertEquals([], $columns['name']->modifiers());
     }
 
     #[Test]
