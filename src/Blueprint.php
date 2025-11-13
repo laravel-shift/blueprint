@@ -29,13 +29,13 @@ class Blueprint
         );
 
         $content = preg_replace_callback(
-            '/^(\s+)resource?$/mi',
+            '/^(\s+)resource$/mi',
             fn ($matches) => $matches[1] . 'resource: web',
             $content
         );
 
         $content = preg_replace_callback(
-            '/^(\s+)invokable?$/mi',
+            '/^(\s+)invokable$/mi',
             fn ($matches) => $matches[1] . 'invokable: true',
             $content
         );
