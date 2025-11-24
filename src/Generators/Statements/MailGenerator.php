@@ -36,13 +36,17 @@ class MailGenerator extends StatementGenerator
                     }
 
                     $this->create($path, $this->populateStub($stub, $statement));
+                    $this->output['created'][] = ['Mail', $path];
 
                     $path = $this->getViewPath($statement->view());
                     if ($this->filesystem->exists($path)) {
+                        $this->output['skipped'][] = ['View', $path];
+
                         continue;
                     }
 
                     $this->create($path, $this->populateViewStub($view_stub, $statement));
+                    $this->output['created'][] = ['View', $path];
                 }
             }
         }

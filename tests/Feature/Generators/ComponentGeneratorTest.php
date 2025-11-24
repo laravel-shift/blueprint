@@ -39,7 +39,7 @@ final class ComponentGeneratorTest extends TestCase
             ->with('livewire.class.stub')
             ->andReturn($this->stub('livewire.class.stub'));
 
-        $this->assertEquals([], $this->subject->output(new Tree(['components' => []])));
+        $this->assertSame([], $this->subject->output(new Tree(['components' => []])));
 
         $this->filesystem->shouldNotHaveReceived('put');
     }
@@ -73,7 +73,7 @@ final class ComponentGeneratorTest extends TestCase
 
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
-        $this->assertEquals(['created' => $paths], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Component', $paths[0]], ['View', $paths[1]]]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -103,7 +103,7 @@ final class ComponentGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture($definition));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => [$path]], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Compoennt', $path], ['View', 'resources/views/livewire/update-profile.blade.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -133,7 +133,7 @@ final class ComponentGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/simple-component.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['src/path/Other/Http/UserController.php']], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Component', 'src/path/Other/Http/UserController.php']]], $this->subject->output($tree));
     }
 
     public static function componentTreeDataProvider(): array

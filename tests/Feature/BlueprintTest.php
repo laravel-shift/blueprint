@@ -625,6 +625,28 @@ final class BlueprintTest extends TestCase
     }
 
     #[Test]
+    public function it_replaces_custom_shorthands(): void
+    {
+        $this->subject->registerShorthand('custom', fn ($matches) => $matches[1] . 'custom: shorthand');
+
+        $blueprint = <<<'DRAFT'
+models:
+  Person:
+    custom
+    another: custom
+DRAFT;
+
+        $this->assertEquals([
+            'models' => [
+                'Person' => [
+                    'custom' => 'shorthand',
+                    'another' => 'custom',
+                ],
+            ],
+        ], $this->subject->parse($blueprint));
+    }
+
+    #[Test]
     public function it_parses_yaml_with_dashed_syntax(): void
     {
         $definition = $this->fixture('drafts/readme-example-dashes.yaml');

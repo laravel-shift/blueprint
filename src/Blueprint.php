@@ -13,6 +13,50 @@ class Blueprint
 
     private array $generators = [];
 
+    private array $shorthands = [];
+
+    public function registerShorthand(string $shorthand, \Closure $callback): void
+    {
+        $this->shorthands[$shorthand] = $callback;
+    }
+
+    private function expandShorthands(string $content): string
+    {
+        $content = preg_replace_callback(
+            '/^(\s+)(id|timestamps(Tz)?|softDeletes(Tz)?)(: true)?$/mi',
+            fn ($matches) => $matches[1] . strtolower($matches[2]) . ': ' . $matches[2],
+            $content
+        );
+
+        $content = preg_replace_callback(
+            '/^(\s+)resource$/mi',
+            fn ($matches) => $matches[1] . 'resource: web',
+            $content
+        );
+
+        $content = preg_replace_callback(
+            '/^(\s+)invokable$/mi',
+            fn ($matches) => $matches[1] . 'invokable: true',
+            $content
+        );
+
+        $content = preg_replace_callback(
+            '/^(\s+)(ulid|uuid)(: true)?$/mi',
+            fn ($matches) => $matches[1] . 'id: ' . $matches[2] . ' primary',
+            $content
+        );
+
+        foreach ($this->shorthands as $shorthand => $callback) {
+            $content = preg_replace_callback(
+                '/^(\s+)' . preg_quote($shorthand, '/') . '$/mi',
+                $callback,
+                $content
+            );
+        }
+
+        return $content;
+    }
+
     public static function relativeNamespace(string $fullyQualifiedClassName): string
     {
         $namespace = config('blueprint.namespace') . '\\';
@@ -39,36 +83,7 @@ class Blueprint
         }
 
         $content = $this->transformDuplicatePropertyKeys($content);
-
-        $content = preg_replace_callback(
-            '/^(\s+)(id|timestamps(Tz)?|softDeletes(Tz)?)$/mi',
-            fn ($matches) => $matches[1] . strtolower($matches[2]) . ': ' . $matches[2],
-            $content
-        );
-
-        $content = preg_replace_callback(
-            '/^(\s+)(id|timestamps(Tz)?|softDeletes(Tz)?): true$/mi',
-            fn ($matches) => $matches[1] . strtolower($matches[2]) . ': ' . $matches[2],
-            $content
-        );
-
-        $content = preg_replace_callback(
-            '/^(\s+)resource?$/mi',
-            fn ($matches) => $matches[1] . 'resource: web',
-            $content
-        );
-
-        $content = preg_replace_callback(
-            '/^(\s+)invokable?$/mi',
-            fn ($matches) => $matches[1] . 'invokable: true',
-            $content
-        );
-
-        $content = preg_replace_callback(
-            '/^(\s+)(ulid|uuid)(: true)?$/mi',
-            fn ($matches) => $matches[1] . 'id: ' . $matches[2] . ' primary',
-            $content
-        );
+        $content = $this->expandShorthands($content);
 
         return Yaml::parse($content);
     }

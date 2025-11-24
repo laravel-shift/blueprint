@@ -27,6 +27,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
             $path = $this->getPath($model);
 
             $this->create($path, $this->populateStub($stub, $model));
+            $this->output['created'][] = ['Model', $path];
         }
 
         return $this->output;

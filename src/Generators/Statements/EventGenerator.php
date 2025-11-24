@@ -36,6 +36,7 @@ class EventGenerator extends StatementGenerator
                     }
 
                     $this->create($path, $this->populateStub($stub, $statement));
+                    $this->output['created'][] = ['Event', $path];
                 }
             }
         }

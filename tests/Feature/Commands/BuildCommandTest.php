@@ -67,22 +67,23 @@ final class BuildCommandTest extends TestCase
     #[Test]
     public function it_shows_the_generated_files_grouped_by_actions(): void
     {
-        $this->filesystem->shouldReceive('exists')
+        $this->filesystem->expects('exists')
             ->with('draft.yaml')
             ->andReturnTrue();
+
         $builder = $this->mock(Builder::class);
-        $builder->shouldReceive('execute')
+        $builder->expects('execute')
             ->with(resolve(Blueprint::class), $this->files, 'draft.yaml', '', '', false)
             ->andReturn([
                 'created' => [
-                    'file1',
-                    'file2',
+                    ['Controller', 'file1'],
+                    ['Controller', 'file2'],
                 ],
             ]);
+
         $this->artisan('blueprint:build')
-            ->assertExitCode(0)
-            ->expectsOutput('Created:')
-            ->expectsOutput('- file1')
-            ->expectsOutput('- file2');
+            ->assertSuccessful()
+            ->expectsOutputToContain('CREATED  Controller [file1]')
+            ->expectsOutputToContain('CREATED  Controller [file2]');
     }
 }

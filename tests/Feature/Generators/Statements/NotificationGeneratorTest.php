@@ -42,7 +42,7 @@ final class NotificationGeneratorTest extends TestCase
 
         $this->filesystem->shouldNotHaveReceived('put');
 
-        $this->assertEquals([], $this->subject->output(new Tree(['controllers' => []])));
+        $this->assertSame([], $this->subject->output(new Tree(['controllers' => []])));
     }
 
     #[Test]
@@ -57,7 +57,7 @@ final class NotificationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/render-statements.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals([], $this->subject->output($tree));
+        $this->assertSame([], $this->subject->output($tree));
     }
 
     #[Test]
@@ -97,7 +97,7 @@ final class NotificationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture($draft));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['app/Notification/ReviewPostNotification.php', 'app/Notification/PublishedPostNotification.php']], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Notification', 'app/Notification/ReviewPostNotification.php'], ['Notification', 'app/Notification/PublishedPostNotification.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -116,7 +116,7 @@ final class NotificationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/send-statements-notification-facade.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals([], $this->subject->output($tree));
+        $this->assertSame([], $this->subject->output($tree));
     }
 
     #[Test]
@@ -145,7 +145,7 @@ final class NotificationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example-notification-facade.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['src/path/Notification/ReviewNotification.php']], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Notification', 'src/path/Notification/ReviewNotification.php']]], $this->subject->output($tree));
     }
 
     #[Test]
@@ -175,7 +175,7 @@ final class NotificationGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example-notification-facade.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals(['created' => ['src/path/Notification/ReviewNotification.php']], $this->subject->output($tree));
+        $this->assertSame(['created' => [['Notification', 'src/path/Notification/ReviewNotification.php']]], $this->subject->output($tree));
     }
 
     public static function notificationDraftProvider(): array

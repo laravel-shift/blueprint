@@ -32,6 +32,7 @@ class JobGenerator extends StatementGenerator
                     }
 
                     $this->create($path, $this->populateStub($stub, $statement));
+                    $this->output['created'][] = ['Job', $path];
                 }
             }
         }

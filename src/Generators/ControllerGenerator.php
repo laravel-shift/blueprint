@@ -40,9 +40,11 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
             if ($controller->fullyQualifiedNamespace() !== 'App\\Http\\Controllers') {
                 $this->addImport($controller, 'App\\Http\\Controllers\\Controller');
             }
+
             $path = $this->getPath($controller);
 
             $this->create($path, $this->populateStub($stub, $controller));
+            $this->output['created'][] = ['Controller', $path];
         }
 
         return $this->output;

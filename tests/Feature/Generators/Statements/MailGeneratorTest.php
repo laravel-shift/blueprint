@@ -114,12 +114,12 @@ final class MailGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/send-statements.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals([
+        $this->assertSame([
             'created' => [
-                'app/Mail/ReviewPost.php',
-                'resources/views/emails/review-post.blade.php',
-                'app/Mail/PublishedPost.php',
-                'resources/views/emails/published-post.blade.php',
+                ['Mail', 'app/Mail/ReviewPost.php'],
+                ['View', 'resources/views/emails/review-post.blade.php'],
+                ['Mail', 'app/Mail/PublishedPost.php'],
+                ['View', 'resources/views/emails/published-post.blade.php'],
             ],
         ], $this->subject->output($tree));
     }
@@ -143,7 +143,7 @@ final class MailGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/send-statements.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals([], $this->subject->output($tree));
+        $this->assertSame([], $this->subject->output($tree));
     }
 
     #[Test]
@@ -182,10 +182,10 @@ final class MailGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals([
+        $this->assertSame([
             'created' => [
-                'src/path/Mail/ReviewPost.php',
-                'resources/views/emails/review-post.blade.php',
+                ['Mail', 'src/path/Mail/ReviewPost.php'],
+                ['View', 'resources/views/emails/review-post.blade.php'],
             ],
         ], $this->subject->output($tree));
     }
@@ -227,10 +227,10 @@ final class MailGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals([
+        $this->assertSame([
             'created' => [
-                'src/path/Mail/ReviewPost.php',
-                'resources/views/emails/review-post.blade.php',
+                ['Mail', 'src/path/Mail/ReviewPost.php'],
+                ['View', 'resources/views/emails/review-post.blade.php'],
             ],
         ], $this->subject->output($tree));
     }
@@ -272,10 +272,14 @@ final class MailGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/send-statements.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals([
+        $this->assertSame([
             'created' => [
-                'app/Mail/ReviewPost.php',
-                'app/Mail/PublishedPost.php',
+                ['Mail', 'app/Mail/ReviewPost.php'],
+                ['Mail', 'app/Mail/PublishedPost.php'],
+            ],
+            'skipped' => [
+                ['View', 'resources/views/emails/review-post.blade.php'],
+                ['View', 'resources/views/emails/published-post.blade.php'],
             ],
         ], $this->subject->output($tree));
     }
@@ -314,10 +318,10 @@ final class MailGeneratorTest extends TestCase
         $tokens = $this->blueprint->parse($this->fixture('drafts/send-statement-with-view.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
-        $this->assertEquals([
+        $this->assertSame([
             'created' => [
-                'app/Mail/AddedAdmin.php',
-                'resources/views/emails/admin/added.blade.php',
+                ['Mail', 'app/Mail/AddedAdmin.php'],
+                ['View', 'resources/views/emails/admin/added.blade.php'],
             ],
         ], $this->subject->output($tree));
     }
