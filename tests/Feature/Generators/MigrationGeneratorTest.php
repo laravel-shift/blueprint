@@ -673,7 +673,6 @@ final class MigrationGeneratorTest extends TestCase
         $this->assertSame(['created' => [['Migration', $role_migration], ['Migration', $user_migration], ['Migration', $pivot_migration]]], $this->subject->output($tree));
     }
 
-
     public static function modelTreeDataProvider()
     {
         return [

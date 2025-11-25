@@ -381,7 +381,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
     {
         $definition = '';
         foreach ($segments as $segment) {
-            $key = Str::before($segment, ":");
+            $key = Str::before($segment, ':');
             $column = Str::snake($key);
             $references = 'id';
             $on = Str::plural($column);

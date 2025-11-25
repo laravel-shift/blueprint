@@ -23,7 +23,7 @@ class Model implements BlueprintModel
 
     private string $table;
 
-    private ?string $extendedClass = "Illuminate\\Database\\Eloquent\\Model";
+    private ?string $parent = \Illuminate\Database\Eloquent\Model::class;
 
     private array $columns = [];
 
@@ -149,7 +149,7 @@ class Model implements BlueprintModel
     public function setPivot(): void
     {
         $this->pivot = true;
-        $this->setExtendedClass("Illuminate\\Database\\Eloquent\\Relations\\Pivot");
+        $this->setParent(\Illuminate\Database\Eloquent\Relations\Pivot::class);
     }
 
     public function usesCustomDatabaseConnection(): bool
@@ -289,14 +289,14 @@ class Model implements BlueprintModel
         $this->customTraits[] = $trait;
     }
 
-    public function extendedClass(): string
+    public function parent(): string
     {
-        return $this->extendedClass;
+        return $this->parent;
     }
 
-    public function setExtendedClass(string $class): void
+    public function setParent(string $class): void
     {
-        $this->extendedClass = $class;
+        $this->parent = $class;
     }
 
     public function customInterfaces(): array

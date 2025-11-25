@@ -635,7 +635,7 @@ final class ModelGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_model_with_custom_extended_class(): void
+    public function output_generates_model_with_custom_parent_class(): void
     {
         $this->filesystem->expects('stub')
             ->with('model.class.stub')
@@ -644,17 +644,17 @@ final class ModelGeneratorTest extends TestCase
             ->times(1)
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'));
-        
+
         $this->filesystem->expects('exists')
             ->times(1)
             ->with('app/Models')
             ->andReturnTrue();
         $this->filesystem->expects('put')
-            ->with('app/Models/Car.php', $this->fixture('models/model-with-custom-extended-class.php'));
+            ->with('app/Models/Car.php', $this->fixture('models/model-with-custom-parent-class.php'));
 
-        $tokens = $this->blueprint->parse($this->fixture('drafts/model-with-custom-extended-class.yaml'));
+        $tokens = $this->blueprint->parse($this->fixture('drafts/model-with-custom-parent-class.yaml'));
         $tree = $this->blueprint->analyze($tokens);
-        
+
         $this->assertSame(['created' => [['Model', 'app/Models/Car.php']]], $this->subject->output($tree));
     }
 
@@ -668,7 +668,7 @@ final class ModelGeneratorTest extends TestCase
             ->times(1)
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'));
-        
+
         $this->filesystem->expects('exists')
             ->times(1)
             ->with('app/Models')
@@ -678,7 +678,7 @@ final class ModelGeneratorTest extends TestCase
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/model-with-custom-traits.yaml'));
         $tree = $this->blueprint->analyze($tokens);
-        
+
         $this->assertSame(['created' => [['Model', 'app/Models/Car.php']]], $this->subject->output($tree));
     }
 
@@ -692,7 +692,7 @@ final class ModelGeneratorTest extends TestCase
             ->times(1)
             ->with('model.fillable.stub')
             ->andReturn($this->stub('model.fillable.stub'));
-        
+
         $this->filesystem->expects('exists')
             ->times(1)
             ->with('app/Models')
@@ -702,7 +702,7 @@ final class ModelGeneratorTest extends TestCase
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/model-with-custom-interfaces.yaml'));
         $tree = $this->blueprint->analyze($tokens);
-        
+
         $this->assertSame(['created' => [['Model', 'app/Models/Car.php']]], $this->subject->output($tree));
     }
 
@@ -722,7 +722,7 @@ final class ModelGeneratorTest extends TestCase
             ['drafts/model-with-meta.yaml', 'app/Models/Post.php', 'models/model-with-meta.php'],
             ['drafts/infer-belongsto.yaml', 'app/Models/Conference.php', 'models/infer-belongsto.php'],
             ['drafts/model-with-ulid-id.yaml', 'app/Models/User.php', 'models/model-with-ulid-trait.php'],
-            ['drafts/model-with-uuid-id.yaml', 'app/Models/User.php', 'models/model-with-uuid-trait.php']
+            ['drafts/model-with-uuid-id.yaml', 'app/Models/User.php', 'models/model-with-uuid-trait.php'],
         ];
     }
 
