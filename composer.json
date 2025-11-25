@@ -18,7 +18,6 @@
         "symfony/yaml": ">=7.0"
     },
     "require-dev": {
-        "jasonmccreary/laravel-test-assertions": "^2.8",
         "laravel/pint": "~1.25.0",
         "mockery/mockery": "^1.4.4",
         "orchestra/testbench": ">=9.0",
