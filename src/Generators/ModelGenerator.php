@@ -35,16 +35,20 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
 
     protected function populateStub(string $stub, Model $model): string
     {
-        if ($model->isPivot()) {
-            $stub = str_replace('class {{ class }} extends Model', 'class {{ class }} extends Pivot', $stub);
-            $this->addImport($model, 'Illuminate\\Database\\Eloquent\\Relations\\Pivot');
-        } else {
-            $this->addImport($model, 'Illuminate\\Database\\Eloquent\\Model');
+        $interfaces = [];
+        if ($model->usesCustomInterfaces()) {
+            foreach ($model->customInterfaces() as $interface) {
+                $this->addImport($model, $interface);
+                $interfaces[] = Str::afterLast($interface, '\\');
+            }
         }
+        sort($interfaces);
 
         $stub = str_replace('{{ namespace }}', $model->fullyQualifiedNamespace(), $stub);
         $stub = str_replace(PHP_EOL . 'class {{ class }}', $this->buildClassPhpDoc($model) . PHP_EOL . 'class {{ class }}', $stub);
         $stub = str_replace('{{ class }}', $model->name(), $stub);
+        $stub = str_replace("{{ extendedClass }}", Str::afterLast($model->extendedClass(), '\\') . ($model->usesCustomInterfaces() ? ' implements ' . implode(', ', $interfaces) : ''), $stub);
+        $this->addImport($model, $model->extendedClass());
 
         $body = $this->buildProperties($model);
         $body .= PHP_EOL . PHP_EOL;
@@ -459,6 +463,13 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         if ($model->usesUuids()) {
             $this->addImport($model, 'Illuminate\\Database\\Eloquent\\Concerns\\HasUuids');
             $traits[] = 'HasUuids';
+        }
+
+        if ($model->usesCustomTraits()) {
+            foreach ($model->customTraits() as $trait) {
+                $this->addImport($model, $trait);
+                $traits[] = Str::afterLast($trait, '\\');
+            }
         }
 
         sort($traits);

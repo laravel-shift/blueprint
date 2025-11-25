@@ -146,6 +146,22 @@ class ModelLexer implements Lexer
                 $model->setPivot();
             }
 
+            if (isset($columns['meta']['extends'])) {
+                $model->setExtendedClass($columns['meta']['extends']);
+            }
+
+            if (isset($columns['meta']['traits'])) {
+                foreach (explode(',', $columns['meta']['traits']) as $trait) {
+                    $model->addCustomTrait(trim($trait));
+                }
+            }
+
+            if (isset($columns['meta']['implements'])) {
+                foreach (explode(',', $columns['meta']['implements']) as $interface) {
+                    $model->addCustomInterface(trim($interface));
+                }
+            }
+
             unset($columns['meta']);
         }
 
@@ -247,7 +263,7 @@ class ModelLexer implements Lexer
                     $attributes = explode(',', $attributes);
 
                     if ($data_type === 'enum') {
-                        $attributes = array_map(fn ($attribute) => trim($attribute, '"'), $attributes);
+                        $attributes = array_map(fn($attribute) => trim($attribute, '"'), $attributes);
                     }
                 }
             }
@@ -263,7 +279,7 @@ class ModelLexer implements Lexer
         }
 
         if (is_null($data_type)) {
-            $is_foreign_key = collect($modifiers)->contains(fn ($modifier) => (is_array($modifier) && key($modifier) === 'foreign') || $modifier === 'foreign');
+            $is_foreign_key = collect($modifiers)->contains(fn($modifier) => (is_array($modifier) && key($modifier) === 'foreign') || $modifier === 'foreign');
 
             $data_type = $is_foreign_key ? 'id' : 'string';
         }
@@ -350,7 +366,7 @@ class ModelLexer implements Lexer
     {
         $tokens = array_filter(
             $this->parseColumn($definition),
-            fn ($token) => strtolower($token) !== 'unsigned' && !isset(self::$dataTypes[strtolower($token)])
+            fn($token) => strtolower($token) !== 'unsigned' && !isset(self::$dataTypes[strtolower($token)])
         );
 
         return implode(' ', $tokens);

@@ -1,0 +1,6 @@
+models:
+  Car:
+    color: string
+
+    meta:
+      extends: App\Models\Base\Vehicle

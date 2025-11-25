@@ -23,6 +23,8 @@ class Model implements BlueprintModel
 
     private string $table;
 
+    private ?string $extendedClass = "Illuminate\\Database\\Eloquent\\Model";
+
     private array $columns = [];
 
     private array $relationships = [];
@@ -32,6 +34,10 @@ class Model implements BlueprintModel
     private array $polymorphicManyToManyTables = [];
 
     private array $indexes = [];
+
+    private array $customTraits = [];
+
+    private array $customInterfaces = [];
 
     public function __construct($name)
     {
@@ -111,6 +117,16 @@ class Model implements BlueprintModel
         return $this->usesPrimaryKey() && $this->columns[$this->primaryKey]->dataType() === 'uuid';
     }
 
+    public function usesCustomTraits(): bool
+    {
+        return count($this->customTraits) > 0;
+    }
+
+    public function usesCustomInterfaces(): bool
+    {
+        return count($this->customInterfaces) > 0;
+    }
+
     public function idType(): ?string
     {
         if (!$this->usesPrimaryKey()) {
@@ -133,6 +149,7 @@ class Model implements BlueprintModel
     public function setPivot(): void
     {
         $this->pivot = true;
+        $this->setExtendedClass("Illuminate\\Database\\Eloquent\\Relations\\Pivot");
     }
 
     public function usesCustomDatabaseConnection(): bool
@@ -260,5 +277,35 @@ class Model implements BlueprintModel
     public function polymorphicManyToManyTables(): array
     {
         return $this->polymorphicManyToManyTables;
+    }
+
+    public function customTraits(): array
+    {
+        return $this->customTraits;
+    }
+
+    public function addCustomTrait(string $trait): void
+    {
+        $this->customTraits[] = $trait;
+    }
+
+    public function extendedClass(): string
+    {
+        return $this->extendedClass;
+    }
+
+    public function setExtendedClass(string $class): void
+    {
+        $this->extendedClass = $class;
+    }
+
+    public function customInterfaces(): array
+    {
+        return $this->customInterfaces;
+    }
+
+    public function addCustomInterface(string $interface): void
+    {
+        $this->customInterfaces[] = $interface;
     }
 }
