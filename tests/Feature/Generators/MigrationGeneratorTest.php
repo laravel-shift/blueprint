@@ -613,6 +613,67 @@ final class MigrationGeneratorTest extends TestCase
         $this->assertSame(['created' => [['Migration', $user_migration], ['Migration', $team_migration], ['Migration', $pivot_migration]]], $this->subject->output($tree));
     }
 
+    #[Test]
+    public function output_generates_pivot_table_with_correct_attribute_name(): void
+    {
+        $this->app->config->set('blueprint.use_constraints', true);
+
+        $this->filesystem->expects('stub')
+            ->with('migration.stub')
+            ->andReturn($this->stub('migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $role_migration = str_replace('timestamp', $now->copy()->subSeconds(2)->format('Y_m_d_His'), 'database/migrations/timestamp_create_app_roles_table.php');
+        $user_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_app_users_table.php');
+        $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_app_role_app_user_table.php');
+
+        $this->filesystem->expects('exists')->times(3)->andReturn(false);
+
+        $this->filesystem->expects('put')
+            ->with($role_migration, $this->fixture('migrations/correct_pivot_roles_table.php'));
+        $this->filesystem->expects('put')
+            ->with($user_migration, $this->fixture('migrations/correct_pivot_users_table.php'));
+        $this->filesystem->expects('put')
+            ->with($pivot_migration, $this->fixture('migrations/correct_pivot_role_user_table.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/correct-pivot-table.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertSame(['created' => [['Migration', $role_migration], ['Migration', $user_migration], ['Migration', $pivot_migration]]], $this->subject->output($tree));
+    }
+
+    #[Test]
+    public function output_generates_pivot_table_with_wrong_attribute_name(): void
+    {
+        $this->filesystem->expects('stub')
+            ->with('migration.stub')
+            ->andReturn($this->stub('migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $role_migration = str_replace('timestamp', $now->copy()->subSeconds(2)->format('Y_m_d_His'), 'database/migrations/timestamp_create_app_roles_table.php');
+        $user_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_app_users_table.php');
+        $pivot_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_app_role_app_user_table.php');
+
+        $this->filesystem->expects('exists')->times(3)->andReturn(false);
+
+        $this->filesystem->expects('put')
+            ->with($role_migration, $this->fixture('migrations/wrong_pivot_roles_table.php'));
+        $this->filesystem->expects('put')
+            ->with($user_migration, $this->fixture('migrations/wrong_pivot_users_table.php'));
+        $this->filesystem->expects('put')
+            ->with($pivot_migration, $this->fixture('migrations/wrong_pivot_role_user_table.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/correct-pivot-table.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertSame(['created' => [['Migration', $role_migration], ['Migration', $user_migration], ['Migration', $pivot_migration]]], $this->subject->output($tree));
+    }
+
+
     public static function modelTreeDataProvider()
     {
         return [
