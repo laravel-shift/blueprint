@@ -49,9 +49,9 @@ class RouteGenerator extends AbstractClassGenerator implements Generator
         $className = $this->getClassName($controller);
         $slug = config('blueprint.singular_routes') ? Str::kebab($controller->prefix()) : Str::plural(Str::kebab($controller->prefix()));
 
-        if ($controller->parent()) {
-            $parentSlug = config('blueprint.singular_routes') ? Str::kebab($controller->parent()) : Str::plural(Str::kebab($controller->parent()));
-            $parentBinding = '/{' . Str::kebab($controller->parent()) . '}/';
+        if ($controller->parentModel()) {
+            $parentSlug = config('blueprint.singular_routes') ? Str::kebab($controller->parentModel()) : Str::plural(Str::kebab($controller->parentModel()));
+            $parentBinding = '/{' . Str::kebab($controller->parentModel()) . '}/';
             $slug = $parentSlug . $parentBinding . $slug;
         }
 

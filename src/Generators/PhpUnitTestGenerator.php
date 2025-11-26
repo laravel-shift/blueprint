@@ -115,9 +115,9 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
                 $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
             }
 
-            if ($parent = $controller->parent()) {
-                $this->addImport($controller, $modelNamespace . '\\' . $parent);
-                $setup['data'][] = sprintf('$%s = %s::factory()->create();', Str::camel($parent), $parent);
+            if ($parentModel = $controller->parentModel()) {
+                $this->addImport($controller, $modelNamespace . '\\' . $parentModel);
+                $setup['data'][] = sprintf('$%s = %s::factory()->create();', Str::camel($parentModel), $parentModel);
             }
 
             foreach ($statements as $statement) {
@@ -497,11 +497,11 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
             }
             $call .= ')';
 
-            if ($controller->parent()) {
-                $parent = Str::camel($controller->parent());
+            if ($controller->parentModel()) {
+                $parentModel = Str::camel($controller->parentModel());
                 $variable = Str::camel($context);
                 $binding = sprintf(', $%s)', $variable);
-                $params = sprintf("'%s' => $%s", $parent, $parent);
+                $params = sprintf("'%s' => $%s", $parentModel, $parentModel);
 
                 if (Str::contains($call, $binding)) {
                     $params .= sprintf(", '%s' => $%s", $variable, $variable);

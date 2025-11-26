@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 
 class ModelGenerator extends AbstractClassGenerator implements Generator
 {
-    use HandlesImports, HandlesTraits, HandlesInterfaces;
+    use HandlesImports, HandlesInterfaces, HandlesTraits;
 
     protected array $types = ['models'];
 
@@ -28,6 +28,10 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         foreach ($tree->models() as $model) {
             $path = $this->getPath($model);
 
+            $this->addTraits($model);
+            $this->addInterfaces($model);
+            $this->addImport($model, $model->parent());
+
             $this->create($path, $this->populateStub($stub, $model));
             $this->output['created'][] = ['Model', $path];
         }
@@ -37,10 +41,6 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
 
     protected function populateStub(string $stub, Model $model): string
     {
-        $this->addTraits($model);
-        $this->addInterfaces($model);
-        $this->addImport($model, $model->parent());
-
         $stub = str_replace('{{ namespace }}', $model->fullyQualifiedNamespace(), $stub);
         $stub = str_replace(PHP_EOL . 'class {{ class }}', $this->buildClassPhpDoc($model) . PHP_EOL . 'class {{ class }}', $stub);
         $stub = str_replace('{{ class }}', $model->name(), $stub);
@@ -50,9 +50,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         $body .= PHP_EOL . PHP_EOL;
         $body .= $this->buildRelationships($model);
 
-        $stub = str_replace('{{ traits }}', '{{ traits }}' . PHP_EOL . PHP_EOL . '    ' . trim($body), $stub);
-
-        $stub = str_replace('{{ traits }}', $this->buildTraits($model), $stub);
+        $stub = str_replace('{{ traits }}', $this->buildTraits($model) . PHP_EOL . PHP_EOL . '    ' . trim($body), $stub);
         $stub = str_replace('{{ imports }}', $this->buildImports($model), $stub);
 
         return $stub;

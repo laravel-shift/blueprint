@@ -94,9 +94,9 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
                 $this->addImport($controller, $reference);
             }
 
-            if ($parent = $controller->parent()) {
-                $method = str_replace($search, $search . ', ' . $parent . ' $' . Str::camel($parent), $method);
-                $this->addImport($controller, $this->fullyQualifyModelReference($controller->namespace(), $parent));
+            if ($parentModel = $controller->parentModel()) {
+                $method = str_replace($search, $search . ', ' . $parentModel . ' $' . Str::camel($parentModel), $method);
+                $this->addImport($controller, $this->fullyQualifyModelReference($controller->namespace(), $parentModel));
             }
 
             $body = '';
@@ -116,8 +116,8 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
                             '$' . Str::camel($controllerModelName),
                         ],
                         in_array($name, ['index', 'create', 'store'])
-                            ? "Gate::authorize('{{ method }}', {{ modelClass }}::class);"
-                            : "Gate::authorize('{{ method }}', {{ modelVariable }});"
+                        ? "Gate::authorize('{{ method }}', {{ modelClass }}::class);"
+                        : "Gate::authorize('{{ method }}', {{ modelVariable }});"
                     ) . PHP_EOL . PHP_EOL;
                     $this->addImport($controller, 'Illuminate\Support\Facades\Gate');
                 }
@@ -189,12 +189,12 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
                 }
 
                 if (
-                    $controller->parent() &&
+                    $controller->parentModel() &&
                     ($statement instanceof QueryStatement || $statement instanceof EloquentStatement || $statement instanceof ResourceStatement)
                 ) {
                     $body = str_replace(
                         ['::all', Str::singular($controller->prefix()) . '::'],
-                        ['::get', '$' . Str::lower($controller->parent()) . '->' . Str::plural(Str::lower($controller->prefix())) . '()->'],
+                        ['::get', '$' . Str::lower($controller->parentModel()) . '->' . Str::plural(Str::lower($controller->prefix())) . '()->'],
                         $body
                     );
                 }
