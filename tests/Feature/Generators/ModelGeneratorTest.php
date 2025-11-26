@@ -629,9 +629,81 @@ final class ModelGeneratorTest extends TestCase
         $this->filesystem->expects('put')
             ->with('app/Models/User.php', $this->fixture('models/model-with-uuid-trait.php'));
         $tokens = $this->blueprint->parse($this->fixture('drafts/model-with-uuid-id.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
+        $tree = $this->blueprint->analyze(tokens: $tokens);
 
         $this->assertSame(['created' => [['Model', 'app/Models/User.php']]], $this->subject->output($tree));
+    }
+
+    #[Test]
+    public function output_generates_model_with_custom_parent_class(): void
+    {
+        $this->filesystem->expects('stub')
+            ->with('model.class.stub')
+            ->andReturn($this->stub('model.class.stub'));
+        $this->filesystem->expects('stub')
+            ->times(1)
+            ->with('model.fillable.stub')
+            ->andReturn($this->stub('model.fillable.stub'));
+
+        $this->filesystem->expects('exists')
+            ->times(1)
+            ->with('app/Models')
+            ->andReturnTrue();
+        $this->filesystem->expects('put')
+            ->with('app/Models/Car.php', $this->fixture('models/model-with-custom-parent-class.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/model-with-custom-parent-class.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertSame(['created' => [['Model', 'app/Models/Car.php']]], $this->subject->output($tree));
+    }
+
+    #[Test]
+    public function output_generates_model_with_custom_traits(): void
+    {
+        $this->filesystem->expects('stub')
+            ->with('model.class.stub')
+            ->andReturn($this->stub('model.class.stub'));
+        $this->filesystem->expects('stub')
+            ->times(1)
+            ->with('model.fillable.stub')
+            ->andReturn($this->stub('model.fillable.stub'));
+
+        $this->filesystem->expects('exists')
+            ->times(1)
+            ->with('app/Models')
+            ->andReturnTrue();
+        $this->filesystem->expects('put')
+            ->with('app/Models/Car.php', $this->fixture('models/model-with-custom-traits.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/model-with-custom-traits.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertSame(['created' => [['Model', 'app/Models/Car.php']]], $this->subject->output($tree));
+    }
+
+    #[Test]
+    public function output_generates_model_with_custom_interfaces(): void
+    {
+        $this->filesystem->expects('stub')
+            ->with('model.class.stub')
+            ->andReturn($this->stub('model.class.stub'));
+        $this->filesystem->expects('stub')
+            ->times(1)
+            ->with('model.fillable.stub')
+            ->andReturn($this->stub('model.fillable.stub'));
+
+        $this->filesystem->expects('exists')
+            ->times(1)
+            ->with('app/Models')
+            ->andReturnTrue();
+        $this->filesystem->expects('put')
+            ->with('app/Models/Car.php', $this->fixture('models/model-with-custom-interfaces.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/model-with-custom-interfaces.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertSame(['created' => [['Model', 'app/Models/Car.php']]], $this->subject->output($tree));
     }
 
     public static function modelTreeDataProvider(): array

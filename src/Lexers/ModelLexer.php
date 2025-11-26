@@ -146,6 +146,22 @@ class ModelLexer implements Lexer
                 $model->setPivot();
             }
 
+            if (isset($columns['meta']['extends'])) {
+                $model->setParent($columns['meta']['extends']);
+            }
+
+            if (isset($columns['meta']['traits'])) {
+                foreach (explode(',', $columns['meta']['traits']) as $trait) {
+                    $model->addCustomTrait(trim($trait));
+                }
+            }
+
+            if (isset($columns['meta']['implements'])) {
+                foreach (explode(',', $columns['meta']['implements']) as $interface) {
+                    $model->addCustomInterface(trim($interface));
+                }
+            }
+
             unset($columns['meta']);
         }
 

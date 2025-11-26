@@ -1,0 +1,18 @@
+models:
+  AppRole:
+    ulid
+
+    slug: string:20:unique
+    name: string:50
+
+    relationships:
+      belongsToMany: AppUser:users
+  
+  AppUser:
+    ulid
+    
+    username: string:255:unique
+    password: password
+    
+    relationships:
+      hasMany: AppRole:roles
