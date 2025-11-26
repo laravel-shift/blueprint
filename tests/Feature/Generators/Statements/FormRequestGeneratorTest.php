@@ -180,6 +180,41 @@ final class FormRequestGeneratorTest extends TestCase
     }
 
     #[Test]
+    public function output_supports_nested_form_requests_using_backslash(): void
+    {
+        $this->filesystem->expects('stub')
+            ->with('request.stub')
+            ->andReturn($this->stub('request.stub'));
+
+        $this->filesystem->expects('exists')
+            ->with('app/Http/Requests/Api/V1')
+            ->twice()
+            ->andReturns(false, true);
+
+        $this->filesystem->expects('makeDirectory')
+            ->with('app/Http/Requests/Api/V1', 0755, true);
+
+        $this->filesystem->expects('exists')
+            ->with('app/Http/Requests/Api/V1/MasterRecordStoreRequest.php')
+            ->andReturnFalse();
+        $this->filesystem->expects('put')
+            ->with('app/Http/Requests/Api/V1/MasterRecordStoreRequest.php', $this->fixture('form-requests/master-record-store.php'));
+        $this->filesystem->expects('exists')
+            ->with('app/Http/Requests/Api/V1/MasterRecordUpdateRequest.php')
+            ->andReturnFalse();
+        $this->filesystem->expects('put')
+            ->with('app/Http/Requests/Api/V1/MasterRecordUpdateRequest.php', $this->fixture('form-requests/master-record-update.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/nested-controller-statements.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertSame(
+            ['created' => [['Form Request', 'app/Http/Requests/Api/V1/MasterRecordStoreRequest.php'], ['Form Request', 'app/Http/Requests/Api/V1/MasterRecordUpdateRequest.php']]],
+            $this->subject->output($tree)
+        );
+    }
+
+    #[Test]
     public function it_respects_configuration(): void
     {
         $this->app['config']->set('blueprint.namespace', 'Some\\App');

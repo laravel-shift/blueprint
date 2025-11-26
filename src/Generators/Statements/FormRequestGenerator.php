@@ -57,7 +57,7 @@ class FormRequestGenerator extends AbstractClassGenerator implements Generator
 
     protected function getStatementPath(Controller $controller, string $name): string
     {
-        return Blueprint::appPath() . '/Http/Requests/' . ($controller->namespace() ? $controller->namespace() . '/' : '') . $name . '.php';
+        return str_replace('\\', '/', Blueprint::appPath() . '/Http/Requests/' . ($controller->namespace() ? $controller->namespace() . '/' : '') . $name . '.php');
     }
 
     protected function populateStub(string $stub, string $name, $context, ValidateStatement $validateStatement, Controller $controller): string

@@ -1,0 +1,8 @@
+models:
+  MasterRecord:
+    name: string
+    short_name: string unique
+
+controllers:
+  Api\V1\MasterRecordController:
+    resource: api

@@ -197,6 +197,41 @@ final class ResourceGeneratorTest extends TestCase
     }
 
     #[Test]
+    public function output_writes_nested_resource_using_backslashes(): void
+    {
+        $this->filesystem->expects('stub')
+            ->with('resource.stub')
+            ->andReturn(file_get_contents('stubs/resource.stub'));
+
+        $this->filesystem->expects('exists')
+            ->twice()
+            ->with('app/Http/Resources/Api/V1')
+            ->andReturns(false, true);
+        $this->filesystem->expects('makeDirectory')
+            ->with('app/Http/Resources/Api/V1', 0755, true);
+
+        $this->filesystem->expects('exists')
+            ->times(3)
+            ->with('app/Http/Resources/Api/V1/MasterRecordResource.php')
+            ->andReturns(false, true, true);
+        $this->filesystem->expects('put')
+            ->with('app/Http/Resources/Api/V1/MasterRecordResource.php', $this->fixture('resources/master-record-resource.php'));
+
+        $this->filesystem->expects('exists')
+            ->with('app/Http/Resources/Api/V1/MasterRecordCollection.php')
+            ->andReturns(false);
+        $this->filesystem->expects('put')
+            ->with('app/Http/Resources/Api/V1/MasterRecordCollection.php', $this->fixture('resources/master-record-collection.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/nested-controller-statements.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertSame([
+            'created' => [['Resource', 'app/Http/Resources/Api/V1/MasterRecordCollection.php'], ['Resource', 'app/Http/Resources/Api/V1/MasterRecordResource.php']],
+        ], $this->subject->output($tree));
+    }
+
+    #[Test]
     public function output_writes_nested_resource_without_generating_resource_collection_classes(): void
     {
         config(['blueprint.generate_resource_collection_classes' => false]);
