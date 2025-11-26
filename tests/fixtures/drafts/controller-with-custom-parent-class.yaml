@@ -1,0 +1,13 @@
+models:
+  Car:
+    color: string
+
+    meta:
+      extends: App\Models\Base\Vehicle
+
+controllers:
+  Car:
+    resource: api
+
+    meta:
+      extends: App\Http\Controller\VehicleController

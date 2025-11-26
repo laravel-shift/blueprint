@@ -279,6 +279,9 @@ final class ControllerGeneratorTest extends TestCase
             ['drafts/api-routes-example.yaml', 'app/Http/Controllers/Api/CertificateController.php', 'controllers/api-routes-example.php'],
             ['drafts/invokable-controller.yaml', 'app/Http/Controllers/ReportController.php', 'controllers/invokable-controller.php'],
             ['drafts/invokable-controller-shorthand.yaml', 'app/Http/Controllers/ReportController.php', 'controllers/invokable-controller-shorthand.php'],
+            ['drafts/controller-with-custom-parent-class.yaml', 'app/Http/Controllers/CarController.php', 'controllers/controller-with-custom-parent-class.php'],
+            ['drafts/controller-with-custom-traits.yaml', 'app/Http/Controllers/CarController.php', 'controllers/controller-with-custom-traits.php'],
+            ['drafts/controller-with-custom-interfaces.yaml', 'app/Http/Controllers/CarController.php', 'controllers/controller-with-custom-interfaces.php'],
         ];
     }
 }

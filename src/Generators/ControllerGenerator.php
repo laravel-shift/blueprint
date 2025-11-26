@@ -3,6 +3,7 @@
 namespace Blueprint\Generators;
 
 use Blueprint\Concerns\HandlesImports;
+use Blueprint\Concerns\HandlesInterfaces;
 use Blueprint\Concerns\HandlesTraits;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Controller;
@@ -24,7 +25,7 @@ use Illuminate\Support\Str;
 
 class ControllerGenerator extends AbstractClassGenerator implements Generator
 {
-    use HandlesImports, HandlesTraits;
+    use HandlesImports, HandlesInterfaces, HandlesTraits;
 
     protected array $types = ['controllers'];
 
@@ -36,9 +37,20 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
 
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree->controllers() as $controller) {
-            $this->addImport($controller, 'Illuminate\\Http\\Request');
-            if ($controller->fullyQualifiedNamespace() !== 'App\\Http\\Controllers') {
-                $this->addImport($controller, 'App\\Http\\Controllers\\Controller');
+            foreach ($controller->traits() as $trait) {
+                $this->addImport($controller, $trait);
+                $this->addTrait($controller, Str::afterLast($trait, '\\'));
+            }
+
+            foreach ($controller->interfaces() as $interface) {
+                $this->addImport($controller, $interface);
+                $this->addInterface($controller, Str::afterLast($interface, '\\'));
+            }
+
+            $this->addImport($controller, \Illuminate\Http\Request::class);
+
+            if (!Str::startsWith($controller->parent(), $controller->fullyQualifiedNamespace())) {
+                $this->addImport($controller, $controller->parent());
             }
 
             $path = $this->getPath($controller);
@@ -54,6 +66,8 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
     {
         $stub = str_replace('{{ namespace }}', $controller->fullyQualifiedNamespace(), $stub);
         $stub = str_replace('{{ class }}', $controller->className(), $stub);
+        $stub = str_replace('{{ extends }}', Str::afterLast($controller->parent(), '\\') . $this->buildInterfaces($controller), $stub);
+        $stub = str_replace('{{ traits }}' . (!$controller->usesTraits() ? PHP_EOL . PHP_EOL . '    ' : ''), $this->buildTraits($controller), $stub);
         $stub = str_replace('{{ methods }}', $this->buildMethods($controller), $stub);
         $stub = str_replace('{{ imports }}', $this->buildImports($controller), $stub);
 
