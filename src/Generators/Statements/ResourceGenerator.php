@@ -65,9 +65,9 @@ class ResourceGenerator extends StatementGenerator implements Generator
 
         $stub = str_replace('{{ namespace }}', $namespace, $stub);
         $stub = str_replace('{{ imports }}', implode(PHP_EOL, $imports), $stub);
-        $stub = str_replace('{{ parentClass }}', $resource->collection() && $resource->generateCollectionClass() ? 'ResourceCollection' : 'JsonResource', $stub);
+        $stub = str_replace('{{ extends }}', $resource->collection() && $resource->generateCollectionClass() ? 'ResourceCollection' : 'JsonResource', $stub);
         $stub = str_replace('{{ class }}', $resource->name(), $stub);
-        $stub = str_replace('{{ parentClass }}', $resource->collection() && $resource->generateCollectionClass() ? 'ResourceCollection' : 'JsonResource', $stub);
+        $stub = str_replace('{{ extends }}', $resource->collection() && $resource->generateCollectionClass() ? 'ResourceCollection' : 'JsonResource', $stub);
         $stub = str_replace('{{ resource }}', $resource->collection() && $resource->generateCollectionClass() ? 'resource collection' : 'resource', $stub);
         $stub = str_replace('{{ body }}', $this->buildData($resource), $stub);
 

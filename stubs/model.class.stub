@@ -4,7 +4,7 @@ namespace {{ namespace }};
 
 {{ imports }}
 
-class {{ class }} extends {{ parent }}
+class {{ class }} extends {{ extends }}
 {
     use HasFactory;
 }
