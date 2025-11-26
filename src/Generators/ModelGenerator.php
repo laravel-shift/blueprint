@@ -3,6 +3,8 @@
 namespace Blueprint\Generators;
 
 use Blueprint\Concerns\HandlesImports;
+use Blueprint\Concerns\HandlesInterfaces;
+use Blueprint\Concerns\HandlesTraits;
 use Blueprint\Contracts\Generator;
 use Blueprint\Models\Column;
 use Blueprint\Models\Model;
@@ -11,7 +13,7 @@ use Illuminate\Support\Str;
 
 class ModelGenerator extends AbstractClassGenerator implements Generator
 {
-    use HandlesImports;
+    use HandlesImports, HandlesTraits, HandlesInterfaces;
 
     protected array $types = ['models'];
 
@@ -35,29 +37,22 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
 
     protected function populateStub(string $stub, Model $model): string
     {
-        $interfaces = [];
-        if ($model->usesCustomInterfaces()) {
-            foreach ($model->customInterfaces() as $interface) {
-                $this->addImport($model, $interface);
-                $interfaces[] = Str::afterLast($interface, '\\');
-            }
-        }
-        sort($interfaces);
+        $this->addTraits($model);
+        $this->addInterfaces($model);
+        $this->addImport($model, $model->parent());
 
         $stub = str_replace('{{ namespace }}', $model->fullyQualifiedNamespace(), $stub);
         $stub = str_replace(PHP_EOL . 'class {{ class }}', $this->buildClassPhpDoc($model) . PHP_EOL . 'class {{ class }}', $stub);
         $stub = str_replace('{{ class }}', $model->name(), $stub);
-        $stub = str_replace('{{ extends }}', Str::afterLast($model->parent(), '\\') . ($model->usesCustomInterfaces() ? ' implements ' . implode(', ', $interfaces) : ''), $stub);
-        $this->addImport($model, $model->parent());
+        $stub = str_replace('{{ extends }}', Str::afterLast($model->parent(), '\\') . $this->buildInterfaces($model), $stub);
 
         $body = $this->buildProperties($model);
         $body .= PHP_EOL . PHP_EOL;
         $body .= $this->buildRelationships($model);
 
-        $this->addImport($model, 'Illuminate\\Database\\Eloquent\\Factories\\HasFactory');
-        $stub = str_replace('use HasFactory;', 'use HasFactory;' . PHP_EOL . PHP_EOL . '    ' . trim($body), $stub);
+        $stub = str_replace('{{ traits }}', '{{ traits }}' . PHP_EOL . PHP_EOL . '    ' . trim($body), $stub);
 
-        $stub = $this->addTraits($model, $stub);
+        $stub = str_replace('{{ traits }}', $this->buildTraits($model), $stub);
         $stub = str_replace('{{ imports }}', $this->buildImports($model), $stub);
 
         return $stub;
@@ -446,35 +441,28 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
             ->all();
     }
 
-    protected function addTraits(Model $model, $stub): string
+    protected function addTraits(Model $model): void
     {
-        $traits = ['HasFactory'];
-
-        if ($model->usesSoftDeletes()) {
-            $this->addImport($model, 'Illuminate\\Database\\Eloquent\\SoftDeletes');
-            $traits[] = 'SoftDeletes';
-        }
-
         if ($model->usesUlids()) {
-            $this->addImport($model, 'Illuminate\\Database\\Eloquent\\Concerns\\HasUlids');
-            $traits[] = 'HasUlids';
+            $model->addTrait(\Illuminate\Database\Eloquent\Concerns\HasUlids::class);
         }
 
         if ($model->usesUuids()) {
-            $this->addImport($model, 'Illuminate\\Database\\Eloquent\\Concerns\\HasUuids');
-            $traits[] = 'HasUuids';
+            $model->addTrait(\Illuminate\Database\Eloquent\Concerns\HasUuids::class);
         }
 
-        if ($model->usesCustomTraits()) {
-            foreach ($model->customTraits() as $trait) {
-                $this->addImport($model, $trait);
-                $traits[] = Str::afterLast($trait, '\\');
-            }
+        foreach ($model->traits() as $trait) {
+            $this->addImport($model, $trait);
+            $this->addTrait($model, Str::afterLast($trait, '\\'));
         }
+    }
 
-        sort($traits);
-
-        return Str::replaceFirst('use HasFactory', 'use ' . implode(', ', $traits), $stub);
+    protected function addInterfaces(Model $model): void
+    {
+        foreach ($model->interfaces() as $interface) {
+            $this->addImport($model, $interface);
+            $this->addInterface($model, Str::afterLast($interface, '\\'));
+        }
     }
 
     protected function dateColumns(array $columns)
@@ -484,8 +472,8 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
             array_filter(
                 $columns,
                 fn (Column $column) => $column->dataType() === 'date'
-                    || stripos($column->dataType(), 'datetime') !== false
-                    || stripos($column->dataType(), 'timestamp') !== false
+                || stripos($column->dataType(), 'datetime') !== false
+                || stripos($column->dataType(), 'timestamp') !== false
             )
         );
     }
