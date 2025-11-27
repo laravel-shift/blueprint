@@ -152,13 +152,13 @@ class ModelLexer implements Lexer
 
             if (isset($columns['meta']['traits'])) {
                 foreach (explode(',', $columns['meta']['traits']) as $trait) {
-                    $model->addCustomTrait(trim($trait));
+                    $model->addTrait(trim($trait));
                 }
             }
 
             if (isset($columns['meta']['implements'])) {
                 foreach (explode(',', $columns['meta']['implements']) as $interface) {
-                    $model->addCustomInterface(trim($interface));
+                    $model->addInterface(trim($interface));
                 }
             }
 

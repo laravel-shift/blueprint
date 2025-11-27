@@ -1,0 +1,15 @@
+models:
+  Car:
+    color: string
+
+    meta:
+      extends: App\Models\Base\Vehicle
+      traits: App\Traits\HasWheels, App\Traits\HasEngine
+
+controllers:
+  Car:
+    resource: api
+
+    meta:
+      extends: App\Http\Controller\VehicleController
+      traits: App\Traits\HandlesHighSpeeds, App\Traits\Hijackable

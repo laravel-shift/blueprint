@@ -59,13 +59,13 @@ class ControllerLexer implements Lexer
                     $policy = new Policy(
                         $controller->prefix(),
                         $authorizeResource === true
-                            ? Policy::$supportedMethods
-                            : array_unique(
-                                array_map(
-                                    fn (string $method): string => Policy::$resourceAbilityMap[$method],
-                                    preg_split('/,([ \t]+)?/', $definition['meta']['policies'])
-                                )
-                            ),
+                        ? Policy::$supportedMethods
+                        : array_unique(
+                            array_map(
+                                fn (string $method): string => Policy::$resourceAbilityMap[$method],
+                                preg_split('/,([ \t]+)?/', $definition['meta']['policies'])
+                            )
+                        ),
                         $authorizeResource === true,
                     );
 
@@ -75,7 +75,23 @@ class ControllerLexer implements Lexer
                 }
 
                 if (isset($definition['meta']['parent'])) {
-                    $controller->setParent($definition['meta']['parent']);
+                    $controller->setParentModel($definition['meta']['parent']);
+                }
+
+                if (isset($definition['meta']['extends'])) {
+                    $controller->setParent($definition['meta']['extends']);
+                }
+
+                if (isset($definition['meta']['traits'])) {
+                    foreach (explode(',', $definition['meta']['traits']) as $trait) {
+                        $controller->addTrait(trim($trait));
+                    }
+                }
+
+                if (isset($definition['meta']['implements'])) {
+                    foreach (explode(',', $definition['meta']['implements']) as $interface) {
+                        $controller->addInterface(trim($interface));
+                    }
                 }
 
                 unset($definition['meta']);

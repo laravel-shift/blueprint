@@ -510,6 +510,6 @@ final class ControllerLexerTest extends TestCase
         $controller = $actual['controllers']['Comment'];
         $this->assertEquals('CommentController', $controller->className());
         $this->assertCount(5, $controller->methods());
-        $this->assertEquals($controller->parent(), 'Post');
+        $this->assertEquals($controller->parentModel(), 'Post');
     }
 }

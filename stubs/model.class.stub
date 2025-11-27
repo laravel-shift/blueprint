@@ -6,5 +6,5 @@ namespace {{ namespace }};
 
 class {{ class }} extends {{ extends }}
 {
-    use HasFactory;
+    {{ traits }}
 }

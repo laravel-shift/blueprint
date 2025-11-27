@@ -4,7 +4,9 @@ namespace {{ namespace }};
 
 {{ imports }}
 
-class {{ class }} extends Controller
+class {{ class }} extends {{ extends }}
 {
+    {{ traits }}
+
     {{ methods }}
 }

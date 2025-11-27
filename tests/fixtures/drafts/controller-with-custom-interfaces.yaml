@@ -1,0 +1,15 @@
+models:
+  Car:
+    color: string
+
+    meta:
+      extends: App\Models\Base\Vehicle
+      implements: App\Interfaces\IDriveable,App\Interfaces\IRidable
+
+controllers:
+  Car:
+    resource: api
+
+    meta:
+      extends: App\Http\Controller\VehicleController
+      implements: App\Interfaces\IInjectable

@@ -2,11 +2,14 @@
 
 namespace Blueprint\Models;
 
+use Blueprint\Concerns\HasClassDefinition;
 use Blueprint\Contracts\Model as BlueprintModel;
 use Illuminate\Support\Str;
 
 class Model implements BlueprintModel
 {
+    use HasClassDefinition;
+
     private string $name;
 
     private string $namespace;
@@ -23,8 +26,6 @@ class Model implements BlueprintModel
 
     private string $table;
 
-    private ?string $parent = \Illuminate\Database\Eloquent\Model::class;
-
     private array $columns = [];
 
     private array $relationships = [];
@@ -35,14 +36,12 @@ class Model implements BlueprintModel
 
     private array $indexes = [];
 
-    private array $customTraits = [];
-
-    private array $customInterfaces = [];
-
     public function __construct($name)
     {
         $this->name = class_basename($name);
         $this->namespace = trim(implode('\\', array_slice(explode('\\', str_replace('/', '\\', $name)), 0, -1)), '\\');
+        $this->parent = \Illuminate\Database\Eloquent\Model::class;
+        $this->addTrait(\Illuminate\Database\Eloquent\Factories\HasFactory::class);
     }
 
     public function name(): string
@@ -115,16 +114,6 @@ class Model implements BlueprintModel
     public function usesUuids(): bool
     {
         return $this->usesPrimaryKey() && $this->columns[$this->primaryKey]->dataType() === 'uuid';
-    }
-
-    public function usesCustomTraits(): bool
-    {
-        return count($this->customTraits) > 0;
-    }
-
-    public function usesCustomInterfaces(): bool
-    {
-        return count($this->customInterfaces) > 0;
     }
 
     public function idType(): ?string
@@ -215,6 +204,7 @@ class Model implements BlueprintModel
     public function enableSoftDeletes(bool $withTimezone = false): void
     {
         $this->softDeletes = $withTimezone ? 'softDeletesTz' : 'softDeletes';
+        $this->addTrait(\Illuminate\Database\Eloquent\SoftDeletes::class);
     }
 
     public function hasColumn(string $name): bool
@@ -277,35 +267,5 @@ class Model implements BlueprintModel
     public function polymorphicManyToManyTables(): array
     {
         return $this->polymorphicManyToManyTables;
-    }
-
-    public function customTraits(): array
-    {
-        return $this->customTraits;
-    }
-
-    public function addCustomTrait(string $trait): void
-    {
-        $this->customTraits[] = $trait;
-    }
-
-    public function parent(): string
-    {
-        return $this->parent;
-    }
-
-    public function setParent(string $class): void
-    {
-        $this->parent = $class;
-    }
-
-    public function customInterfaces(): array
-    {
-        return $this->customInterfaces;
-    }
-
-    public function addCustomInterface(string $interface): void
-    {
-        $this->customInterfaces[] = $interface;
     }
 }
