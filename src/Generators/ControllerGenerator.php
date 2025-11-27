@@ -108,7 +108,7 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
                 $this->addImport($controller, $reference);
             }
 
-            if ($parentModel = $controller->parentModel()) {
+            if ($parentModel = $controller->model()) {
                 $method = str_replace($search, $search . ', ' . $parentModel . ' $' . Str::camel($parentModel), $method);
                 $this->addImport($controller, $this->fullyQualifyModelReference($controller->namespace(), $parentModel));
             }
@@ -203,12 +203,12 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
                 }
 
                 if (
-                    $controller->parentModel() &&
+                    $controller->model() &&
                     ($statement instanceof QueryStatement || $statement instanceof EloquentStatement || $statement instanceof ResourceStatement)
                 ) {
                     $body = str_replace(
                         ['::all', Str::singular($controller->prefix()) . '::'],
-                        ['::get', '$' . Str::lower($controller->parentModel()) . '->' . Str::plural(Str::lower($controller->prefix())) . '()->'],
+                        ['::get', '$' . Str::lower($controller->model()) . '->' . Str::plural(Str::lower($controller->prefix())) . '()->'],
                         $body
                     );
                 }

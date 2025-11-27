@@ -75,7 +75,7 @@ class ControllerLexer implements Lexer
                 }
 
                 if (isset($definition['meta']['parent'])) {
-                    $controller->setParentModel($definition['meta']['parent']);
+                    $controller->setModel($definition['meta']['parent']);
                 }
 
                 if (isset($definition['meta']['extends'])) {

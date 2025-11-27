@@ -116,7 +116,7 @@ class PestTestGenerator extends AbstractClassGenerator implements Generator
                 $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
             }
 
-            if ($parentModel = $controller->parentModel()) {
+            if ($parentModel = $controller->model()) {
                 $this->addImport($controller, $modelNamespace . '\\' . $parentModel);
                 $setup['data'][] = sprintf('$%s = %s::factory()->create();', Str::camel($parentModel), $parentModel);
             }
@@ -506,8 +506,8 @@ class PestTestGenerator extends AbstractClassGenerator implements Generator
             }
             $call .= ')';
 
-            if ($controller->parentModel()) {
-                $parentModel = Str::camel($controller->parentModel());
+            if ($controller->model()) {
+                $parentModel = Str::camel($controller->model());
                 $variable = Str::camel($context);
                 $binding = sprintf(', $%s)', $variable);
                 $params = sprintf("'%s' => $%s", $parentModel, $parentModel);

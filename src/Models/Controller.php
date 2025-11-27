@@ -24,7 +24,7 @@ class Controller implements BlueprintModel
 
     private bool $apiResource = false;
 
-    private ?string $parentModel = null;
+    private ?string $model = null;
 
     public function __construct(string $name)
     {
@@ -110,13 +110,13 @@ class Controller implements BlueprintModel
         return $this->apiResource;
     }
 
-    public function setParentModel(string $parentModel): void
+    public function setModel(string $model): void
     {
-        $this->parentModel = Str::studly(Str::singular($parentModel));
+        $this->model = Str::studly(Str::singular($model));
     }
 
-    public function parentModel(): ?string
+    public function model(): ?string
     {
-        return $this->parentModel;
+        return $this->model;
     }
 }

@@ -130,7 +130,7 @@ class FormRequestGenerator extends AbstractClassGenerator implements Generator
                         continue;
                     }
 
-                    if ($column->name() === Str::snake($controller->parentModel()) . '_id') {
+                    if ($column->name() === Str::snake($controller->model()) . '_id') {
                         continue;
                     }
 
