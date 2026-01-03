@@ -45,7 +45,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         $stub = str_replace(PHP_EOL . 'class {{ class }}', $this->buildClassPhpDoc($model) . PHP_EOL . 'class {{ class }}', $stub);
         $stub = str_replace('{{ class }}', $model->name(), $stub);
 		$prnt = Str::afterLast($model->parent(), '\\');
-        if (Str::contains($prnt, 'as')) {
+        if (Str::contains($prnt, ' as ')) {
             $prnt = Str::afterLast($prnt, 'as ');
         }
         $stub = str_replace('{{ extends }}', $prnt . $this->buildInterfaces($model), $stub);
@@ -455,7 +455,11 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
 
         foreach ($model->traits() as $trait) {
             $this->addImport($model, $trait);
-            $this->addTrait($model, Str::afterLast($trait, '\\'));
+            $intr = Str::afterLast($trait, '\\');
+            if (Str::contains($prnt, ' as ')) {
+                $intr = Str::afterLast($intr, 'as ');
+            }
+            $this->addTrait($model, $intr);
         }
     }
 
@@ -463,7 +467,11 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
     {
         foreach ($model->interfaces() as $interface) {
             $this->addImport($model, $interface);
-            $this->addInterface($model, Str::afterLast($interface, '\\'));
+            $intr = Str::afterLast($interface, '\\');
+            if (Str::contains($prnt, ' as ')) {
+                $intr = Str::afterLast($intr, 'as ');
+            }
+            $this->addInterface($model, $intr);
         }
     }
 
