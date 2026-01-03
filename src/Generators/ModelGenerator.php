@@ -44,7 +44,11 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         $stub = str_replace('{{ namespace }}', $model->fullyQualifiedNamespace(), $stub);
         $stub = str_replace(PHP_EOL . 'class {{ class }}', $this->buildClassPhpDoc($model) . PHP_EOL . 'class {{ class }}', $stub);
         $stub = str_replace('{{ class }}', $model->name(), $stub);
-        $stub = str_replace('{{ extends }}', Str::afterLast($model->parent(), '\\') . $this->buildInterfaces($model), $stub);
+		$prnt = Str::afterLast($model->parent(), '\\');
+        if (Str::contains($prnt, 'as')) {
+            $prnt = Str::afterLast($prnt, 'as ');
+        }
+        $stub = str_replace('{{ extends }}', $prnt . $this->buildInterfaces($model), $stub);
 
         $body = $this->buildProperties($model);
         $body .= PHP_EOL . PHP_EOL;
