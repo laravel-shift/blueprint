@@ -13,7 +13,9 @@ use Illuminate\Support\Str;
 
 class ModelGenerator extends AbstractClassGenerator implements Generator
 {
-    use HandlesImports, HandlesInterfaces, HandlesTraits;
+    use HandlesImports, HandlesInterfaces, HandlesTraits {
+        HandlesTraits::buildTraits as protected buildBaseTraits;
+    }
 
     protected array $types = ['models'];
 
@@ -54,6 +56,27 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         $stub = str_replace('{{ imports }}', $this->buildImports($model), $stub);
 
         return $stub;
+    }
+
+    protected function buildTraits(Model $model): string
+    {
+        $traits = $this->buildBaseTraits($model);
+
+        if ($traits === '') {
+            return '';
+        }
+
+        if (!config('blueprint.generate_phpdocs')) {
+            return $traits;
+        }
+
+        if (!in_array('HasFactory', $this->traits[$model->name()] ?? [], true)) {
+            return $traits;
+        }
+
+        $factory = '\\Database\\Factories\\' . $model->name() . 'Factory';
+
+        return "/** @use HasFactory<{$factory}> */" . PHP_EOL . '    ' . $traits;
     }
 
     protected function buildClassPhpDoc(Model $model): string

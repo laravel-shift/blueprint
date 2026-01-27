@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Post extends Model
 {
+    /** @use HasFactory<\Database\Factories\PostFactory> */
     use HasFactory;
 
     /**
