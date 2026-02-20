@@ -28,7 +28,7 @@ jobs:
       fail-fast: false
       matrix:
         php-version: ['8.2', '8.3', '8.4']
-        laravel-version: [12, '13']
+        laravel-version: ['12', '13']
         os: [ubuntu-latest]
         exclude:
           - laravel-version: '13'
@@ -63,7 +63,7 @@ jobs:
         run: composer create-project --prefer-dist laravel/laravel:${{ matrix.laravel-version == '10' && '10.*' || matrix.laravel-version }} /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example
 
       - name: Link Blueprint repository
-        run: composer config repositories.local "{\"type\": \"path\", \"url\": \"/home/runner/work/blueprint/blueprint\"}" --file /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example/composer.json
+        run: 'composer config repositories.local "{\"type\": \"path\", \"url\": \"/home/runner/work/blueprint/blueprint\"}" --file /home/runner/work/blueprint/laravel${{ matrix.laravel-version }}-example/composer.json'
 
       - name: Determine composer cache directory
         id: composer-cache
