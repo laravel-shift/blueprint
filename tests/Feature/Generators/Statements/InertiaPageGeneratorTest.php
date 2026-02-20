@@ -114,7 +114,7 @@ final class InertiaPageGeneratorTest extends TestCase
 
     #[Test]
     #[DataProvider('inertiaAdaptersDataProvider')]
-    public function it_outputs_skipped_pages($framework, $dependencies, $path): void
+    public function it_outputs_skipped_pages($framework, $dependencies, $path, $extension): void
     {
         $this->filesystem->expects('exists')
             ->with(base_path('package.json'))
