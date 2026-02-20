@@ -21,7 +21,7 @@
         "laravel/pint": "~1.25.0",
         "mockery/mockery": "^1.4.4",
         "orchestra/testbench": ">=9.0",
-        "phpunit/phpunit": "^11.5.3"
+        "phpunit/phpunit": "^11.5.3|^12.5.12"
     },
     "suggest": {
         "jasonmccreary/laravel-test-assertions": "Required to use additional assertions in generated tests (^2.0)."
