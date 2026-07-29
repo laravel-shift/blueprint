@@ -180,6 +180,44 @@ final class ControllerGeneratorTest extends TestCase
     }
 
     #[Test]
+    public function output_generates_an_api_controller_that_stores_related_models(): void
+    {
+        $this->filesystem->expects('stub')
+            ->with('controller.class.stub')
+            ->andReturn($this->stub('controller.class.stub'));
+        $this->filesystem->expects('stub')
+            ->with('controller.method.stub')
+            ->andReturn($this->stub('controller.method.stub'));
+        $this->filesystem->shouldReceive('exists')->andReturnTrue();
+        $this->filesystem->expects('put')
+            ->with('app/Http/Controllers/Api/OrderController.php', $this->fixture('controllers/api-resource-relations-order.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/api-resource-relations.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertSame(['created' => [['Controller', 'app/Http/Controllers/Api/OrderController.php']]], $this->subject->output($tree));
+    }
+
+    #[Test]
+    public function output_rejects_an_unsupported_store_relationship(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('declared hasMany');
+
+        $this->filesystem->expects('stub')
+            ->with('controller.class.stub')
+            ->andReturn($this->stub('controller.class.stub'));
+        $this->filesystem->expects('stub')
+            ->with('controller.method.stub')
+            ->andReturn($this->stub('controller.method.stub'));
+
+        $tokens = $this->blueprint->parse(str_replace('hasMany: Item', 'hasOne: Item', $this->fixture('drafts/api-resource-relations.yaml')));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->subject->output($tree);
+    }
+
+    #[Test]
     public function output_generates_controller_with_some_policies(): void
     {
         $definition = 'drafts/controller-with-some-policies.yaml';

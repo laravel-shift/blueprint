@@ -64,12 +64,34 @@ class FormRequestGenerator extends AbstractClassGenerator implements Generator
     {
         $stub = str_replace('{{ namespace }}', config('blueprint.namespace') . '\\Http\\Requests' . ($controller->namespace() ? '\\' . $controller->namespace() : ''), $stub);
         $stub = str_replace('{{ class }}', $name, $stub);
-        $stub = str_replace('{{ rules }}', $this->buildRules($context, $validateStatement, $controller), $stub);
+        $stub = str_replace('{{ rules }}', $this->buildRules($context, $validateStatement, $controller, Str::endsWith($name, 'StoreRequest')), $stub);
 
         return $stub;
     }
 
-    protected function buildRules(string $context, ValidateStatement $validateStatement, Controller $controller): string
+    protected function buildRules(string $context, ValidateStatement $validateStatement, Controller $controller, bool $isStoreRequest): string
+    {
+        $output = $this->buildLegacyRules($context, $validateStatement, $controller);
+
+        if (!$isStoreRequest || empty($controller->storeRelations())) {
+            return $output;
+        }
+
+        $model = $this->tree->modelForContext($context, true);
+        foreach ($controller->storeRelations() as $relation) {
+            $related = $this->relatedModel($model, $relation);
+            $output .= PHP_EOL . self::INDENT . "'{$relation}' => ['required', 'array'],";
+
+            foreach ($this->writableColumns($related, $model) as $column) {
+                $rules = Rules::fromColumn($related->tableName(), $column);
+                $output .= PHP_EOL . self::INDENT . "'{$relation}.*.{$column->name()}' => ['" . implode("', '", $rules) . "'],";
+            }
+        }
+
+        return $output;
+    }
+
+    protected function buildLegacyRules(string $context, ValidateStatement $validateStatement, Controller $controller): string
     {
         return trim(
             array_reduce(
@@ -94,6 +116,23 @@ class FormRequestGenerator extends AbstractClassGenerator implements Generator
                 ''
             )
         );
+    }
+
+    private function relatedModel($model, string $relation)
+    {
+        foreach ($model->relationships()['hasMany'] ?? [] as $reference) {
+            $context = Str::before($reference, ':');
+            if (Str::camel(Str::plural($context)) === $relation) {
+                return $this->tree->modelForContext($context, true);
+            }
+        }
+
+        throw new \InvalidArgumentException("The store relation [{$relation}] must be a declared hasMany relationship.");
+    }
+
+    private function writableColumns($model, $parent): array
+    {
+        return array_filter($model->columns(), fn ($column) => $column->name() !== 'id' && $column->name() !== Str::snake($parent->name()) . '_id');
     }
 
     private function splitField($field): array

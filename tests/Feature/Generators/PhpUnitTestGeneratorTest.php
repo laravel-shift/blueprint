@@ -216,6 +216,27 @@ final class PhpUnitTestGeneratorTest extends TestCase
         $this->assertSame(['created' => [['Test', $path]]], $this->subject->output($tree));
     }
 
+    #[Test]
+    public function output_generates_a_behavior_test_for_store_relations(): void
+    {
+        $path = 'tests/Feature/Http/Controllers/Api/OrderControllerTest.php';
+
+        $this->filesystem->expects('stub')
+            ->with('phpunit.test.class.stub')
+            ->andReturn($this->stub('phpunit.test.class.stub'));
+        $this->filesystem->expects('stub')
+            ->with('phpunit.test.case.stub')
+            ->andReturn($this->stub('phpunit.test.case.stub'));
+        $this->filesystem->expects('exists')
+            ->with(dirname($path))
+            ->andReturnTrue();
+        $this->filesystem->expects('put')
+            ->with($path, $this->fixture('tests/phpunit/api-resource-relations.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/api-resource-relations.yaml'));
+        $this->subject->output($this->blueprint->analyze($tokens));
+    }
+
     public static function controllerTreeDataProvider(): array
     {
         return [
