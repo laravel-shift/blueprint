@@ -290,6 +290,10 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
             $context = Str::before($reference, ':');
             $method = Str::camel(Str::plural($context));
             if ($method === $relation) {
+                if (Str::contains($reference, ':')) {
+                    throw new \InvalidArgumentException('Aliases are unsupported for store relationships.');
+                }
+
                 return $this->tree->modelForContext($context, true);
             }
         }

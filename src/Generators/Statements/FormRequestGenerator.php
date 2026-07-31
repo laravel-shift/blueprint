@@ -82,6 +82,7 @@ class FormRequestGenerator extends AbstractClassGenerator implements Generator
         $relation = Str::camel(Str::plural($related->name()));
         $this->relatedModel($model, $relation);
         $output .= PHP_EOL . self::INDENT . "'{$relation}' => ['required', 'array'],";
+        $output .= PHP_EOL . self::INDENT . "'{$relation}.*' => ['required', 'array'],";
 
         foreach ($this->writableColumns($related, $model) as $column) {
             $rules = Rules::fromColumn($related->tableName(), $column);
@@ -123,6 +124,10 @@ class FormRequestGenerator extends AbstractClassGenerator implements Generator
         foreach ($model->relationships()['hasMany'] ?? [] as $reference) {
             $context = Str::before($reference, ':');
             if (Str::camel(Str::plural($context)) === $relation) {
+                if (Str::contains($reference, ':')) {
+                    throw new \InvalidArgumentException('Aliases are unsupported for store relationships.');
+                }
+
                 return $this->tree->modelForContext($context, true);
             }
         }

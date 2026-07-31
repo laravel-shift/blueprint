@@ -753,6 +753,10 @@ END;
         foreach ($model->relationships()['hasMany'] ?? [] as $reference) {
             $context = Str::before($reference, ':');
             if (Str::camel(Str::plural($context)) === $relation) {
+                if (Str::contains($reference, ':')) {
+                    throw new \InvalidArgumentException('Aliases are unsupported for store relationships.');
+                }
+
                 return $this->tree->modelForContext($context, true);
             }
         }
