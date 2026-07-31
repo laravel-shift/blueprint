@@ -73,19 +73,19 @@ class FormRequestGenerator extends AbstractClassGenerator implements Generator
     {
         $output = $this->buildLegacyRules($context, $validateStatement, $controller);
 
-        if (!$isStoreRequest || !$controller->storeRelation()) {
+        if (!$isStoreRequest || empty($controller->storeRelations())) {
             return $output;
         }
 
         $model = $this->tree->modelForContext($context, true);
-        $related = $this->tree->modelForContext($controller->storeRelation(), true);
-        $relation = Str::camel(Str::plural($related->name()));
-        $this->relatedModel($model, $relation);
-        $output .= PHP_EOL . self::INDENT . "'{$relation}' => ['required', 'array'],";
+        foreach ($controller->storeRelations() as $relation) {
+            $related = $this->relatedModel($model, $relation);
+            $output .= PHP_EOL . self::INDENT . "'{$relation}' => ['required', 'array'],";
 
-        foreach ($this->writableColumns($related, $model) as $column) {
-            $rules = Rules::fromColumn($related->tableName(), $column);
-            $output .= PHP_EOL . self::INDENT . "'{$relation}.*.{$column->name()}' => ['" . implode("', '", $rules) . "'],";
+            foreach ($this->writableColumns($related, $model) as $column) {
+                $rules = Rules::fromColumn($related->tableName(), $column);
+                $output .= PHP_EOL . self::INDENT . "'{$relation}.*.{$column->name()}' => ['" . implode("', '", $rules) . "'],";
+            }
         }
 
         return $output;
