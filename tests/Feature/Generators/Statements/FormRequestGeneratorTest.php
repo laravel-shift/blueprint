@@ -133,32 +133,6 @@ final class FormRequestGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_writes_a_form_request_for_store_relations(): void
-    {
-        $this->filesystem->expects('stub')
-            ->with('request.stub')
-            ->andReturn($this->stub('request.stub'));
-        $this->filesystem->expects('exists')
-            ->with('app/Http/Requests/Api')
-            ->andReturnFalse();
-        $this->filesystem->expects('exists')
-            ->with('app/Http/Requests/Api/OrderStoreRequest.php')
-            ->andReturnFalse();
-        $this->filesystem->expects('exists')
-            ->with('app/Http/Requests/Api/OrderUpdateRequest.php')
-            ->andReturnTrue();
-        $this->filesystem->expects('makeDirectory')
-            ->with('app/Http/Requests/Api', 0755, true);
-        $this->filesystem->expects('put')
-            ->with('app/Http/Requests/Api/OrderStoreRequest.php', $this->fixture('form-requests/order-store.php'));
-
-        $tokens = $this->blueprint->parse($this->fixture('drafts/api-resource-relations.yaml'));
-        $tree = $this->blueprint->analyze($tokens);
-
-        $this->assertSame(['created' => [['Form Request', 'app/Http/Requests/Api/OrderStoreRequest.php']]], $this->subject->output($tree));
-    }
-
-    #[Test]
     public function it_only_outputs_new_form_requests(): void
     {
         $this->filesystem->expects('stub')

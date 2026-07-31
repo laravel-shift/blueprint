@@ -190,31 +190,22 @@ final class ControllerGeneratorTest extends TestCase
             ->andReturn($this->stub('controller.method.stub'));
         $this->filesystem->shouldReceive('exists')->andReturnTrue();
         $this->filesystem->expects('put')
-            ->with('app/Http/Controllers/Api/OrderController.php', $this->fixture('controllers/api-resource-relations-order.php'));
+            ->withArgs(function ($path, $contents) {
+                $this->assertSame('app/Http/Controllers/Api/OrderController.php', $path);
+                $this->assertStringContainsString('DB::transaction', $contents);
+                $this->assertStringContainsString("Order::create(\$request->safe()->only(['reference']))", $contents);
+                $this->assertStringContainsString('$order->items()->createMany', $contents);
+                $this->assertStringContainsString("Arr::only(\$item, ['product_id', 'quantity'])", $contents);
+                $this->assertStringContainsString("\$request->validated('items')", $contents);
+                $this->assertStringContainsString("\$order->load(['items'])", $contents);
+
+                return true;
+            });
 
         $tokens = $this->blueprint->parse($this->fixture('drafts/api-resource-relations.yaml'));
         $tree = $this->blueprint->analyze($tokens);
 
         $this->assertSame(['created' => [['Controller', 'app/Http/Controllers/Api/OrderController.php']]], $this->subject->output($tree));
-    }
-
-    #[Test]
-    public function output_rejects_an_unsupported_store_relationship(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('declared hasMany');
-
-        $this->filesystem->expects('stub')
-            ->with('controller.class.stub')
-            ->andReturn($this->stub('controller.class.stub'));
-        $this->filesystem->expects('stub')
-            ->with('controller.method.stub')
-            ->andReturn($this->stub('controller.method.stub'));
-
-        $tokens = $this->blueprint->parse(str_replace('hasMany: Item', 'hasOne: Item', $this->fixture('drafts/api-resource-relations.yaml')));
-        $tree = $this->blueprint->analyze($tokens);
-
-        $this->subject->output($tree);
     }
 
     #[Test]

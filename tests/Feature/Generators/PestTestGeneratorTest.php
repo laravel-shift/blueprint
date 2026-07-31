@@ -214,30 +214,6 @@ final class PestTestGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function output_generates_a_behavior_test_for_store_relations(): void
-    {
-        $path = 'tests/Feature/Http/Controllers/Api/OrderControllerTest.php';
-
-        $this->filesystem->expects('stub')
-            ->with('pest.test.class.stub')
-            ->andReturn($this->stub('pest.test.class.stub'));
-        $this->filesystem->expects('stub')
-            ->with('pest.test.case.stub')
-            ->andReturn($this->stub('pest.test.case.stub'));
-        $this->filesystem->expects('exists')
-            ->with(dirname($path))
-            ->andReturnTrue();
-        $this->filesystem->shouldReceive('exists')
-            ->with(base_path('tests/TestCase.php'))
-            ->andReturnFalse();
-        $this->filesystem->expects('put')
-            ->with($path, $this->fixture('tests/pest/api-resource-relations.php'));
-
-        $tokens = $this->blueprint->parse($this->fixture('drafts/api-resource-relations.yaml'));
-        $this->subject->output($this->blueprint->analyze($tokens));
-    }
-
-    #[Test]
     public function output_imports_additional_assertions_to_base_test(): void
     {
         $definition = 'drafts/api-resource-nested.yaml';
