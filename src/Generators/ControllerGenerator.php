@@ -193,7 +193,7 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
                 } elseif ($statement instanceof EloquentStatement) {
                     if ($name === 'store' && $statement->operation() === 'save' && $controller->storeRelation()) {
-                        $body .= $this->buildAggregateStore($controller);
+                        $body .= $this->buildStoreWithRelation($controller);
                     } else {
                         $body .= self::INDENT . $statement->output($controller->prefix(), $name, $using_validation) . PHP_EOL;
                         $this->addImport($controller, $this->determineModel($controller, $statement->reference()));
@@ -245,7 +245,7 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
         return trim($methods);
     }
 
-    private function buildAggregateStore(Controller $controller): string
+    private function buildStoreWithRelation(Controller $controller): string
     {
         if ($controller->model()) {
             throw new \InvalidArgumentException('Store relations are not supported for nested controllers.');
