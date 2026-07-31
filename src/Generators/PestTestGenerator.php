@@ -436,8 +436,8 @@ class PestTestGenerator extends AbstractClassGenerator implements Generator
                     if ($statement->operation() === 'save') {
                         $tested_bits |= self::TESTS_SAVE;
 
-                        if ($name === 'store' && $controller->storeRelations()) {
-                            $this->addAggregateStoreData($controller, $modelNamespace, $setup, $request_data, $assertions);
+                        if ($name === 'store' && $controller->storeRelation()) {
+                            $this->addStoreRelationData($controller, $modelNamespace, $setup, $request_data, $assertions);
                         }
 
                         if ($model_columns) {
@@ -718,37 +718,37 @@ END;
         $this->output['updated'][] = ['Test', $path];
     }
 
-    private function addAggregateStoreData(Controller $controller, string $modelNamespace, array &$setup, array &$request_data, array &$assertions): void
+    private function addStoreRelationData(Controller $controller, string $modelNamespace, array &$setup, array &$request_data, array &$assertions): void
     {
         $model = $this->tree->modelForContext(Str::singular($controller->prefix()), true);
         $this->addImport($controller, 'function Pest\\Laravel\\assertDatabaseHas');
 
-        foreach ($controller->storeRelations() as $relation) {
-            $related = $this->aggregateRelatedModel($model, $relation);
-            $data = [];
-            $assertion = ["'" . Str::snake(Str::singular($controller->prefix())) . "_id' => \$" . Str::camel($model->name()) . '->id'];
+        $related = $this->tree->modelForContext($controller->storeRelation(), true);
+        $relation = Str::camel(Str::plural($related->name()));
+        $this->storeRelatedModel($model, $relation);
+        $data = [];
+        $assertion = ["'" . Str::snake(Str::singular($controller->prefix())) . "_id' => \$" . Str::camel($model->name()) . '->id'];
 
-            foreach ($this->aggregateColumns($related, $model->name()) as $column) {
-                $factory = $this->generateReferenceFactory($column, $controller, $modelNamespace);
-                $variable = $column->name();
-                if ($factory) {
-                    [$faker, $variable] = $factory;
-                } else {
-                    $this->addImport($controller, 'function Pest\\Faker\\fake');
-                    $faker = sprintf('$%s = fake()->%s;', $variable, FakerRegistry::fakerData($column->name()) ?? FakerRegistry::fakerDataType($column->dataType()));
-                }
-
-                $setup['data'][] = $faker;
-                $data[] = "'{$column->name()}' => \${$variable}";
-                $assertion[] = "'{$column->name()}' => \${$variable}";
+        foreach ($this->storeColumns($related, $model->name()) as $column) {
+            $factory = $this->generateReferenceFactory($column, $controller, $modelNamespace);
+            $variable = $column->name();
+            if ($factory) {
+                [$faker, $variable] = $factory;
+            } else {
+                $this->addImport($controller, 'function Pest\\Faker\\fake');
+                $faker = sprintf('$%s = fake()->%s;', $variable, FakerRegistry::fakerData($column->name()) ?? FakerRegistry::fakerDataType($column->dataType()));
             }
 
-            $request_data[$relation] = '[' . PHP_EOL . '            [' . PHP_EOL . '                ' . implode(',' . PHP_EOL . '                ', $data) . ',' . PHP_EOL . '            ],' . PHP_EOL . '        ]';
-            $assertions['generic'][] = "assertDatabaseHas('{$related->tableName()}', [" . implode(', ', $assertion) . ']);';
+            $setup['data'][] = $faker;
+            $data[] = "'{$column->name()}' => \${$variable}";
+            $assertion[] = "'{$column->name()}' => \${$variable}";
         }
+
+        $request_data[$relation] = '[' . PHP_EOL . '            [' . PHP_EOL . '                ' . implode(',' . PHP_EOL . '                ', $data) . ',' . PHP_EOL . '            ],' . PHP_EOL . '        ]';
+        $assertions['generic'][] = "assertDatabaseHas('{$related->tableName()}', [" . implode(', ', $assertion) . ']);';
     }
 
-    private function aggregateRelatedModel($model, string $relation)
+    private function storeRelatedModel($model, string $relation)
     {
         foreach ($model->relationships()['hasMany'] ?? [] as $reference) {
             $context = Str::before($reference, ':');
@@ -760,7 +760,7 @@ END;
         throw new \InvalidArgumentException("The store relation [{$relation}] must be a declared hasMany relationship.");
     }
 
-    private function aggregateColumns($model, string $parent): array
+    private function storeColumns($model, string $parent): array
     {
         return array_filter($model->columns(), fn ($column) => $column->name() !== 'id' && $column->name() !== Str::snake($parent) . '_id');
     }

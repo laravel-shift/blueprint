@@ -194,6 +194,7 @@ final class ControllerGeneratorTest extends TestCase
                 $this->assertSame('app/Http/Controllers/Api/OrderController.php', $path);
                 $this->assertStringContainsString('DB::transaction', $contents);
                 $this->assertStringContainsString("Order::create(\$request->safe()->only(['reference']))", $contents);
+                $this->assertStringContainsString("Order::create(\$request->safe()->only(['reference']))", $contents);
                 $this->assertStringContainsString('$order->items()->createMany', $contents);
                 $this->assertStringContainsString("Arr::only(\$item, ['product_id', 'quantity'])", $contents);
                 $this->assertStringContainsString("\$request->validated('items')", $contents);
