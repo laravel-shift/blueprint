@@ -78,13 +78,13 @@ class ControllerLexer implements Lexer
                     $controller->setModel($definition['meta']['parent']);
                 }
 
-                if (isset($definition['meta']['store']['relations'])) {
-                    $relations = $definition['meta']['store']['relations'];
-                    if (!is_string($relations)) {
-                        throw new \InvalidArgumentException('The store relations must be a comma-separated list.');
+                if (isset($definition['meta']['store'])) {
+                    $relation = $definition['meta']['store'];
+                    if (!is_string($relation) || empty(trim($relation))) {
+                        throw new \InvalidArgumentException('The store relation must be a model reference.');
                     }
 
-                    $controller->setStoreRelations(array_map('trim', explode(',', $relations)));
+                    $controller->setStoreRelation(trim($relation));
                 }
 
                 if (isset($definition['meta']['extends'])) {

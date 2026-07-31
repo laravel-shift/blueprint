@@ -12,5 +12,4 @@ controllers:
   Api/Order:
     resource: api
     meta:
-      store:
-        relations: items
+      store: Item

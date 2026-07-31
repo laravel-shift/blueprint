@@ -192,7 +192,7 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
                 } elseif ($statement instanceof SessionStatement) {
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
                 } elseif ($statement instanceof EloquentStatement) {
-                    if ($name === 'store' && $statement->operation() === 'save' && $controller->storeRelations()) {
+                    if ($name === 'store' && $statement->operation() === 'save' && $controller->storeRelation()) {
                         $body .= $this->buildAggregateStore($controller);
                     } else {
                         $body .= self::INDENT . $statement->output($controller->prefix(), $name, $using_validation) . PHP_EOL;
@@ -259,15 +259,15 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
             $indent . '$' . $variable . ' = ' . $model->name() . '::create($request->safe()->only([' . $this->quoted($this->writableColumns($model)) . ']));',
         ];
 
-        foreach ($controller->storeRelations() as $relation) {
-            $related = $this->resolveRelation($model, $relation);
-            $columns = $this->writableColumns($related, $model->name());
-            $lines[] = '';
-            $lines[] = $indent . '$' . $variable . '->' . $relation . '()->createMany(array_map(fn (array $' . Str::singular($relation) . ') => Arr::only($' . Str::singular($relation) . ', [' . $this->quoted($columns) . ']), $request->validated(' . "'{$relation}'" . ')));';
-        }
+        $related = $this->tree->modelForContext($controller->storeRelation(), true);
+        $relation = Str::camel(Str::plural($related->name()));
+        $this->resolveRelation($model, $relation);
+        $columns = $this->writableColumns($related, $model->name());
+        $lines[] = '';
+        $lines[] = $indent . '$' . $variable . '->' . $relation . '()->createMany(array_map(fn (array $' . Str::singular($relation) . ') => Arr::only($' . Str::singular($relation) . ', [' . $this->quoted($columns) . ']), $request->validated(' . "'{$relation}'" . ')));';
 
         $lines[] = '';
-        $lines[] = $indent . '$' . $variable . '->load([' . $this->quoted($controller->storeRelations()) . ']);';
+        $lines[] = $indent . '$' . $variable . "->load(['{$relation}']);";
 
         $lines[] = '';
         $lines[] = $indent . 'return $' . $variable . ';';
