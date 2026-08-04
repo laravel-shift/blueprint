@@ -6,6 +6,7 @@ use Blueprint\Blueprint;
 use Blueprint\Tracer;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\Attributes\Test;
+use Symfony\Component\Yaml\Yaml;
 use Tests\TestCase;
 
 /**
@@ -45,7 +46,9 @@ final class EraseCommandTest extends TestCase
             'created_file2.php',
         ]);
 
-        $this->filesystem->expects('put')->with('.blueprint', '{  }');
+        $this->filesystem->expects('put')->with('.blueprint', \Mockery::on(
+            static fn (string $contents): bool => Yaml::parse($contents) === []
+        ));
         $this->filesystem->expects('exists')->with('app/Models');
 
         $this->artisan('blueprint:erase')
@@ -62,7 +65,9 @@ final class EraseCommandTest extends TestCase
             ->with('.blueprint')
             ->andReturn("updated:\n  -  updated_file1.php\n  -  updated_file2.php");
 
-        $this->filesystem->expects('put')->with('.blueprint', '{  }');
+        $this->filesystem->expects('put')->with('.blueprint', \Mockery::on(
+            static fn (string $contents): bool => Yaml::parse($contents) === []
+        ));
         $this->filesystem->expects('exists')->with('app/Models');
 
         $this->artisan('blueprint:erase')
