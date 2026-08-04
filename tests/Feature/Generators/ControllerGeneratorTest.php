@@ -180,6 +180,35 @@ final class ControllerGeneratorTest extends TestCase
     }
 
     #[Test]
+    public function output_generates_an_api_controller_that_stores_related_models(): void
+    {
+        $this->filesystem->expects('stub')
+            ->with('controller.class.stub')
+            ->andReturn($this->stub('controller.class.stub'));
+        $this->filesystem->expects('stub')
+            ->with('controller.method.stub')
+            ->andReturn($this->stub('controller.method.stub'));
+        $this->filesystem->shouldReceive('exists')->andReturnTrue();
+        $this->filesystem->expects('put')
+            ->withArgs(function ($path, $contents) {
+                $this->assertSame('app/Http/Controllers/Api/OrderController.php', $path);
+                $this->assertStringContainsString('DB::transaction', $contents);
+                $this->assertStringContainsString("Order::create(\$request->safe()->only(['reference']))", $contents);
+                $this->assertStringContainsString('$order->items()->createMany', $contents);
+                $this->assertStringContainsString("Arr::only(\$item, ['product_id', 'quantity'])", $contents);
+                $this->assertStringContainsString("\$request->validated('items')", $contents);
+                $this->assertStringContainsString("\$order->load(['items'])", $contents);
+
+                return true;
+            });
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/api-resource-relations.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertSame(['created' => [['Controller', 'app/Http/Controllers/Api/OrderController.php']]], $this->subject->output($tree));
+    }
+
+    #[Test]
     public function output_generates_controller_with_some_policies(): void
     {
         $definition = 'drafts/controller-with-some-policies.yaml';

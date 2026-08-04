@@ -78,6 +78,15 @@ class ControllerLexer implements Lexer
                     $controller->setModel($definition['meta']['parent']);
                 }
 
+                if (isset($definition['meta']['store'])) {
+                    $relation = $definition['meta']['store'];
+                    if (!is_string($relation) || empty(trim($relation))) {
+                        throw new \InvalidArgumentException('The store relation must be a model reference.');
+                    }
+
+                    $controller->setStoreRelation(trim($relation));
+                }
+
                 if (isset($definition['meta']['extends'])) {
                     $controller->setParent($definition['meta']['extends']);
                 }

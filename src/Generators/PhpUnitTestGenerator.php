@@ -434,6 +434,10 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
                     if ($statement->operation() === 'save') {
                         $tested_bits |= self::TESTS_SAVE;
 
+                        if ($name === 'store' && $controller->storeRelation()) {
+                            $this->addStoreRelationData($controller, $modelNamespace, $setup, $request_data, $assertions);
+                        }
+
                         if ($model_columns) {
                             $indent = str_pad(' ', 12);
                             $plural = Str::plural($variable);
@@ -625,6 +629,55 @@ END;
     {
         $this->addImport($controller, 'Illuminate\\Foundation\\Testing\\RefreshDatabase');
         $this->addTrait($controller, 'RefreshDatabase');
+    }
+
+    private function addStoreRelationData(Controller $controller, string $modelNamespace, array &$setup, array &$request_data, array &$assertions): void
+    {
+        $model = $this->tree->modelForContext(Str::singular($controller->prefix()), true);
+
+        $related = $this->tree->modelForContext($controller->storeRelation(), true);
+        $relation = Str::camel(Str::plural($related->name()));
+        $this->storeRelatedModel($model, $relation);
+        $data = [];
+        $assertion = ["'" . Str::snake(Str::singular($controller->prefix())) . "_id' => \$" . Str::camel($model->name()) . '->id'];
+
+        foreach ($this->storeColumns($related, $model->name()) as $column) {
+            $factory = $this->generateReferenceFactory($column, $controller, $modelNamespace);
+            $variable = $column->name();
+            if ($factory) {
+                [$faker, $variable] = $factory;
+            } else {
+                $faker = sprintf('$%s = fake()->%s;', $variable, FakerRegistry::fakerData($column->name()) ?? FakerRegistry::fakerDataType($column->dataType()));
+            }
+
+            $setup['data'][] = $faker;
+            $data[] = "'{$column->name()}' => \${$variable}";
+            $assertion[] = "'{$column->name()}' => \${$variable}";
+        }
+
+        $request_data[$relation] = '[' . PHP_EOL . '                [' . PHP_EOL . '                    ' . implode(',' . PHP_EOL . '                    ', $data) . ',' . PHP_EOL . '                ],' . PHP_EOL . '            ]';
+        $assertions['generic'][] = "\$this->assertDatabaseHas('{$related->tableName()}', [" . implode(', ', $assertion) . ']);';
+    }
+
+    private function storeRelatedModel($model, string $relation)
+    {
+        foreach ($model->relationships()['hasMany'] ?? [] as $reference) {
+            $context = Str::before($reference, ':');
+            if (Str::camel(Str::plural($context)) === $relation) {
+                if (Str::contains($reference, ':')) {
+                    throw new \InvalidArgumentException('Aliases are unsupported for store relationships.');
+                }
+
+                return $this->tree->modelForContext($context, true);
+            }
+        }
+
+        throw new \InvalidArgumentException("The store relation [{$relation}] must be a declared hasMany relationship.");
+    }
+
+    private function storeColumns($model, string $parent): array
+    {
+        return array_filter($model->columns(), fn ($column) => $column->name() !== 'id' && $column->name() !== Str::snake($parent) . '_id');
     }
 
     private function determineModel(string $prefix, ?string $reference): string

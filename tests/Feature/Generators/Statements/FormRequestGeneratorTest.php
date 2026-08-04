@@ -156,6 +156,33 @@ final class FormRequestGeneratorTest extends TestCase
     }
 
     #[Test]
+    public function output_writes_nested_rules_for_store_relation(): void
+    {
+        $this->filesystem->expects('stub')
+            ->with('request.stub')
+            ->andReturn($this->stub('request.stub'));
+        $this->filesystem->expects('exists')
+            ->with('app/Http/Requests/Api/OrderStoreRequest.php')
+            ->andReturnFalse();
+        $this->filesystem->expects('exists')
+            ->with('app/Http/Requests/Api/OrderUpdateRequest.php')
+            ->andReturnTrue();
+        $this->filesystem->expects('put')
+            ->withArgs(function ($path, $contents) {
+                $this->assertSame('app/Http/Requests/Api/OrderStoreRequest.php', $path);
+                $this->assertStringContainsString("'items' => ['required', 'array']", $contents);
+                $this->assertStringContainsString("'items.*' => ['required', 'array']", $contents);
+                $this->assertStringContainsString("'items.*.product_id'", $contents);
+                $this->assertStringContainsString("'items.*.quantity'", $contents);
+
+                return true;
+            });
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/api-resource-relations.yaml'));
+        $this->subject->output($this->blueprint->analyze($tokens));
+    }
+
+    #[Test]
     public function output_supports_nested_form_requests(): void
     {
         $this->filesystem->expects('stub')
