@@ -101,7 +101,7 @@
     },
     "relationships": {
       "type": "object",
-      "description": "Eloquent relationships this model defines. Each value is one model reference, or a comma-separated list of them. A reference may include a namespace (`\\App\\Models\\Team`), a custom foreign key alias (`Model:column`), or for belongsToMany/morphToMany, a custom pivot model (`Model:&PivotModel`). Relationship type keys are matched case-insensitively by Blueprint; the canonical camelCase spellings are listed here for autocomplete, but other casings are also accepted.",
+      "description": "Eloquent relationships this model defines. Each value is one model reference, or a comma-separated list of them. A reference may include a namespace (`\\App\\Models\\Team`), a custom foreign key alias (`Model:column`), or for belongsToMany/morphToMany, a custom pivot model (`Model:&PivotModel`). For hasOneThrough/hasManyThrough, the reference is `Target:Intermediate`. Relationship type keys are matched case-insensitively by Blueprint; the canonical camelCase spellings are listed here for autocomplete, but other casings are also accepted.",
       "properties": {
         "hasOne": { "$ref": "#/definitions/relationshipValue" },
         "hasMany": { "$ref": "#/definitions/relationshipValue" },
@@ -111,12 +111,19 @@
         "morphMany": { "$ref": "#/definitions/relationshipValue" },
         "morphTo": { "$ref": "#/definitions/relationshipValue" },
         "morphToMany": { "$ref": "#/definitions/relationshipValue" },
-        "morphedByMany": { "$ref": "#/definitions/relationshipValue" }
+        "morphedByMany": { "$ref": "#/definitions/relationshipValue" },
+        "hasOneThrough": { "$ref": "#/definitions/throughRelationshipValue" },
+        "hasManyThrough": { "$ref": "#/definitions/throughRelationshipValue" }
       }
     },
     "relationshipValue": {
       "type": "string",
       "examples": ["Team", "Team, User", "Customer:owner", "Team:&Membership", "\\Some\\Package\\Team"]
+    },
+    "throughRelationshipValue": {
+      "type": "string",
+      "description": "One `Target:Intermediate` model reference, or a comma-separated list of them.",
+      "examples": ["Owner:Car", "Payment:Order, Invoice:Order", "\\App\\Models\\Owner:\\App\\Models\\Car"]
     },
     "index": {
       "type": "object",

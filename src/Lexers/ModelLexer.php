@@ -20,6 +20,8 @@ class ModelLexer implements Lexer
         'morphto' => 'morphTo',
         'morphtomany' => 'morphToMany',
         'morphedbymany' => 'morphedByMany',
+        'hasonethrough' => 'hasOneThrough',
+        'hasmanythrough' => 'hasManyThrough',
     ];
 
     private static array $dataTypes = [

@@ -1,0 +1,13 @@
+models:
+  Mechanic:
+    name: string
+
+    relationships:
+      hasManyThrough: Payment:Order
+      hasOneThrough: \App\Models\Owner:\App\Models\Car
+
+  Payment:
+    meta:
+      plural: pagamenti
+
+    order_id: id
