@@ -108,7 +108,7 @@ class ResourceGenerator extends StatementGenerator implements Generator
 
             if (in_array($type, ['hasMany', 'belongsToMany', 'morphMany'])) {
                 $relation_resource_name = $relation_model->name() . 'Collection';
-                $method_name = Str::plural($method_name);
+                $method_name = lcfirst($relation_model->pluralName());
             } else {
                 $relation_resource_name = $relation_model->name() . 'Resource';
             }

@@ -210,9 +210,12 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
                     $controller->model() &&
                     ($statement instanceof QueryStatement || $statement instanceof EloquentStatement || $statement instanceof ResourceStatement)
                 ) {
+                    $related_model = $this->tree->modelForContext($controller->prefix());
+                    $relation = $related_model ? Str::camel($related_model->pluralName()) : Str::plural(Str::lower($controller->prefix()));
+
                     $body = str_replace(
                         ['::all', Str::singular($controller->prefix()) . '::'],
-                        ['::get', '$' . Str::lower($controller->model()) . '->' . Str::plural(Str::lower($controller->prefix())) . '()->'],
+                        ['::get', '$' . Str::lower($controller->model()) . '->' . $relation . '()->'],
                         $body
                     );
                 }
@@ -260,7 +263,7 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
         ];
 
         $related = $this->tree->modelForContext($controller->storeRelation(), true);
-        $relation = Str::camel(Str::plural($related->name()));
+        $relation = Str::camel($related->pluralName());
         $this->resolveRelation($model, $relation);
         $columns = $this->writableColumns($related, $model->name());
         $lines[] = '';

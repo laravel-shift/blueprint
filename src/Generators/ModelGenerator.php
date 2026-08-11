@@ -338,6 +338,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
             foreach ($references as $reference) {
                 $is_model_fqn = Str::startsWith($reference, '\\');
                 $is_pivot = false;
+                $has_custom_relation_name = false;
 
                 $custom_template = $template;
                 $key = null;
@@ -355,6 +356,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
                         $method_name = $column_name;
                     } else {
                         $method_name = Str::beforeLast($column_name, '_id');
+                        $has_custom_relation_name = true;
                     }
 
                     if (Str::contains($foreign_reference, '.')) {
@@ -364,6 +366,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
                             $key = null;
                         }
                         $method_name = $is_model_fqn ? Str::lower(Str::afterLast($class, '\\')) : Str::lower($class);
+                        $has_custom_relation_name = false;
                     } else {
                         $class = $foreign_reference;
                     }
@@ -414,7 +417,12 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
                 if ($type === 'morphTo') {
                     $method_name = Str::lower($class_name);
                 } elseif (in_array($type, ['hasMany', 'belongsToMany', 'morphMany', 'morphToMany', 'morphedByMany'])) {
-                    $method_name = Str::plural($is_pivot ? $column_name : $method_name);
+                    if ($is_pivot || $has_custom_relation_name) {
+                        $method_name = Str::plural($is_pivot ? $column_name : $method_name);
+                    } else {
+                        $related_model = $this->tree->modelForContext($class_name);
+                        $method_name = $related_model ? $related_model->pluralName() : Str::plural($method_name);
+                    }
                 }
 
                 $relationship_type = 'Illuminate\\Database\\Eloquent\\Relations\\' . Str::studly($type === 'morphedByMany' ? 'morphToMany' : $type);
