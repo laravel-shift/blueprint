@@ -26,6 +26,8 @@ class Model implements BlueprintModel
 
     private string $table;
 
+    private string $plural;
+
     private array $columns = [];
 
     private array $relationships = [];
@@ -169,6 +171,21 @@ class Model implements BlueprintModel
     public function setTableName($name): void
     {
         $this->table = $name;
+    }
+
+    public function usesCustomPluralName(): bool
+    {
+        return isset($this->plural);
+    }
+
+    public function pluralName(): string
+    {
+        return $this->plural ?? Str::plural($this->name());
+    }
+
+    public function setPluralName($name): void
+    {
+        $this->plural = $name;
     }
 
     public function timestampsDataType(): string

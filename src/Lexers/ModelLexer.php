@@ -142,6 +142,10 @@ class ModelLexer implements Lexer
                 $model->setTableName($columns['meta']['table']);
             }
 
+            if (isset($columns['meta']['plural'])) {
+                $model->setPluralName($columns['meta']['plural']);
+            }
+
             if (!empty($columns['meta']['pivot'])) {
                 $model->setPivot();
             }

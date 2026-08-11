@@ -442,7 +442,8 @@ class PestTestGenerator extends AbstractClassGenerator implements Generator
 
                         if ($model_columns) {
                             $indent = str_pad(' ', 8);
-                            $plural = Str::plural($variable);
+                            $related_model = $this->tree->modelForContext($model);
+                            $plural = $related_model ? Str::camel($related_model->pluralName()) : Str::plural($variable);
                             $assertion = sprintf('$%s = %s::query()', $plural, $model);
                             foreach ($model_columns as $key => $datum) {
                                 $assertion .= PHP_EOL . sprintf('%s->where(\'%s\', %s)', $indent, $key, $datum);
@@ -455,7 +456,9 @@ class PestTestGenerator extends AbstractClassGenerator implements Generator
                         } else {
                             $this->addImport($controller, 'function Pest\\Laravel\\assertDatabaseHas');
 
-                            $assertions['generic'][] = 'assertDatabaseHas(' . Str::camel(Str::plural($model)) . ', [ /* ... */ ]);';
+                            $related_model = $this->tree->modelForContext($model);
+                            $plural = $related_model ? $related_model->pluralName() : Str::plural($model);
+                            $assertions['generic'][] = 'assertDatabaseHas(' . Str::camel($plural) . ', [ /* ... */ ]);';
                         }
                     } elseif ($statement->operation() === 'find') {
                         $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
@@ -490,7 +493,9 @@ class PestTestGenerator extends AbstractClassGenerator implements Generator
                         }
                     }
                 } elseif ($statement instanceof QueryStatement) {
-                    $setup['data'][] = sprintf('$%s = %s::factory()->count(3)->create();', Str::plural($variable), $model);
+                    $related_model = $this->tree->modelForContext($model);
+                    $plural = $related_model ? Str::camel($related_model->pluralName()) : Str::plural($variable);
+                    $setup['data'][] = sprintf('$%s = %s::factory()->count(3)->create();', $plural, $model);
 
                     $this->addImport($controller, $modelNamespace . '\\' . $this->determineModel($controller->prefix(), $statement->model()));
                 }
@@ -724,7 +729,7 @@ END;
         $this->addImport($controller, 'function Pest\\Laravel\\assertDatabaseHas');
 
         $related = $this->tree->modelForContext($controller->storeRelation(), true);
-        $relation = Str::camel(Str::plural($related->name()));
+        $relation = Str::camel($related->pluralName());
         $this->storeRelatedModel($model, $relation);
         $data = [];
         $assertion = ["'" . Str::snake(Str::singular($controller->prefix())) . "_id' => \$" . Str::camel($model->name()) . '->id'];
@@ -752,7 +757,10 @@ END;
     {
         foreach ($model->relationships()['hasMany'] ?? [] as $reference) {
             $context = Str::before($reference, ':');
-            if (Str::camel(Str::plural($context)) === $relation) {
+            $related = $this->tree->modelForContext($context);
+            $plural = $related ? $related->pluralName() : Str::plural($context);
+
+            if (Str::camel($plural) === $relation) {
                 if (Str::contains($reference, ':')) {
                     throw new \InvalidArgumentException('Aliases are unsupported for store relationships.');
                 }

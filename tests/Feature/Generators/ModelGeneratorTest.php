@@ -158,6 +158,40 @@ final class ModelGeneratorTest extends TestCase
     }
 
     #[Test]
+    public function output_generates_relationships_using_meta_plural_override(): void
+    {
+        $this->filesystem->expects('stub')
+            ->with('model.class.stub')
+            ->andReturn($this->stub('model.class.stub'));
+        $this->filesystem->expects('stub')
+            ->twice()
+            ->with('model.fillable.stub')
+            ->andReturn($this->stub('model.fillable.stub'));
+        $this->filesystem->expects('stub')
+            ->twice()
+            ->with('model.casts.stub')
+            ->andReturn($this->stub('model.casts.stub'));
+        $this->filesystem->expects('stub')
+            ->twice()
+            ->with('model.method.stub')
+            ->andReturn($this->stub('model.method.stub'));
+
+        $this->filesystem->expects('exists')
+            ->twice()
+            ->with('app/Models')
+            ->andReturnTrue();
+        $this->filesystem->expects('put')
+            ->with('app/Models/Nazione.php', $this->fixture('models/model-relationships-custom-plural-nazione.php'));
+        $this->filesystem->expects('put')
+            ->with('app/Models/Regione.php', $this->fixture('models/model-relationships-custom-plural-regione.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/model-relationships-custom-plural.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertSame(['created' => [['Model', 'app/Models/Nazione.php'], ['Model', 'app/Models/Regione.php']]], $this->subject->output($tree));
+    }
+
+    #[Test]
     public function output_generates_relationships_added_with_full_model_namespace(): void
     {
         $this->files->expects('stub')

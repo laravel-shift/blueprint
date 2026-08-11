@@ -763,6 +763,7 @@ final class ModelLexerTest extends TestCase
                     'meta' => [
                         'pivot' => true,
                         'table' => 'post',
+                        'plural' => 'posti',
                     ],
                 ],
             ],
@@ -776,6 +777,8 @@ final class ModelLexerTest extends TestCase
         $model = $actual['models']['Post'];
         $this->assertEquals('Post', $model->name());
         $this->assertSame('post', $model->tableName());
+        $this->assertTrue($model->usesCustomPluralName());
+        $this->assertSame('posti', $model->pluralName());
         $this->assertTrue($model->isPivot());
         $this->assertTrue($model->usesTimestamps());
 

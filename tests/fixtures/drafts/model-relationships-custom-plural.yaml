@@ -1,0 +1,15 @@
+models:
+  Nazione:
+    codice: string:2
+
+    relationships:
+      hasMany: Regione
+
+  Regione:
+    meta:
+      plural: regioni
+
+    nazione_id: id
+
+    relationships:
+      belongsTo: Nazione
