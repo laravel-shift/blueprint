@@ -1,0 +1,7 @@
+models:
+  Mechanic:
+    name: string
+
+    relationships:
+      hasOneThrough: Owner:Car
+      hasManyThrough: Payment:Order

@@ -757,7 +757,42 @@ final class ModelGeneratorTest extends TestCase
             ['drafts/infer-belongsto.yaml', 'app/Models/Conference.php', 'models/infer-belongsto.php'],
             ['drafts/model-with-ulid-id.yaml', 'app/Models/User.php', 'models/model-with-ulid-trait.php'],
             ['drafts/model-with-uuid-id.yaml', 'app/Models/User.php', 'models/model-with-uuid-trait.php'],
+            ['drafts/model-relationships-through.yaml', 'app/Models/Mechanic.php', 'models/model-relationships-through.php'],
         ];
+    }
+
+    #[Test]
+    public function output_generates_hasonethrough_and_hasmanythrough_relationships_with_fqn_and_custom_plural(): void
+    {
+        $this->filesystem->expects('stub')
+            ->with('model.class.stub')
+            ->andReturn($this->stub('model.class.stub'));
+        $this->filesystem->expects('stub')
+            ->twice()
+            ->with('model.fillable.stub')
+            ->andReturn($this->stub('model.fillable.stub'));
+        $this->filesystem->expects('stub')
+            ->twice()
+            ->with('model.casts.stub')
+            ->andReturn($this->stub('model.casts.stub'));
+        $this->filesystem->expects('stub')
+            ->twice()
+            ->with('model.method.stub')
+            ->andReturn($this->stub('model.method.stub'));
+
+        $this->filesystem->expects('exists')
+            ->twice()
+            ->with('app/Models')
+            ->andReturnTrue();
+        $this->filesystem->expects('put')
+            ->with('app/Models/Mechanic.php', $this->fixture('models/model-relationships-through-fqn-and-plural-mechanic.php'));
+        $this->filesystem->expects('put')
+            ->with('app/Models/Payment.php', $this->fixture('models/model-relationships-through-fqn-and-plural-payment.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/model-relationships-through-fqn-and-plural.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertSame(['created' => [['Model', 'app/Models/Mechanic.php'], ['Model', 'app/Models/Payment.php']]], $this->subject->output($tree));
     }
 
     public static function docBlockModelsDataProvider(): array

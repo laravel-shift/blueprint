@@ -797,6 +797,31 @@ final class ModelLexerTest extends TestCase
     }
 
     #[Test]
+    public function it_stores_hasonethrough_and_hasmanythrough_relationships(): void
+    {
+        $tokens = [
+            'models' => [
+                'Mechanic' => [
+                    'name' => 'string',
+                    'relationships' => [
+                        'hasOneThrough' => 'Owner:Car',
+                        'hasManyThrough' => 'Payment:Order, Invoice:Order',
+                    ],
+                ],
+            ],
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $model = $actual['models']['Mechanic'];
+        $relationships = $model->relationships();
+
+        $this->assertCount(2, $relationships);
+        $this->assertEquals(['Owner:Car'], $relationships['hasOneThrough']);
+        $this->assertEquals(['Payment:Order', 'Invoice:Order'], $relationships['hasManyThrough']);
+    }
+
+    #[Test]
     public function it_enables_morphable_and_set_its_reference(): void
     {
         $tokens = [

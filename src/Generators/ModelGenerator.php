@@ -390,6 +390,21 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
                     $relationship = sprintf('$this->%s(%s::class, \'%s\')', $type, $fqcn, $relation);
                 } elseif ($type === 'morphedByMany') {
                     $relationship = sprintf('$this->%s(%s::class, \'%sable\')', $type, $fqcn, strtolower($model->name()));
+                } elseif (in_array($type, ['hasOneThrough', 'hasManyThrough'])) {
+                    if ($is_model_fqn) {
+                        $through_fqcn = $column_name;
+                        $through_class_name = Str::afterLast($through_fqcn, '\\');
+                    } else {
+                        $through_class_name = Str::studly($column_name);
+                        $through_fqcn = $this->fullyQualifyModelReference($through_class_name) ?? $model->fullyQualifiedNamespace() . '\\' . $through_class_name;
+                    }
+
+                    $through_fqcn = Str::startsWith($through_fqcn, '\\') ? $through_fqcn : '\\' . $through_fqcn;
+                    $through_fqcn = Str::is($through_fqcn, "\\{$model->fullyQualifiedNamespace()}\\{$through_class_name}") ? $through_class_name : $through_fqcn;
+
+                    $relationship = sprintf('$this->%s(%s::class, %s::class)', $type, $fqcn, $through_fqcn);
+                    $method_name = $class_name;
+                    $has_custom_relation_name = false;
                 } elseif (!is_null($key)) {
                     $relationship = sprintf('$this->%s(%s::class, \'%s\', \'%s\')', $type, $fqcn, $column_name, $key);
                 } elseif (!is_null($class) && $type === 'belongsToMany') {
@@ -416,7 +431,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
 
                 if ($type === 'morphTo') {
                     $method_name = Str::lower($class_name);
-                } elseif (in_array($type, ['hasMany', 'belongsToMany', 'morphMany', 'morphToMany', 'morphedByMany'])) {
+                } elseif (in_array($type, ['hasMany', 'belongsToMany', 'morphMany', 'morphToMany', 'morphedByMany', 'hasManyThrough'])) {
                     if ($is_pivot || $has_custom_relation_name) {
                         $method_name = Str::plural($is_pivot ? $column_name : $method_name);
                     } else {
