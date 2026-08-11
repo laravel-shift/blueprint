@@ -157,6 +157,43 @@ final class MigrationGeneratorTest extends TestCase
     }
 
     #[Test]
+    public function output_resolves_foreign_key_table_from_related_models_custom_table_name(): void
+    {
+        $this->filesystem->expects('stub')
+            ->with('migration.stub')
+            ->andReturn($this->stub('migration.stub'));
+
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $nazione_migration = str_replace('timestamp', $now->copy()->subSeconds(3)->format('Y_m_d_His'), 'database/migrations/timestamp_create_nazione_table.php');
+        $regione_migration = str_replace('timestamp', $now->copy()->subSeconds(2)->format('Y_m_d_His'), 'database/migrations/timestamp_create_regione_table.php');
+        $provincia_migration = str_replace('timestamp', $now->copy()->subSecond()->format('Y_m_d_His'), 'database/migrations/timestamp_create_provincia_table.php');
+        $comune_migration = str_replace('timestamp', $now->format('Y_m_d_His'), 'database/migrations/timestamp_create_comune_table.php');
+
+        $this->filesystem->expects('exists')->times(4)->andReturn(false);
+
+        $this->filesystem->expects('put')
+            ->with($nazione_migration, $this->fixture('migrations/issue-768-nazione.php'));
+        $this->filesystem->expects('put')
+            ->with($regione_migration, $this->fixture('migrations/issue-768-regione.php'));
+        $this->filesystem->expects('put')
+            ->with($provincia_migration, $this->fixture('migrations/issue-768-provincia.php'));
+        $this->filesystem->expects('put')
+            ->with($comune_migration, $this->fixture('migrations/issue-768-comune.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/issue-768.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertSame(['created' => [
+            ['Migration', $nazione_migration],
+            ['Migration', $regione_migration],
+            ['Migration', $provincia_migration],
+            ['Migration', $comune_migration],
+        ]], $this->subject->output($tree));
+    }
+
+    #[Test]
     public function using_ulids_output_also_creates_pivot_table_migration(): void
     {
         $this->filesystem->expects('stub')

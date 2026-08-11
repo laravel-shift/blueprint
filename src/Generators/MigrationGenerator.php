@@ -60,6 +60,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
 
     public function output(Tree $tree, $overwrite = false): array
     {
+        $this->tree = $tree;
         $tables = ['tableNames' => [], 'pivotTableNames' => [], 'polymorphicManyToManyTables' => []];
 
         $stub = $this->filesystem->stub('migration.stub');
@@ -272,20 +273,31 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
     protected function buildForeignKey(string $column_name, ?string $on, string $type, array $attributes = [], array $modifiers = []): string
     {
         if (is_null($on)) {
-            $table = Str::plural(Str::beforeLast($column_name, '_'));
+            $context = Str::beforeLast($column_name, '_');
+            $table = Str::plural($context);
             $column = Str::afterLast($column_name, '_');
         } elseif (Str::contains($on, '.')) {
-            [$table, $column] = explode('.', $on);
+            [$context, $column] = explode('.', $on);
+            $table = $context;
         } elseif (Str::contains($on, '\\')) {
-            $table = Str::snake(Str::plural(Str::afterLast($on, '\\')));
+            $context = Str::afterLast($on, '\\');
+            $table = Str::snake(Str::plural($context));
             $column = Str::afterLast($column_name, '_');
         } else {
-            $table = Str::snake(Str::plural($on));
+            $context = $on;
+            $table = Str::snake(Str::plural($context));
             $column = Str::afterLast($column_name, '_');
         }
 
         if ($this->isIdColumnType($type) && !empty($attributes)) {
-            $table = Str::lower(Str::plural($attributes[0]));
+            $context = $attributes[0];
+            $table = Str::lower(Str::plural($context));
+        }
+
+        $related_model = $this->tree->modelForContext($context);
+        $uses_custom_table = $related_model && $related_model->usesCustomTableName();
+        if ($related_model) {
+            $table = $related_model->tableName();
         }
 
         $on_delete_suffix = $on_update_suffix = null;
@@ -320,7 +332,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
                 $on_update_suffix = '->cascadeOnUpdate()';
             }
 
-            if ($column_name === Str::singular($table) . '_' . $column) {
+            if (!$uses_custom_table && $column_name === Str::singular($table) . '_' . $column) {
                 return self::INDENT . "{$prefix}->constrained(){$on_delete_suffix}{$on_update_suffix}";
             }
 

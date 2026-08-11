@@ -96,7 +96,8 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
                     }
                 }
 
-                $class = Str::studly(Str::singular($table));
+                $related_model = $this->tree->modelForContext($table);
+                $class = $related_model ? $related_model->name() : Str::studly(Str::singular($table));
                 $reference = $this->fullyQualifyModelReference($class) ?? $model;
 
                 $this->addImport($model, $reference->fullyQualifiedNamespace() . '\\' . $class);

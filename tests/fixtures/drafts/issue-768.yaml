@@ -1,0 +1,38 @@
+models:
+
+  Nazione:
+    meta:
+      table: nazione
+    codice: string:2 unique
+    descrizione: string:100
+    relationships:
+      hasMany: Regione
+
+  Regione:
+    meta:
+      table: regione
+    codice: string:3
+    descrizione: string:100
+    nazione_id: id foreign:nazione
+    relationships:
+      belongsTo: Nazione
+      hasMany: Provincia
+
+  Provincia:
+    meta:
+      table: provincia
+    codice: string:3
+    descrizione: string:100
+    regione_id: id foreign:regione.id
+    relationships:
+      belongsTo: Regione
+      hasMany: Comune
+
+  Comune:
+    meta:
+      table: comune
+    codice: string:3
+    descrizione: string:100
+    provincia_id: id foreign:provincia
+    relationships:
+      belongsTo: Provincia
