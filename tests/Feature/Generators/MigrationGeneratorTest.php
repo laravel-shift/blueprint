@@ -682,6 +682,7 @@ final class MigrationGeneratorTest extends TestCase
             ['drafts/model-numeric-defaults.yaml', 'database/migrations/timestamp_create_numerics_table.php', 'migrations/model-numeric-defaults.php'],
             ['drafts/soft-deletes.yaml', 'database/migrations/timestamp_create_comments_table.php', 'migrations/soft-deletes.php'],
             ['drafts/with-timezones.yaml', 'database/migrations/timestamp_create_comments_table.php', 'migrations/with-timezones.php'],
+            ['drafts/timestamps-softdeletes-precision.yaml', 'database/migrations/timestamp_create_comments_table.php', 'migrations/timestamps-softdeletes-precision.php'],
             ['drafts/relationships.yaml', 'database/migrations/timestamp_create_comments_table.php', 'migrations/relationships.php'],
             ['drafts/models-with-custom-namespace.yaml', 'database/migrations/timestamp_create_categories_table.php', 'migrations/models-with-custom-namespace.php'],
             ['drafts/custom-indexes.yaml', 'database/migrations/timestamp_create_cooltables_table.php', 'migrations/custom-indexes.php'],

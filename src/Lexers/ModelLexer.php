@@ -175,11 +175,13 @@ class ModelLexer implements Lexer
         if (isset($columns['timestamps'])) {
             if ($columns['timestamps'] === false) {
                 $model->disableTimestamps();
+            } else {
+                $model->enableTimestamps(precision: $this->extractPrecision($columns['timestamps']));
             }
 
             unset($columns['timestamps']);
         } elseif (isset($columns['timestampstz'])) {
-            $model->enableTimestamps(true);
+            $model->enableTimestamps(true, $this->extractPrecision($columns['timestampstz']));
             unset($columns['timestampstz']);
         } elseif (config('blueprint.types.timestamps') === false) {
             $model->disableTimestamps();
@@ -188,10 +190,10 @@ class ModelLexer implements Lexer
         }
 
         if (isset($columns['softdeletes'])) {
-            $model->enableSoftDeletes();
+            $model->enableSoftDeletes(precision: $this->extractPrecision($columns['softdeletes']));
             unset($columns['softdeletes']);
         } elseif (isset($columns['softdeletestz'])) {
-            $model->enableSoftDeletes(true);
+            $model->enableSoftDeletes(true, $this->extractPrecision($columns['softdeletestz']));
             unset($columns['softdeletestz']);
         }
 
@@ -239,6 +241,19 @@ class ModelLexer implements Lexer
         $this->inferMissingBelongsToRelationships($model);
 
         return $model;
+    }
+
+    private function extractPrecision(mixed $value): ?int
+    {
+        if (!is_string($value)) {
+            return null;
+        }
+
+        if (preg_match('/^precision:(\d+)$/i', trim($value), $matches)) {
+            return (int)$matches[1];
+        }
+
+        return null;
     }
 
     private function buildColumn(string $name, string $definition): Column

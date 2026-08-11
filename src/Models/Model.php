@@ -20,7 +20,11 @@ class Model implements BlueprintModel
 
     private string|bool $timestamps = 'timestamps';
 
+    private ?int $timestampsPrecision = null;
+
     private string|bool $softDeletes = false;
+
+    private ?int $softDeletesPrecision = null;
 
     private ?string $connection;
 
@@ -176,6 +180,11 @@ class Model implements BlueprintModel
         return $this->timestamps;
     }
 
+    public function timestampsPrecision(): ?int
+    {
+        return $this->timestampsPrecision;
+    }
+
     public function usesTimestamps(): bool
     {
         return $this->timestamps !== false;
@@ -186,9 +195,10 @@ class Model implements BlueprintModel
         $this->timestamps = false;
     }
 
-    public function enableTimestamps(bool $withTimezone = false): void
+    public function enableTimestamps(bool $withTimezone = false, ?int $precision = null): void
     {
         $this->timestamps = $withTimezone ? 'timestampsTz' : 'timestamps';
+        $this->timestampsPrecision = $precision;
     }
 
     public function softDeletesDataType(): string
@@ -196,14 +206,20 @@ class Model implements BlueprintModel
         return $this->softDeletes;
     }
 
+    public function softDeletesPrecision(): ?int
+    {
+        return $this->softDeletesPrecision;
+    }
+
     public function usesSoftDeletes(): bool
     {
         return $this->softDeletes !== false;
     }
 
-    public function enableSoftDeletes(bool $withTimezone = false): void
+    public function enableSoftDeletes(bool $withTimezone = false, ?int $precision = null): void
     {
         $this->softDeletes = $withTimezone ? 'softDeletesTz' : 'softDeletes';
+        $this->softDeletesPrecision = $precision;
         $this->addTrait(\Illuminate\Database\Eloquent\SoftDeletes::class);
     }
 
