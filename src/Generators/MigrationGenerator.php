@@ -241,11 +241,11 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             $definition .= $index_definition;
         }
         if ($model->usesTimestamps()) {
-            $definition .= self::INDENT . '$table->' . $model->timestampsDataType() . '();' . PHP_EOL;
+            $definition .= self::INDENT . '$table->' . $model->timestampsDataType() . '(' . $model->timestampsPrecision() . ');' . PHP_EOL;
         }
 
         if ($model->usesSoftDeletes()) {
-            $definition .= self::INDENT . '$table->' . $model->softDeletesDataType() . '();' . PHP_EOL;
+            $definition .= self::INDENT . '$table->' . $model->softDeletesDataType() . '(' . $model->softDeletesPrecision() . ');' . PHP_EOL;
         }
 
         return trim($definition);

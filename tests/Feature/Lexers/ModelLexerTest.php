@@ -504,6 +504,82 @@ final class ModelLexerTest extends TestCase
     }
 
     #[Test]
+    public function it_sets_timestamps_precision(): void
+    {
+        $tokens = [
+            'models' => [
+                'Model' => [
+                    'timestamps' => 'precision:6',
+                ],
+            ],
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $model = $actual['models']['Model'];
+        $this->assertTrue($model->usesTimestamps());
+        $this->assertSame('timestamps', $model->timestampsDataType());
+        $this->assertSame(6, $model->timestampsPrecision());
+    }
+
+    #[Test]
+    public function it_sets_timestamps_precision_with_timezone(): void
+    {
+        $tokens = [
+            'models' => [
+                'Model' => [
+                    'timestampstz' => 'precision:6',
+                ],
+            ],
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $model = $actual['models']['Model'];
+        $this->assertTrue($model->usesTimestamps());
+        $this->assertSame('timestampsTz', $model->timestampsDataType());
+        $this->assertSame(6, $model->timestampsPrecision());
+    }
+
+    #[Test]
+    public function it_enables_soft_deletes_with_precision(): void
+    {
+        $tokens = [
+            'models' => [
+                'Model' => [
+                    'softdeletes' => 'precision:6',
+                ],
+            ],
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $model = $actual['models']['Model'];
+        $this->assertTrue($model->usesSoftDeletes());
+        $this->assertSame('softDeletes', $model->softDeletesDataType());
+        $this->assertSame(6, $model->softDeletesPrecision());
+    }
+
+    #[Test]
+    public function it_enables_soft_deletes_with_precision_and_timezone(): void
+    {
+        $tokens = [
+            'models' => [
+                'Model' => [
+                    'softdeletestz' => 'precision:6',
+                ],
+            ],
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $model = $actual['models']['Model'];
+        $this->assertTrue($model->usesSoftDeletes());
+        $this->assertSame('softDeletesTz', $model->softDeletesDataType());
+        $this->assertSame(6, $model->softDeletesPrecision());
+    }
+
+    #[Test]
     public function it_converts_foreign_shorthand_to_id(): void
     {
         $tokens = [
