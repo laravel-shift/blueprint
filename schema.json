@@ -1,0 +1,219 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/laravel-shift/blueprint/master/schema.json",
+  "title": "Laravel Blueprint",
+  "description": "Schema for Blueprint draft.yaml files (https://github.com/laravel-shift/blueprint), validated against Blueprint v2.13.0. Blueprint's per-column and per-statement values use a small DSL that is not fully expressible in JSON Schema; those values are typed as free-form strings with descriptions/examples rather than strict patterns, so this schema will not catch every mistake (e.g. a misspelled column type). It focuses on catching structural mistakes: unknown top-level sections, unknown model/controller/meta keys, and unknown statement names. Note: Blueprint also accepts bare-word shorthand with no value on its own line (e.g. `softDeletes`, `id`, `timestamps`, `resource`, `invokable`, `uuid`, `ulid`) that it rewrites before YAML is even parsed — that form isn't valid standard YAML and can't be represented here; use the explicit `key: true` / `resource: web` form shown in this schema instead. `components:` (Livewire) is intentionally not covered, as it isn't wired into the released build pipeline yet.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "models": {
+      "type": "object",
+      "description": "Eloquent models to generate, keyed by class name. Nest under a subdirectory with `/` or `\\` (e.g. `Admin/User`).",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^\\\\?[A-Z][A-Za-z0-9_]*([\\\\/][A-Z][A-Za-z0-9_]*)*$": { "$ref": "#/definitions/model" }
+      }
+    },
+    "controllers": {
+      "type": "object",
+      "description": "Controllers to generate, keyed by class name. Nest under a subdirectory with `/` or `\\` (e.g. `Admin/User`).",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^\\\\?[A-Z][A-Za-z0-9_]*([\\\\/][A-Z][A-Za-z0-9_]*)*$": { "$ref": "#/definitions/controller" }
+      }
+    },
+    "seeders": {
+      "type": "string",
+      "description": "Comma-separated list of model names to generate a DatabaseSeeder call for.",
+      "examples": ["Post", "Post, Comment, User"]
+    },
+    "config": {
+      "type": "object",
+      "description": "Overrides Blueprint's own config/blueprint.php for this build only. Unlisted keys are still allowed since custom Generator classes may read their own config values.",
+      "additionalProperties": true,
+      "properties": {
+        "namespace": { "type": ["string", "null"], "description": "Root application namespace. Defaults to `App`." },
+        "models_namespace": { "type": ["string", "null"], "description": "Defaults to `Models`. Set to `null` to generate directly under the root namespace." },
+        "controllers_namespace": { "type": ["string", "null"], "description": "Defaults to `Http\\Controllers`." },
+        "policy_namespace": { "type": ["string", "null"], "description": "Defaults to `Policies`." },
+        "app_path": { "type": "string", "description": "Defaults to `app`." },
+        "generate_phpdocs": { "type": "boolean", "default": false },
+        "use_constraints": { "type": "boolean", "description": "Add foreign key constraints to generated migrations.", "default": false },
+        "on_delete": { "type": "string", "enum": ["cascade", "restrict", "no_action", "null"], "default": "cascade" },
+        "on_update": { "type": "string", "enum": ["cascade", "restrict", "no_action", "null"], "default": "cascade" },
+        "fake_nullables": { "type": "boolean", "default": true },
+        "use_guarded": { "type": "boolean", "default": false },
+        "types": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "primary": { "type": ["string", "boolean"], "default": "id" },
+            "timestamps": { "type": ["string", "boolean"], "default": "timestamp" }
+          }
+        },
+        "singular_routes": { "type": "boolean", "default": false },
+        "property_promotion": { "type": "boolean", "default": false },
+        "generate_resource_collection_classes": { "type": "boolean", "default": true }
+      }
+    }
+  },
+  "definitions": {
+    "model": {
+      "type": "object",
+      "description": "A model definition. Special keys configure the primary key, timestamps, soft deletes, relationships, indexes, and class-level metadata; every other key is a column name.",
+      "properties": {
+        "id": {
+          "description": "Primary key column. Omitted/`true` uses the default `id bigIncrements` column; `false` disables the primary key entirely; or provide a column definition to customize it (e.g. `uuid primary`, `increments`).",
+          "oneOf": [{ "type": "boolean" }, { "$ref": "#/definitions/columnDefinition" }]
+        },
+        "timestamps": { "type": "boolean", "description": "Set to `false` to omit created_at/updated_at.", "default": true },
+        "timestampsTz": { "type": "boolean", "description": "Use timezone-aware created_at/updated_at columns." },
+        "timestampstz": { "type": "boolean", "description": "Alias of `timestampsTz`; key matching is case-insensitive." },
+        "softDeletes": { "type": "boolean", "description": "Add a deleted_at column and the SoftDeletes trait." },
+        "softDeletesTz": { "type": "boolean", "description": "Use a timezone-aware deleted_at column." },
+        "softdeletes": { "type": "boolean", "description": "Alias of `softDeletes`; key matching is case-insensitive." },
+        "softdeletestz": { "type": "boolean", "description": "Alias of `softDeletesTz`; key matching is case-insensitive." },
+        "meta": {
+          "description": "Class-level model configuration. (If you have a genuine column named `meta`, give it a column definition string instead and Blueprint will treat it as a column.)",
+          "oneOf": [{ "$ref": "#/definitions/modelMeta" }, { "$ref": "#/definitions/columnDefinition" }]
+        },
+        "relationships": { "$ref": "#/definitions/relationships" },
+        "indexes": {
+          "type": "array",
+          "description": "Composite/custom indexes beyond what column modifiers (unique, index, primary) already declare inline.",
+          "items": { "$ref": "#/definitions/index" }
+        }
+      },
+      "additionalProperties": { "$ref": "#/definitions/columnDefinition" }
+    },
+    "modelMeta": {
+      "type": "object",
+      "description": "Advanced, non-column model configuration.",
+      "additionalProperties": false,
+      "properties": {
+        "connection": { "type": "string", "description": "Database connection name this model should use." },
+        "table": { "type": "string", "description": "Override the default (snake_case, plural) table name." },
+        "pivot": { "type": "boolean", "description": "Mark this model as a pivot model for a belongsToMany relationship." },
+        "extends": { "type": "string", "description": "Fully-qualified class name to extend instead of Illuminate\\Database\\Eloquent\\Model." },
+        "traits": { "type": "string", "description": "Comma-separated list of fully-qualified trait names to `use`." },
+        "implements": { "type": "string", "description": "Comma-separated list of fully-qualified interface names to implement." }
+      }
+    },
+    "relationships": {
+      "type": "object",
+      "description": "Eloquent relationships this model defines. Each value is one model reference, or a comma-separated list of them. A reference may include a namespace (`\\App\\Models\\Team`), a custom foreign key alias (`Model:column`), or for belongsToMany/morphToMany, a custom pivot model (`Model:&PivotModel`). Relationship type keys are matched case-insensitively by Blueprint; the canonical camelCase spellings are listed here for autocomplete, but other casings are also accepted.",
+      "properties": {
+        "hasOne": { "$ref": "#/definitions/relationshipValue" },
+        "hasMany": { "$ref": "#/definitions/relationshipValue" },
+        "belongsTo": { "$ref": "#/definitions/relationshipValue" },
+        "belongsToMany": { "$ref": "#/definitions/relationshipValue" },
+        "morphOne": { "$ref": "#/definitions/relationshipValue" },
+        "morphMany": { "$ref": "#/definitions/relationshipValue" },
+        "morphTo": { "$ref": "#/definitions/relationshipValue" },
+        "morphToMany": { "$ref": "#/definitions/relationshipValue" },
+        "morphedByMany": { "$ref": "#/definitions/relationshipValue" }
+      }
+    },
+    "relationshipValue": {
+      "type": "string",
+      "examples": ["Team", "Team, User", "Customer:owner", "Team:&Membership", "\\Some\\Package\\Team"]
+    },
+    "index": {
+      "type": "object",
+      "description": "A single index. The key is the Schema Blueprint method to call (commonly `unique`, `index`, `primary`, or `fullText`); the value is one column name or a comma-separated list.",
+      "minProperties": 1,
+      "maxProperties": 1,
+      "additionalProperties": { "type": "string" },
+      "examples": [{ "unique": "author_id, published_at" }, { "index": "author_id" }]
+    },
+    "columnDefinition": {
+      "type": "string",
+      "description": "`<type>[:attribute,...] [modifier[:value]]...`\n\nTypes: bigIncrements, bigInteger, binary, boolean, char, date, dateTime, dateTimeTz, decimal, double, enum, float, fullText, geography, geometry, geometryCollection, id, increments, integer, ipAddress, json, jsonb, lineString, longText, macAddress, mediumIncrements, mediumInteger, mediumText, morphs, uuidMorphs, multiLineString, multiPoint, multiPolygon, nullableMorphs, nullableUuidMorphs, nullableTimestamps, point, polygon, rememberToken, set, smallIncrements, smallInteger, softDeletes, softDeletesTz, string, text, time, timeTz, timestamp, timestampTz, timestamps, timestampsTz, tinyIncrements, tinyInteger, unsignedBigInteger, unsignedDecimal, unsignedInteger, unsignedMediumInteger, unsignedSmallInteger, unsignedTinyInteger, ulid, uuid, year. (Type is optional; omitting it with only `foreign` infers `id`.)\n\nModifiers: autoIncrement, charset:value, collation:value, default:value, nullable, unsigned, useCurrent, useCurrentOnUpdate, always, unique, index, primary, foreign[:table[.column]], onDelete[:cascade|restrict|no_action|null], onUpdate[:...], comment:value.\n\nType and modifiers are space-separated; type attributes are comma-separated after a colon.",
+      "examples": [
+        "string",
+        "string:255",
+        "integer unsigned",
+        "decimal:8,2 nullable",
+        "enum:draft,published,archived default:draft",
+        "id foreign:users.id",
+        "foreign:countries.code",
+        "uuid primary",
+        "timestamp nullable"
+      ]
+    },
+    "controller": {
+      "type": "object",
+      "description": "A controller definition. `resource` generates standard CRUD methods, `invokable` generates a single-action controller, `meta` configures class-level options, and any other key is a custom action method.",
+      "properties": {
+        "resource": {
+          "description": "Generate resource methods: `true`/`web` for the 7 standard web actions, `api` for the 5 API actions, or a comma-separated subset of action names (index, create, store, show, edit, update, destroy, or api.index/api.store/api.show/api.update/api.destroy).",
+          "oneOf": [
+            { "type": "boolean" },
+            {
+              "type": "string",
+              "pattern": "^[a-z][a-z.]*(,\\s*[a-z][a-z.]*)*$",
+              "examples": ["web", "api", "index, show", "api.store, api.show, api.update"]
+            }
+          ]
+        },
+        "invokable": {
+          "description": "Generate a single-action (`__invoke`) controller. `true` renders a default view named after the model, or provide statements directly.",
+          "oneOf": [{ "type": "boolean" }, { "$ref": "#/definitions/controllerStatements" }]
+        },
+        "meta": { "$ref": "#/definitions/controllerMeta" }
+      },
+      "additionalProperties": { "$ref": "#/definitions/controllerStatements" }
+    },
+    "controllerMeta": {
+      "type": "object",
+      "description": "Advanced, class-level controller configuration.",
+      "additionalProperties": false,
+      "properties": {
+        "policies": {
+          "description": "Generate and apply a policy. `true` authorizes the full standard resource ability map; or a comma-separated list of actions (index, show, create, store, edit, update, destroy) to limit which abilities are checked.",
+          "oneOf": [{ "type": "boolean" }, { "type": "string" }]
+        },
+        "parent": { "type": "string", "description": "The model this controller acts on, when it can't be inferred from the controller's name." },
+        "store": { "type": "string", "description": "A relationship path to save/query through, e.g. `user.posts`." },
+        "extends": { "type": "string", "description": "Fully-qualified class name to extend instead of the app's base controller." },
+        "traits": { "type": "string", "description": "Comma-separated list of fully-qualified trait names to `use`." },
+        "implements": { "type": "string", "description": "Comma-separated list of fully-qualified interface names to implement." }
+      }
+    },
+    "controllerStatements": {
+      "type": "object",
+      "description": "One or more statements to generate within a controller action, keyed by statement name. Repeat a statement (e.g. two `fire` events in one action) by suffixing a unique label after a dash, e.g. `fire-welcome`, `dispatch-1`.",
+      "properties": {
+        "delete": { "$ref": "#/definitions/statementValue" },
+        "dispatch": { "$ref": "#/definitions/statementValue" },
+        "find": { "$ref": "#/definitions/statementValue" },
+        "fire": { "$ref": "#/definitions/statementValue" },
+        "flash": { "$ref": "#/definitions/statementValue" },
+        "inertia": { "$ref": "#/definitions/statementValue" },
+        "notify": { "$ref": "#/definitions/statementValue" },
+        "query": { "$ref": "#/definitions/statementValue" },
+        "redirect": { "$ref": "#/definitions/statementValue" },
+        "render": { "$ref": "#/definitions/statementValue" },
+        "resource": { "$ref": "#/definitions/statementValue" },
+        "respond": {
+          "description": "A view/resource name, or a bare HTTP status code (e.g. `204`).",
+          "oneOf": [{ "type": "string" }, { "type": "integer" }]
+        },
+        "save": { "$ref": "#/definitions/statementValue" },
+        "send": { "$ref": "#/definitions/statementValue" },
+        "store": { "$ref": "#/definitions/statementValue" },
+        "update": { "$ref": "#/definitions/statementValue" },
+        "validate": { "$ref": "#/definitions/statementValue" }
+      },
+      "patternProperties": {
+        "^(fire|dispatch|send|notify)-[A-Za-z0-9_-]+$": { "$ref": "#/definitions/statementValue" }
+      },
+      "additionalProperties": false
+    },
+    "statementValue": {
+      "type": "string",
+      "description": "Most statements follow `<subject> [with:field,field,...]`, e.g. `render post.show with:post` or `redirect posts.index`.",
+      "examples": ["post", "post.index", "post.show with:post", "all:posts", "title, content"]
+    }
+  }
+}
