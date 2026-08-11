@@ -122,6 +122,39 @@ final class FactoryGeneratorTest extends TestCase
     }
 
     #[Test]
+    public function output_resolves_singular_class_name_from_related_model_instead_of_inflecting_it(): void
+    {
+        $this->filesystem->expects('stub')
+            ->with($this->factoryStub)
+            ->andReturn($this->stub($this->factoryStub));
+
+        $this->filesystem->expects('exists')
+            ->times(4)
+            ->andReturnTrue();
+
+        $this->filesystem->expects('put')
+            ->with('database/factories/NazioneFactory.php', \Mockery::type('string'));
+        $this->filesystem->expects('put')
+            ->with('database/factories/RegioneFactory.php', \Mockery::type('string'));
+        $this->filesystem->expects('put')
+            ->with('database/factories/ProvinciaFactory.php', \Mockery::type('string'));
+        $this->filesystem->expects('put')
+            ->with('database/factories/ComuneFactory.php', $this->fixture('factories/issue-768-comune.php'));
+
+        $tokens = $this->blueprint->parse($this->fixture('drafts/issue-768.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertEquals([
+            'created' => [
+                ['Factory', 'database/factories/NazioneFactory.php'],
+                ['Factory', 'database/factories/RegioneFactory.php'],
+                ['Factory', 'database/factories/ProvinciaFactory.php'],
+                ['Factory', 'database/factories/ComuneFactory.php'],
+            ],
+        ], $this->subject->output($tree));
+    }
+
+    #[Test]
     public function output_respects_configuration(): void
     {
         $this->app['config']->set('blueprint.namespace', 'Some\\App');
