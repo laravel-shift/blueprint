@@ -1,0 +1,40 @@
+# Blog example for Blueprint
+# Copy this file to draft.yaml in a fresh Laravel app, then run:
+#   php artisan blueprint:build
+#
+# Docs:
+# - models: https://blueprint.laravelshift.com/docs/defining-models/
+# - controllers: https://blueprint.laravelshift.com/docs/defining-controllers/
+# - statements: https://blueprint.laravelshift.com/docs/controller-statements/
+
+models:
+  Post:
+    title: string:400
+    slug: string unique
+    content: longtext
+    published_at: nullable timestamp
+    author_id: id:user
+    relationships:
+      hasMany: Comment
+      belongsToMany: Tag
+
+  Comment:
+    post_id: id
+    author_name: string:100
+    body: text
+    approved: boolean default:false
+
+  Tag:
+    name: string:50 unique
+    relationships:
+      belongsToMany: Post
+
+controllers:
+  Post:
+    resource: index, show, store, update, destroy
+    publish:
+      find: post
+      save: post with:published_at
+      redirect: posts.show with:post
+
+seeders: Post, Tag
