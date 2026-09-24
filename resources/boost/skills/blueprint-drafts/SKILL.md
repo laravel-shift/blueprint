@@ -13,9 +13,12 @@ description: >
 
 1. Run `php artisan blueprint:trace` if the draft will reference existing models.
 2. Write the draft to `draft.yaml` in the project root.
-3. Run `php artisan blueprint:build` and review the list of generated files.
-4. Review the generated code. Blueprint does not validate statement values, so mistakes surface as broken PHP rather than errors.
-5. To correct a draft, run `php artisan blueprint:erase`, fix the draft, and build again.
+3. Run `php artisan blueprint:validate` and fix every error and warning it reports.
+4. Run `php artisan blueprint:build` and review the list of generated files.
+5. Review the generated code. Validation catches common mistakes, but not every statement that generates incorrect code.
+6. To correct a draft, run `php artisan blueprint:erase`, fix the draft, and build again.
+
+`blueprint:validate` reports each problem as `file:line: severity: message`. Errors mean `blueprint:build` will fail, and the command exits with `1`. Warnings mean the build will succeed, but generate invalid code or ignore part of the draft.
 
 Build options:
 
