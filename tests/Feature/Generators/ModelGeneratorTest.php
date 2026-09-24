@@ -751,6 +751,7 @@ final class ModelGeneratorTest extends TestCase
             ['drafts/nested-components.yaml', 'app/Models/Admin/User.php', 'models/nested-components.php'],
             ['drafts/resource-statements.yaml', 'app/Models/User.php', 'models/resource-statements.php'],
             ['drafts/all-column-types.yaml', 'app/Models/AllType.php', 'models/all-column-types.php'],
+            ['drafts/decimal-precision.yaml', 'app/Models/Invoice.php', 'models/decimal-precision.php'],
             ['drafts/alias-relationships.yaml', 'app/Models/Salesman.php', 'models/alias-relationships.php'],
             ['drafts/uuid-shorthand-invalid-relationship.yaml', 'app/Models/AgeCohort.php', 'models/uuid-shorthand-invalid-relationship.php'],
             ['drafts/model-with-meta.yaml', 'app/Models/Post.php', 'models/model-with-meta.php'],
