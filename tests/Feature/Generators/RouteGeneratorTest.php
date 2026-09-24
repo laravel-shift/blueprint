@@ -133,6 +133,18 @@ final class RouteGeneratorTest extends TestCase
     }
 
     #[Test]
+    public function output_does_not_setup_api_routes_for_web_routes(): void
+    {
+        $tokens = $this->blueprint->parse($this->fixture('drafts/readme-example.yaml'));
+        $tree = $this->blueprint->analyze($tokens);
+
+        $this->assertSame(['updated' => [['Route', 'routes/web.php']]], $this->subject->output($tree));
+
+        $this->files->shouldNotHaveReceived('put');
+        $this->files->shouldNotHaveReceived('replaceInFile');
+    }
+
+    #[Test]
     public function output_does_not_create_api_routes_file_when_it_exists(): void
     {
         $this->filesystem->shouldReceive('exists')

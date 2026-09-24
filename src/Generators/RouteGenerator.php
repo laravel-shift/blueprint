@@ -29,7 +29,7 @@ class RouteGenerator extends AbstractClassGenerator implements Generator
 
         $paths = [];
 
-        if (isset($routes['api'])) {
+        if (!empty($routes['api'])) {
             $this->setupApiRouter();
         }
 
