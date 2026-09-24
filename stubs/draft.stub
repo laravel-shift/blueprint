@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=vendor/laravel-shift/blueprint/schema.json
+
 models:
   # ...
 
