@@ -42,7 +42,7 @@ final class SchemaTest extends TestCase
     public function draft_validates_against_schema(string $draft): void
     {
         $result = (new Validator)->validate(
-            json_decode(json_encode(Yaml::parse($this->fixture('drafts/' . $draft)))),
+            json_decode(json_encode(Yaml::parse($this->fixture($draft)))),
             json_decode(file_get_contents(__DIR__ . '/../../schema.json'))
         );
 
@@ -55,10 +55,10 @@ final class SchemaTest extends TestCase
 
     public static function draftsDataProvider(): array
     {
-        return collect(glob(__DIR__ . '/../fixtures/drafts/*.yaml'))
-            ->map(fn ($path) => basename($path))
-            ->diff(self::EXCLUDED)
-            ->filter(fn ($draft) => self::isStandardYaml(__DIR__ . '/../fixtures/drafts/' . $draft))
+        return collect(glob(__DIR__ . '/../fixtures/{drafts,expanded}/*.yaml', GLOB_BRACE))
+            ->map(fn ($path) => basename(dirname($path)) . '/' . basename($path))
+            ->diff(array_map(fn ($draft) => 'drafts/' . $draft, self::EXCLUDED))
+            ->filter(fn ($draft) => self::isStandardYaml(__DIR__ . '/../fixtures/' . $draft))
             ->mapWithKeys(fn ($draft) => [$draft => [$draft]])
             ->all();
     }

@@ -1,0 +1,5 @@
+models:
+  Person:
+    id: uuid primary
+    company_id: uuid
+    timestamps: true
