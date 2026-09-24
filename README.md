@@ -87,6 +87,8 @@ Blueprint includes a [JSON Schema](schema.json) for draft files. Editors using t
 # yaml-language-server: $schema=vendor/laravel-shift/blueprint/schema.json
 ```
 
+Blueprint also accepts shorthand which is not standard YAML, such as a bare `softDeletes` or `resource` line. Your editor may report these lines as errors, even though the draft builds. Run `php artisan blueprint:validate --expand` to rewrite them into standard YAML.
+
 
 ## Documentation
 Browse the [Blueprint Docs](https://blueprint.laravelshift.com/) for full details on [defining models](https://blueprint.laravelshift.com/docs/defining-models/), [defining controllers](https://blueprint.laravelshift.com/docs/defining-controllers/), [advanced configuration](https://blueprint.laravelshift.com/docs/advanced-configuration/), and [extending Blueprint](https://blueprint.laravelshift.com/docs/extending-blueprint/).

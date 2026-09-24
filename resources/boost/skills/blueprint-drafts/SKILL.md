@@ -20,6 +20,8 @@ description: >
 
 `blueprint:validate` reports each problem as `file:line: severity: message`. Errors mean `blueprint:build` will fail, and the command exits with `1`. Warnings mean the build will succeed, but generate invalid code or ignore part of the draft.
 
+Write the explicit form of each key (e.g. `softDeletes: true`, `resource: web`) rather than a bare shorthand line, which is not standard YAML. Run `php artisan blueprint:validate --expand` to rewrite any existing shorthand.
+
 Build options:
 
 - `php artisan blueprint:build path/to/draft.yaml` builds a different draft file.
