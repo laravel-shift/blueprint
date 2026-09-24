@@ -135,6 +135,15 @@ class ModelLexer implements Lexer
     {
         $model = new Model($name);
 
+        foreach (['timestamps', 'timestampstz', 'softdeletes', 'softdeletestz'] as $key) {
+            foreach (array_keys($columns) as $column) {
+                if ($column !== $key && strtolower($column) === $key) {
+                    $columns[$key] = $columns[$column];
+                    unset($columns[$column]);
+                }
+            }
+        }
+
         if (isset($columns['meta']) && is_array($columns['meta'])) {
             if (isset($columns['meta']['connection'])) {
                 $model->setDatabaseConnection($columns['meta']['connection']);

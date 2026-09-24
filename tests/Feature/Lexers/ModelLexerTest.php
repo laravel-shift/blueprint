@@ -580,6 +580,28 @@ final class ModelLexerTest extends TestCase
     }
 
     #[Test]
+    public function it_matches_timestamps_and_soft_deletes_keys_case_insensitively(): void
+    {
+        $tokens = [
+            'models' => [
+                'Model' => [
+                    'timestampsTz' => 'precision:3',
+                    'softDeletesTz' => 'precision:6',
+                ],
+            ],
+        ];
+
+        $actual = $this->subject->analyze($tokens);
+
+        $model = $actual['models']['Model'];
+        $this->assertSame(['id'], array_keys($model->columns()));
+        $this->assertSame('timestampsTz', $model->timestampsDataType());
+        $this->assertSame(3, $model->timestampsPrecision());
+        $this->assertSame('softDeletesTz', $model->softDeletesDataType());
+        $this->assertSame(6, $model->softDeletesPrecision());
+    }
+
+    #[Test]
     public function it_converts_foreign_shorthand_to_id(): void
     {
         $tokens = [
