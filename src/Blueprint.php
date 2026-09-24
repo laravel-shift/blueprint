@@ -4,6 +4,7 @@ namespace Blueprint;
 
 use Blueprint\Contracts\Generator;
 use Blueprint\Contracts\Lexer;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use Symfony\Component\Yaml\Yaml;
 
@@ -139,6 +140,17 @@ class Blueprint
         }
 
         $this->registerGenerator($generator);
+    }
+
+    public function withFilesystem(Filesystem $filesystem): self
+    {
+        $blueprint = clone $this;
+        $blueprint->generators = array_map(
+            fn (Generator $generator) => new ($generator::class)($filesystem),
+            $this->generators
+        );
+
+        return $blueprint;
     }
 
     protected function shouldGenerate(array $types, array $only, array $skip): bool
