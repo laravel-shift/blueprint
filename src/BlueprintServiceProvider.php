@@ -8,6 +8,7 @@ use Blueprint\Commands\InitCommand;
 use Blueprint\Commands\NewCommand;
 use Blueprint\Commands\PublishStubsCommand;
 use Blueprint\Commands\TraceCommand;
+use Blueprint\Commands\ValidateCommand;
 use Illuminate\Console\Events\CommandFinished;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Contracts\Support\DeferrableProvider;
@@ -56,6 +57,7 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
         $this->app->bind('command.blueprint.new', fn ($app) => new NewCommand($app['files']));
         $this->app->bind('command.blueprint.init', fn ($app) => new InitCommand);
         $this->app->bind('command.blueprint.stubs', fn ($app) => new PublishStubsCommand);
+        $this->app->bind('command.blueprint.validate', fn ($app) => new ValidateCommand($app['files'], app(Validator::class)));
 
         $this->app->singleton(Blueprint::class, function ($app) {
             $blueprint = new Blueprint;
@@ -84,6 +86,7 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
             'command.blueprint.new',
             'command.blueprint.init',
             'command.blueprint.stubs',
+            'command.blueprint.validate',
         ]);
     }
 
@@ -98,6 +101,7 @@ class BlueprintServiceProvider extends ServiceProvider implements DeferrableProv
             'command.blueprint.trace',
             'command.blueprint.new',
             'command.blueprint.init',
+            'command.blueprint.validate',
             Blueprint::class,
         ];
     }
