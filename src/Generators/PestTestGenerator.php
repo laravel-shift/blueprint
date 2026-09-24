@@ -502,10 +502,9 @@ class PestTestGenerator extends AbstractClassGenerator implements Generator
             }
 
             $call = sprintf(
-                '$response = %s(route(\'%s.%s\'',
+                '$response = %s(route(\'%s\'',
                 $this->httpMethodForAction($name),
-                config('blueprint.singular_routes') ? Str::kebab($context) : Str::plural(Str::kebab($context)),
-                $name
+                (config('blueprint.singular_routes') ? Str::kebab($context) : Str::plural(Str::kebab($context))) . ($name === '__invoke' ? '' : '.' . $name)
             );
 
             $this->addImport($controller, 'function Pest\\Laravel\\' . $this->httpMethodForAction($name));

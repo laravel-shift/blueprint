@@ -495,10 +495,9 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
             }
 
             $call = sprintf(
-                '$response = $this->%s(route(\'%s.%s\'',
+                '$response = $this->%s(route(\'%s\'',
                 $this->httpMethodForAction($name),
-                config('blueprint.singular_routes') ? Str::kebab($context) : Str::plural(Str::kebab($context)),
-                $name
+                (config('blueprint.singular_routes') ? Str::kebab($context) : Str::plural(Str::kebab($context))) . ($name === '__invoke' ? '' : '.' . $name)
             );
 
             if (in_array($name, ['edit', 'update', 'show', 'destroy'])) {
