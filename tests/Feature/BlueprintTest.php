@@ -9,6 +9,7 @@ use Blueprint\Tree;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Yaml\Exception\ParseException;
+use Symfony\Component\Yaml\Yaml;
 use Tests\TestCase;
 
 /**
@@ -755,6 +756,31 @@ DRAFT;
             "models:\n  Post:\n    custom: true\n",
             $this->subject->expand("models:\n  Post:\n    custom\n")
         );
+    }
+
+    #[Test]
+    #[DataProvider('draftsDataProvider')]
+    public function expand_generates_standard_yaml_with_the_same_tree($draft): void
+    {
+        $content = $this->fixture('drafts/' . $draft);
+        $strip_dashes = preg_match('/^\s+indexes:\R/m', $content) !== 1;
+        $expanded = $this->subject->expand($content);
+
+        $this->assertIsArray(Yaml::parse($expanded));
+        $this->assertSame(substr_count($content, "\n"), substr_count($expanded, "\n"));
+        $this->assertEquals(
+            $this->subject->analyze($this->subject->parse($content, $strip_dashes)),
+            $this->subject->analyze($this->subject->parse($expanded, $strip_dashes))
+        );
+    }
+
+    public static function draftsDataProvider(): array
+    {
+        return collect(glob(__DIR__ . '/../fixtures/drafts/*.yaml'))
+            ->map(fn ($path) => basename($path))
+            ->reject(fn ($draft) => $draft === 'invalid.yaml')
+            ->mapWithKeys(fn ($draft) => [$draft => [$draft]])
+            ->all();
     }
 
     public static function expandDataProvider(): array
