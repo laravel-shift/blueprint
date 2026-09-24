@@ -1,0 +1,8 @@
+models:
+  Repo:
+    title: string
+    softDeletesTz: true
+
+controllers:
+  Repo:
+    resource: web

@@ -89,6 +89,53 @@ class Blueprint
         return Yaml::parse($content);
     }
 
+    /**
+     * Rewrite shorthands, dashes, and duplicate statement keys, which
+     * Blueprint accepts, but are not standard YAML, into their
+     * explicit form. Each line is rewritten in place.
+     */
+    public function expand(string $content): string
+    {
+        $content = str_replace(["\r\n", "\r"], "\n", $content);
+
+        if (preg_match('/^\s+indexes:$/m', $content) !== 1) {
+            $content = preg_replace('/^(\s*)-\s+/m', '\1', $content);
+        }
+
+        $content = $this->expandDuplicatePropertyKeys($content);
+
+        $explicit = [
+            'id' => 'id: true',
+            'timestamps' => 'timestamps: true',
+            'timestampstz' => 'timestampsTz: true',
+            'softdeletes' => 'softDeletes: true',
+            'softdeletestz' => 'softDeletesTz: true',
+            'invokable' => 'invokable: true',
+            'resource' => 'resource: web',
+        ];
+
+        $content = preg_replace_callback(
+            '/^(\s+)(' . implode('|', array_keys($explicit)) . ')$/mi',
+            fn ($matches) => $matches[1] . $explicit[strtolower($matches[2])],
+            $content
+        );
+        $content = preg_replace_callback(
+            '/^(\s+)(ulid|uuid)(: true)?$/mi',
+            fn ($matches) => $matches[1] . 'id: ' . strtolower($matches[2]) . ' primary',
+            $content
+        );
+
+        foreach ($this->shorthands as $shorthand => $callback) {
+            $content = preg_replace_callback(
+                '/^(\s+)' . preg_quote($shorthand, '/') . '$/mi',
+                $callback,
+                $content
+            );
+        }
+
+        return $content;
+    }
+
     public function analyze(array $tokens): Tree
     {
         $registry = [
@@ -164,6 +211,41 @@ class Blueprint
         }
 
         return true;
+    }
+
+    private function expandDuplicatePropertyKeys(string $content): string
+    {
+        $lines = explode("\n", $content);
+        $controllers = false;
+        $counts = [];
+
+        foreach ($lines as $index => $line) {
+            if (preg_match('/^\S/', $line)) {
+                $controllers = $line === 'controllers:';
+
+                continue;
+            }
+
+            if (!$controllers) {
+                continue;
+            }
+
+            if (preg_match('/^( {2}| {4}|\t){2}\w+:$/', $line)) {
+                $counts = [];
+
+                continue;
+            }
+
+            if (preg_match('/^((?: {2}| {4}|\t){3})(dispatch|fire|notify|send):(\s.*)$/', $line, $matches)) {
+                $counts[$matches[2]] = ($counts[$matches[2]] ?? 0) + 1;
+
+                if ($counts[$matches[2]] > 1) {
+                    $lines[$index] = $matches[1] . $matches[2] . '-' . $counts[$matches[2]] . ':' . $matches[3];
+                }
+            }
+        }
+
+        return implode("\n", $lines);
     }
 
     private function transformDuplicatePropertyKeys(string $content): string

@@ -728,6 +728,47 @@ DRAFT;
         $this->assertEquals($expected, Blueprint::relativeNamespace($reference));
     }
 
+    #[Test]
+    #[DataProvider('expandDataProvider')]
+    public function expand_rewrites_shorthands_as_standard_yaml($draft): void
+    {
+        $this->assertSame(
+            $this->fixture('expanded/' . $draft),
+            $this->subject->expand($this->fixture('drafts/' . $draft))
+        );
+    }
+
+    #[Test]
+    public function expand_does_not_change_standard_yaml(): void
+    {
+        $draft = $this->fixture('drafts/readme-example.yaml');
+
+        $this->assertSame($draft, $this->subject->expand($draft));
+    }
+
+    #[Test]
+    public function expand_uses_registered_shorthands(): void
+    {
+        $this->subject->registerShorthand('custom', fn ($matches) => $matches[1] . 'custom: true');
+
+        $this->assertSame(
+            "models:\n  Post:\n    custom: true\n",
+            $this->subject->expand("models:\n  Post:\n    custom\n")
+        );
+    }
+
+    public static function expandDataProvider(): array
+    {
+        return [
+            ['form-requests-softdeletestz.yaml'],
+            ['multiple-dispatch-fire-notify-send-keys.yaml'],
+            ['readme-example-dashes.yaml'],
+            ['shorthands.yaml'],
+            ['uuid-shorthand.yaml'],
+            ['with-timezones.yaml'],
+        ];
+    }
+
     public static function namespacesDataProvider(): array
     {
         return [

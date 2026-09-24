@@ -1,0 +1,4 @@
+models:
+  Comment:
+    softDeletesTz: true
+    timestampsTz: true

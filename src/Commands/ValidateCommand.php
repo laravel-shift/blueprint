@@ -13,7 +13,12 @@ class ValidateCommand extends Command
 
     protected $signature = 'blueprint:validate
                             {draft? : The path to the draft file, default: draft.yaml or draft.yml }
+                            {--expand : Rewrite shorthand into standard YAML before validating }
                             ';
+
+    protected $help = 'Validates the draft by running the build without writing any files. Errors mean the build will fail. Warnings mean the build will succeed, but generate invalid code or ignore part of the draft.
+
+Blueprint also accepts shorthand which is not standard YAML, such as a bare <comment>softDeletes</comment> or <comment>resource</comment> line, or repeated statements within an action. Editors using the Blueprint JSON Schema will report these lines as errors, even though the draft validates. Use the <comment>--expand</comment> option to rewrite them into their explicit, standard YAML form.';
 
     protected Filesystem $filesystem;
 
@@ -37,7 +42,19 @@ class ValidateCommand extends Command
             return 1;
         }
 
-        $diagnostics = $this->validator->validate(resolve(Blueprint::class), $file);
+        $blueprint = resolve(Blueprint::class);
+
+        if ($this->option('expand')) {
+            $contents = str_replace(["\r\n", "\r"], "\n", $this->filesystem->get($file));
+            $expanded = $blueprint->expand($contents);
+
+            if ($expanded !== $contents) {
+                $this->filesystem->put($file, $expanded);
+                $this->line($file . ': Expanded shorthand into standard YAML.');
+            }
+        }
+
+        $diagnostics = $this->validator->validate($blueprint, $file);
 
         foreach ($diagnostics as $diagnostic) {
             $this->line(sprintf(
