@@ -394,7 +394,7 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
                     } elseif (Str::contains($statement->route(), '.')) {
                         [$model, $action] = explode('.', $statement->route());
                         if (in_array($action, ['edit', 'update', 'show', 'destroy'])) {
-                            $assertion .= sprintf(", ['%s' => $%s]", $model, $model);
+                            $assertion .= sprintf(", ['%s' => $%s]", Str::singular($model), Str::singular($model));
                         }
                     }
 
@@ -454,7 +454,8 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
                         } else {
                             $related_model = $this->tree->modelForContext($model);
                             $plural = $related_model ? $related_model->pluralName() : Str::plural($model);
-                            $assertions['generic'][] = '$this->assertDatabaseHas(' . Str::camel($plural) . ', [ /* ... */ ]);';
+                            $table = $related_model ? $related_model->tableName() : Str::snake($plural);
+                            $assertions['generic'][] = "\$this->assertDatabaseHas('{$table}', [ /* ... */ ]);";
                         }
                     } elseif ($statement->operation() === 'find') {
                         $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
