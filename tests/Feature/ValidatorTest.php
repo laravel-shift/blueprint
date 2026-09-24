@@ -47,6 +47,26 @@ final class ValidatorTest extends TestCase
     }
 
     #[Test]
+    public function it_returns_no_diagnostics_for_a_valid_draft_using_shorthands(): void
+    {
+        $this->assertSame([], $this->validate('drafts/shorthands.yaml'));
+    }
+
+    #[Test]
+    public function it_validates_an_expanded_draft(): void
+    {
+        $this->app->instance('files', new Filesystem);
+        copy(__DIR__ . '/../fixtures/drafts/shorthands.yaml', $this->directory . '/draft.yaml');
+
+        $this->artisan('blueprint:validate --expand')
+            ->expectsOutput('draft.yaml: Expanded shorthand into standard YAML.')
+            ->expectsOutput('draft.yaml: Draft is valid.')
+            ->assertExitCode(0);
+
+        $this->assertSame($this->fixture('expanded/shorthands.yaml'), file_get_contents($this->directory . '/draft.yaml'));
+    }
+
+    #[Test]
     public function it_does_not_write_files(): void
     {
         $this->validate('drafts/readme-example.yaml');
