@@ -315,11 +315,7 @@ class ModelGenerator extends AbstractClassGenerator implements Generator
         }
 
         if (in_array($column->dataType(), ['decimal', 'unsignedDecimal'])) {
-            if ($column->attributes()) {
-                return 'decimal:' . ($column->attributes()[1] ?? 2);
-            }
-
-            return 'decimal';
+            return 'decimal:' . ($column->attributes()[1] ?? 2);
         }
 
         if ($column->dataType() === 'json') {
