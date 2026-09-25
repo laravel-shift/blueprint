@@ -58,9 +58,9 @@ class EloquentStatement
 
         if ($this->operation() == 'update') {
             if (!empty($this->columns())) {
-                $columns = implode(', ', array_map(fn ($column) => sprintf("'%s' => \$%s", $column, $column), $this->columns()));
+                $columns = implode(', ', array_map(fn ($column) => "'" . $column . "'", $this->columns()));
 
-                $code = '$' . Str::camel($model) . '->update([' . $columns . ']);';
+                $code = '$' . Str::camel($model) . '->update($request->' . ($using_validation ? 'safe()->' : '') . 'only(' . $columns . '));';
             } elseif ($using_validation) {
                 $code = '$' . Str::camel($model) . '->update($request->validated());';
             } else {
