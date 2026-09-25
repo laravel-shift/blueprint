@@ -109,7 +109,7 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
                 ? config('blueprint.namespace') . '\\' . config('blueprint.models_namespace')
                 : config('blueprint.namespace');
 
-            if (in_array($name, ['edit', 'update', 'show', 'destroy'])) {
+            if ($controller->bindsModel($name)) {
                 $this->addImport($controller, $modelNamespace . '\\' . $model);
 
                 $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
@@ -457,7 +457,7 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
                             $table = $related_model ? $related_model->tableName() : Str::snake($plural);
                             $assertions['generic'][] = "\$this->assertDatabaseHas('{$table}', [ /* ... */ ]);";
                         }
-                    } elseif ($statement->operation() === 'find') {
+                    } elseif ($statement->operation() === 'find' && !$controller->findsModel($statement)) {
                         $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
                     } elseif ($statement->operation() === 'delete') {
                         $tested_bits |= self::TESTS_DELETE;
@@ -501,7 +501,7 @@ class PhpUnitTestGenerator extends AbstractClassGenerator implements Generator
                 (config('blueprint.singular_routes') ? Str::kebab($context) : Str::plural(Str::kebab($context))) . ($name === '__invoke' ? '' : '.' . $name)
             );
 
-            if (in_array($name, ['edit', 'update', 'show', 'destroy'])) {
+            if ($controller->bindsModel($name)) {
                 $call .= ', $' . Str::camel($context);
             }
             $call .= ')';

@@ -4,6 +4,7 @@ namespace Blueprint\Models;
 
 use Blueprint\Concerns\HasClassDefinition;
 use Blueprint\Contracts\Model as BlueprintModel;
+use Blueprint\Models\Statements\EloquentStatement;
 use Illuminate\Support\Str;
 
 class Controller implements BlueprintModel
@@ -100,6 +101,28 @@ class Controller implements BlueprintModel
         }
 
         return $this->name();
+    }
+
+    /**
+     * Whether the method receives the controller's model through
+     * route model binding, either as a resource method which
+     * does so conventionally, or by finding the model.
+     */
+    public function bindsModel(string $method): bool
+    {
+        if (in_array($method, ['edit', 'update', 'show', 'destroy'])) {
+            return true;
+        }
+
+        return collect($this->methods[$method] ?? [])
+            ->contains(fn ($statement) => $this->findsModel($statement));
+    }
+
+    public function findsModel(mixed $statement): bool
+    {
+        return $statement instanceof EloquentStatement
+            && $statement->operation() === 'find'
+            && $statement->model($this->prefix()) === Str::studly(Str::singular($this->prefix()));
     }
 
     public function setApiResource(bool $apiResource): void

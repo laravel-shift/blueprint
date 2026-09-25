@@ -20,8 +20,6 @@ class PostController extends Controller
 
     public function edit(Request $request, Post $post): View
     {
-        $post = Post::find($id);
-
         return view('post.edit', [
             'post' => $post,
         ]);
@@ -29,8 +27,6 @@ class PostController extends Controller
 
     public function update(Request $request, Post $post): RedirectResponse
     {
-        $post = Post::find($id);
-
         $post_ids = Post::where('title', $post->title)->take(3)->pluck('id');
 
         $post->save();

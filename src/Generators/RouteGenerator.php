@@ -57,7 +57,8 @@ class RouteGenerator extends AbstractClassGenerator implements Generator
         }
 
         foreach (array_diff($methods, Controller::$resourceMethods) as $method) {
-            $routes .= $this->buildRouteLine($className, $slug, $name, $method);
+            $binding = $controller->bindsModel($method) ? '/{' . Str::snake(Str::singular($controller->prefix())) . '}' : '';
+            $routes .= $this->buildRouteLine($className, $slug . $binding, $name, $method);
             $routes .= PHP_EOL;
         }
 

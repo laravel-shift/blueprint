@@ -69,9 +69,7 @@ class EloquentStatement
         }
 
         if ($this->operation() == 'find') {
-            if ($this->usesQualifiedReference()) {
-                $model = $this->extractModel();
-            }
+            $model = $this->model($controller_prefix);
 
             $code = '$' . Str::camel($model);
             $code .= ' = ';
@@ -90,6 +88,11 @@ class EloquentStatement
         }
 
         return $code;
+    }
+
+    public function model(string $controller_prefix): string
+    {
+        return $this->usesQualifiedReference() ? $this->extractModel() : $this->determineModel($controller_prefix);
     }
 
     private function usesQualifiedReference(): bool

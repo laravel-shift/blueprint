@@ -207,6 +207,7 @@ final class RouteGeneratorTest extends TestCase
         return [
             ['drafts/readme-example.yaml', 'routes/readme-example.php'],
             ['drafts/routes-mixed.yaml', 'routes/routes-mixed.php'],
+            ['drafts/find-model-binding.yaml', 'routes/find-model-binding.php'],
             ['drafts/cruddy.yaml', 'routes/cruddy.php'],
             ['drafts/non-cruddy.yaml', 'routes/non-cruddy.php'],
             ['drafts/respond-statements.yaml', 'routes/respond-statements.php'],
