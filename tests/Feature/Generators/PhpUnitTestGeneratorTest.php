@@ -221,6 +221,7 @@ final class PhpUnitTestGeneratorTest extends TestCase
         return [
             ['drafts/readme-example.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/phpunit/readme-example.php'],
             ['drafts/find-model-binding.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/phpunit/find-model-binding.php'],
+            ['drafts/update-columns.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/phpunit/update-columns.php'],
             ['drafts/readme-example-notification-facade.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/phpunit/readme-example-notification.php'],
             ['drafts/readme-example-notification-model.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/phpunit/readme-example-notification.php'],
             ['drafts/respond-statements.yaml', 'tests/Feature/Http/Controllers/Api/PostControllerTest.php', 'tests/phpunit/respond-statements.php'],

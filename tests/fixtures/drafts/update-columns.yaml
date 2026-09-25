@@ -1,0 +1,16 @@
+models:
+  Post:
+    title: string
+    content: text
+    published_at: nullable timestamp
+
+controllers:
+  Post:
+    publish:
+      find: id
+      update: published_at
+      redirect: posts.index
+    update:
+      validate: title, content
+      update: title, content
+      redirect: posts.index

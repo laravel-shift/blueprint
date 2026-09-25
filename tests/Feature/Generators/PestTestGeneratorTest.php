@@ -267,6 +267,7 @@ final class PestTestGeneratorTest extends TestCase
         return [
             ['drafts/readme-example.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/pest/readme-example.php'],
             ['drafts/find-model-binding.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/pest/find-model-binding.php'],
+            ['drafts/update-columns.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/pest/update-columns.php'],
             ['drafts/readme-example-notification-facade.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/pest/readme-example-notification.php'],
             ['drafts/readme-example-notification-model.yaml', 'tests/Feature/Http/Controllers/PostControllerTest.php', 'tests/pest/readme-example-notification.php'],
             ['drafts/respond-statements.yaml', 'tests/Feature/Http/Controllers/Api/PostControllerTest.php', 'tests/pest/respond-statements.php'],

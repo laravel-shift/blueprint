@@ -5,6 +5,7 @@ namespace Blueprint\Lexers;
 use Blueprint\Contracts\Lexer;
 use Blueprint\Models\Controller;
 use Blueprint\Models\Policy;
+use Blueprint\Models\Statements\EloquentStatement;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
@@ -107,13 +108,38 @@ class ControllerLexer implements Lexer
             }
 
             foreach ($definition as $method => $body) {
-                $controller->addMethod($method, $this->statementLexer->analyze($body));
+                $controller->addMethod($method, $this->resolveUpdateColumns($controller, $this->statementLexer->analyze($body), $tokens));
             }
 
             $registry['controllers'][$name] = $controller;
         }
 
         return $registry;
+    }
+
+    /**
+     * A single `update` reference is a model, unless it is
+     * instead a column of the controller's model.
+     */
+    private function resolveUpdateColumns(Controller $controller, array $statements, array $tokens): array
+    {
+        $models = array_merge($tokens['cache'] ?? [], $tokens['models'] ?? []);
+        $columns = $models[Str::studly($this->getControllerModelName($controller))] ?? [];
+
+        return array_map(function ($statement) use ($models, $columns) {
+            if (
+                $statement instanceof EloquentStatement
+                && $statement->operation() === 'update'
+                && $statement->reference()
+                && !isset($models[Str::studly($statement->reference())])
+                && is_array($columns)
+                && array_key_exists($statement->reference(), $columns)
+            ) {
+                return new EloquentStatement('update', null, [$statement->reference()]);
+            }
+
+            return $statement;
+        }, $statements);
     }
 
     private function generateResourceTokens(Controller $controller, array $methods)
