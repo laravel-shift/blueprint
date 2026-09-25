@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -50,5 +51,18 @@ final class PostControllerTest extends TestCase
         $response->assertRedirect(route('posts.index'));
 
         $this->assertModelMissing($post);
+    }
+
+
+    #[Test]
+    public function assign_displays_view(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->get(route('posts.assign'));
+
+        $response->assertOk();
+        $response->assertViewIs('post.assign');
+        $response->assertViewHas('user', $user);
     }
 }
