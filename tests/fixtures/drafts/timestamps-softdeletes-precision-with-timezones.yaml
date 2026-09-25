@@ -1,0 +1,5 @@
+models:
+  Comment:
+    body: string
+    timestampsTz: precision:6
+    softDeletesTz: precision:6
