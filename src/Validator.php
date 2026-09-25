@@ -220,16 +220,19 @@ class Validator
 
     private function readOnlyFilesystem(): Filesystem
     {
-        return new class extends Filesystem
-        {
+        return new class extends Filesystem {
             public function put($path, $contents, $lock = false)
             {
                 return strlen($contents);
             }
 
-            public function replace($path, $content, $mode = null) {}
+            public function replace($path, $content, $mode = null)
+            {
+            }
 
-            public function replaceInFile($search, $replace, $path) {}
+            public function replaceInFile($search, $replace, $path)
+            {
+            }
 
             public function prepend($path, $data)
             {
