@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertModelMissing;
 use function Pest\Laravel\get;
@@ -37,4 +38,15 @@ test('archive deletes and redirects', function (): void {
     $response->assertRedirect(route('posts.index'));
 
     assertModelMissing($post);
+});
+
+
+test('assign displays view', function (): void {
+    $user = User::factory()->create();
+
+    $response = get(route('posts.assign'));
+
+    $response->assertOk();
+    $response->assertViewIs('post.assign');
+    $response->assertViewHas('user', $user);
 });

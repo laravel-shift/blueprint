@@ -14,3 +14,6 @@ controllers:
       find: post.id
       delete: post
       redirect: posts.index
+    assign:
+      find: user.id
+      render: post.assign with:user

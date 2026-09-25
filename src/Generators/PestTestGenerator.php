@@ -462,7 +462,7 @@ class PestTestGenerator extends AbstractClassGenerator implements Generator
                             $assertions['generic'][] = "assertDatabaseHas('{$table}', [ /* ... */ ]);";
                         }
                     } elseif ($statement->operation() === 'find' && !$controller->findsModel($statement)) {
-                        $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
+                        $setup['data'][] = sprintf('$%s = %s::factory()->create();', Str::camel($model), $model);
                     } elseif ($statement->operation() === 'delete') {
                         $tested_bits |= self::TESTS_DELETE;
                         $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);

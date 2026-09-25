@@ -2,7 +2,6 @@
 
 namespace Blueprint\Models\Statements;
 
-use Blueprint\Models\Column;
 use Illuminate\Support\Str;
 
 class EloquentStatement
@@ -74,7 +73,7 @@ class EloquentStatement
             $code = '$' . Str::camel($model);
             $code .= ' = ';
             $code .= $model;
-            $code .= '::find($' . Column::columnName($this->reference()) . ');';
+            $code .= '::find($' . Str::snake(str_replace('.', '_', $this->reference())) . ');';
         }
 
         if ($this->operation() === 'delete') {

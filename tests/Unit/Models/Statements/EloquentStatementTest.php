@@ -16,7 +16,7 @@ final class EloquentStatementTest extends TestCase
     {
         $subject = new EloquentStatement('find', 'user.id');
 
-        $this->assertEquals('$user = User::find($id);', $subject->output('', 'whatever'));
+        $this->assertEquals('$user = User::find($user_id);', $subject->output('', 'whatever'));
     }
 
     #[Test]
