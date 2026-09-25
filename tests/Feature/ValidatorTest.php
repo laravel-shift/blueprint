@@ -73,7 +73,7 @@ final class ValidatorTest extends TestCase
 
         $this->assertSame(
             ['bootstrap/app.php'],
-            array_map(fn ($file) => $file->getRelativePathname(), (new Filesystem)->allFiles($this->directory))
+            array_map(fn ($file) => str_replace('\\', '/', $file->getRelativePathname()), (new Filesystem)->allFiles($this->directory))
         );
     }
 
