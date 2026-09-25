@@ -29,7 +29,7 @@ class RouteGenerator extends AbstractClassGenerator implements Generator
 
         $paths = [];
 
-        if (isset($routes['api'])) {
+        if (!empty($routes['api'])) {
             $this->setupApiRouter();
         }
 
@@ -48,6 +48,7 @@ class RouteGenerator extends AbstractClassGenerator implements Generator
         $methods = array_keys($controller->methods());
         $className = $this->getClassName($controller);
         $slug = config('blueprint.singular_routes') ? Str::kebab($controller->prefix()) : Str::plural(Str::kebab($controller->prefix()));
+        $name = $slug;
 
         if ($controller->model()) {
             $parentSlug = config('blueprint.singular_routes') ? Str::kebab($controller->model()) : Str::plural(Str::kebab($controller->model()));
@@ -56,7 +57,8 @@ class RouteGenerator extends AbstractClassGenerator implements Generator
         }
 
         foreach (array_diff($methods, Controller::$resourceMethods) as $method) {
-            $routes .= $this->buildRouteLine($className, $slug, $method);
+            $binding = $controller->bindsModel($method) ? '/{' . Str::snake(Str::singular($controller->prefix())) . '}' : '';
+            $routes .= $this->buildRouteLine($className, $slug . $binding, $name, $method);
             $routes .= PHP_EOL;
         }
 
@@ -89,13 +91,13 @@ class RouteGenerator extends AbstractClassGenerator implements Generator
         return $controller->fullyQualifiedClassName() . '::class';
     }
 
-    protected function buildRouteLine($className, $slug, $method): string
+    protected function buildRouteLine($className, $slug, $name, $method): string
     {
         if ($method === '__invoke') {
-            return sprintf("Route::get('%s', %s);", $slug, $className);
+            return sprintf("Route::get('%s', %s)->name('%s');", $slug, $className, $name);
         }
 
-        return sprintf("Route::get('%s/%s', [%s, '%s']);", $slug, Str::kebab($method), $className, $method);
+        return sprintf("Route::get('%s/%s', [%s, '%s'])->name('%s.%s');", $slug, Str::kebab($method), $className, $method, $name, $method);
     }
 
     protected function setupApiRouter(): void

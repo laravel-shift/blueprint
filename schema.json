@@ -66,13 +66,13 @@
           "description": "Primary key column. Omitted/`true` uses the default `id bigIncrements` column; `false` disables the primary key entirely; or provide a column definition to customize it (e.g. `uuid primary`, `increments`).",
           "oneOf": [{ "type": "boolean" }, { "$ref": "#/definitions/columnDefinition" }]
         },
-        "timestamps": { "type": "boolean", "description": "Set to `false` to omit created_at/updated_at.", "default": true },
-        "timestampsTz": { "type": "boolean", "description": "Use timezone-aware created_at/updated_at columns." },
-        "timestampstz": { "type": "boolean", "description": "Alias of `timestampsTz`; key matching is case-insensitive." },
-        "softDeletes": { "type": "boolean", "description": "Add a deleted_at column and the SoftDeletes trait." },
-        "softDeletesTz": { "type": "boolean", "description": "Use a timezone-aware deleted_at column." },
-        "softdeletes": { "type": "boolean", "description": "Alias of `softDeletes`; key matching is case-insensitive." },
-        "softdeletestz": { "type": "boolean", "description": "Alias of `softDeletesTz`; key matching is case-insensitive." },
+        "timestamps": { "$ref": "#/definitions/precisionToggle", "description": "Set to `false` to omit created_at/updated_at, or `precision:N` to set their precision.", "default": true },
+        "timestampsTz": { "$ref": "#/definitions/precisionToggle", "description": "Use timezone-aware created_at/updated_at columns. Accepts `precision:N`." },
+        "timestampstz": { "$ref": "#/definitions/precisionToggle", "description": "Alias of `timestampsTz`; key matching is case-insensitive." },
+        "softDeletes": { "$ref": "#/definitions/precisionToggle", "description": "Add a deleted_at column and the SoftDeletes trait. Accepts `precision:N`." },
+        "softDeletesTz": { "$ref": "#/definitions/precisionToggle", "description": "Use a timezone-aware deleted_at column. Accepts `precision:N`." },
+        "softdeletes": { "$ref": "#/definitions/precisionToggle", "description": "Alias of `softDeletes`; key matching is case-insensitive." },
+        "softdeletestz": { "$ref": "#/definitions/precisionToggle", "description": "Alias of `softDeletesTz`; key matching is case-insensitive." },
         "meta": {
           "description": "Class-level model configuration. (If you have a genuine column named `meta`, give it a column definition string instead and Blueprint will treat it as a column.)",
           "oneOf": [{ "$ref": "#/definitions/modelMeta" }, { "$ref": "#/definitions/columnDefinition" }]
@@ -86,6 +86,12 @@
       },
       "additionalProperties": { "$ref": "#/definitions/columnDefinition" }
     },
+    "precisionToggle": {
+      "oneOf": [
+        { "type": "boolean" },
+        { "type": "string", "pattern": "^[Pp][Rr][Ee][Cc][Ii][Ss][Ii][Oo][Nn]:\\d+$", "examples": ["precision:6"] }
+      ]
+    },
     "modelMeta": {
       "type": "object",
       "description": "Advanced, non-column model configuration.",
@@ -93,6 +99,7 @@
       "properties": {
         "connection": { "type": "string", "description": "Database connection name this model should use." },
         "table": { "type": "string", "description": "Override the default (snake_case, plural) table name." },
+        "plural": { "type": "string", "description": "Override the plural name used for relationship methods referencing this model (e.g. `regioni`)." },
         "pivot": { "type": "boolean", "description": "Mark this model as a pivot model for a belongsToMany relationship." },
         "extends": { "type": "string", "description": "Fully-qualified class name to extend instead of Illuminate\\Database\\Eloquent\\Model." },
         "traits": { "type": "string", "description": "Comma-separated list of fully-qualified trait names to `use`." },

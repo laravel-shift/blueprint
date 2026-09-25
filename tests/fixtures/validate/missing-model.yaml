@@ -1,0 +1,9 @@
+models:
+  User:
+    name: string
+
+controllers:
+  Post:
+    resource: store
+    meta:
+      store: user.posts

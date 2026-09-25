@@ -1,0 +1,11 @@
+models:
+  Name:
+    softDeletes: true
+    id: true
+    timestamps: true
+
+controllers:
+  Context:
+    resource: web
+  Report:
+    invokable: true

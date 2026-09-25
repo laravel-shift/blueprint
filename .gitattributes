@@ -5,4 +5,4 @@
 .gitignore export-ignore
 .phplint.yml export-ignore
 blueprint-logo.png export-ignore
-
+/tests/fixtures/**/*.yaml text eol=lf

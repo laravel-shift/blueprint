@@ -100,7 +100,7 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
             $method = str_replace('{{ method }}', $name, $template);
             $search = '(Request $request';
 
-            if (in_array($name, ['edit', 'update', 'show', 'destroy'])) {
+            if ($controller->bindsModel($name)) {
                 $reference = $this->fullyQualifyModelReference($controller->namespace(), $controllerModelName);
                 $variable = '$' . Str::camel($controllerModelName);
 
@@ -192,6 +192,10 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
                 } elseif ($statement instanceof SessionStatement) {
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
                 } elseif ($statement instanceof EloquentStatement) {
+                    if ($controller->findsModel($statement)) {
+                        continue;
+                    }
+
                     if ($name === 'store' && $statement->operation() === 'save' && $controller->storeRelation()) {
                         $body .= $this->buildStoreWithRelation($controller);
                     } else {

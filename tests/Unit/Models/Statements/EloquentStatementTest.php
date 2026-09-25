@@ -16,7 +16,7 @@ final class EloquentStatementTest extends TestCase
     {
         $subject = new EloquentStatement('find', 'user.id');
 
-        $this->assertEquals('$user = User::find($id);', $subject->output('', 'whatever'));
+        $this->assertEquals('$user = User::find($user_id);', $subject->output('', 'whatever'));
     }
 
     #[Test]
@@ -64,7 +64,15 @@ final class EloquentStatementTest extends TestCase
     {
         $subject = new EloquentStatement('update', null, ['name', 'title', 'age']);
 
-        $this->assertEquals('$user->update([\'name\' => $name, \'title\' => $title, \'age\' => $age]);', $subject->output('User', ''));
+        $this->assertEquals('$user->update($request->only(\'name\', \'title\', \'age\'));', $subject->output('User', ''));
+    }
+
+    #[Test]
+    public function output_generates_code_for_update_using_column_list_with_validation(): void
+    {
+        $subject = new EloquentStatement('update', null, ['name', 'title']);
+
+        $this->assertEquals('$user->update($request->safe()->only(\'name\', \'title\'));', $subject->output('User', '', true));
     }
 
     #[Test]

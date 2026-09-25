@@ -1,0 +1,4 @@
+models:
+  Post:
+    title: string
+  published_at timestamp
