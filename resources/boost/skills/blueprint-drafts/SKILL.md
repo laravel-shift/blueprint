@@ -135,7 +135,8 @@ controllers:
 - A subset such as `resource: index, show` or `resource: api.index, api.show` generates only those actions.
 - Actions listed alongside `resource` replace the generated action with the same name.
 - `invokable: true` generates a single action `__invoke` controller.
-- Only `show`, `edit`, `update`, and `destroy` receive a route-model-bound parameter (e.g. `Post $post`). Custom actions are routed as `GET /posts/{action}` with no parameters, so a `find: id` in a custom action generates `Post::find($id)` with an undefined `$id` that must be added by hand.
+- `show`, `edit`, `update`, and `destroy` receive the controller's model through route model binding (e.g. `Post $post`).
+- A custom action which finds the controller's model (`find: id`, `find: post.id`, or `find: post`) also receives it through route model binding, and is routed as `GET /posts/{post}/{action}`. Other custom actions are routed as `GET /posts/{action}` with no parameters. Custom routes are named `posts.{action}`.
 
 Controller `meta`:
 
@@ -156,12 +157,13 @@ Controller `meta`:
 | `query` | `query: all` | `$posts = Post::all();` |
 | | `query: where:title order:published_at limit:5` | `Post::where('title', $title)->orderBy('published_at')->limit(5)->get()` |
 | | `query: where:post.title pluck:post.id` | `$post_ids = Post::where('title', $post->title)->pluck('id');` |
-| `find` | `find: id` or `find: post.id` | `$post = Post::find($id);` |
+| `find` | `find: id` or `find: post.id` | Route model binding (`Post $post`) when finding the controller's model |
 | `validate` | `validate: title, content` | A form request with rules based on the model's column definitions |
 | | `validate: post` | A form request for every fillable column |
 | `save` | `save: post` | `Post::create($request->validated())` in `store`; `$post->save()` elsewhere |
 | `update` | `update: post` | `$post->update($request->validated())` |
-| | `update: title, content` | `$post->update(['title' => $title, 'content' => $content])` (two or more columns) |
+| | `update: title, content` | `$post->update($request->only('title', 'content'))`, or `$request->safe()->only(...)` with `validate` |
+| | `update: published_at` | `$post->update($request->only('published_at'))` when it's a column of the controller's model |
 | `delete` | `delete: post` | `$post->delete();` |
 | `render` | `render: post.show with:post` | `return view('post.show', ['post' => $post]);` and the Blade view |
 | `inertia` | `inertia: Post/Show with:post` | `return Inertia::render('Post/Show', [...])` and the page |
@@ -185,7 +187,7 @@ Controller `meta`:
 ## Common Mistakes
 
 - `save: post with:published_at` is invalid. `save` only takes a model reference. Use `update: published_at` to set specific columns.
-- `find: post` generates `Post::find($post)`, and `find: post_id` generates `PostId::find($post_id)`. Use `find: id` or `find: post.id`.
-- `update: published_at` is treated as a model named `PublishedAt`. A single value is always a model reference, so list two or more columns to update specific columns, or use `update: post` with `validate`.
+- `find: post_id` generates `PostId::find($post_id)`. Use `find: id` or `find: post.id`.
+- `find` for a model other than the controller's (e.g. `find: user.id` in a `Post` controller) generates `User::find($id)`, and `$id` must be added by hand.
 - `render: posts.index` looks for `resources/views/posts/index.blade.php`, while `redirect: posts.index` refers to the `posts.index` route name.
 - Query clauses such as `where:title` pass a variable of the same name (`$title`), which must exist in the action. Use `where:post.title` to reference a property of an existing variable.
