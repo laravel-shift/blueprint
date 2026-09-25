@@ -1,0 +1,16 @@
+models:
+  Post:
+    title: string
+    published_at: nullable timestamp
+
+controllers:
+  Post:
+    resource: show
+    publish:
+      find: id
+      save: post
+      redirect: posts.show
+    archive:
+      find: post.id
+      delete: post
+      redirect: posts.index
