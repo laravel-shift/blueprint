@@ -1,0 +1,34 @@
+# Example: model-column features beyond the basics
+#
+# What this demonstrates, across a few small, independent models:
+#   1. Product   -> a UUID primary key (`id: uuid`) instead of the default
+#                   auto-incrementing integer
+#   2. Ticket     -> a ULID primary key (`id: ulid`)
+#   3. Comment    -> soft deletes (`softDeletes`) so destroy() doesn't
+#                    actually remove the row
+#   4. Invoice    -> an enum column with explicit options, and a numeric
+#                    column with a default value
+#
+# Generate it with:
+#   php artisan blueprint:build examples/05-advanced-model-features.yaml
+#
+# These are intentionally minimal and independent -- copy whichever
+# section matches what you're building and drop the rest.
+
+models:
+  Product:
+    id: uuid
+    name: string:400
+    price: decimal:8,2
+
+  Ticket:
+    id: ulid
+    subject: string:400
+
+  Comment:
+    body: text
+    softDeletes
+
+  Invoice:
+    status: enum:draft,sent,paid,void
+    amount_due: decimal:8,2 default:0

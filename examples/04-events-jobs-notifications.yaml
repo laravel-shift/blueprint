@@ -1,0 +1,35 @@
+# Example: fanning a single controller action out to jobs, events,
+# notifications and mail
+#
+# What this demonstrates:
+#   - `dispatch:` to queue a job
+#   - `fire:` to raise an event
+#   - `send:` to send a notification (`to:` picks the notifiable)
+#   - Combining several of these statements, plus `validate`/`save`, in one
+#     controller action -- this is the same shape as the "blog" example in
+#     the main README, written out with every statement explained
+#
+# Generate it with:
+#   php artisan blueprint:build examples/04-events-jobs-notifications.yaml
+#
+# This produces, in addition to the usual model/controller/route/test
+# files: a SyncMedia job class, a NewPost event class, and a ReviewPost
+# mailable/notification class, each pre-wired with the constructor
+# properties named after the `with:` arguments below.
+
+models:
+  Post:
+    title: string:400
+    content: longtext
+    author_id: id:user
+
+controllers:
+  Post:
+    store:
+      validate: title, content, author_id
+      save: post
+      send: ReviewPost to:post.author.email with:post
+      dispatch: SyncMedia with:post
+      fire: NewPost with:post
+      flash: post.title
+      redirect: posts.index

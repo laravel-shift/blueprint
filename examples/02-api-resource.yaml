@@ -1,0 +1,32 @@
+# Example: a JSON API with a parent/child relationship
+#
+# What this demonstrates:
+#   - `relationships:` to declare hasMany / belongsTo between two models
+#   - `resource: api` shorthand, which generates only the four JSON-friendly
+#     actions (index/store/show/update/destroy, no create/edit views)
+#   - `meta:` to nest a related resource's routes under the parent
+#
+# Generate it with:
+#   php artisan blueprint:build examples/02-api-resource.yaml
+#
+# This produces: Order and Item models + migrations + factories, an
+# Api/OrderController (api resource) plus a nested Item store route, and
+# API resource routes registered in routes/api.php.
+
+models:
+  Order:
+    reference: string
+    relationships:
+      hasMany: Item
+
+  Item:
+    product_id: id
+    quantity: unsignedInteger
+    relationships:
+      belongsTo: Order
+
+controllers:
+  Api/Order:
+    resource: api
+    meta:
+      store: Item
