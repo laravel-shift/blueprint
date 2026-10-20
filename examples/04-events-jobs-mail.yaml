@@ -1,20 +1,14 @@
-# Example: fanning a single controller action out to jobs, events and mail
+# Example: submitting a post
 #
-# What this demonstrates:
-#   - `dispatch:` to queue a job
-#   - `fire:` to raise an event
-#   - `send:` to send a mail (`to:` picks the recipient)
-#   - Combining several of these statements, plus `validate`/`save`, in one
-#     controller action -- this is the same shape as the "blog" example in
-#     the main README, written out with every statement explained
+# When an author submits a post, it is saved, the author is emailed, media
+# processing is queued, and the rest of the app is told through an event.
 #
-# Generate it with:
+# Build it with:
 #   php artisan blueprint:build examples/04-events-jobs-mail.yaml
 #
-# This produces, in addition to the usual model/controller/route/test
-# files: a SyncMedia job class, a NewPost event class, and a ReviewPost
-# mailable class, each pre-wired with the constructor properties named after
-# the `with:` arguments below.
+# You get: the usual Post model, controller, routes and tests, plus a
+# SyncMedia job, a NewPost event and a ReviewPost mailable, each wired with
+# the post passed to them below.
 
 models:
   Post:

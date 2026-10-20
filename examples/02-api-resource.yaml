@@ -1,18 +1,22 @@
-# Example: a JSON API with a parent/child relationship
+# Example: an order system API
 #
-# What this demonstrates:
-#   - `relationships:` to declare hasMany / belongsTo between two models
-#   - `resource: api` shorthand, which generates only the five JSON-friendly
-#     actions (index/store/show/update/destroy, no create/edit views)
+# A JSON API for a shop: products, orders, and the items on each order.
+# Controllers use the `resource: api` shorthand, and the order list is
+# paginated.
 #
-# Generate it with:
+# Build it with:
 #   php artisan blueprint:build examples/02-api-resource.yaml
 #
-# This produces: Order and Item models + migrations + factories, an
-# Api/OrderController (api resource) with form requests and resource classes,
-# and an apiResource route registered in routes/api.php.
+# You get: Product, Order and Item models, migrations and factories;
+# Api/ProductController, Api/OrderController and Api/ItemController with form
+# requests and resource classes; feature tests; and apiResource routes in
+# routes/api.php.
 
 models:
+  Product:
+    name: string:400
+    price: decimal:8,2
+
   Order:
     reference: string
     relationships:
@@ -25,5 +29,14 @@ models:
       belongsTo: Order
 
 controllers:
+  Api/Product:
+    resource: api
+
   Api/Order:
+    resource: api
+    index:
+      query: all
+      resource: 'paginate:orders'
+
+  Api/Item:
     resource: api

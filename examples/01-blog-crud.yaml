@@ -1,16 +1,14 @@
-# Example: a classic full-CRUD blog
+# Example: a blog
 #
-# What this demonstrates:
-#   - A model with typed columns and a nullable timestamp
-#   - A full resource controller (index/create/store/show/edit/update/destroy)
-#   - Controller statements: query, render, validate, save, find, delete, redirect
+# The classic starting point: posts that can be listed, created, viewed,
+# edited and deleted through a standard Laravel resource controller.
 #
-# Generate it with:
+# Build it with:
 #   php artisan blueprint:build examples/01-blog-crud.yaml
 #
-# This produces: a Post model + migration + factory, a PostController with
-# all seven resource actions, routes, PostStoreRequest and PostUpdateRequest
-# form requests, and feature tests for each action.
+# You get: a Post model, migration and factory; a PostController with all
+# seven resource actions; routes; PostStoreRequest and PostUpdateRequest
+# form requests; and a feature test for each action.
 
 models:
   Post:
