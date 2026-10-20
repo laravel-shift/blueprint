@@ -125,7 +125,11 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
                 $dataType = 'foreignId';
             }
 
-            if (in_array($dataType, self::UNSIGNABLE_TYPES) && in_array('unsigned', $column->modifiers())) {
+            if ($dataType === 'unsignedDecimal') {
+                $dataType = 'decimal';
+            }
+
+            if (in_array($dataType, self::UNSIGNABLE_TYPES) && $dataType !== 'decimal' && in_array('unsigned', $column->modifiers())) {
                 $dataType = 'unsigned' . ucfirst($dataType);
             }
 
@@ -168,6 +172,10 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             $column_definition .= ')';
 
             $modifiers = $column->modifiers();
+
+            if ($column->dataType() === 'unsignedDecimal' && !in_array('unsigned', $modifiers)) {
+                array_unshift($modifiers, 'unsigned');
+            }
 
             $foreign = '';
             $foreign_modifier = $column->isForeignKey();

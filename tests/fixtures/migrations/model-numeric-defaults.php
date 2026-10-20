@@ -22,7 +22,7 @@ return new class extends Migration
             $table->tinyInteger('corge')->default(1);
             $table->unsignedInteger('grault')->default(1);
             $table->integer('garply')->default(null)->nullable();
-            $table->unsignedDecimal('waldo')->default('i');
+            $table->decimal('waldo')->unsigned()->default('i');
             $table->timestamps();
         });
     }
