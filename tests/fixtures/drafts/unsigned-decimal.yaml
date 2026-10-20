@@ -1,0 +1,6 @@
+models:
+  Product:
+    price: decimal:8,2 unsigned
+    cost: unsignedDecimal:8,2
+    tax: unsignedDecimal:8,2 unsigned
+    fee: unsignedDecimal:8,2 nullable default:5

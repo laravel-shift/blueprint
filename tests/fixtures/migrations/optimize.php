@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedSmallInteger('small');
             $table->unsignedMediumInteger('medium');
             $table->unsignedInteger('int');
-            $table->unsignedDecimal('dec', 8, 2);
+            $table->decimal('dec', 8, 2)->unsigned();
             $table->unsignedBigInteger('big');
             $table->morphs('foo');
             $table->nullableUuidMorphs('bar');
