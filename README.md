@@ -81,6 +81,14 @@ From these 20 lines of YAML, Blueprint will generate all of the following Larave
 
 _**Note:** This example assumes features within a default Laravel application such as the `User` model and `app.blade.php` layout. Otherwise, the generated tests may have failures._
 
+Blueprint includes a [JSON Schema](schema.json) for draft files. Editors using the YAML language server (such as VS Code with the Red Hat YAML extension) may use it for autocompletion and validation by adding the following comment to the top of your draft file. Draft files created by `blueprint:new` already include it.
+
+```yaml
+# yaml-language-server: $schema=vendor/laravel-shift/blueprint/schema.json
+```
+
+Blueprint also accepts shorthand which is not standard YAML, such as a bare `softDeletes` or `resource` line. Your editor may report these lines as errors, even though the draft builds. Run `php artisan blueprint:validate --expand` to rewrite them into standard YAML.
+
 
 ## Documentation
 Browse the [Blueprint Docs](https://blueprint.laravelshift.com/) for full details on [defining models](https://blueprint.laravelshift.com/docs/defining-models/), [defining controllers](https://blueprint.laravelshift.com/docs/defining-controllers/), [advanced configuration](https://blueprint.laravelshift.com/docs/advanced-configuration/), and [extending Blueprint](https://blueprint.laravelshift.com/docs/extending-blueprint/).

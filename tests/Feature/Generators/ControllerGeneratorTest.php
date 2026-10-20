@@ -295,6 +295,8 @@ final class ControllerGeneratorTest extends TestCase
             ['drafts/readme-example-notification-facade.yaml', 'app/Http/Controllers/PostController.php', 'controllers/readme-example-notification-facade.php'],
             ['drafts/readme-example-notification-model.yaml', 'app/Http/Controllers/PostController.php', 'controllers/readme-example-notification-model.php'],
             ['drafts/crazy-eloquent.yaml', 'app/Http/Controllers/PostController.php', 'controllers/crazy-eloquent.php'],
+            ['drafts/find-model-binding.yaml', 'app/Http/Controllers/PostController.php', 'controllers/find-model-binding.php'],
+            ['drafts/update-columns.yaml', 'app/Http/Controllers/PostController.php', 'controllers/update-columns.php'],
             ['drafts/longhand-controller-name.yaml', 'app/Http/Controllers/UserController.php', 'controllers/longhand-controller-name.php'],
             ['drafts/nested-components.yaml', 'app/Http/Controllers/Admin/UserController.php', 'controllers/nested-components.php'],
             ['drafts/nested-controller-statements.yaml', 'app/Http/Controllers/Api/V1/MasterRecordController.php', 'controllers/nested-controller-statements.php'],

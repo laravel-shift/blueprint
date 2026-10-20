@@ -1,0 +1,4 @@
+models:
+  Invoice:
+    subtotal: decimal:8
+    total: decimal:10,4

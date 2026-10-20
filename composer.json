@@ -20,6 +20,7 @@
     "require-dev": {
         "laravel/pint": "~1.25.0",
         "mockery/mockery": "^1.4.4",
+        "opis/json-schema": "^2.6",
         "orchestra/testbench": ">=9.0",
         "phpunit/phpunit": "^11.5.3|^12.5.12"
     },

@@ -110,7 +110,7 @@ class PestTestGenerator extends AbstractClassGenerator implements Generator
                 ? config('blueprint.namespace') . '\\' . config('blueprint.models_namespace')
                 : config('blueprint.namespace');
 
-            if (in_array($name, ['edit', 'update', 'show', 'destroy'])) {
+            if ($controller->bindsModel($name)) {
                 $this->addImport($controller, $modelNamespace . '\\' . $model);
 
                 $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
@@ -398,7 +398,7 @@ class PestTestGenerator extends AbstractClassGenerator implements Generator
                     } elseif (Str::contains($statement->route(), '.')) {
                         [$model, $action] = explode('.', $statement->route());
                         if (in_array($action, ['edit', 'update', 'show', 'destroy'])) {
-                            $assertion .= sprintf(", ['%s' => $%s]", $model, $model);
+                            $assertion .= sprintf(", ['%s' => $%s]", Str::singular($model), Str::singular($model));
                         }
                     }
 
@@ -458,10 +458,11 @@ class PestTestGenerator extends AbstractClassGenerator implements Generator
 
                             $related_model = $this->tree->modelForContext($model);
                             $plural = $related_model ? $related_model->pluralName() : Str::plural($model);
-                            $assertions['generic'][] = 'assertDatabaseHas(' . Str::camel($plural) . ', [ /* ... */ ]);';
+                            $table = $related_model ? $related_model->tableName() : Str::snake($plural);
+                            $assertions['generic'][] = "assertDatabaseHas('{$table}', [ /* ... */ ]);";
                         }
-                    } elseif ($statement->operation() === 'find') {
-                        $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
+                    } elseif ($statement->operation() === 'find' && !$controller->findsModel($statement)) {
+                        $setup['data'][] = sprintf('$%s = %s::factory()->create();', Str::camel($model), $model);
                     } elseif ($statement->operation() === 'delete') {
                         $tested_bits |= self::TESTS_DELETE;
                         $setup['data'][] = sprintf('$%s = %s::factory()->create();', $variable, $model);
@@ -502,15 +503,14 @@ class PestTestGenerator extends AbstractClassGenerator implements Generator
             }
 
             $call = sprintf(
-                '$response = %s(route(\'%s.%s\'',
+                '$response = %s(route(\'%s\'',
                 $this->httpMethodForAction($name),
-                config('blueprint.singular_routes') ? Str::kebab($context) : Str::plural(Str::kebab($context)),
-                $name
+                (config('blueprint.singular_routes') ? Str::kebab($context) : Str::plural(Str::kebab($context))) . ($name === '__invoke' ? '' : '.' . $name)
             );
 
             $this->addImport($controller, 'function Pest\\Laravel\\' . $this->httpMethodForAction($name));
 
-            if (in_array($name, ['edit', 'update', 'show', 'destroy'])) {
+            if ($controller->bindsModel($name)) {
                 $call .= ', $' . Str::camel($context);
             }
             $call .= ')';

@@ -2,7 +2,6 @@
 
 namespace Blueprint\Models\Statements;
 
-use Blueprint\Models\Column;
 use Illuminate\Support\Str;
 
 class EloquentStatement
@@ -58,9 +57,9 @@ class EloquentStatement
 
         if ($this->operation() == 'update') {
             if (!empty($this->columns())) {
-                $columns = implode(', ', array_map(fn ($column) => sprintf("'%s' => \$%s", $column, $column), $this->columns()));
+                $columns = implode(', ', array_map(fn ($column) => "'" . $column . "'", $this->columns()));
 
-                $code = '$' . Str::camel($model) . '->update([' . $columns . ']);';
+                $code = '$' . Str::camel($model) . '->update($request->' . ($using_validation ? 'safe()->' : '') . 'only(' . $columns . '));';
             } elseif ($using_validation) {
                 $code = '$' . Str::camel($model) . '->update($request->validated());';
             } else {
@@ -69,14 +68,12 @@ class EloquentStatement
         }
 
         if ($this->operation() == 'find') {
-            if ($this->usesQualifiedReference()) {
-                $model = $this->extractModel();
-            }
+            $model = $this->model($controller_prefix);
 
             $code = '$' . Str::camel($model);
             $code .= ' = ';
             $code .= $model;
-            $code .= '::find($' . Column::columnName($this->reference()) . ');';
+            $code .= '::find($' . Str::snake(str_replace('.', '_', $this->reference())) . ');';
         }
 
         if ($this->operation() === 'delete') {
@@ -90,6 +87,11 @@ class EloquentStatement
         }
 
         return $code;
+    }
+
+    public function model(string $controller_prefix): string
+    {
+        return $this->usesQualifiedReference() ? $this->extractModel() : $this->determineModel($controller_prefix);
     }
 
     private function usesQualifiedReference(): bool

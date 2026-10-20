@@ -1,0 +1,15 @@
+models:
+  Post:
+    title: string:400
+    published_at: nullable timestamp
+
+controllers:
+  Post:
+    resource: index, show
+    publish:
+      find: id
+      save: post with:published_at
+      redner: post.show
+      fire: PostPublished with:post
+      fire: post.published with:post title
+      redirect: posts.show with:post

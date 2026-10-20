@@ -9,6 +9,7 @@ use Blueprint\Tree;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Yaml\Exception\ParseException;
+use Symfony\Component\Yaml\Yaml;
 use Tests\TestCase;
 
 /**
@@ -726,6 +727,72 @@ DRAFT;
         config(['blueprint.namespace' => $namespace]);
 
         $this->assertEquals($expected, Blueprint::relativeNamespace($reference));
+    }
+
+    #[Test]
+    #[DataProvider('expandDataProvider')]
+    public function expand_rewrites_shorthands_as_standard_yaml($draft): void
+    {
+        $this->assertSame(
+            $this->fixture('expanded/' . $draft),
+            $this->subject->expand($this->fixture('drafts/' . $draft))
+        );
+    }
+
+    #[Test]
+    public function expand_does_not_change_standard_yaml(): void
+    {
+        $draft = $this->fixture('drafts/readme-example.yaml');
+
+        $this->assertSame($draft, $this->subject->expand($draft));
+    }
+
+    #[Test]
+    public function expand_uses_registered_shorthands(): void
+    {
+        $this->subject->registerShorthand('custom', fn ($matches) => $matches[1] . 'custom: true');
+
+        $this->assertSame(
+            "models:\n  Post:\n    custom: true\n",
+            $this->subject->expand("models:\n  Post:\n    custom\n")
+        );
+    }
+
+    #[Test]
+    #[DataProvider('draftsDataProvider')]
+    public function expand_generates_standard_yaml_with_the_same_tree($draft): void
+    {
+        $content = $this->fixture('drafts/' . $draft);
+        $strip_dashes = preg_match('/^\s+indexes:\R/m', $content) !== 1;
+        $expanded = $this->subject->expand($content);
+
+        $this->assertIsArray(Yaml::parse($expanded));
+        $this->assertSame(substr_count($content, "\n"), substr_count($expanded, "\n"));
+        $this->assertEquals(
+            $this->subject->analyze($this->subject->parse($content, $strip_dashes)),
+            $this->subject->analyze($this->subject->parse($expanded, $strip_dashes))
+        );
+    }
+
+    public static function draftsDataProvider(): array
+    {
+        return collect(glob(__DIR__ . '/../fixtures/drafts/*.yaml'))
+            ->map(fn ($path) => basename($path))
+            ->reject(fn ($draft) => $draft === 'invalid.yaml')
+            ->mapWithKeys(fn ($draft) => [$draft => [$draft]])
+            ->all();
+    }
+
+    public static function expandDataProvider(): array
+    {
+        return [
+            ['form-requests-softdeletestz.yaml'],
+            ['multiple-dispatch-fire-notify-send-keys.yaml'],
+            ['readme-example-dashes.yaml'],
+            ['shorthands.yaml'],
+            ['uuid-shorthand.yaml'],
+            ['with-timezones.yaml'],
+        ];
     }
 
     public static function namespacesDataProvider(): array

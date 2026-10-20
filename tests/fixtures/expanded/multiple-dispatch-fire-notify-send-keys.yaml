@@ -1,0 +1,17 @@
+controllers:
+  Post:
+    store:
+      dispatch: SyncMedia with:post
+      dispatch-2: SyncMedia with:post
+      dispatch-3: SyncMedia with:post
+      fire: NewPost with:post
+      fire-2: NewPost with:post
+      fire-3: NewPost with:post
+  User:
+    store:
+      notify: post.author ReviewPost with:post
+      notify-2: post.author ReviewPost with:post
+      notify-3: post.author ReviewPost with:post
+      send: ReviewNotification to:post.author with:post
+      send-2: ReviewNotification to:post.author with:post
+      send-3: ReviewNotification to:post.author with:post
