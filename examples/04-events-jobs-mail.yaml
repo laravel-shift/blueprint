@@ -1,0 +1,28 @@
+# Example: submitting a post
+#
+# When an author submits a post, it is saved, the author is emailed, media
+# processing is queued, and the rest of the app is told through an event.
+#
+# Build it with:
+#   php artisan blueprint:build examples/04-events-jobs-mail.yaml
+#
+# You get: the usual Post model, controller, routes and tests, plus a
+# SyncMedia job, a NewPost event and a ReviewPost mailable, each wired with
+# the post passed to them below.
+
+models:
+  Post:
+    title: string:400
+    content: longtext
+    author_id: id:user
+
+controllers:
+  Post:
+    store:
+      validate: title, content, author_id
+      save: post
+      send: ReviewPost to:post.author.email with:post
+      dispatch: SyncMedia with:post
+      fire: NewPost with:post
+      flash: post.title
+      redirect: posts.index

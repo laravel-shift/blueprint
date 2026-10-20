@@ -1,0 +1,42 @@
+# Example: an order system API
+#
+# A JSON API for a shop: products, orders, and the items on each order.
+# Controllers use the `resource: api` shorthand, and the order list is
+# paginated.
+#
+# Build it with:
+#   php artisan blueprint:build examples/02-api-resource.yaml
+#
+# You get: Product, Order and Item models, migrations and factories;
+# Api/ProductController, Api/OrderController and Api/ItemController with form
+# requests and resource classes; feature tests; and apiResource routes in
+# routes/api.php.
+
+models:
+  Product:
+    name: string:400
+    price: decimal:8,2
+
+  Order:
+    reference: string
+    relationships:
+      hasMany: Item
+
+  Item:
+    product_id: id
+    quantity: unsignedInteger
+    relationships:
+      belongsTo: Order
+
+controllers:
+  Api/Product:
+    resource: api
+
+  Api/Order:
+    resource: api
+    index:
+      query: all
+      resource: 'paginate:orders'
+
+  Api/Item:
+    resource: api

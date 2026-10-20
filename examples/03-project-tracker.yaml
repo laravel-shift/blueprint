@@ -1,0 +1,49 @@
+# Example: a project tracker
+#
+# Projects have tasks, members, and a brief, and both projects and tasks can
+# be commented on. Projects and tasks are soft deleted and use UUID and ULID
+# keys, and a project has a status and a budget.
+#
+# Build it with:
+#   php artisan blueprint:build examples/03-project-tracker.yaml
+#
+# You get: models, migrations and factories for each model (including the
+# member_project pivot); and a ProjectController with form requests, views,
+# routes and feature tests.
+
+models:
+  Project:
+    id: uuid primary
+    name: string:400
+    status: enum:planning,active,done default:planning
+    budget: decimal:8,2 default:0
+    softDeletes
+    relationships:
+      hasMany: Task
+      belongsToMany: Member
+      hasOne: Brief
+      morphMany: Comment
+
+  Task:
+    id: ulid primary
+    project_id: uuid
+    title: string:400
+    softDeletes
+    relationships:
+      morphMany: Comment
+
+  Member:
+    name: string:400
+
+  Brief:
+    project_id: uuid
+    body: longtext
+
+  Comment:
+    body: text
+    relationships:
+      morphTo: Commentable
+
+controllers:
+  Project:
+    resource: web
