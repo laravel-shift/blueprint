@@ -2,16 +2,15 @@
 #
 # What this demonstrates:
 #   - `relationships:` to declare hasMany / belongsTo between two models
-#   - `resource: api` shorthand, which generates only the four JSON-friendly
+#   - `resource: api` shorthand, which generates only the five JSON-friendly
 #     actions (index/store/show/update/destroy, no create/edit views)
-#   - `meta:` to nest a related resource's routes under the parent
 #
 # Generate it with:
 #   php artisan blueprint:build examples/02-api-resource.yaml
 #
 # This produces: Order and Item models + migrations + factories, an
-# Api/OrderController (api resource) plus a nested Item store route, and
-# API resource routes registered in routes/api.php.
+# Api/OrderController (api resource) with form requests and resource classes,
+# and an apiResource route registered in routes/api.php.
 
 models:
   Order:
@@ -28,5 +27,3 @@ models:
 controllers:
   Api/Order:
     resource: api
-    meta:
-      store: Item

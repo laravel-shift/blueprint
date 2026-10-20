@@ -1,7 +1,8 @@
 # Example: the relationship shapes you'll reach for most often
 #
 # What this demonstrates, across three small, independent model sets:
-#   1. Team/Subscription/Order/Duration/Transaction
+#   1. Subscription (related to Team/Order/Duration/Transaction, which are
+#      assumed to exist elsewhere in your app and are not generated here)
 #      -> belongsTo (via a foreign id column), belongsToMany, hasMany,
 #         and hasOne (comma-separated: one line can declare several
 #         relationships of the same type)

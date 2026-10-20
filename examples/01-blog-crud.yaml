@@ -9,8 +9,8 @@
 #   php artisan blueprint:build examples/01-blog-crud.yaml
 #
 # This produces: a Post model + migration + factory, a PostController with
-# all seven resource actions, routes, a StorePostRequest/UpdatePostRequest
-# form request, and feature tests for each action.
+# all seven resource actions, routes, PostStoreRequest and PostUpdateRequest
+# form requests, and feature tests for each action.
 
 models:
   Post:

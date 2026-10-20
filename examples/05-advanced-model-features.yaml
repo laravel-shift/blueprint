@@ -1,11 +1,11 @@
 # Example: model-column features beyond the basics
 #
 # What this demonstrates, across a few small, independent models:
-#   1. Product   -> a UUID primary key (`id: uuid`) instead of the default
-#                   auto-incrementing integer
-#   2. Ticket     -> a ULID primary key (`id: ulid`)
-#   3. Comment    -> soft deletes (`softDeletes`) so destroy() doesn't
-#                    actually remove the row
+#   1. Product   -> a UUID primary key (`id: uuid primary`) instead of the
+#                   default auto-incrementing integer
+#   2. Ticket     -> a ULID primary key (`id: ulid primary`)
+#   3. Comment    -> soft deletes (`softDeletes`), which adds a deleted_at
+#                    column and the SoftDeletes trait
 #   4. Invoice    -> an enum column with explicit options, and a numeric
 #                    column with a default value
 #
@@ -17,12 +17,12 @@
 
 models:
   Product:
-    id: uuid
+    id: uuid primary
     name: string:400
     price: decimal:8,2
 
   Ticket:
-    id: ulid
+    id: ulid primary
     subject: string:400
 
   Comment:
