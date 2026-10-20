@@ -143,6 +143,8 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
                     if ($statement->type() === SendStatement::TYPE_NOTIFICATION_WITH_FACADE) {
                         $this->addImport($controller, 'Illuminate\\Support\\Facades\\Notification');
                         $this->addImport($controller, config('blueprint.namespace') . '\\Notification\\' . $statement->mail());
+                    } elseif ($statement->type() === SendStatement::TYPE_NOTIFICATION_WITH_MODEL) {
+                        $this->addImport($controller, config('blueprint.namespace') . '\\Notification\\' . $statement->mail());
                     } elseif ($statement->type() === SendStatement::TYPE_MAIL) {
                         $this->addImport($controller, 'Illuminate\\Support\\Facades\\Mail');
                         $this->addImport($controller, config('blueprint.namespace') . '\\Mail\\' . $statement->mail());

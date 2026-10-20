@@ -79,6 +79,8 @@ class ComponentGenerator extends AbstractClassGenerator implements Generator
                     if ($statement->type() === SendStatement::TYPE_NOTIFICATION_WITH_FACADE) {
                         $this->addImport($component, 'Illuminate\\Support\\Facades\\Notification');
                         $this->addImport($component, config('blueprint.namespace') . '\\Notification\\' . $statement->mail());
+                    } elseif ($statement->type() === SendStatement::TYPE_NOTIFICATION_WITH_MODEL) {
+                        $this->addImport($component, config('blueprint.namespace') . '\\Notification\\' . $statement->mail());
                     } elseif ($statement->type() === SendStatement::TYPE_MAIL) {
                         $this->addImport($component, 'Illuminate\\Support\\Facades\\Mail');
                         $this->addImport($component, config('blueprint.namespace') . '\\Mail\\' . $statement->mail());
