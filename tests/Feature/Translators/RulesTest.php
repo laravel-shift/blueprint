@@ -67,12 +67,12 @@ final class RulesTest extends TestCase
 
     #[Test]
     #[DataProvider('stringDataTypesProvider')]
-    public function for_column_uses_password_rule_for_columns_named_password($data_type): void
+    public function for_column_uses_string_rule_for_columns_named_password($data_type): void
     {
         $column = new Column('password', $data_type);
 
-        $this->assertContains('password', Rules::fromColumn('context', $column));
-        $this->assertNotContains('string', Rules::fromColumn('context', $column));
+        $this->assertContains('string', Rules::fromColumn('context', $column));
+        $this->assertNotContains('password', Rules::fromColumn('context', $column));
     }
 
     #[Test]

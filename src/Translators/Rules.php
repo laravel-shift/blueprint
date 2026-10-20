@@ -91,9 +91,6 @@ class Rules
         if (Str::startsWith($name, 'email')) {
             return 'email';
         }
-        if ($name === 'password') {
-            return 'password';
-        }
 
         return 'string';
     }
