@@ -725,6 +725,7 @@ final class MigrationGeneratorTest extends TestCase
             ['drafts/custom-indexes.yaml', 'database/migrations/timestamp_create_cooltables_table.php', 'migrations/custom-indexes.php'],
             ['drafts/unconventional.yaml', 'database/migrations/timestamp_create_teams_table.php', 'migrations/unconventional.php'],
             ['drafts/optimize.yaml', 'database/migrations/timestamp_create_optimizes_table.php', 'migrations/optimize.php'],
+            ['drafts/unsigned-decimal.yaml', 'database/migrations/timestamp_create_products_table.php', 'migrations/unsigned-decimal.php'],
             ['drafts/model-key-constraints.yaml', 'database/migrations/timestamp_create_orders_table.php', 'migrations/model-key-constraints.php'],
             ['drafts/disable-auto-columns.yaml', 'database/migrations/timestamp_create_states_table.php', 'migrations/disable-auto-columns.php'],
             ['drafts/ulid-shorthand.yaml', 'database/migrations/timestamp_create_people_table.php', 'migrations/ulid-shorthand.php'],
