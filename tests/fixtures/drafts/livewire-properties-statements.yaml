@@ -7,7 +7,7 @@ components:
 #      find: user
       fire: ProfileUpdated with:user
       flash: user.name
-      notify: user ReviewProfile with:user
+      notify: user ReviewProfileNotification with:user
       redirect: user.show with:user
       render: user.show with:user,extra
       resource: user

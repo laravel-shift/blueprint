@@ -6,6 +6,7 @@ use App\Events\NewPost;
 use App\Http\Requests\PostStoreRequest;
 use App\Jobs\SyncMedia;
 use App\Models\Post;
+use App\Notification\ReviewNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;

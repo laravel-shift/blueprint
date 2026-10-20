@@ -6,6 +6,7 @@ use App\Events\ProfileUpdated;
 use App\Http\Resources\UserResource;
 use App\Jobs\UpdateProfile;
 use App\Mail\ReviewProfile;
+use App\Notification\ReviewProfileNotification;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 use Livewire\Attributes\Locked;
@@ -34,7 +35,7 @@ class UpdateProfile extends Component
 
         session()->flash('user.name', $this->user->name);
 
-        $this->user->notify(new ReviewProfile($this->user));
+        $this->user->notify(new ReviewProfileNotification($this->user));
 
         return redirect()->route('user.show', [$this->user]);
 
