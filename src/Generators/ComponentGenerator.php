@@ -76,10 +76,10 @@ class ComponentGenerator extends AbstractClassGenerator implements Generator
             foreach ($statements as $statement) {
                 if ($statement instanceof SendStatement) {
                     $body .= self::INDENT . $statement->withProperties($component->properties())->output() . PHP_EOL;
-                    if ($statement->type() === SendStatement::TYPE_NOTIFICATION_WITH_FACADE) {
-                        $this->addImport($component, 'Illuminate\\Support\\Facades\\Notification');
-                        $this->addImport($component, config('blueprint.namespace') . '\\Notification\\' . $statement->mail());
-                    } elseif ($statement->type() === SendStatement::TYPE_NOTIFICATION_WITH_MODEL) {
+                    if ($statement->isNotification()) {
+                        if ($statement->type() === SendStatement::TYPE_NOTIFICATION_WITH_FACADE) {
+                            $this->addImport($component, 'Illuminate\\Support\\Facades\\Notification');
+                        }
                         $this->addImport($component, config('blueprint.namespace') . '\\Notification\\' . $statement->mail());
                     } elseif ($statement->type() === SendStatement::TYPE_MAIL) {
                         $this->addImport($component, 'Illuminate\\Support\\Facades\\Mail');
