@@ -178,6 +178,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
             $column_definition .= ')';
 
             $foreign = '';
+            $constraint = '';
             $foreign_modifier = $column->isForeignKey();
 
             if ($this->shouldAddForeignKeyConstraint($column)) {
@@ -191,7 +192,9 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
                 );
 
                 if ($this->isIdColumnType($column->dataType())) {
-                    $column_definition = $foreign;
+                    // column modifiers must be chained before constrained()
+                    $column_definition = Str::before($foreign, '->constrained(');
+                    $constraint = Str::after($foreign, $column_definition);
                     $foreign = '';
                 }
 
@@ -223,7 +226,7 @@ class MigrationGenerator extends AbstractClassGenerator implements Generator
                 }
             }
 
-            $column_definition .= ';' . PHP_EOL;
+            $column_definition .= $constraint . ';' . PHP_EOL;
             if (!empty($foreign)) {
                 $column_definition .= $foreign . ';' . PHP_EOL;
             }
