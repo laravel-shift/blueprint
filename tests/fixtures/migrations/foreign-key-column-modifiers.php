@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->unique()->constrained();
             $table->foreignId('team_id')->index()->constrained()->cascadeOnDelete();
-            $table->foreignId('status_id')->comment('State')->constrained();
+            $table->foreignId('status_id')->default('1')->comment('State')->constrained();
             $table->foreignId('reviewer_id')->nullable()->unique()->constrained('users');
             $table->foreignUuid('tenant_id')->unique()->constrained();
             $table->foreignUlid('session_id')->index()->constrained();
