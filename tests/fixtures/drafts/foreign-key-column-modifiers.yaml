@@ -1,0 +1,8 @@
+models:
+  Profile:
+    user_id: id foreign unique
+    team_id: id foreign index onDelete:cascade
+    status_id: id foreign comment:State
+    reviewer_id: id foreign:users nullable unique
+    tenant_id: uuid foreign:tenants unique
+    session_id: ulid foreign:sessions index
