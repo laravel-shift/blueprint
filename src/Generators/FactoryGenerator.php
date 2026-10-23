@@ -136,8 +136,10 @@ class FactoryGenerator extends AbstractClassGenerator implements Generator
                 $definition .= 'fake()->' . $faker;
                 $definition .= ',' . PHP_EOL;
 
-                $precision = min([65, intval($column->attributes()[0] ?? 10)]);
-                $scale = min([30, max([0, intval($column->attributes()[1] ?? 0)])]);
+                // Laravel's decimal() defaults to 8 digits with 2 decimal places
+                [$precision, $scale] = $column->dataType() === 'decimal' ? [8, 2] : [10, 0];
+                $precision = min([65, intval($column->attributes()[0] ?? $precision)]);
+                $scale = min([30, max([0, intval($column->attributes()[1] ?? min($scale, $precision))])]);
 
                 $definition = str_replace(
                     "/** {$column->dataType()}_attributes **/",

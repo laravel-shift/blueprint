@@ -1,0 +1,8 @@
+models:
+  Product:
+    price: decimal
+    total: decimal:10
+    discount: decimal unsigned
+    tax: decimal nullable default:0
+    rate: decimal:5,3
+    weight: double

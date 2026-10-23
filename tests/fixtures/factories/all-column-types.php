@@ -20,7 +20,7 @@ class AllTypeFactory extends Factory
             'date' => fake()->date(),
             'dateTime' => fake()->dateTime(),
             'dateTimeTz' => fake()->dateTime(),
-            'decimal' => fake()->randomFloat(0, 0, 9999999999.),
+            'decimal' => fake()->randomFloat(2, 0, 999999.99),
             'double' => fake()->randomFloat(0, 0, 9999999999.),
             'enum' => fake()->randomElement(["1","2","3"]),
             'float' => fake()->randomFloat(0, 0, 9999999999.),
