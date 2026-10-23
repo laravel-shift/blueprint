@@ -175,7 +175,9 @@ class ControllerGenerator extends AbstractClassGenerator implements Generator
                     $body .= self::INDENT . $statement->output() . PHP_EOL;
 
                     if ($statement->paginate()) {
-                        if (!Str::contains($body, '::all();')) {
+                        $body = preg_replace('/(\$' . preg_quote($statement->reference(), '/') . ' = [^;]+)->get\(\);/', '$1->paginate();', $body, 1, $paginated);
+
+                        if (!$paginated && !Str::contains($body, '::all();')) {
                             $queryStatement = new QueryStatement('all', [$statement->reference()]);
                             $body = implode(PHP_EOL, [
                                 self::INDENT . $queryStatement->output($statement->reference()),

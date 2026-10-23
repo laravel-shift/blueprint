@@ -303,6 +303,7 @@ final class ControllerGeneratorTest extends TestCase
             ['drafts/inertia-render.yaml', 'app/Http/Controllers/CustomerController.php', 'controllers/inertia-render.php'],
             ['drafts/save-without-validation.yaml', 'app/Http/Controllers/PostController.php', 'controllers/save-without-validation.php'],
             ['drafts/api-resource-pagination.yaml', 'app/Http/Controllers/PostController.php', 'controllers/api-resource-pagination.php'],
+            ['drafts/api-resource-pagination-query.yaml', 'app/Http/Controllers/PostController.php', 'controllers/api-resource-pagination-query.php'],
             ['drafts/api-resource-nested.yaml', 'app/Http/Controllers/CommentController.php', 'controllers/api-resource-nested.php'],
             ['drafts/api-resource-nested.yaml', 'app/Http/Controllers/CommentController.php', 'controllers/api-resource-nested.php'],
             ['drafts/api-routes-example.yaml', 'app/Http/Controllers/Api/CertificateController.php', 'controllers/api-routes-example.php'],

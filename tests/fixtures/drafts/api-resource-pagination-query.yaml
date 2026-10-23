@@ -1,0 +1,18 @@
+models:
+  Post:
+    title: string
+    published_at: timestamp
+controllers:
+  Post:
+    index:
+      query: order:published_at
+      resource: paginate:posts
+    search:
+      query: where:title
+      resource: paginate:posts
+    archive:
+      query: where:title order:published_at
+      resource: paginate:posts
+    latest:
+      query: order:published_at
+      resource: collection:posts
